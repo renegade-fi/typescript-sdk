@@ -1,3 +1,5 @@
+# Renegade Typescript Client
+
 <div>
   <a href="https://twitter.com/renegade_fi" target="_blank">
     <img src="https://img.shields.io/twitter/follow/renegade_fi?style=social" />
