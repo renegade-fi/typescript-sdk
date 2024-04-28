@@ -1,0 +1,28 @@
+{
+    "arrowParens": "avoid",
+    "bracketSpacing": true,
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true,
+    "importOrder": [
+        "<THIRD_PARTY_MODULES>",
+        "interface",
+        "(?=content|api)",
+        "context/",
+        "mock/",
+        "config",
+        "utils/",
+        "hooks/",
+        "(components/|./index)",
+        ".svg",
+        "^../(.*)$",
+        "(?=./styles.module.scss)"
+    ],
+    "printWidth": 100,
+    "proseWrap": "always",
+    "semi": false,
+    "singleQuote": false,
+    "tabWidth": 4,
+    "trailingComma": "all",
+    "useTabs": false,
+    "plugins": ["@trivago/prettier-plugin-sort-imports"]
+}

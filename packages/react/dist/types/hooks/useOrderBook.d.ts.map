@@ -1,0 +1,1 @@
+{"version":3,"file":"useOrderBook.d.ts","sourceRoot":"","sources":["../../../src/hooks/useOrderBook.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,EAAE,MAAM,EAAE,YAAY,EAAE,MAAM,mBAAmB,CAAA;AAI7D,MAAM,MAAM,sBAAsB,GAAG;IACjC,MAAM,CAAC,EAAE,MAAM,CAAA;CAClB,CAAA;AAED,MAAM,MAAM,sBAAsB,GAAG,YAAY,EAAE,CAAA;AAEnD,wBAAgB,YAAY,CAAC,UAAU,GAAE,sBAA2B,GAAG,sBAAsB,CAiC5F"}

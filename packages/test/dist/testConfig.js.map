@@ -1,0 +1,1 @@
+{"version":3,"file":"testConfig.js","sourceRoot":"","sources":["../src/testConfig.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,YAAY,EAAE,MAAM,mBAAmB,CAAA;AAEhD,OAAO,KAAK,SAAS,MAAM,4BAA4B,CAAA;AAEvD,MAAM,CAAC,MAAM,MAAM,GAAG,YAAY,CAAC;IAC/B,UAAU,EAAE,WAAW;IACvB,gBAAgB,EAAE,oCAAoC;IACtD,KAAK,EAAE,SAAS;CACnB,CAAC,CAAA"}

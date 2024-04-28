@@ -1,0 +1,1 @@
+{"version":3,"file":"useTaskQueue.d.ts","sourceRoot":"","sources":["../../../src/hooks/useTaskQueue.ts"],"names":[],"mappings":"AAGA,OAAO,KAAK,EAAE,MAAM,EAAE,IAAI,EAAE,MAAM,mBAAmB,CAAA;AAMrD,MAAM,MAAM,sBAAsB,GAAG;IACjC,MAAM,CAAC,EAAE,MAAM,CAAA;CAClB,CAAA;AAED,MAAM,MAAM,sBAAsB,GAAG,IAAI,EAAE,CAAA;AAE3C,wBAAgB,YAAY,CAAC,UAAU,GAAE,sBAA2B,GAAG,sBAAsB,CAwB5F"}
