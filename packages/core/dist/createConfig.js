@@ -40,6 +40,7 @@ export function createConfig(parameters) {
         utils: parameters.utils,
         relayerUrl,
         priceReporterUrl,
+        darkPoolAddress: parameters.darkPoolAddress,
         getRelayerBaseUrl: function (route = "") {
             const baseUrl = parameters.relayerUrl.includes("localhost")
                 ? `http://127.0.0.1:${httpPort}/v0`

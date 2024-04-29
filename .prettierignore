@@ -1,3 +1,9 @@
-dist
+/dist/
+**/dist/**
 wasm
 renegade-utils
+.changeset
+CHANGELOG.md
+**.tsbuildinfo
+README.md
+
