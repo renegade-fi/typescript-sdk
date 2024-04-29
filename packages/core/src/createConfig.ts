@@ -2,11 +2,12 @@ import { type Storage, createStorage, noopStorage } from "./createStorage.js"
 import type { Evaluate, ExactPartial } from "./types/utils.js"
 import type * as rustUtils from "./utils.d.ts"
 import invariant from "tiny-invariant"
-import type { Hex } from "viem"
+import type { Address, Hex } from "viem"
 import { persist, subscribeWithSelector } from "zustand/middleware"
 import { type Mutate, type StoreApi, createStore } from "zustand/vanilla"
 
 export type CreateConfigParameters = {
+    darkPoolAddress: Address
     priceReporterUrl: string
     relayerUrl: string
     httpPort?: number
@@ -75,6 +76,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
         utils: parameters.utils,
         relayerUrl,
         priceReporterUrl,
+        darkPoolAddress: parameters.darkPoolAddress,
         getRelayerBaseUrl: function (route: string = "") {
             const baseUrl = parameters.relayerUrl.includes("localhost")
                 ? `http://127.0.0.1:${httpPort}/v0`
@@ -114,15 +116,15 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 }
 
 export type Config = {
-    utils: typeof rustUtils
-    relayerUrl: string
-    priceReporterUrl: string
-    pollingInterval: number
+    darkPoolAddress: Address
+    getPriceReporterBaseUrl: () => string
     getRelayerBaseUrl: (route?: string) => string
     getWebsocketBaseUrl: () => string
-    getPriceReporterBaseUrl: () => string
-    state: State
+    pollingInterval: number
+    priceReporterUrl: string
+    relayerUrl: string
     setState: (newState: State) => void
+    state: State
     subscribe<state>(
         selector: (state: State) => state,
         listener: (state: state, previousState: state) => void,
@@ -133,7 +135,7 @@ export type Config = {
               }
             | undefined,
     ): () => void
-
+    utils: typeof rustUtils
     /**
      * Not part of versioned API, proceed with caution.
      * @internal

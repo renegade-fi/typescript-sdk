@@ -34,7 +34,7 @@ export async function lookupWalletOnChain(config) {
         const skRoot = getSkRoot(config);
         const blinderShare = utils.derive_blinder_share(skRoot);
         const logs = await publicClient.getLogs({
-            address: "0xde1eef14801cd14045b645755a5682dd188256b8",
+            address: config.darkPoolAddress,
             event: parseAbiItem("event WalletUpdated(uint256 indexed wallet_blinder_share)"),
             args: {
                 wallet_blinder_share: blinderShare,
