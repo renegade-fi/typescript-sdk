@@ -29,6 +29,22 @@ export declare const NETWORK_INFO_ROUTE = "/v0/network";
 export declare const TASK_STATUS_ROUTE: (task_id: string) => string;
 export declare const WS_WALLET_ORDERS_ROUTE: (wallet_id: string) => string;
 export declare const PRICE_REPORTER_TOPIC: (exchange: string, base: Address, quote: Address) => string;
+export declare const devnetTokenMapping: {
+    tokens: {
+        name: string;
+        ticker: string;
+        address: string;
+        decimals: number;
+    }[];
+};
+export declare const testnetTokenMapping: {
+    tokens: {
+        name: string;
+        ticker: string;
+        address: string;
+        decimals: number;
+    }[];
+};
 export declare const tokenMapping: {
     tokens: {
         name: string;

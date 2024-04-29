@@ -1,8 +1,7 @@
 import { getSkRoot } from "./getSkRoot.js";
 import { getWalletFromRelayer } from "./getWalletFromRelayer.js";
 import { waitForTaskCompletion } from "./waitForTaskCompletion.js";
-import { parseAbiItem } from "viem";
-import { publicClient } from "../utils/chain.js";
+import { createPublicClient, http, parseAbiItem } from "viem";
 import { postRelayerRaw } from "../utils/http.js";
 import { FIND_WALLET_ROUTE } from "../constants.js";
 import {} from "../createConfig.js";
@@ -33,6 +32,10 @@ export async function lookupWalletOnChain(config) {
         const { utils } = config;
         const skRoot = getSkRoot(config);
         const blinderShare = utils.derive_blinder_share(skRoot);
+        const publicClient = createPublicClient({
+            chain: config.getRenegadeChain(),
+            transport: http(),
+        });
         const logs = await publicClient.getLogs({
             address: config.darkPoolAddress,
             event: parseAbiItem("event WalletUpdated(uint256 indexed wallet_blinder_share)"),

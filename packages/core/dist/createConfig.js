@@ -1,5 +1,6 @@
 import { createStorage, noopStorage } from "./createStorage.js";
 import invariant from "tiny-invariant";
+import { createPublicClient, defineChain, http, } from "viem";
 import { persist, subscribeWithSelector } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 export function createConfig(parameters) {
@@ -36,11 +37,26 @@ export function createConfig(parameters) {
             storage: storage,
         })
         : getInitialState));
+    const getRenegadeChain = (_rpcUrl) => {
+        const rpcUrl = _rpcUrl ??
+            `https://${parameters.rpcUrl}` ??
+            `https://${relayerUrl.includes("dev") ? "dev." : ""}sequencer.renegade.fi`;
+        return defineChain({
+            id: 473474,
+            name: "Renegade Testnet",
+            network: "Renegade Testnet",
+            testnet: true,
+            nativeCurrency: { decimals: 18, name: "Ether", symbol: "ETH" },
+            rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
+            blockExplorers: { default: { name: "Explorer", url: "https://explorer.renegade.fi" } },
+        });
+    };
     return {
         utils: parameters.utils,
         relayerUrl,
         priceReporterUrl,
         darkPoolAddress: parameters.darkPoolAddress,
+        getRenegadeChain,
         getRelayerBaseUrl: function (route = "") {
             const baseUrl = parameters.relayerUrl.includes("localhost")
                 ? `http://127.0.0.1:${httpPort}/v0`
@@ -48,18 +64,22 @@ export function createConfig(parameters) {
             const formattedRoute = route.startsWith("/") ? route : `/${route}`;
             return `${baseUrl}${formattedRoute}`;
         },
-        getWebsocketBaseUrl: function () {
-            const baseUrl = parameters.relayerUrl.includes("localhost")
-                ? `ws://127.0.0.1:${websocketPort}`
-                : `wss://${parameters.relayerUrl}:${websocketPort}`;
-            return baseUrl;
-        },
         getPriceReporterBaseUrl: function () {
             const baseUrl = parameters.priceReporterUrl.includes("localhost")
                 ? `ws://127.0.0.1:${websocketPort}/`
                 : `wss://${parameters.priceReporterUrl}:${websocketPort}/`;
             return baseUrl;
         },
+        getWebsocketBaseUrl: function () {
+            const baseUrl = parameters.relayerUrl.includes("localhost")
+                ? `ws://127.0.0.1:${websocketPort}`
+                : `wss://${parameters.relayerUrl}:${websocketPort}`;
+            return baseUrl;
+        },
+        getViemClient: () => createPublicClient({
+            chain: getRenegadeChain(),
+            transport: http(),
+        }),
         pollingInterval,
         get state() {
             return store.getState();

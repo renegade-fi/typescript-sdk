@@ -2,7 +2,15 @@ import { type Storage, createStorage, noopStorage } from "./createStorage.js"
 import type { Evaluate, ExactPartial } from "./types/utils.js"
 import type * as rustUtils from "./utils.d.ts"
 import invariant from "tiny-invariant"
-import type { Address, Hex } from "viem"
+import {
+    type Address,
+    type Chain,
+    type Hex,
+    type PublicClient,
+    createPublicClient,
+    defineChain,
+    http,
+} from "viem"
 import { persist, subscribeWithSelector } from "zustand/middleware"
 import { type Mutate, type StoreApi, createStore } from "zustand/vanilla"
 
@@ -12,6 +20,7 @@ export type CreateConfigParameters = {
     relayerUrl: string
     httpPort?: number
     pollingInterval?: number
+    rpcUrl: string
     ssr?: boolean | undefined
     storage?: Storage | null | undefined
     utils?: typeof rustUtils
@@ -72,11 +81,28 @@ export function createConfig(parameters: CreateConfigParameters): Config {
         ),
     )
 
+    const getRenegadeChain = (_rpcUrl?: string) => {
+        const rpcUrl =
+            _rpcUrl ??
+            `https://${parameters.rpcUrl}` ??
+            `https://${relayerUrl.includes("dev") ? "dev." : ""}sequencer.renegade.fi`
+        return defineChain({
+            id: 473474,
+            name: "Renegade Testnet",
+            network: "Renegade Testnet",
+            testnet: true,
+            nativeCurrency: { decimals: 18, name: "Ether", symbol: "ETH" },
+            rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
+            blockExplorers: { default: { name: "Explorer", url: "https://explorer.renegade.fi" } },
+        })
+    }
+
     return {
         utils: parameters.utils,
         relayerUrl,
         priceReporterUrl,
         darkPoolAddress: parameters.darkPoolAddress,
+        getRenegadeChain,
         getRelayerBaseUrl: function (route: string = "") {
             const baseUrl = parameters.relayerUrl.includes("localhost")
                 ? `http://127.0.0.1:${httpPort}/v0`
@@ -84,18 +110,23 @@ export function createConfig(parameters: CreateConfigParameters): Config {
             const formattedRoute = route.startsWith("/") ? route : `/${route}`
             return `${baseUrl}${formattedRoute}`
         },
-        getWebsocketBaseUrl: function () {
-            const baseUrl = parameters.relayerUrl.includes("localhost")
-                ? `ws://127.0.0.1:${websocketPort}`
-                : `wss://${parameters.relayerUrl}:${websocketPort}`
-            return baseUrl
-        },
         getPriceReporterBaseUrl: function () {
             const baseUrl = parameters.priceReporterUrl.includes("localhost")
                 ? `ws://127.0.0.1:${websocketPort}/`
                 : `wss://${parameters.priceReporterUrl}:${websocketPort}/`
             return baseUrl
         },
+        getWebsocketBaseUrl: function () {
+            const baseUrl = parameters.relayerUrl.includes("localhost")
+                ? `ws://127.0.0.1:${websocketPort}`
+                : `wss://${parameters.relayerUrl}:${websocketPort}`
+            return baseUrl
+        },
+        getViemClient: () =>
+            createPublicClient({
+                chain: getRenegadeChain(),
+                transport: http(),
+            }),
         pollingInterval,
         get state() {
             return store.getState()
@@ -119,10 +150,12 @@ export type Config = {
     darkPoolAddress: Address
     getPriceReporterBaseUrl: () => string
     getRelayerBaseUrl: (route?: string) => string
+    getRenegadeChain: (rpcUrl?: string) => Chain
     getWebsocketBaseUrl: () => string
     pollingInterval: number
     priceReporterUrl: string
     relayerUrl: string
+    rpcUrl?: string
     setState: (newState: State) => void
     state: State
     subscribe<state>(
@@ -135,6 +168,7 @@ export type Config = {
               }
             | undefined,
     ): () => void
+    getViemClient: () => PublicClient
     utils: typeof rustUtils
     /**
      * Not part of versioned API, proceed with caution.
