@@ -30,5 +30,5 @@ export * from "./types/wallet.js";
 export { formatAmount, parseAmount } from "./utils/format.js";
 export { deepEqual } from "./utils/deepEqual.js";
 export { WebSocketManager } from "./utils/websocket.js";
-export { chain, publicClient } from "./utils/chain.js";
+export { chain } from "./utils/chain.js";
 //# sourceMappingURL=index.d.ts.map

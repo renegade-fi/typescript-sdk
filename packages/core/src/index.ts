@@ -172,7 +172,6 @@ export { deepEqual } from "./utils/deepEqual.js"
 export { WebSocketManager } from "./utils/websocket.js"
 
 ////////////////////////////////////////////////////////////////////////////////
-// viem
+// Viem
 ////////////////////////////////////////////////////////////////////////////////
-
-export { chain, publicClient } from "./utils/chain.js"
+export { chain } from "./utils/chain.js"

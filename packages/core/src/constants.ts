@@ -106,7 +106,126 @@ export const PRICE_REPORTER_TOPIC = (exchange: string, base: Address, quote: Add
 // Token
 ////////////////////////////////////////////////////////////////////////////////
 
-export const tokenMapping = {
+export const devnetTokenMapping = {
+    tokens: [
+        {
+            name: "WBTC",
+            ticker: "WBTC",
+            address: "0x11b57fe348584f042e436c6bf7c3c3def171de49",
+            decimals: 18,
+        },
+        {
+            name: "WETH",
+            ticker: "WETH",
+            address: "0xa6e41ffd769491a42a6e5ce453259b93983a22ef",
+            decimals: 18,
+        },
+        {
+            name: "BNB",
+            ticker: "BNB",
+            address: "0xe1080224b632a93951a7cfa33eeea9fd81558b5e",
+            decimals: 18,
+        },
+        {
+            name: "MATIC",
+            ticker: "MATIC",
+            address: "0x7e32b54800705876d3b5cfbc7d9c226a211f7c1a",
+            decimals: 18,
+        },
+        {
+            name: "LDO",
+            ticker: "LDO",
+            address: "0x525c2aba45f66987217323e8a05ea400c65d06dc",
+            decimals: 18,
+        },
+        {
+            name: "USDC",
+            ticker: "USDC",
+            address: "0x85d9a8a4bd77b9b5559c1b7fcb8ec9635922ed49",
+            decimals: 18,
+        },
+        {
+            name: "USDT",
+            ticker: "USDT",
+            address: "0x4a2ba922052ba54e29c5417bc979daaf7d5fe4f4",
+            decimals: 18,
+        },
+        {
+            name: "LINK",
+            ticker: "LINK",
+            address: "0x4af567288e68cad4aa93a272fe6139ca53859c70",
+            decimals: 18,
+        },
+        {
+            name: "UNI",
+            ticker: "UNI",
+            address: "0x3df948c956e14175f43670407d5796b95bb219d8",
+            decimals: 18,
+        },
+        {
+            name: "SUSHI",
+            ticker: "SUSHI",
+            address: "0x75e0e92a79880bd81a69f72983d03c75e2b33dc8",
+            decimals: 18,
+        },
+        {
+            name: "1INCH",
+            ticker: "1INCH",
+            address: "0xf5ffd11a55afd39377411ab9856474d2a7cb697e",
+            decimals: 18,
+        },
+        {
+            name: "AAVE",
+            ticker: "AAVE",
+            address: "0x408da76e87511429485c32e4ad647dd14823fdc4",
+            decimals: 18,
+        },
+        {
+            name: "COMP",
+            ticker: "COMP",
+            address: "0xdb2d15a3eb70c347e0d2c2c7861cafb946baab48",
+            decimals: 18,
+        },
+        {
+            name: "MKR",
+            ticker: "MKR",
+            address: "0xa39ffa43eba037d67a0f4fe91956038aba0ca386",
+            decimals: 18,
+        },
+        {
+            name: "REN",
+            ticker: "REN",
+            address: "0xdb3f4ecb0298238a19ec5afd087c6d9df8041919",
+            decimals: 18,
+        },
+        {
+            name: "MANA",
+            ticker: "MANA",
+            address: "0x1b9cbdc65a7bebb0be7f18d93a1896ea1fd46d7a",
+            decimals: 18,
+        },
+        {
+            name: "ENS",
+            ticker: "ENS",
+            address: "0x47cec0749bd110bc11f9577a70061202b1b6c034",
+            decimals: 18,
+        },
+        {
+            name: "DYDX",
+            ticker: "DYDX",
+            address: "0x841118047f42754332d0ad4db8a2893761dd7f5d",
+            decimals: 18,
+        },
+        {
+            name: "CRV",
+            ticker: "CRV",
+            address: "0xc2c0c3398915a2d2e9c33c186abfef3192ee25e8",
+            decimals: 18,
+        },
+    ],
+}
+
+export const testnetTokenMapping = {
     tokens: [
         {
             name: "WBTC",
@@ -224,3 +343,7 @@ export const tokenMapping = {
         },
     ],
 }
+
+const isDevelopment = process.env.NEXT_PUBLIC_RPC_URL?.includes("dev")
+
+export const tokenMapping = isDevelopment ? devnetTokenMapping : testnetTokenMapping

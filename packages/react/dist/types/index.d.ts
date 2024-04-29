@@ -34,5 +34,5 @@ export { Token } from "@renegade-fi/core";
 export type { Balance, Exchange, NetworkOrder, Order, Task } from "@renegade-fi/core";
 export { OrderState } from "@renegade-fi/core";
 export { WebSocketManager, formatAmount, parseAmount } from "@renegade-fi/core";
-export { chain, publicClient } from "@renegade-fi/core";
+export { chain } from "@renegade-fi/core";
 //# sourceMappingURL=index.d.ts.map
