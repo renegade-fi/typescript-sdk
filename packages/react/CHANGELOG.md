@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.3
+
+### Patch Changes
+
+- add rpc url as config parameter
+- Updated dependencies
+  - @renegade-fi/core@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes
