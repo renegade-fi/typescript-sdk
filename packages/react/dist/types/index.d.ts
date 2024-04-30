@@ -14,11 +14,13 @@ export { getPkRoot, getPkRootScalars, type GetPkRootReturnType, type GetPkRootSc
 export { getSkRoot, type GetSkRootParameters, type GetSkRootReturnType } from "@renegade-fi/core";
 export { getWalletFromRelayer, type GetWalletFromRelayerParameters, type GetWalletFromRelayerReturnType, } from "@renegade-fi/core";
 export { lookupWallet, type LookupWalletParameters, type LookupWalletReturnType, } from "@renegade-fi/core";
+export { payFees, type PayFeesReturnType } from "@renegade-fi/core";
 export { waitForTaskCompletion, type WaitForTaskCompletionParameters, type WaitForTaskCompletionReturnType, } from "@renegade-fi/core";
 export { watchStatus, type WatchStatusParameters, type WatchStatusReturnType, } from "@renegade-fi/core";
 export { withdraw, type WithdrawParameters, type WithdrawReturnType } from "@renegade-fi/core";
 export { useBalances, type UseBalancesParameters, type UseBalancesReturnType, } from "./hooks/useBalances.js";
 export { useConfig, type UseConfigParameters, type UseConfigReturnType } from "./hooks/useConfig.js";
+export { useFees, type UseFeesParameters, type UseFeesReturnType } from "./hooks/useFees.js";
 export { useOrderBook, type UseOrderBookParameters, type UseOrderBookReturnType, } from "./hooks/useOrderBook.js";
 export { useOrderBookWebSocket, type UseOrderBookWebSocketParameters, type UseOrderBookWebSocketReturnType, } from "./hooks/useOrderBookWebSocket.js";
 export { useOrders, type UseOrdersParameters, type UseOrdersReturnType } from "./hooks/useOrders.js";

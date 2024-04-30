@@ -4,7 +4,6 @@ export type WithdrawParameters = {
     mint: Address;
     amount: bigint;
     destinationAddr: Address;
-    shouldPayFees?: boolean;
 };
 export type WithdrawReturnType = Promise<{
     taskId: string;

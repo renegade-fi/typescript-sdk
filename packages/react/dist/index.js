@@ -33,6 +33,7 @@ export { getPkRoot, getPkRootScalars, } from "@renegade-fi/core";
 export { getSkRoot } from "@renegade-fi/core";
 export { getWalletFromRelayer, } from "@renegade-fi/core";
 export { lookupWallet, } from "@renegade-fi/core";
+export { payFees } from "@renegade-fi/core";
 export { waitForTaskCompletion, } from "@renegade-fi/core";
 export { watchStatus, } from "@renegade-fi/core";
 export { withdraw } from "@renegade-fi/core";
@@ -41,6 +42,7 @@ export { withdraw } from "@renegade-fi/core";
 ////////////////////////////////////////////////////////////////////////////////
 export { useBalances, } from "./hooks/useBalances.js";
 export { useConfig } from "./hooks/useConfig.js";
+export { useFees } from "./hooks/useFees.js";
 export { useOrderBook, } from "./hooks/useOrderBook.js";
 export { useOrderBookWebSocket, } from "./hooks/useOrderBookWebSocket.js";
 export { useOrders } from "./hooks/useOrders.js";
