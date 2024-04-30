@@ -6,7 +6,7 @@ import { getSkRoot } from "../index.js"
 import { RENEGADE_AUTH_HEADER_NAME, RENEGADE_SIG_EXPIRATION_HEADER_NAME } from "../constants.js"
 import type { Config } from "../createConfig.js"
 
-export async function postRelayerRaw(url: string, body = {}, headers = {}) {
+export async function postRelayerRaw(url: string, body: any, headers = {}) {
     try {
         const response = await axios.post(url, body, { headers })
         // console.log(`POST ${url} with body: `, body, "response: ", response.data)
@@ -69,9 +69,13 @@ export async function getRelayerRaw(url: string, headers = {}) {
     }
 }
 
-export async function postRelayerWithAuth(config: Config, url: string, body: string) {
+export async function postRelayerWithAuth(config: Config, url: string, body?: string) {
     const skRoot = await getSkRoot(config)
-    const [auth, expiration] = config.utils.build_auth_headers(skRoot, body, BigInt(Date.now()))
+    const [auth, expiration] = config.utils.build_auth_headers(
+        skRoot,
+        body ?? "",
+        BigInt(Date.now()),
+    )
     const headers = {
         [RENEGADE_AUTH_HEADER_NAME]: auth,
         [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,

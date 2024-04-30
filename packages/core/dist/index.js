@@ -24,6 +24,7 @@ export { getTaskQueue, } from "./actions/getTaskQueue.js";
 export { getWalletFromRelayer, } from "./actions/getWalletFromRelayer.js";
 export { getWalletId, } from "./actions/getWalletId.js";
 export { lookupWallet, } from "./actions/lookupWallet.js";
+export { payFees } from "./actions/payFees.js";
 export { signMessage, } from "./actions/signMessage.js";
 export { waitForTaskCompletion, } from "./actions/waitForTaskCompletion.js";
 export { watchStatus, } from "./actions/watchStatus.js";

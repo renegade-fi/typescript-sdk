@@ -19,7 +19,6 @@ export async function getBackOfQueueWallet(
     const { getRelayerBaseUrl, utils } = config
     const skRoot = getSkRoot(config, { seed })
     const walletId = utils.wallet_id(skRoot)
-    console.log("Fetching back of queue wallet")
     const res = await getRelayerWithAuth(
         config,
         getRelayerBaseUrl(BACK_OF_QUEUE_WALLET_ROUTE(walletId)),
