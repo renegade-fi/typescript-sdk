@@ -1,4 +1,4 @@
-import { getWalletFromRelayer } from "./getWalletFromRelayer.js";
+import { getBackOfQueueWallet } from "./getBackOfQueueWallet.js";
 import { getWalletId } from "./getWalletId.js";
 import JSONBigInt from "json-bigint";
 import invariant from "tiny-invariant";
@@ -13,7 +13,7 @@ export async function deposit(config, parameters) {
     const token = Token.findByAddress(mint);
     invariant(token, "Token not found");
     const walletId = getWalletId(config);
-    const wallet = await getWalletFromRelayer(config);
+    const wallet = await getBackOfQueueWallet(config);
     const body = utils.deposit(JSONBigInt.stringify(wallet), fromAddr, mint, toHex(amount), toHex(permitNonce), toHex(permitDeadline), permit);
     const logContext = {
         walletId,

@@ -15,6 +15,10 @@ export const CREATE_WALLET_ROUTE = "/wallet"
 export const FIND_WALLET_ROUTE = "/wallet/lookup"
 // Returns the wallet information for the given id
 export const GET_WALLET_ROUTE = (wallet_id: string) => `/wallet/${wallet_id}`
+/// Get the wallet at the "back of the queue", i.e. the speculatively updated
+/// wallet as if all enqueued wallet tasks had completed
+export const BACK_OF_QUEUE_WALLET_ROUTE = (wallet_id: string) =>
+    `/wallet/${wallet_id}/back-of-queue`
 // Route to the orders of a given wallet
 export const WALLET_ORDERS_ROUTE = (wallet_id: string) => `/wallet/${wallet_id}/orders`
 // Returns a single order by the given identifier

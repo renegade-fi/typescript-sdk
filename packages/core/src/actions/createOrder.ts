@@ -1,4 +1,4 @@
-import { getWalletFromRelayer } from "./getWalletFromRelayer.js"
+import { getBackOfQueueWallet } from "./getBackOfQueueWallet.js"
 import { getWalletId } from "./getWalletId.js"
 import JSONBigInt from "json-bigint"
 import { type Address, toHex } from "viem"
@@ -27,7 +27,7 @@ export async function createOrder(
     const { getRelayerBaseUrl, utils } = config
 
     const walletId = getWalletId(config)
-    const wallet = await getWalletFromRelayer(config)
+    const wallet = await getBackOfQueueWallet(config)
     const body = utils.new_order(JSONBigInt.stringify(wallet), id, base, quote, side, toHex(amount))
 
     const logContext = {
