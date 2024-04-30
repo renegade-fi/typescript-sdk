@@ -116,6 +116,8 @@ export {
     lookupWallet,
 } from "./actions/lookupWallet.js"
 
+export { type PayFeesReturnType, payFees } from "./actions/payFees.js"
+
 export {
     type SignMessageParameters,
     type SignMessageReturnType,

@@ -204,6 +204,25 @@ pub fn withdraw(
     let mint = wrap_eyre!(biguint_from_hex_string(mint)).unwrap();
     let amount = wrap_eyre!(biguint_from_hex_string(amount)).unwrap();
     let destination_addr = wrap_eyre!(biguint_from_hex_string(&destination_addr)).unwrap();
+
+    for (mint, balance) in new_wallet.balances.clone() {
+        if balance.relayer_fee_balance > 0 {
+            new_wallet
+                .get_balance_mut(&mint)
+                .unwrap()
+                .relayer_fee_balance = 0;
+            new_wallet.reblind_wallet();
+        }
+
+        if balance.protocol_fee_balance > 0 {
+            new_wallet
+                .get_balance_mut(&mint)
+                .unwrap()
+                .protocol_fee_balance = 0;
+            new_wallet.reblind_wallet();
+        }
+    }
+
     wrap_eyre!(new_wallet.withdraw(&mint, amount.to_u128().unwrap()));
     new_wallet.reblind_wallet();
     let wallet: ApiWallet = new_wallet.clone().into();

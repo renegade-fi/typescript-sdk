@@ -13,6 +13,7 @@ export declare const GET_BALANCES_ROUTE: (wallet_id: string) => string;
 export declare const GET_BALANCE_BY_MINT_ROUTE: (wallet_id: string, mint: string) => string;
 export declare const DEPOSIT_BALANCE_ROUTE: (wallet_id: string) => string;
 export declare const WITHDRAW_BALANCE_ROUTE: (wallet_id: string, mint: string) => string;
+export declare const PAY_FEES_ROUTE: (wallet_id: string) => string;
 export declare const ORDER_HISTORY_ROUTE: (wallet_id: string) => string;
 export declare const GET_NETWORK_TOPOLOGY_ROUTE = "/network";
 export declare const GET_CLUSTER_INFO_ROUTE: (cluster_id: string) => string;

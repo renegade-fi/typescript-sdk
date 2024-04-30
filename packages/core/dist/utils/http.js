@@ -2,7 +2,7 @@ import axios from "axios";
 import JSONBigint from "json-bigint";
 import { getSkRoot } from "../index.js";
 import { RENEGADE_AUTH_HEADER_NAME, RENEGADE_SIG_EXPIRATION_HEADER_NAME } from "../constants.js";
-export async function postRelayerRaw(url, body = {}, headers = {}) {
+export async function postRelayerRaw(url, body, headers = {}) {
     try {
         const response = await axios.post(url, body, { headers });
         // console.log(`POST ${url} with body: `, body, "response: ", response.data)
@@ -74,7 +74,7 @@ export async function getRelayerRaw(url, headers = {}) {
 }
 export async function postRelayerWithAuth(config, url, body) {
     const skRoot = await getSkRoot(config);
-    const [auth, expiration] = config.utils.build_auth_headers(skRoot, body, BigInt(Date.now()));
+    const [auth, expiration] = config.utils.build_auth_headers(skRoot, body ?? "", BigInt(Date.now()));
     const headers = {
         [RENEGADE_AUTH_HEADER_NAME]: auth,
         [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,

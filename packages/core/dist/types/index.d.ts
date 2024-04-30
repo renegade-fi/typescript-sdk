@@ -18,6 +18,7 @@ export { type GetTaskQueueParameters, type GetTaskQueueReturnType, getTaskQueue,
 export { type GetWalletFromRelayerParameters, type GetWalletFromRelayerReturnType, getWalletFromRelayer, } from "./actions/getWalletFromRelayer.js";
 export { type GetWalletIdParameters, type GetWalletIdReturnType, getWalletId, } from "./actions/getWalletId.js";
 export { type LookupWalletParameters, type LookupWalletReturnType, lookupWallet, } from "./actions/lookupWallet.js";
+export { type PayFeesReturnType, payFees } from "./actions/payFees.js";
 export { type SignMessageParameters, type SignMessageReturnType, signMessage, } from "./actions/signMessage.js";
 export { type WaitForTaskCompletionParameters, type WaitForTaskCompletionReturnType, waitForTaskCompletion, } from "./actions/waitForTaskCompletion.js";
 export { type WatchStatusParameters, type WatchStatusReturnType, watchStatus, } from "./actions/watchStatus.js";

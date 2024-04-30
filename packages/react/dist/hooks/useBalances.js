@@ -27,7 +27,7 @@ export function useBalances(parameters = {}) {
         }
     }, [wallet]);
     if (filter) {
-        return balances.filter(balance => balance.mint !== "0x0");
+        return balances.filter(balance => balance.mint !== "0x0" || !balance.mint);
     }
     return balances;
 }

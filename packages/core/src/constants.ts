@@ -40,7 +40,9 @@ export const DEPOSIT_BALANCE_ROUTE = (wallet_id: string) => `/wallet/${wallet_id
 // Withdraws an ERC-20 token from the darkpool
 export const WITHDRAW_BALANCE_ROUTE = (wallet_id: string, mint: string) =>
     `/wallet/${wallet_id}/balances/${mint}/withdraw`
-/// Returns the order history of a wallet
+// Pays all wallet fees
+export const PAY_FEES_ROUTE = (wallet_id: string) => `/wallet/${wallet_id}/pay-fees`
+// Returns the order history of a wallet
 export const ORDER_HISTORY_ROUTE = (wallet_id: string) => `/wallet/${wallet_id}/order-history`
 
 ////////////////////////////////////////////////////////////////////////////////
