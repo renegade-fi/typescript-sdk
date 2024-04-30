@@ -1,2 +1,10 @@
-node_modules
+.DS_Store
+.next
+.pnpm-debug.log*
 .vscode
+cache
+coverage
+dist
+node_modules
+tsconfig.tsbuildinfo
+*.vitest-temp.json
