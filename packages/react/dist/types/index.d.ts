@@ -28,13 +28,15 @@ export { useOrder, type UseOrderParameters, type UseOrderReturnType } from "./ho
 export { useOrderHistory, type UseOrderHistoryParameters, type UseOrderHistoryReturnType, } from "./hooks/useOrderHistory.js";
 export { useOrderHistoryWebSocket, type UseOrderHistoryWebSocketParameters, type UseOrderHistoryWebSocketReturnType, } from "./hooks/useOrderHistoryWebSocket.js";
 export { useStatus, type UseStatusParameters, type UseStatusReturnType } from "./hooks/useStatus.js";
+export { useTaskHistory, type UseTaskHistoryParameters, type UseTaskHistoryReturnType, } from "./hooks/useTaskHistory.js";
+export { useTaskHistoryWebSocket, type UseTaskHistoryWebSocketParameters, type UseTaskHistoryWebSocketReturnType, } from "./hooks/useTaskHistoryWebSocket.js";
 export { useTaskStatus, type UseTaskStatusParameters, type UseTaskStatusReturnType, } from "./hooks/useTaskStatus.js";
 export { useTaskQueue, type UseTaskQueueParameters, type UseTaskQueueReturnType, } from "./hooks/useTaskQueue.js";
 export { useWallet, type UseWalletParameters, type UseWalletReturnType } from "./hooks/useWallet.js";
 export { useWalletId, type UseWalletIdParameters, type UseWalletIdReturnType, } from "./hooks/useWalletId.js";
 export { Token } from "@renegade-fi/core";
-export type { Balance, Exchange, NetworkOrder, Order, Task } from "@renegade-fi/core";
-export { OrderState } from "@renegade-fi/core";
+export type { Balance, Exchange, NetworkOrder, Order, Task, TaskInfo, TaskState, } from "@renegade-fi/core";
+export { OrderState, TaskType, UpdateType } from "@renegade-fi/core";
 export { WebSocketManager, formatAmount, parseAmount } from "@renegade-fi/core";
 export { chain } from "@renegade-fi/core";
 //# sourceMappingURL=index.d.ts.map

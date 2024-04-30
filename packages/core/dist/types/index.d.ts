@@ -13,6 +13,7 @@ export { type GetNetworkOrdersParameters, type GetNetworkOrdersReturnType, getNe
 export { type GetOrdersParameters, type GetOrdersReturnType, getOrders, } from "./actions/getOrders.js";
 export { type GetPkRootReturnType, getPkRoot, type GetPkRootScalarsReturnType, getPkRootScalars, } from "./actions/getPkRoot.js";
 export { type GetSkRootParameters, type GetSkRootReturnType, getSkRoot, } from "./actions/getSkRoot.js";
+export { type GetTaskHistoryParameters, type GetTaskHistoryReturnType, getTaskHistory, } from "./actions/getTaskHistory.js";
 export { type GetTaskStatusParameters, type GetTaskStatusReturnType, getTaskStatus, } from "./actions/getTaskStatus.js";
 export { type GetTaskQueueParameters, type GetTaskQueueReturnType, getTaskQueue, } from "./actions/getTaskQueue.js";
 export { type GetWalletFromRelayerParameters, type GetWalletFromRelayerReturnType, getWalletFromRelayer, } from "./actions/getWalletFromRelayer.js";
@@ -28,6 +29,8 @@ export { BaseError } from "./errors/base.js";
 export * from "./constants.js";
 export { Token } from "./types/token.js";
 export * from "./types/wallet.js";
+export type { Task as TaskHistoryItem, TaskInfo, TaskState } from "./types/task.js";
+export { UpdateType, TaskType } from "./types/task.js";
 export { formatAmount, parseAmount } from "./utils/format.js";
 export { deepEqual } from "./utils/deepEqual.js";
 export { WebSocketManager } from "./utils/websocket.js";

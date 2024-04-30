@@ -23,12 +23,14 @@ export declare const GET_NETWORK_ORDER_BY_ID_ROUTE: (order_id: string) => string
 export declare const PRICE_REPORT_ROUTE = "/price_report";
 export declare const GET_TASK_STATUS_ROUTE: (task_id: string) => string;
 export declare const GET_TASK_QUEUE_ROUTE: (wallet_id: string) => string;
+export declare const TASK_HISTORY_ROUTE: (wallet_id: string) => string;
 export declare const HANDSHAKE_ROUTE = "/v0/handshake";
 export declare const WALLET_ROUTE: (wallet_id: string) => string;
 export declare const WS_PRICE_REPORT_ROUTE: (source: string, base: string, quote: string) => string;
 export declare const ORDER_BOOK_ROUTE = "/v0/order_book";
 export declare const NETWORK_INFO_ROUTE = "/v0/network";
 export declare const TASK_STATUS_ROUTE: (task_id: string) => string;
+export declare const WS_TASK_HISTORY_ROUTE: (wallet_id: string) => string;
 export declare const WS_WALLET_ORDERS_ROUTE: (wallet_id: string) => string;
 export declare const PRICE_REPORTER_TOPIC: (exchange: string, base: Address, quote: Address) => string;
 export declare const devnetTokenMapping: {

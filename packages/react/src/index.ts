@@ -141,6 +141,18 @@ export {
 export { useStatus, type UseStatusParameters, type UseStatusReturnType } from "./hooks/useStatus.js"
 
 export {
+    useTaskHistory,
+    type UseTaskHistoryParameters,
+    type UseTaskHistoryReturnType,
+} from "./hooks/useTaskHistory.js"
+
+export {
+    useTaskHistoryWebSocket,
+    type UseTaskHistoryWebSocketParameters,
+    type UseTaskHistoryWebSocketReturnType,
+} from "./hooks/useTaskHistoryWebSocket.js"
+
+export {
     useTaskStatus,
     type UseTaskStatusParameters,
     type UseTaskStatusReturnType,
@@ -166,8 +178,17 @@ export {
 
 export { Token } from "@renegade-fi/core"
 
-export type { Balance, Exchange, NetworkOrder, Order, Task } from "@renegade-fi/core"
-export { OrderState } from "@renegade-fi/core"
+export type {
+    Balance,
+    Exchange,
+    NetworkOrder,
+    Order,
+    Task,
+    TaskInfo,
+    TaskState,
+} from "@renegade-fi/core"
+
+export { OrderState, TaskType, UpdateType } from "@renegade-fi/core"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Utils

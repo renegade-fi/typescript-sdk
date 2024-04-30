@@ -50,6 +50,8 @@ export { useOrder } from "./hooks/useOrder.js";
 export { useOrderHistory, } from "./hooks/useOrderHistory.js";
 export { useOrderHistoryWebSocket, } from "./hooks/useOrderHistoryWebSocket.js";
 export { useStatus } from "./hooks/useStatus.js";
+export { useTaskHistory, } from "./hooks/useTaskHistory.js";
+export { useTaskHistoryWebSocket, } from "./hooks/useTaskHistoryWebSocket.js";
 export { useTaskStatus, } from "./hooks/useTaskStatus.js";
 export { useTaskQueue, } from "./hooks/useTaskQueue.js";
 export { useWallet } from "./hooks/useWallet.js";
@@ -58,7 +60,7 @@ export { useWalletId, } from "./hooks/useWalletId.js";
 // Types
 ////////////////////////////////////////////////////////////////////////////////
 export { Token } from "@renegade-fi/core";
-export { OrderState } from "@renegade-fi/core";
+export { OrderState, TaskType, UpdateType } from "@renegade-fi/core";
 ////////////////////////////////////////////////////////////////////////////////
 // Utils
 ////////////////////////////////////////////////////////////////////////////////

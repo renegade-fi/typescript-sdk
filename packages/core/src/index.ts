@@ -87,6 +87,12 @@ export {
 } from "./actions/getSkRoot.js"
 
 export {
+    type GetTaskHistoryParameters,
+    type GetTaskHistoryReturnType,
+    getTaskHistory,
+} from "./actions/getTaskHistory.js"
+
+export {
     type GetTaskStatusParameters,
     type GetTaskStatusReturnType,
     getTaskStatus,
@@ -162,6 +168,9 @@ export * from "./constants.js"
 export { Token } from "./types/token.js"
 
 export * from "./types/wallet.js"
+
+export type { Task as TaskHistoryItem, TaskInfo, TaskState } from "./types/task.js"
+export { UpdateType, TaskType } from "./types/task.js"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Utils
