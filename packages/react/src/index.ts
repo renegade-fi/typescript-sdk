@@ -80,6 +80,8 @@ export {
     type LookupWalletReturnType,
 } from "@renegade-fi/core"
 
+export { payFees, type PayFeesReturnType } from "@renegade-fi/core"
+
 export {
     waitForTaskCompletion,
     type WaitForTaskCompletionParameters,
@@ -105,6 +107,8 @@ export {
 } from "./hooks/useBalances.js"
 
 export { useConfig, type UseConfigParameters, type UseConfigReturnType } from "./hooks/useConfig.js"
+
+export { useFees, type UseFeesParameters, type UseFeesReturnType } from "./hooks/useFees.js"
 
 export {
     useOrderBook,
