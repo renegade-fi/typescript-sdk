@@ -19,6 +19,7 @@ export { getNetworkOrders, } from "./actions/getNetworkOrders.js";
 export { getOrders, } from "./actions/getOrders.js";
 export { getPkRoot, getPkRootScalars, } from "./actions/getPkRoot.js";
 export { getSkRoot, } from "./actions/getSkRoot.js";
+export { getTaskHistory, } from "./actions/getTaskHistory.js";
 export { getTaskStatus, } from "./actions/getTaskStatus.js";
 export { getTaskQueue, } from "./actions/getTaskQueue.js";
 export { getWalletFromRelayer, } from "./actions/getWalletFromRelayer.js";
@@ -46,6 +47,7 @@ export * from "./constants.js";
 ////////////////////////////////////////////////////////////////////////////////
 export { Token } from "./types/token.js";
 export * from "./types/wallet.js";
+export { UpdateType, TaskType } from "./types/task.js";
 ////////////////////////////////////////////////////////////////////////////////
 // Utils
 ////////////////////////////////////////////////////////////////////////////////

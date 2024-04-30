@@ -4,7 +4,7 @@ import { createPublicClient, defineChain, http, } from "viem";
 import { persist, subscribeWithSelector } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 export function createConfig(parameters) {
-    const { relayerUrl, priceReporterUrl, httpPort = 3000, pollingInterval = 1000, ssr, storage = createStorage({
+    const { relayerUrl, priceReporterUrl, httpPort = 3000, pollingInterval = 5000, ssr, storage = createStorage({
         storage: typeof window !== "undefined" && window.localStorage
             ? window.localStorage
             : noopStorage,

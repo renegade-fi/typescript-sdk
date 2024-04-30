@@ -32,7 +32,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
         relayerUrl,
         priceReporterUrl,
         httpPort = 3000,
-        pollingInterval = 1000,
+        pollingInterval = 5000,
         ssr,
         storage = createStorage({
             storage:

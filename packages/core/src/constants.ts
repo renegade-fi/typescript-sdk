@@ -80,6 +80,8 @@ export const PRICE_REPORT_ROUTE = "/price_report"
 export const GET_TASK_STATUS_ROUTE = (task_id: string) => `/tasks/${task_id}`
 // Get the task queue of a given wallet
 export const GET_TASK_QUEUE_ROUTE = (wallet_id: string) => `/task_queue/${wallet_id}`
+/// The route to fetch task history for a wallet
+export const TASK_HISTORY_ROUTE = (wallet_id: string) => `/wallet/${wallet_id}/task-history`
 
 ////////////////////////////////////////////////////////////////////////////////
 // Websockets
@@ -94,10 +96,12 @@ export const WS_PRICE_REPORT_ROUTE = (source: string, base: string, quote: strin
     `/v0/price_report/${source}/${base}/${quote}`
 // Streams order book events
 export const ORDER_BOOK_ROUTE = "/v0/order_book"
-// Provides information about network peers
+/// The network topic, streams events about network peers
 export const NETWORK_INFO_ROUTE = "/v0/network"
-// Streams task status by task ID
+/// The task status topic, streams information about task statuses
 export const TASK_STATUS_ROUTE = (task_id: string) => `/v0/tasks/${task_id}`
+/// The task history topic, streams information about historical tasks
+export const WS_TASK_HISTORY_ROUTE = (wallet_id: string) => `/v0/wallet/${wallet_id}/task-history`
 /// The wallet order status topic, streams events about wallet's orders
 export const WS_WALLET_ORDERS_ROUTE = (wallet_id: string) => `/v0/wallet/${wallet_id}/order-status`
 
