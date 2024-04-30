@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.4
+
+### Patch Changes
+
+- add back of queue route
+- Updated dependencies
+  - @renegade-fi/core@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.4
+
+### Patch Changes
+
+- add back of queue route
+
 ## 0.0.3
 
 ### Patch Changes
