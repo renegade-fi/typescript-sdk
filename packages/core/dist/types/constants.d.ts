@@ -4,6 +4,7 @@ export declare const RENEGADE_SIG_EXPIRATION_HEADER_NAME = "renegade-auth-expira
 export declare const CREATE_WALLET_ROUTE = "/wallet";
 export declare const FIND_WALLET_ROUTE = "/wallet/lookup";
 export declare const GET_WALLET_ROUTE: (wallet_id: string) => string;
+export declare const BACK_OF_QUEUE_WALLET_ROUTE: (wallet_id: string) => string;
 export declare const WALLET_ORDERS_ROUTE: (wallet_id: string) => string;
 export declare const GET_ORDER_BY_ID_ROUTE: (wallet_id: string, order_id: string) => string;
 export declare const UPDATE_ORDER_ROUTE: (wallet_id: string, order_id: string) => string;

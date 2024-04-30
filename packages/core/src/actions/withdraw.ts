@@ -1,4 +1,4 @@
-import { getWalletFromRelayer } from "./getWalletFromRelayer.js"
+import { getBackOfQueueWallet } from "./getBackOfQueueWallet.js"
 import { getWalletId } from "./getWalletId.js"
 import JSONBigInt from "json-bigint"
 import { type Address, toHex } from "viem"
@@ -22,7 +22,7 @@ export async function withdraw(config: Config, parameters: WithdrawParameters): 
     const { getRelayerBaseUrl, utils } = config
 
     const walletId = getWalletId(config)
-    const wallet = await getWalletFromRelayer(config)
+    const wallet = await getBackOfQueueWallet(config)
     const body = utils.withdraw(JSONBigInt.stringify(wallet), mint, toHex(amount), destinationAddr)
 
     const logContext = {
