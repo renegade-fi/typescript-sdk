@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.6
+
+### Patch Changes
+
+- Add task history hooks
+- Updated dependencies
+  - @renegade-fi/core@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes
