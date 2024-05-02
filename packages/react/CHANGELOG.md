@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.7
+
+### Patch Changes
+
+- Add missing Task types
+- Updated dependencies
+  - @renegade-fi/core@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes
