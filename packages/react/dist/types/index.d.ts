@@ -35,7 +35,7 @@ export { useTaskQueue, type UseTaskQueueParameters, type UseTaskQueueReturnType,
 export { useWallet, type UseWalletParameters, type UseWalletReturnType } from "./hooks/useWallet.js";
 export { useWalletId, type UseWalletIdParameters, type UseWalletIdReturnType, } from "./hooks/useWalletId.js";
 export { Token } from "@renegade-fi/core";
-export type { Balance, Exchange, NetworkOrder, Order, Task, TaskInfo, TaskState, } from "@renegade-fi/core";
+export type { Balance, Exchange, NetworkOrder, Order, OrderMetadata, Task, TaskInfo, TaskState, } from "@renegade-fi/core";
 export { OrderState, TaskType, UpdateType } from "@renegade-fi/core";
 export { WebSocketManager, formatAmount, parseAmount } from "@renegade-fi/core";
 export { chain } from "@renegade-fi/core";

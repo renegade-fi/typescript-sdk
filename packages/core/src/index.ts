@@ -169,7 +169,7 @@ export { Token } from "./types/token.js"
 
 export * from "./types/wallet.js"
 
-export type { Task as TaskHistoryItem, TaskInfo, TaskState } from "./types/task.js"
+export type { Task, TaskInfo, TaskState } from "./types/task.js"
 export { UpdateType, TaskType } from "./types/task.js"
 
 ////////////////////////////////////////////////////////////////////////////////

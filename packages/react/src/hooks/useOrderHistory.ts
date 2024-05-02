@@ -21,7 +21,7 @@ export function useOrderHistory(
     const config = useConfig(parameters)
     const status = useStatus(parameters)
     const { sort } = parameters
-    const [orderHistory, setOrderHistory] = useState<OrderMetadata[]>([])
+    const [orderHistory, setOrderHistory] = useState<Map<string, OrderMetadata>>(new Map())
     const incomingOrder = useOrderHistoryWebSocket()
 
     useEffect(() => {
@@ -29,7 +29,8 @@ export function useOrderHistory(
 
         async function fetchOrderHistory() {
             const initialOrderHistory = await getOrderHistory(config)
-            setOrderHistory(initialOrderHistory)
+            const orderMap = new Map(initialOrderHistory.map(order => [order.id, order]))
+            setOrderHistory(orderMap)
         }
 
         fetchOrderHistory()
@@ -40,19 +41,13 @@ export function useOrderHistory(
 
     useEffect(() => {
         if (incomingOrder) {
-            const idx = orderHistory.findIndex(order => order.id === incomingOrder.id)
-            if (idx !== -1) {
-                const newOrderHistory = [...orderHistory]
-                newOrderHistory[idx] = incomingOrder
-                setOrderHistory(newOrderHistory)
-            } else {
-                setOrderHistory([...orderHistory, incomingOrder])
-            }
+            setOrderHistory(prev => new Map(prev).set(incomingOrder.id, incomingOrder))
         }
     }, [incomingOrder])
 
+    const sortedOrderHistory = Array.from(orderHistory.values())
     if (sort) {
-        orderHistory.sort((a, b) => {
+        sortedOrderHistory.sort((a, b) => {
             if (sort === "asc") {
                 return a.created - b.created
             } else {
@@ -61,5 +56,5 @@ export function useOrderHistory(
         })
     }
 
-    return orderHistory
+    return sortedOrderHistory
 }

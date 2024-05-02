@@ -8,14 +8,15 @@ export function useOrderHistory(parameters = {}) {
     const config = useConfig(parameters);
     const status = useStatus(parameters);
     const { sort } = parameters;
-    const [orderHistory, setOrderHistory] = useState([]);
+    const [orderHistory, setOrderHistory] = useState(new Map());
     const incomingOrder = useOrderHistoryWebSocket();
     useEffect(() => {
         if (status !== "in relayer")
             return;
         async function fetchOrderHistory() {
             const initialOrderHistory = await getOrderHistory(config);
-            setOrderHistory(initialOrderHistory);
+            const orderMap = new Map(initialOrderHistory.map(order => [order.id, order]));
+            setOrderHistory(orderMap);
         }
         fetchOrderHistory();
         // const interval = setInterval(fetchOrderHistory, 5000)
@@ -23,19 +24,12 @@ export function useOrderHistory(parameters = {}) {
     }, [status, config]);
     useEffect(() => {
         if (incomingOrder) {
-            const idx = orderHistory.findIndex(order => order.id === incomingOrder.id);
-            if (idx !== -1) {
-                const newOrderHistory = [...orderHistory];
-                newOrderHistory[idx] = incomingOrder;
-                setOrderHistory(newOrderHistory);
-            }
-            else {
-                setOrderHistory([...orderHistory, incomingOrder]);
-            }
+            setOrderHistory(prev => new Map(prev).set(incomingOrder.id, incomingOrder));
         }
     }, [incomingOrder]);
+    const sortedOrderHistory = Array.from(orderHistory.values());
     if (sort) {
-        orderHistory.sort((a, b) => {
+        sortedOrderHistory.sort((a, b) => {
             if (sort === "asc") {
                 return a.created - b.created;
             }
@@ -44,6 +38,6 @@ export function useOrderHistory(parameters = {}) {
             }
         });
     }
-    return orderHistory;
+    return sortedOrderHistory;
 }
 //# sourceMappingURL=useOrderHistory.js.map

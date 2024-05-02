@@ -3,7 +3,7 @@
 import { useConfig } from "./useConfig.js"
 import { useStatus } from "./useStatus.js"
 import { useTaskHistoryWebSocket } from "./useTaskHistoryWebSocket.js"
-import type { Config, TaskHistoryItem } from "@renegade-fi/core"
+import type { Config, Task } from "@renegade-fi/core"
 import { getTaskHistory } from "@renegade-fi/core"
 import { useEffect, useState } from "react"
 
@@ -12,7 +12,7 @@ export type UseTaskHistoryParameters = {
     sort?: "asc" | "desc"
 }
 
-export type UseTaskHistoryReturnType = TaskHistoryItem[]
+export type UseTaskHistoryReturnType = Task[]
 
 export function useTaskHistory(
     parameters: UseTaskHistoryParameters = {},
@@ -20,7 +20,7 @@ export function useTaskHistory(
     const config = useConfig(parameters)
     const status = useStatus(parameters)
     const { sort } = parameters
-    const [taskHistory, setTaskHistory] = useState<TaskHistoryItem[]>([])
+    const [taskHistory, setTaskHistory] = useState<Map<string, Task>>(new Map())
     const incomingTask = useTaskHistoryWebSocket()
 
     useEffect(() => {
@@ -28,7 +28,8 @@ export function useTaskHistory(
 
         async function fetchTaskHistory() {
             const initialTaskHistory = await getTaskHistory(config)
-            setTaskHistory(initialTaskHistory)
+            const taskMap = new Map(initialTaskHistory.map(task => [task.id, task]))
+            setTaskHistory(taskMap)
         }
 
         fetchTaskHistory()
@@ -39,20 +40,13 @@ export function useTaskHistory(
 
     useEffect(() => {
         if (incomingTask) {
-            setTaskHistory(prev => {
-                const idx = prev.findIndex(task => task.id === incomingTask.id)
-                if (idx !== -1) {
-                    const newTaskHistory = [...prev]
-                    newTaskHistory[idx] = incomingTask
-                    return newTaskHistory
-                }
-                return [...prev, incomingTask]
-            })
+            setTaskHistory(prev => new Map(prev).set(incomingTask.id, incomingTask))
         }
     }, [incomingTask])
 
+    const sortedTaskHistory = Array.from(taskHistory.values())
     if (sort) {
-        taskHistory.sort((a, b) => {
+        sortedTaskHistory.sort((a, b) => {
             if (sort === "asc") {
                 return a.created_at - b.created_at
             }
@@ -60,5 +54,5 @@ export function useTaskHistory(
         })
     }
 
-    return taskHistory
+    return sortedTaskHistory
 }

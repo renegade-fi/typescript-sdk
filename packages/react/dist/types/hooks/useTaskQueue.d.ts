@@ -1,4 +1,4 @@
-import type { Config, Task } from "@renegade-fi/core";
+import type { Config, OldTask as Task } from "@renegade-fi/core";
 export type UseTaskQueueParameters = {
     config?: Config;
 };
