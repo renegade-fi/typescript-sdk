@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.8
+
+### Patch Changes
+
+- Fix useBalances filter
+- Updated dependencies
+  - @renegade-fi/core@0.0.8
+
 ## 0.0.7
 
 ### Patch Changes
