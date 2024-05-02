@@ -66,7 +66,7 @@ export type Wallet = {
     blinder: bigint[]
 }
 
-export type Task = {
+export type OldTask = {
     id: string
     description: string
     state: string

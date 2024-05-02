@@ -1,7 +1,7 @@
 "use client"
 
 import { useConfig } from "./useConfig.js"
-import type { Config, Task } from "@renegade-fi/core"
+import type { Config, OldTask as Task } from "@renegade-fi/core"
 import { getTaskQueue } from "@renegade-fi/core"
 import { useEffect, useState } from "react"
 

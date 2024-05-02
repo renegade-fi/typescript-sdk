@@ -5,7 +5,7 @@ import {
     type Config,
     RENEGADE_AUTH_HEADER_NAME,
     RENEGADE_SIG_EXPIRATION_HEADER_NAME,
-    type TaskHistoryItem,
+    type Task,
     WS_TASK_HISTORY_ROUTE,
 } from "@renegade-fi/core"
 import JSONBigint from "json-bigint"
@@ -19,7 +19,7 @@ export type UseTaskHistoryWebSocketParameters = {
     taskId?: string
 }
 
-export type UseTaskHistoryWebSocketReturnType = TaskHistoryItem | undefined
+export type UseTaskHistoryWebSocketReturnType = Task | undefined
 
 export function useTaskHistoryWebSocket(
     parameters: UseTaskHistoryWebSocketParameters = {},
@@ -29,7 +29,7 @@ export function useTaskHistoryWebSocket(
     const walletId = useWalletId()
     const { getWebsocketBaseUrl } = config
     // TODO: Proper type
-    const [taskHistory, setTaskHistory] = useState<TaskHistoryItem>()
+    const [taskHistory, setTaskHistory] = useState<Task>()
 
     const { lastMessage, readyState, sendJsonMessage } = useWebSocket.default(
         getWebsocketBaseUrl(),

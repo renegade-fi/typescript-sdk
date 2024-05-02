@@ -58,7 +58,7 @@ export type Wallet = {
     private_shares: bigint[][];
     blinder: bigint[];
 };
-export type Task = {
+export type OldTask = {
     id: string;
     description: string;
     state: string;

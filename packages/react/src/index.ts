@@ -183,6 +183,7 @@ export type {
     Exchange,
     NetworkOrder,
     Order,
+    OrderMetadata,
     Task,
     TaskInfo,
     TaskState,

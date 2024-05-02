@@ -2,7 +2,7 @@ import { getTaskStatus } from "./getTaskStatus.js"
 import axios from "axios"
 
 import { type Config } from "../createConfig.js"
-import type { Task } from "../types/wallet.js"
+import type { OldTask as Task } from "../types/wallet.js"
 
 export type WaitForTaskCompletionParameters = { id: string }
 

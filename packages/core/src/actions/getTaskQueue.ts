@@ -4,7 +4,7 @@ import { getRelayerWithAuth } from "../utils/http.js"
 
 import { GET_TASK_QUEUE_ROUTE } from "../constants.js"
 import { type Config } from "../createConfig.js"
-import type { Task } from "../types/wallet.js"
+import type { OldTask as Task } from "../types/wallet.js"
 
 export type GetTaskQueueParameters = {}
 
