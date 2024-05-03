@@ -4,8 +4,8 @@ import {
   type Config,
   RENEGADE_AUTH_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
-  type Task,
-  WS_TASK_HISTORY_ROUTE,
+  WALLET_ROUTE,
+  type Wallet,
 } from '@renegade-fi/core'
 import JSONBigint from 'json-bigint'
 import { useEffect, useState } from 'react'
@@ -14,21 +14,20 @@ import { useConfig } from './useConfig.js'
 
 import { getSkRoot, useStatus, useWalletId } from '../index.js'
 
-export type UseTaskHistoryWebSocketParameters = {
+export type UseWalletParameters = {
   config?: Config
-  taskId?: string
 }
 
-export type UseTaskHistoryWebSocketReturnType = Task | undefined
+export type UseWalletReturnType = Wallet | undefined
 
-export function useTaskHistoryWebSocket(
-  parameters: UseTaskHistoryWebSocketParameters = {},
-): UseTaskHistoryWebSocketReturnType {
+export function useWallet(
+  parameters: UseWalletParameters = {},
+): UseWalletReturnType {
   const config = useConfig(parameters)
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
-  const [taskHistory, setTaskHistory] = useState<Task>()
+  const [wallet, setWallet] = useState<Wallet>()
 
   const { lastMessage, readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
@@ -38,13 +37,14 @@ export function useTaskHistoryWebSocket(
     },
   )
 
+  // Subscribe to wallet updates with auth headers
   useEffect(() => {
-    if (!walletId || readyState !== ReadyState.OPEN || status !== 'in relayer')
+    if (readyState !== ReadyState.OPEN || !walletId || status !== 'in relayer')
       return
 
     const body = {
       method: 'subscribe',
-      topic: WS_TASK_HISTORY_ROUTE(walletId),
+      topic: WALLET_ROUTE(walletId),
     }
     const skRoot = getSkRoot(config)
     const [auth, expiration] = config.utils.build_auth_headers(
@@ -60,7 +60,7 @@ export function useTaskHistoryWebSocket(
       body,
     }
     sendJsonMessage(message)
-  }, [readyState, status, sendJsonMessage, config, walletId])
+  }, [readyState, walletId, status, sendJsonMessage, config])
 
   useEffect(() => {
     if (lastMessage && walletId) {
@@ -69,11 +69,11 @@ export function useTaskHistoryWebSocket(
           lastMessage.data,
         )
         if (
-          messageData.topic === WS_TASK_HISTORY_ROUTE(walletId) &&
-          messageData.event?.type === 'TaskHistoryUpdate' &&
-          messageData.event?.task
+          messageData.topic === WALLET_ROUTE(walletId) &&
+          messageData.event?.type === 'WalletUpdate' &&
+          messageData.event?.wallet
         )
-          setTaskHistory(messageData.event.task)
+          setWallet(messageData.event.wallet)
       } catch (error) {
         console.error(
           'Error parsing data in WebSocket:',
@@ -84,5 +84,5 @@ export function useTaskHistoryWebSocket(
     }
   }, [lastMessage, walletId])
 
-  return taskHistory
+  return wallet
 }

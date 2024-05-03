@@ -1,4 +1,4 @@
-import type { Config, State } from "./createConfig.js";
+import type { Config, State } from './createConfig.js';
 type HydrateParameters = {
     initialState?: State | undefined;
     reconnectOnMount?: boolean | undefined;

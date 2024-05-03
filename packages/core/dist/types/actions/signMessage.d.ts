@@ -1,5 +1,5 @@
-import type { Hex } from "viem";
-import type { Config } from "../createConfig.js";
+import type { Hex } from 'viem';
+import type { Config } from '../createConfig.js';
 export type SignMessageParameters = {
     message: string;
 };

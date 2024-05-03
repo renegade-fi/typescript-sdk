@@ -1,9 +1,7 @@
-import { getSkRoot } from "./getSkRoot.js";
-import { getRelayerWithAuth } from "../utils/http.js";
-import { ORDER_HISTORY_ROUTE } from "../constants.js";
-import {} from "../createConfig.js";
-export async function getOrderHistory(config, parameters = {}) {
-    const {} = parameters;
+import { getSkRoot } from './getSkRoot.js';
+import { getRelayerWithAuth } from '../utils/http.js';
+import { ORDER_HISTORY_ROUTE } from '../constants.js';
+export async function getOrderHistory(config) {
     const { getRelayerBaseUrl, utils } = config;
     const skRoot = getSkRoot(config);
     const walletId = utils.wallet_id(skRoot);

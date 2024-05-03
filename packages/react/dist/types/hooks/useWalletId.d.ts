@@ -1,4 +1,4 @@
-import { type Config } from "@renegade-fi/core";
+import type { Config } from '@renegade-fi/core';
 export type UseWalletIdParameters = {
     config?: Config;
 };

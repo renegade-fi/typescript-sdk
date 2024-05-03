@@ -1,4 +1,4 @@
-import type { Balance, Config } from "@renegade-fi/core";
+import type { Balance, Config } from '@renegade-fi/core';
 export type UseBalancesParameters = {
     config?: Config;
     filter?: boolean;

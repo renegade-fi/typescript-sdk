@@ -2,7 +2,7 @@
 export function deepEqual(a, b) {
     if (a === b)
         return true;
-    if (a && b && typeof a === "object" && typeof b === "object") {
+    if (a && b && typeof a === 'object' && typeof b === 'object') {
         if (a.constructor !== b.constructor)
             return false;
         let length;

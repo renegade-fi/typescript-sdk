@@ -1,22 +1,22 @@
-import { createStorage, noopStorage } from "./createStorage.js";
-import invariant from "tiny-invariant";
-import { createPublicClient, defineChain, http, } from "viem";
-import { persist, subscribeWithSelector } from "zustand/middleware";
-import { createStore } from "zustand/vanilla";
+import invariant from 'tiny-invariant';
+import { http, createPublicClient, defineChain, } from 'viem';
+import { persist, subscribeWithSelector } from 'zustand/middleware';
+import { createStore } from 'zustand/vanilla';
+import { createStorage, noopStorage } from './createStorage.js';
 export function createConfig(parameters) {
     const { relayerUrl, priceReporterUrl, httpPort = 3000, pollingInterval = 5000, ssr, storage = createStorage({
-        storage: typeof window !== "undefined" && window.localStorage
+        storage: typeof window !== 'undefined' && window.localStorage
             ? window.localStorage
             : noopStorage,
     }), websocketPort = 4000, } = parameters;
-    invariant(parameters.utils, "Utils must be provided by the package if not supplied by the user.");
+    invariant(parameters.utils, 'Utils must be provided by the package if not supplied by the user.');
     /////////////////////////////////////////////////////////////////////////////////////////////////
     // Create store
     /////////////////////////////////////////////////////////////////////////////////////////////////
     function getInitialState() {
         return {
             seed: undefined,
-            status: "disconnected",
+            status: 'disconnected',
             id: undefined,
         };
     }
@@ -24,7 +24,7 @@ export function createConfig(parameters) {
     // only use persist middleware if storage exists
     storage
         ? persist(getInitialState, {
-            name: "store",
+            name: 'store',
             partialize(state) {
                 // Only persist "critical" store properties to preserve storage size.
                 return {
@@ -40,15 +40,17 @@ export function createConfig(parameters) {
     const getRenegadeChain = (_rpcUrl) => {
         const rpcUrl = _rpcUrl ??
             `https://${parameters.rpcUrl}` ??
-            `https://${relayerUrl.includes("dev") ? "dev." : ""}sequencer.renegade.fi`;
+            `https://${relayerUrl.includes('dev') ? 'dev.' : ''}sequencer.renegade.fi`;
         return defineChain({
             id: 473474,
-            name: "Renegade Testnet",
-            network: "Renegade Testnet",
+            name: 'Renegade Testnet',
+            network: 'Renegade Testnet',
             testnet: true,
-            nativeCurrency: { decimals: 18, name: "Ether", symbol: "ETH" },
+            nativeCurrency: { decimals: 18, name: 'Ether', symbol: 'ETH' },
             rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
-            blockExplorers: { default: { name: "Explorer", url: "https://explorer.renegade.fi" } },
+            blockExplorers: {
+                default: { name: 'Explorer', url: 'https://explorer.renegade.fi' },
+            },
         });
     };
     return {
@@ -57,21 +59,21 @@ export function createConfig(parameters) {
         priceReporterUrl,
         darkPoolAddress: parameters.darkPoolAddress,
         getRenegadeChain,
-        getRelayerBaseUrl: function (route = "") {
-            const baseUrl = parameters.relayerUrl.includes("localhost")
+        getRelayerBaseUrl: (route = '') => {
+            const baseUrl = parameters.relayerUrl.includes('localhost')
                 ? `http://127.0.0.1:${httpPort}/v0`
                 : `https://${parameters.relayerUrl}:${httpPort}/v0`;
-            const formattedRoute = route.startsWith("/") ? route : `/${route}`;
+            const formattedRoute = route.startsWith('/') ? route : `/${route}`;
             return `${baseUrl}${formattedRoute}`;
         },
-        getPriceReporterBaseUrl: function () {
-            const baseUrl = parameters.priceReporterUrl.includes("localhost")
+        getPriceReporterBaseUrl: () => {
+            const baseUrl = parameters.priceReporterUrl.includes('localhost')
                 ? `ws://127.0.0.1:${websocketPort}/`
                 : `wss://${parameters.priceReporterUrl}:${websocketPort}/`;
             return baseUrl;
         },
-        getWebsocketBaseUrl: function () {
-            const baseUrl = parameters.relayerUrl.includes("localhost")
+        getWebsocketBaseUrl: () => {
+            const baseUrl = parameters.relayerUrl.includes('localhost')
                 ? `ws://127.0.0.1:${websocketPort}`
                 : `wss://${parameters.relayerUrl}:${websocketPort}`;
             return baseUrl;
@@ -86,7 +88,9 @@ export function createConfig(parameters) {
         },
         setState: (newState) => store.setState(newState),
         subscribe(selector, listener, options) {
-            return store.subscribe(selector, listener, options ? { ...options, fireImmediately: options.emitImmediately } : undefined);
+            return store.subscribe(selector, listener, options
+                ? { ...options, fireImmediately: options.emitImmediately }
+                : undefined);
         },
         _internal: {
             store,

@@ -1,10 +1,9 @@
-import { getSkRoot } from "./getSkRoot.js";
-import { getWalletFromRelayer } from "./getWalletFromRelayer.js";
-import { waitForTaskCompletion } from "./waitForTaskCompletion.js";
-import { createPublicClient, http, parseAbiItem } from "viem";
-import { postRelayerRaw } from "../utils/http.js";
-import { FIND_WALLET_ROUTE } from "../constants.js";
-import {} from "../createConfig.js";
+import { http, createPublicClient, parseAbiItem } from 'viem';
+import { getSkRoot } from './getSkRoot.js';
+import { getWalletFromRelayer } from './getWalletFromRelayer.js';
+import { waitForTaskCompletion } from './waitForTaskCompletion.js';
+import { postRelayerRaw } from '../utils/http.js';
+import { FIND_WALLET_ROUTE } from '../constants.js';
 export async function lookupWallet(config, parameters = {}) {
     const { seed } = parameters;
     const { getRelayerBaseUrl, utils } = config;
@@ -12,13 +11,17 @@ export async function lookupWallet(config, parameters = {}) {
     const body = utils.find_wallet(skRoot);
     const res = await postRelayerRaw(getRelayerBaseUrl(FIND_WALLET_ROUTE), body);
     if (res.task_id) {
-        config.setState({ ...config.state, status: "looking up" });
+        config.setState({ ...config.state, status: 'looking up' });
         waitForTaskCompletion(config, { id: res.task_id }).then(async () => {
-            await getWalletFromRelayer(config, { seed }).then(wallet => {
+            await getWalletFromRelayer(config, { seed }).then((wallet) => {
                 if (wallet) {
-                    config.setState({ ...config.state, status: "in relayer", id: res.wallet_id });
+                    config.setState({
+                        ...config.state,
+                        status: 'in relayer',
+                        id: res.wallet_id,
+                    });
                     console.log(`task lookup-wallet(${res.task_id}) completed: ${res.wallet_id}`, {
-                        status: "in relayer",
+                        status: 'in relayer',
                         walletId: res.wallet_id,
                     });
                 }
@@ -38,7 +41,7 @@ export async function lookupWalletOnChain(config) {
         });
         const logs = await publicClient.getLogs({
             address: config.darkPoolAddress,
-            event: parseAbiItem("event WalletUpdated(uint256 indexed wallet_blinder_share)"),
+            event: parseAbiItem('event WalletUpdated(uint256 indexed wallet_blinder_share)'),
             args: {
                 wallet_blinder_share: blinderShare,
             },

@@ -1,9 +1,9 @@
-"use client";
-import { useConfig } from "./useConfig.js";
-import { ORDER_BOOK_ROUTE } from "@renegade-fi/core";
-import JSONBigint from "json-bigint";
-import { useEffect, useState } from "react";
-import useWebSocket, { ReadyState } from "react-use-websocket";
+'use client';
+import { ORDER_BOOK_ROUTE, } from '@renegade-fi/core';
+import JSONBigint from 'json-bigint';
+import { useEffect, useState } from 'react';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { useConfig } from './useConfig.js';
 export function useOrderBookWebSocket(parameters = {}) {
     const config = useConfig(parameters);
     const { getWebsocketBaseUrl } = config;
@@ -16,7 +16,7 @@ export function useOrderBookWebSocket(parameters = {}) {
         if (readyState !== ReadyState.OPEN)
             return;
         const body = {
-            method: "subscribe",
+            method: 'subscribe',
             topic: ORDER_BOOK_ROUTE,
         };
         const message = {
@@ -24,17 +24,17 @@ export function useOrderBookWebSocket(parameters = {}) {
             headers: {},
         };
         sendJsonMessage(message);
-    }, [readyState, sendJsonMessage, config]);
+    }, [readyState, sendJsonMessage]);
     useEffect(() => {
         if (lastMessage) {
             try {
                 const messageData = JSONBigint({ useNativeBigInt: true }).parse(lastMessage.data);
                 if (messageData.topic === ORDER_BOOK_ROUTE &&
-                    (messageData.event?.type === "NewOrder" ||
-                        messageData.event?.type === "OrderStateChange") &&
+                    (messageData.event?.type === 'NewOrder' ||
+                        messageData.event?.type === 'OrderStateChange') &&
                     messageData.event?.order) {
-                    setOrders(prevOrders => {
-                        const existingIndex = prevOrders.findIndex(o => o.id === messageData.event.order.id);
+                    setOrders((prevOrders) => {
+                        const existingIndex = prevOrders.findIndex((o) => o.id === messageData.event.order.id);
                         const updatedOrders = [...prevOrders];
                         if (existingIndex !== -1) {
                             updatedOrders[existingIndex] = messageData.event.order;
@@ -47,7 +47,7 @@ export function useOrderBookWebSocket(parameters = {}) {
                 }
             }
             catch (error) {
-                console.error("Error parsing data in WebSocket:", lastMessage.data, error);
+                console.error('Error parsing data in WebSocket:', lastMessage.data, error);
             }
         }
     }, [lastMessage]);

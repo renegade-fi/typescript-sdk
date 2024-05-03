@@ -1,6 +1,6 @@
-import { BaseError as CoreError } from "@renegade-fi/core";
+import { BaseError as CoreError } from '@renegade-fi/core';
 export type BaseErrorType = BaseError & {
-    name: "RenegadeError";
+    name: 'RenegadeError';
 };
 export declare class BaseError extends CoreError {
     name: string;

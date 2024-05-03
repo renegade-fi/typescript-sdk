@@ -1,5 +1,4 @@
-import { getSkRoot } from "./getSkRoot.js";
-import {} from "../createConfig.js";
+import { getSkRoot } from './getSkRoot.js';
 export function getWalletId(config, parameters = {}) {
     const { utils } = config;
     const { seed } = parameters;

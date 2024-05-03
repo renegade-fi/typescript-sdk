@@ -1,5 +1,5 @@
-import { type Config } from "../createConfig.js";
-import type { Order } from "../types/wallet.js";
+import type { Config } from '../createConfig.js';
+import type { Order } from '../types/wallet.js';
 export type GetOrderParameters = {
     id: string;
 };

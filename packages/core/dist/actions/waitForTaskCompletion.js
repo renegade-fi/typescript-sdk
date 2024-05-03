@@ -1,9 +1,8 @@
-import { getTaskStatus } from "./getTaskStatus.js";
-import axios from "axios";
-import {} from "../createConfig.js";
+import axios from 'axios';
+import { getTaskStatus } from './getTaskStatus.js';
 export async function waitForTaskCompletion(config, parameters, onStateChange) {
     const { pollingInterval } = config;
-    let lastState = "";
+    let lastState = '';
     while (true) {
         try {
             const response = await getTaskStatus(config, { id: parameters.id });
@@ -23,7 +22,7 @@ export async function waitForTaskCompletion(config, parameters, onStateChange) {
             }
         }
         // Sleep for a bit before polling again
-        await new Promise(resolve => setTimeout(resolve, pollingInterval));
+        await new Promise((resolve) => setTimeout(resolve, pollingInterval));
     }
 }
 //# sourceMappingURL=waitForTaskCompletion.js.map

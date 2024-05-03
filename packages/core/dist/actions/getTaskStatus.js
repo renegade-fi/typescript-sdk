@@ -1,6 +1,5 @@
-import { getRelayerWithAuth } from "../utils/http.js";
-import { GET_TASK_STATUS_ROUTE } from "../constants.js";
-import {} from "../createConfig.js";
+import { getRelayerWithAuth } from '../utils/http.js';
+import { GET_TASK_STATUS_ROUTE } from '../constants.js';
 export async function getTaskStatus(config, parameters) {
     const { id } = parameters;
     const { getRelayerBaseUrl } = config;

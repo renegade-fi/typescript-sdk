@@ -1,5 +1,5 @@
-import { type Config } from "../createConfig.js";
-import type { OldTask as Task } from "../types/wallet.js";
+import type { Config } from '../createConfig.js';
+import type { OldTask as Task } from '../types/wallet.js';
 export type GetTaskStatusParameters = {
     id: string;
 };

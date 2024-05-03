@@ -1,9 +1,9 @@
-import type { Hex } from "viem";
-import { type Config } from "../createConfig.js";
-import type { Wallet } from "../types/wallet.js";
+import type { Hex } from 'viem';
+import type { Config } from '../createConfig.js';
+import type { Wallet } from '../types/wallet.js';
 export type GetWalletFromRelayerParameters = {
     seed?: Hex;
 };
-export type GetWalletFromRelayerReturnType = Promise<Wallet | void>;
+export type GetWalletFromRelayerReturnType = Promise<Wallet | undefined>;
 export declare function getWalletFromRelayer(config: Config, parameters?: GetWalletFromRelayerParameters): GetWalletFromRelayerReturnType;
 //# sourceMappingURL=getWalletFromRelayer.d.ts.map

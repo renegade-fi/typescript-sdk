@@ -1,8 +1,8 @@
-"use client";
-import { useConfig } from "./useConfig.js";
-import { useOrderBookWebSocket } from "./useOrderBookWebSocket.js";
-import { getNetworkOrders } from "@renegade-fi/core";
-import { useEffect, useState } from "react";
+'use client';
+import { getNetworkOrders } from '@renegade-fi/core';
+import { useEffect, useState } from 'react';
+import { useConfig } from './useConfig.js';
+import { useOrderBookWebSocket } from './useOrderBookWebSocket.js';
 export function useOrderBook(parameters = {}) {
     const config = useConfig(parameters);
     const [networkOrders, setNetworkOrders] = useState([]);
@@ -18,14 +18,14 @@ export function useOrderBook(parameters = {}) {
             setNetworkOrders(updatedNetworkOrders);
         }, 5000); // Set interval to 5 second
         return () => clearInterval(interval); // Cleanup interval on component unmount
-    }, []);
+    }, [config]);
     useEffect(() => {
         if (orderBook && orderBook.length > 0) {
-            setNetworkOrders(currentOrders => {
-                const updatedOrderMap = new Map(orderBook.map(order => [order.id, order]));
+            setNetworkOrders((currentOrders) => {
+                const updatedOrderMap = new Map(orderBook.map((order) => [order.id, order]));
                 return currentOrders
-                    .map(order => updatedOrderMap.get(order.id) || order)
-                    .filter(order => order !== undefined);
+                    .map((order) => updatedOrderMap.get(order.id) || order)
+                    .filter((order) => order !== undefined);
             });
         }
     }, [orderBook]);

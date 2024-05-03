@@ -1,2 +1,2 @@
-export { config } from "./testConfig.js";
+export { config } from './testConfig.js';
 //# sourceMappingURL=index.d.ts.map

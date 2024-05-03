@@ -1,5 +1,5 @@
-import { BaseError as CoreError } from "@renegade-fi/core";
-import { getVersion } from "../utils/getVersion.js";
+import { BaseError as CoreError } from '@renegade-fi/core';
+import { getVersion } from '../utils/getVersion.js';
 export class BaseError extends CoreError {
     constructor() {
         super(...arguments);
@@ -7,11 +7,11 @@ export class BaseError extends CoreError {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: "RenegadeError"
+            value: 'RenegadeError'
         });
     }
     get docsBaseUrl() {
-        return "todo: put a docs link here";
+        return 'todo: put a docs link here';
     }
     get version() {
         return getVersion();

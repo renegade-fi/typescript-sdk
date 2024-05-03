@@ -1,4 +1,4 @@
-import type { Config, Order } from "@renegade-fi/core";
+import type { Config, Order } from '@renegade-fi/core';
 export type UseOrdersParameters = {
     config?: Config;
     filter?: boolean;

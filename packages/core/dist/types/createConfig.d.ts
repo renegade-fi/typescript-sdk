@@ -1,8 +1,8 @@
-import { type Storage } from "./createStorage.js";
-import type { Evaluate, ExactPartial } from "./types/utils.js";
-import type * as rustUtils from "./utils.d.ts";
-import { type Address, type Chain, type Hex, type PublicClient } from "viem";
-import { type Mutate, type StoreApi } from "zustand/vanilla";
+import { type Address, type Chain, type Hex, type PublicClient } from 'viem';
+import { type Mutate, type StoreApi } from 'zustand/vanilla';
+import { type Storage } from './createStorage.js';
+import type { Evaluate, ExactPartial } from './types/utils.js';
+import type * as rustUtils from './utils.d.ts';
 export type CreateConfigParameters = {
     darkPoolAddress: Address;
     priceReporterUrl: string;
@@ -39,14 +39,14 @@ export type Config = {
      * @internal
      */
     _internal: {
-        readonly store: Mutate<StoreApi<any>, [["zustand/persist", any]]>;
+        readonly store: Mutate<StoreApi<any>, [['zustand/persist', any]]>;
         readonly ssr: boolean;
     };
 };
 export interface State {
     seed?: Hex | undefined;
-    status?: "in relayer" | "disconnected" | "looking up" | "creating wallet" | "connecting";
+    status?: 'in relayer' | 'disconnected' | 'looking up' | 'creating wallet' | 'connecting';
     id?: string | undefined;
 }
-export type PartializedState = Evaluate<ExactPartial<Pick<State, "id" | "seed" | "status">>>;
+export type PartializedState = Evaluate<ExactPartial<Pick<State, 'id' | 'seed' | 'status'>>>;
 //# sourceMappingURL=createConfig.d.ts.map

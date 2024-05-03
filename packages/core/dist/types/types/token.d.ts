@@ -1,4 +1,4 @@
-import { type Address } from "viem";
+import { type Address } from 'viem';
 export declare class Token {
     private _name;
     private _ticker;

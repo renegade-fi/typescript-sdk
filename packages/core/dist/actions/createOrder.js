@@ -1,13 +1,12 @@
-import { getBackOfQueueWallet } from "./getBackOfQueueWallet.js";
-import { getWalletId } from "./getWalletId.js";
-import JSONBigInt from "json-bigint";
-import { toHex } from "viem";
-import { postRelayerWithAuth } from "../utils/http.js";
-import { WALLET_ORDERS_ROUTE } from "../constants.js";
-import {} from "../createConfig.js";
-import { Token } from "../types/token.js";
+import JSONBigInt from 'json-bigint';
+import { toHex } from 'viem';
+import { getBackOfQueueWallet } from './getBackOfQueueWallet.js';
+import { getWalletId } from './getWalletId.js';
+import { postRelayerWithAuth } from '../utils/http.js';
+import { WALLET_ORDERS_ROUTE } from '../constants.js';
+import { Token } from '../types/token.js';
 export async function createOrder(config, parameters) {
-    const { id = "", base, quote, side, amount } = parameters;
+    const { id = '', base, quote, side, amount } = parameters;
     const { getRelayerBaseUrl, utils } = config;
     const walletId = getWalletId(config);
     const wallet = await getBackOfQueueWallet(config);

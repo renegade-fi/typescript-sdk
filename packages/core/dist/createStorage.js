@@ -1,12 +1,12 @@
-import {} from "./createConfig.js";
-import {} from "./types/utils.js";
-import { deserialize as deserialize_ } from "./utils/deserialize.js";
-import { serialize as serialize_ } from "./utils/serialize.js";
+import {} from './createConfig.js';
+import {} from './types/utils.js';
+import { deserialize as deserialize_ } from './utils/deserialize.js';
+import { serialize as serialize_ } from './utils/serialize.js';
 export function createStorage(parameters) {
-    const { deserialize = deserialize_, key: prefix = "renegade", serialize = serialize_, storage = noopStorage, } = parameters;
+    const { deserialize = deserialize_, key: prefix = 'renegade', serialize = serialize_, storage = noopStorage, } = parameters;
     function unwrap(value) {
         if (value instanceof Promise)
-            return value.then(x => x).catch(() => null);
+            return value.then((x) => x).catch(() => null);
         return value;
     }
     return {

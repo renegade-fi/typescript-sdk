@@ -1,4 +1,4 @@
-import { type Config, type OrderMetadata } from "@renegade-fi/core";
+import { type Config, type OrderMetadata } from '@renegade-fi/core';
 export type UseOrderHistoryWebSocketParameters = {
     config?: Config;
 };
