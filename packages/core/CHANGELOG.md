@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.11
+
+### Patch Changes
+
+- Queue withdraw after pay fees
+
 ## 0.0.10
 
 ### Patch Changes
