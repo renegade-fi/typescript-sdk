@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.10
+
+### Patch Changes
+
+- Prevent orderbook jitter
+- Updated dependencies
+  - @renegade-fi/core@0.0.10
+
 ## 0.0.9
 
 ### Patch Changes

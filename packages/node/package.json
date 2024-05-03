@@ -1,6 +1,6 @@
 {
   "name": "@renegade-fi/node",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Node.js library for Renegade",
   "private": true,
   "files": [

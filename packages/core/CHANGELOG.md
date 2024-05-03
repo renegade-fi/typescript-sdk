@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.10
+
+### Patch Changes
+
+- Prevent orderbook jitter
+
 ## 0.0.9
 
 ### Patch Changes
