@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.9
+
+### Patch Changes
+
+- Add Biome
+
 ## 0.0.8
 
 ### Patch Changes

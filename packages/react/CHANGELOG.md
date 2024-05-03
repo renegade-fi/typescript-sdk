@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.9
+
+### Patch Changes
+
+- Add Biome
+- Updated dependencies
+  - @renegade-fi/core@0.0.9
+
 ## 0.0.8
 
 ### Patch Changes
