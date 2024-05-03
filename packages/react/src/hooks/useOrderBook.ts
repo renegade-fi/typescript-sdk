@@ -48,5 +48,10 @@ export function useOrderBook(
     }
   }, [orderBook])
 
-  return networkOrders.sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1))
+  return networkOrders.sort((a, b) => {
+    if (a.timestamp === b.timestamp) {
+      return a.id.localeCompare(b.id)
+    }
+    return a.timestamp > b.timestamp ? -1 : 1
+  })
 }
