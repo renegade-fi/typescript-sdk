@@ -5,35 +5,27 @@ import { useConfig } from './useConfig.js';
 import { useOrderBookWebSocket } from './useOrderBookWebSocket.js';
 export function useOrderBook(parameters = {}) {
     const config = useConfig(parameters);
-    const [networkOrders, setNetworkOrders] = useState([]);
-    const orderBook = useOrderBookWebSocket();
+    const [networkOrders, setNetworkOrders] = useState(new Map());
+    const incomingOrder = useOrderBookWebSocket();
     useEffect(() => {
         async function fetchNetworkOrders() {
             const initialNetworkOrders = await getNetworkOrders(config);
-            setNetworkOrders(initialNetworkOrders);
+            const ordersMap = new Map(initialNetworkOrders.map((order) => [order.id, order]));
+            setNetworkOrders(ordersMap);
         }
         fetchNetworkOrders();
-        const interval = setInterval(async () => {
-            const updatedNetworkOrders = await getNetworkOrders(config);
-            setNetworkOrders(updatedNetworkOrders);
-        }, 5000); // Set interval to 5 second
-        return () => clearInterval(interval); // Cleanup interval on component unmount
     }, [config]);
     useEffect(() => {
-        if (orderBook && orderBook.length > 0) {
-            setNetworkOrders((currentOrders) => {
-                const updatedOrderMap = new Map(orderBook.map((order) => [order.id, order]));
-                return currentOrders
-                    .map((order) => updatedOrderMap.get(order.id) || order)
-                    .filter((order) => order !== undefined);
-            });
+        if (incomingOrder) {
+            setNetworkOrders((prev) => new Map(prev).set(incomingOrder.id, incomingOrder));
         }
-    }, [orderBook]);
-    return networkOrders.sort((a, b) => {
+    }, [incomingOrder]);
+    const sortedNetworkOrders = Array.from(networkOrders.values()).sort((a, b) => {
         if (a.timestamp === b.timestamp) {
             return a.id.localeCompare(b.id);
         }
         return a.timestamp > b.timestamp ? -1 : 1;
     });
+    return sortedNetworkOrders;
 }
 //# sourceMappingURL=useOrderBook.js.map

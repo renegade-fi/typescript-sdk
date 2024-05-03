@@ -20,7 +20,7 @@ export type UseWalletParameters = {
 
 export type UseWalletReturnType = Wallet | undefined
 
-export function useWallet(
+export function useWalletWebsocket(
   parameters: UseWalletParameters = {},
 ): UseWalletReturnType {
   const config = useConfig(parameters)

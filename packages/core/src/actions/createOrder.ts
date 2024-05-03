@@ -1,5 +1,5 @@
 import JSONBigInt from 'json-bigint'
-import { type Address, toHex } from 'viem'
+import { toHex, type Address } from 'viem'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
 

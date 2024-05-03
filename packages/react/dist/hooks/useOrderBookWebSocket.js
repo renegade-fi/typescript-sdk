@@ -7,7 +7,7 @@ import { useConfig } from './useConfig.js';
 export function useOrderBookWebSocket(parameters = {}) {
     const config = useConfig(parameters);
     const { getWebsocketBaseUrl } = config;
-    const [orders, setOrders] = useState([]);
+    const [order, setOrder] = useState();
     const { lastMessage, readyState, sendJsonMessage } = useWebSocket.default(getWebsocketBaseUrl(), {
         share: true,
         shouldReconnect: () => true,
@@ -33,17 +33,7 @@ export function useOrderBookWebSocket(parameters = {}) {
                     (messageData.event?.type === 'NewOrder' ||
                         messageData.event?.type === 'OrderStateChange') &&
                     messageData.event?.order) {
-                    setOrders((prevOrders) => {
-                        const existingIndex = prevOrders.findIndex((o) => o.id === messageData.event.order.id);
-                        const updatedOrders = [...prevOrders];
-                        if (existingIndex !== -1) {
-                            updatedOrders[existingIndex] = messageData.event.order;
-                        }
-                        else {
-                            updatedOrders.push(messageData.event.order);
-                        }
-                        return updatedOrders;
-                    });
+                    setOrder(messageData.event.order);
                 }
             }
             catch (error) {
@@ -51,6 +41,6 @@ export function useOrderBookWebSocket(parameters = {}) {
             }
         }
     }, [lastMessage]);
-    return orders;
+    return order;
 }
 //# sourceMappingURL=useOrderBookWebSocket.js.map

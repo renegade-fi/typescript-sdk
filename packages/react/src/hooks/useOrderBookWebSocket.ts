@@ -14,14 +14,14 @@ export type UseOrderBookWebSocketParameters = {
   config?: Config
 }
 
-export type UseOrderBookWebSocketReturnType = NetworkOrder[] | undefined
+export type UseOrderBookWebSocketReturnType = NetworkOrder | undefined
 
 export function useOrderBookWebSocket(
   parameters: UseOrderBookWebSocketParameters = {},
 ): UseOrderBookWebSocketReturnType {
   const config = useConfig(parameters)
   const { getWebsocketBaseUrl } = config
-  const [orders, setOrders] = useState<NetworkOrder[]>([])
+  const [order, setOrder] = useState<NetworkOrder>()
 
   const { lastMessage, readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
@@ -57,18 +57,7 @@ export function useOrderBookWebSocket(
             messageData.event?.type === 'OrderStateChange') &&
           messageData.event?.order
         ) {
-          setOrders((prevOrders) => {
-            const existingIndex = prevOrders.findIndex(
-              (o) => o.id === messageData.event.order.id,
-            )
-            const updatedOrders = [...prevOrders]
-            if (existingIndex !== -1) {
-              updatedOrders[existingIndex] = messageData.event.order
-            } else {
-              updatedOrders.push(messageData.event.order)
-            }
-            return updatedOrders
-          })
+          setOrder(messageData.event.order)
         }
       } catch (error) {
         console.error(
@@ -80,5 +69,5 @@ export function useOrderBookWebSocket(
     }
   }, [lastMessage])
 
-  return orders
+  return order
 }

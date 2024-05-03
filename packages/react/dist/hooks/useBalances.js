@@ -2,14 +2,14 @@
 import { getBalances } from '@renegade-fi/core';
 import { useEffect, useState } from 'react';
 import { useConfig } from './useConfig.js';
-import { useWallet } from './useWalletWebSocket.js';
+import { useWalletWebsocket } from './useWalletWebSocket.js';
 import { useStatus } from './useStatus.js';
 export function useBalances(parameters = {}) {
     const config = useConfig(parameters);
     const status = useStatus(parameters);
     const { filter = true } = parameters;
     const [balances, setBalances] = useState([]);
-    const wallet = useWallet();
+    const incomingWallet = useWalletWebsocket();
     useEffect(() => {
         if (status !== 'in relayer') {
             setBalances([]);
@@ -24,10 +24,10 @@ export function useBalances(parameters = {}) {
         return () => clearInterval(interval);
     }, [status, config]);
     useEffect(() => {
-        if (wallet?.balances) {
-            setBalances(wallet.balances);
+        if (incomingWallet?.balances) {
+            setBalances(incomingWallet.balances);
         }
-    }, [wallet]);
+    }, [incomingWallet]);
     if (filter) {
         return balances.filter((balance) => balance.mint !== '0x0' && balance.amount);
     }
