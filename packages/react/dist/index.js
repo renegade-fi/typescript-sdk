@@ -51,7 +51,7 @@ export { useOrderHistoryWebSocket, } from './hooks/useOrderHistoryWebSocket.js';
 export { useStatus, } from './hooks/useStatus.js';
 export { useTaskHistory, } from './hooks/useTaskHistory.js';
 export { useTaskHistoryWebSocket, } from './hooks/useTaskHistoryWebSocket.js';
-export { useWallet, } from './hooks/useWalletWebSocket.js';
+export { useWalletWebsocket, } from './hooks/useWalletWebSocket.js';
 export { useWalletId, } from './hooks/useWalletId.js';
 ////////////////////////////////////////////////////////////////////////////////
 // Types

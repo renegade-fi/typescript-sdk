@@ -469,6 +469,14 @@ module.exports.__wbindgen_error_new = function(arg0, arg1) {
     return addHeapObject(ret);
 };
 
+module.exports.__wbindgen_object_drop_ref = function(arg0) {
+    takeObject(arg0);
+};
+
+module.exports.__wbg_log_5bb5f88f245d7762 = function(arg0) {
+    console.log(getObject(arg0));
+};
+
 module.exports.__wbg_crypto_6a16ba611e8c0315 = function(arg0) {
     const ret = getObject(arg0).crypto;
     return addHeapObject(ret);
@@ -498,10 +506,6 @@ module.exports.__wbg_node_e613ee965e542690 = function(arg0) {
 module.exports.__wbindgen_is_string = function(arg0) {
     const ret = typeof(getObject(arg0)) === 'string';
     return ret;
-};
-
-module.exports.__wbindgen_object_drop_ref = function(arg0) {
-    takeObject(arg0);
 };
 
 module.exports.__wbg_require_8c61ef97678a5df5 = function() { return handleError(function () {

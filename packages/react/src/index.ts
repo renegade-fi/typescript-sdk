@@ -189,7 +189,7 @@ export {
 } from './hooks/useTaskHistoryWebSocket.js'
 
 export {
-  useWallet,
+  useWalletWebsocket,
   type UseWalletParameters,
   type UseWalletReturnType,
 } from './hooks/useWalletWebSocket.js'

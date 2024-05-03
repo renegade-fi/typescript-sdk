@@ -29,7 +29,7 @@ export { useOrderHistoryWebSocket, type UseOrderHistoryWebSocketParameters, type
 export { useStatus, type UseStatusParameters, type UseStatusReturnType, } from './hooks/useStatus.js';
 export { useTaskHistory, type UseTaskHistoryParameters, type UseTaskHistoryReturnType, } from './hooks/useTaskHistory.js';
 export { useTaskHistoryWebSocket, type UseTaskHistoryWebSocketParameters, type UseTaskHistoryWebSocketReturnType, } from './hooks/useTaskHistoryWebSocket.js';
-export { useWallet, type UseWalletParameters, type UseWalletReturnType, } from './hooks/useWalletWebSocket.js';
+export { useWalletWebsocket, type UseWalletParameters, type UseWalletReturnType, } from './hooks/useWalletWebSocket.js';
 export { useWalletId, type UseWalletIdParameters, type UseWalletIdReturnType, } from './hooks/useWalletId.js';
 export { Token } from '@renegade-fi/core';
 export type { Balance, Exchange, NetworkOrder, Order, OrderMetadata, Task, TaskInfo, TaskState, } from '@renegade-fi/core';

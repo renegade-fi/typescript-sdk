@@ -3,11 +3,15 @@ import { getBackOfQueueWallet } from './getBackOfQueueWallet.js';
 import { getWalletId } from './getWalletId.js';
 import { postRelayerWithAuth } from '../utils/http.js';
 import { CANCEL_ORDER_ROUTE } from '../constants.js';
+import { getWalletFromRelayer } from './getWalletFromRelayer.js';
 export async function cancelOrder(config, parameters) {
     const { id } = parameters;
     const { getRelayerBaseUrl, utils } = config;
     const walletId = getWalletId(config);
     const wallet = await getBackOfQueueWallet(config);
+    const _wallet = await getWalletFromRelayer(config);
+    console.log('🚀 ~ wallet:', wallet);
+    console.log('🚀 ~ _wallet:', _wallet);
     const body = utils.cancel_order(JSONBigInt.stringify(wallet), id);
     const logContext = {
         walletId,

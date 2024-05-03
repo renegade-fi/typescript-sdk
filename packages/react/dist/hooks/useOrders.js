@@ -2,14 +2,14 @@
 import { getOrders } from '@renegade-fi/core';
 import { useEffect, useState } from 'react';
 import { useConfig } from './useConfig.js';
-import { useWallet } from './useWalletWebSocket.js';
 import { useStatus } from './useStatus.js';
+import { useWalletWebsocket } from './useWalletWebSocket.js';
 export function useOrders(parameters = {}) {
     const config = useConfig(parameters);
     const status = useStatus(parameters);
     const { filter = true } = parameters;
     const [orders, setOrders] = useState([]);
-    const wallet = useWallet();
+    const incomingWallet = useWalletWebsocket();
     useEffect(() => {
         if (status !== 'in relayer') {
             setOrders([]);
@@ -24,10 +24,10 @@ export function useOrders(parameters = {}) {
         return () => clearInterval(interval);
     }, [status, config]);
     useEffect(() => {
-        if (wallet?.orders) {
-            setOrders(wallet.orders);
+        if (incomingWallet?.orders) {
+            setOrders(incomingWallet.orders);
         }
-    }, [wallet]);
+    }, [incomingWallet]);
     if (filter) {
         return orders.filter((order) => order.amount > 0);
     }
