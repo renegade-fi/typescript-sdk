@@ -27,16 +27,6 @@ export async function withdraw(
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
 
-  // Pay Fees
-  // try {
-  //     if (shouldPayFees) {
-  //         await payFees(config)
-  //     }
-  // } catch (error) {
-  //     console.error(`Failed to pay fees before withdrawing, cancelling withdraw.`)
-  //     throw error
-  // }
-
   // Withdraw
   const body = utils.withdraw(
     JSONBigInt.stringify(wallet),
