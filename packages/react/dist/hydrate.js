@@ -1,7 +1,6 @@
-"use client";
-import {} from "@renegade-fi/core";
-import { hydrate } from "@renegade-fi/core";
-import { useEffect, useRef } from "react";
+'use client';
+import { hydrate } from '@renegade-fi/core';
+import { useEffect, useRef } from 'react';
 export function Hydrate(parameters) {
     const { children, config, initialState, reconnectOnMount = true } = parameters;
     const { onMount } = hydrate(config, {
@@ -20,21 +19,21 @@ export function Hydrate(parameters) {
         const initRustUtils = async () => {
             try {
                 await config.utils.default();
-                console.log("🦀 Rust utils initialized successfully");
+                console.log('🦀 Rust utils initialized successfully');
                 // Hydration needs to wait for WASM to initialize, causing state flash
                 if (!config._internal.ssr)
                     return;
                 onMount();
             }
             catch (error) {
-                console.error("❌ Failed to initialize Rust utils", error);
+                console.error('❌ Failed to initialize Rust utils', error);
             }
         };
         initRustUtils();
         return () => {
             active.current = false;
         };
-    }, []);
+    }, [onMount, config]);
     return children;
 }
 //# sourceMappingURL=hydrate.js.map

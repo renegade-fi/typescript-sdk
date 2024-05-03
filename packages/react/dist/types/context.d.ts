@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import type { Config, State } from "@renegade-fi/core";
+import type { Config, State } from '@renegade-fi/core';
 export declare const RenegadeContext: import("react").Context<Config | undefined>;
 export type RenegadeProviderProps = {
     config: Config;

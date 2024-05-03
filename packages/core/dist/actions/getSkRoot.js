@@ -1,6 +1,4 @@
-import invariant from "tiny-invariant";
-import {} from "viem";
-import {} from "../createConfig.js";
+import invariant from 'tiny-invariant';
 export function getSkRoot(config, parameters = {}) {
     const { seed } = parameters;
     const { utils } = config;
@@ -9,7 +7,7 @@ export function getSkRoot(config, parameters = {}) {
         return utils.derive_signing_key_from_seed(seed);
     }
     const storedSeed = config.state.seed;
-    invariant(storedSeed, "Seed must be defined when none exists in memory");
+    invariant(storedSeed, 'Seed must be defined when none exists in memory');
     return utils.derive_signing_key_from_seed(storedSeed);
 }
 //# sourceMappingURL=getSkRoot.js.map

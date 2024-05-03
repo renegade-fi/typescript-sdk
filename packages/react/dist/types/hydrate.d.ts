@@ -1,6 +1,6 @@
-import { type Config } from "@renegade-fi/core";
-import { type State } from "@renegade-fi/core";
-import { type ReactElement } from "react";
+import type { Config } from '@renegade-fi/core';
+import { type State } from '@renegade-fi/core';
+import { type ReactElement } from 'react';
 export type HydrateProps = {
     config: Config;
     initialState?: State | undefined;

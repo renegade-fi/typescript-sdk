@@ -6,7 +6,7 @@
  * @returns the reference key
  */
 function getReferenceKey(keys, cutoff) {
-    return keys.slice(0, cutoff).join(".") || ".";
+    return keys.slice(0, cutoff).join('.') || '.';
 }
 /**
  * Faster `Array.prototype.indexOf` implementation build for slicing / splicing
@@ -32,12 +32,12 @@ function getCutoff(array, value) {
  * @returns the value to stringify
  */
 function createReplacer(replacer, circularReplacer) {
-    const hasReplacer = typeof replacer === "function";
-    const hasCircularReplacer = typeof circularReplacer === "function";
+    const hasReplacer = typeof replacer === 'function';
+    const hasCircularReplacer = typeof circularReplacer === 'function';
     const cache = [];
     const keys = [];
     return function replace(key, value) {
-        if (typeof value === "object") {
+        if (typeof value === 'object') {
             if (cache.length) {
                 const thisCutoff = getCutoff(cache, this);
                 if (thisCutoff === 0) {
@@ -77,10 +77,10 @@ function createReplacer(replacer, circularReplacer) {
 export function serialize(value, replacer, indent, circularReplacer) {
     return JSON.stringify(value, createReplacer((key, value_) => {
         let value = value_;
-        if (typeof value === "bigint")
-            value = { __type: "bigint", value: value_.toString() };
+        if (typeof value === 'bigint')
+            value = { __type: 'bigint', value: value_.toString() };
         if (value instanceof Map)
-            value = { __type: "Map", value: Array.from(value_.entries()) };
+            value = { __type: 'Map', value: Array.from(value_.entries()) };
         return replacer?.(key, value) ?? value;
     }, circularReplacer), indent ?? undefined);
 }

@@ -1,4 +1,4 @@
-import type { Address } from "viem";
+import type { Address } from 'viem';
 export declare const RENEGADE_AUTH_HEADER_NAME = "renegade-auth";
 export declare const RENEGADE_SIG_EXPIRATION_HEADER_NAME = "renegade-auth-expiration";
 export declare const CREATE_WALLET_ROUTE = "/wallet";

@@ -1,4 +1,4 @@
-import { getSkRoot } from "./getSkRoot.js";
+import { getSkRoot } from './getSkRoot.js';
 export const signMessage = (config, parameters) => {
     const { message } = parameters;
     const { utils } = config;

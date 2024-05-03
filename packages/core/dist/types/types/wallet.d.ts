@@ -1,5 +1,5 @@
-import type { Address, Hex } from "viem";
-export type Exchange = "binance" | "coinbase" | "kraken" | "okx";
+import type { Address, Hex } from 'viem';
+export type Exchange = 'binance' | 'coinbase' | 'kraken' | 'okx';
 export type NetworkOrder = {
     id: string;
     public_share_nullifier: number[];
@@ -26,8 +26,8 @@ export type Order = {
     id: string;
     quote_mint: Address;
     base_mint: Address;
-    side: "Buy" | "Sell";
-    type: "Midpoint";
+    side: 'Buy' | 'Sell';
+    type: 'Midpoint';
     worst_case_price: string;
     amount: bigint;
 };

@@ -1,5 +1,5 @@
-import { type Address } from "viem";
-import { type Config } from "../createConfig.js";
+import { type Address } from 'viem';
+import type { Config } from '../createConfig.js';
 export type WithdrawParameters = {
     mint: Address;
     amount: bigint;

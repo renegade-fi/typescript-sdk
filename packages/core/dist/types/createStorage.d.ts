@@ -1,5 +1,5 @@
-import { type PartializedState } from "./createConfig.js";
-import { type Evaluate } from "./types/utils.js";
+import { type PartializedState } from './createConfig.js';
+import { type Evaluate } from './types/utils.js';
 export type StorageItemMap = {
     recentConnectorId: string;
     state: PartializedState;

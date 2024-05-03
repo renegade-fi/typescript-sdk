@@ -1,5 +1,5 @@
-import { isHex } from "viem";
-import { tokenMapping } from "../constants.js";
+import { isHex } from 'viem';
+import { tokenMapping } from '../constants.js';
 export class Token {
     constructor(name, ticker, address, decimals) {
         Object.defineProperty(this, "_name", {
@@ -44,14 +44,14 @@ export class Token {
         return this._decimals;
     }
     static findByTicker(ticker) {
-        const tokenData = tokenMapping.tokens.find(token => token.ticker === ticker);
+        const tokenData = tokenMapping.tokens.find((token) => token.ticker === ticker);
         if (tokenData) {
             return new Token(tokenData.name, tokenData.ticker, tokenData.address, tokenData.decimals);
         }
         throw new Error(`Token not found for ${ticker}`);
     }
     static findByAddress(address) {
-        const tokenData = tokenMapping.tokens.find(token => token.address === address);
+        const tokenData = tokenMapping.tokens.find((token) => token.address === address);
         if (tokenData) {
             return new Token(tokenData.name, tokenData.ticker, tokenData.address, tokenData.decimals);
         }
@@ -59,7 +59,7 @@ export class Token {
     }
     static create(name, ticker, address, decimals) {
         if (!isHex(address)) {
-            throw new Error("Invalid address");
+            throw new Error('Invalid address');
         }
         return new Token(name, ticker, address, decimals);
     }

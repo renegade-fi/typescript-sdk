@@ -1,9 +1,9 @@
-"use client";
-import { useConfig } from "./useConfig.js";
-import { useWallet } from "./useWallet.js";
-import { getOrders } from "@renegade-fi/core";
-import { useEffect, useState } from "react";
-import { useStatus } from "../index.js";
+'use client';
+import { getOrders } from '@renegade-fi/core';
+import { useEffect, useState } from 'react';
+import { useConfig } from './useConfig.js';
+import { useWallet } from './useWalletWebSocket.js';
+import { useStatus } from './useStatus.js';
 export function useOrders(parameters = {}) {
     const config = useConfig(parameters);
     const status = useStatus(parameters);
@@ -11,8 +11,10 @@ export function useOrders(parameters = {}) {
     const [orders, setOrders] = useState([]);
     const wallet = useWallet();
     useEffect(() => {
-        if (status !== "in relayer")
+        if (status !== 'in relayer') {
+            setOrders([]);
             return;
+        }
         async function fetchOrders() {
             const initialOrders = await getOrders(config);
             setOrders(initialOrders);
@@ -22,12 +24,12 @@ export function useOrders(parameters = {}) {
         return () => clearInterval(interval);
     }, [status, config]);
     useEffect(() => {
-        if (wallet && wallet.orders) {
+        if (wallet?.orders) {
             setOrders(wallet.orders);
         }
     }, [wallet]);
     if (filter) {
-        return orders.filter(order => order.amount > 0);
+        return orders.filter((order) => order.amount > 0);
     }
     return orders;
 }

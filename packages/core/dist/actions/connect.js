@@ -1,8 +1,7 @@
-import { createWallet } from "./createWallet.js";
-import { getWalletFromRelayer } from "./getWalletFromRelayer.js";
-import { getWalletId } from "./getWalletId.js";
-import { lookupWallet, lookupWalletOnChain } from "./lookupWallet.js";
-import {} from "../createConfig.js";
+import { createWallet } from './createWallet.js';
+import { getWalletFromRelayer } from './getWalletFromRelayer.js';
+import { getWalletId } from './getWalletId.js';
+import { lookupWallet, lookupWalletOnChain } from './lookupWallet.js';
 export async function connect(config, parameters = {}) {
     const { seed } = parameters;
     let walletId = config.state.id;
@@ -10,7 +9,7 @@ export async function connect(config, parameters = {}) {
         walletId = getWalletId(config, { seed });
     }
     catch (error) {
-        console.error("Error getting wallet id", {
+        console.error('Error getting wallet id', {
             errorStack: error.stack,
             errorMessage: error.message,
             walletId,
@@ -18,20 +17,20 @@ export async function connect(config, parameters = {}) {
         });
         throw error;
     }
-    console.log("Attempting to connect wallet", { walletId });
+    console.log('Attempting to connect wallet', { walletId });
     try {
         const wallet = await getWalletFromRelayer(config, { seed });
         if (wallet) {
-            config.setState({ ...config.state, status: "in relayer", id: wallet.id });
-            console.log("Wallet found in relayer", {
-                status: "in relayer",
+            config.setState({ ...config.state, status: 'in relayer', id: wallet.id });
+            console.log('Wallet found in relayer', {
+                status: 'in relayer',
                 walletId: wallet.id,
             });
             return;
         }
     }
     catch (error) {
-        console.error("Error getting wallet from relayer", { error, walletId });
+        console.error('Error getting wallet from relayer', { error, walletId });
     }
     // If wallet on chain, start lookup wallet task
     const isOnChain = await lookupWalletOnChain(config);
@@ -40,7 +39,7 @@ export async function connect(config, parameters = {}) {
             const res = await lookupWallet(config, { seed });
             walletId = res.walletId;
             console.log(`task lookup-wallet(${res.taskId}): ${res.walletId}`, {
-                status: "looking up",
+                status: 'looking up',
                 walletId: res.walletId,
             });
             return { taskId: res.taskId };
@@ -48,10 +47,14 @@ export async function connect(config, parameters = {}) {
         catch (error) {
             console.error(`wallet id: ${walletId} looking up failed`, {
                 error,
-                status: "looking up",
+                status: 'looking up',
                 walletId,
             });
-            config.setState({ status: "disconnected", id: undefined, seed: undefined });
+            config.setState({
+                status: 'disconnected',
+                id: undefined,
+                seed: undefined,
+            });
             throw error;
         }
     }
@@ -60,7 +63,7 @@ export async function connect(config, parameters = {}) {
         const res = await createWallet(config);
         walletId = res.walletId;
         console.log(`task create-wallet(${res.taskId}): ${res.walletId}`, {
-            status: "creating wallet",
+            status: 'creating wallet',
             walletId: res.walletId,
         });
         return { taskId: res.taskId };
@@ -68,10 +71,10 @@ export async function connect(config, parameters = {}) {
     catch (error) {
         console.error(`wallet id: ${walletId} creating wallet failed`, {
             error,
-            status: "creating wallet",
+            status: 'creating wallet',
             walletId,
         });
-        config.setState({ status: "disconnected", id: undefined, seed: undefined });
+        config.setState({ status: 'disconnected', id: undefined, seed: undefined });
         throw error;
     }
 }

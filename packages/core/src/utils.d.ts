@@ -31,13 +31,13 @@ export function wallet_id(sk_root: string): any
  * @returns {any}
  */
 export function deposit(
-    wallet_str: string,
-    from_addr: string,
-    mint: string,
-    amount: string,
-    permit_nonce: string,
-    permit_deadline: string,
-    permit_signature: string,
+  wallet_str: string,
+  from_addr: string,
+  mint: string,
+  amount: string,
+  permit_nonce: string,
+  permit_deadline: string,
+  permit_signature: string,
 ): any
 /**
  * @param {string} wallet_str
@@ -47,10 +47,10 @@ export function deposit(
  * @returns {any}
  */
 export function withdraw(
-    wallet_str: string,
-    mint: string,
-    amount: string,
-    destination_addr: string,
+  wallet_str: string,
+  mint: string,
+  amount: string,
+  destination_addr: string,
 ): any
 /**
  * @param {string} wallet_str
@@ -62,12 +62,12 @@ export function withdraw(
  * @returns {any}
  */
 export function new_order(
-    wallet_str: string,
-    id: string,
-    base_mint: string,
-    quote_mint: string,
-    side: string,
-    amount: string,
+  wallet_str: string,
+  id: string,
+  base_mint: string,
+  quote_mint: string,
+  side: string,
+  amount: string,
 ): any
 /**
  * @param {string} wallet_str
@@ -82,7 +82,11 @@ export function cancel_order(wallet_str: string, order_id: string): any
  * @param {bigint} current_timestamp
  * @returns {any[]}
  */
-export function build_auth_headers(sk_root: string, req: string, current_timestamp: bigint): any[]
+export function build_auth_headers(
+  sk_root: string,
+  req: string,
+  current_timestamp: bigint,
+): any[]
 /**
  * @param {string} seed
  * @returns {any}

@@ -1,4 +1,4 @@
-import type { Config, NetworkOrder } from "@renegade-fi/core";
+import type { Config, NetworkOrder } from '@renegade-fi/core';
 export type UseOrderBookParameters = {
     config?: Config;
 };

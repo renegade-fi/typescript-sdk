@@ -1,10 +1,10 @@
-"use client";
-import { useConfig } from "./useConfig.js";
-import { RENEGADE_AUTH_HEADER_NAME, RENEGADE_SIG_EXPIRATION_HEADER_NAME, WS_WALLET_ORDERS_ROUTE, } from "@renegade-fi/core";
-import JSONBigint from "json-bigint";
-import { useEffect, useState } from "react";
-import useWebSocket, { ReadyState } from "react-use-websocket";
-import { getSkRoot, useStatus, useWalletId } from "../index.js";
+'use client';
+import { RENEGADE_AUTH_HEADER_NAME, RENEGADE_SIG_EXPIRATION_HEADER_NAME, WS_WALLET_ORDERS_ROUTE, } from '@renegade-fi/core';
+import JSONBigint from 'json-bigint';
+import { useEffect, useState } from 'react';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { useConfig } from './useConfig.js';
+import { getSkRoot, useStatus, useWalletId } from '../index.js';
 export function useOrderHistoryWebSocket(parameters = {}) {
     const config = useConfig(parameters);
     const status = useStatus(parameters);
@@ -17,10 +17,10 @@ export function useOrderHistoryWebSocket(parameters = {}) {
     });
     // Subscribe to wallet updates with auth headers
     useEffect(() => {
-        if (readyState !== ReadyState.OPEN || !walletId || status !== "in relayer")
+        if (readyState !== ReadyState.OPEN || !walletId || status !== 'in relayer')
             return;
         const body = {
-            method: "subscribe",
+            method: 'subscribe',
             topic: WS_WALLET_ORDERS_ROUTE(walletId),
         };
         const skRoot = getSkRoot(config);
@@ -39,12 +39,12 @@ export function useOrderHistoryWebSocket(parameters = {}) {
             try {
                 const messageData = JSONBigint({ useNativeBigInt: true }).parse(lastMessage.data);
                 if (messageData.topic === WS_WALLET_ORDERS_ROUTE(walletId) &&
-                    messageData.event?.type === "OrderMetadataUpdated" &&
+                    messageData.event?.type === 'OrderMetadataUpdated' &&
                     messageData.event?.order)
                     setIncomingOrder(messageData.event.order);
             }
             catch (error) {
-                console.error("Error parsing data in WebSocket:", lastMessage.data, error);
+                console.error('Error parsing data in WebSocket:', lastMessage.data, error);
             }
         }
     }, [lastMessage, walletId]);

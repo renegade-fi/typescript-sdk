@@ -1,27 +1,27 @@
-import path from "path"
+import path from 'node:path'
 
-import { defineWorkspace } from "vitest/config"
+import { defineWorkspace } from 'vitest/config'
 
 const alias = {
-    "@renegade-fi/core": path.resolve(__dirname, "./packages/core/src"),
-    "@renegade-fi/test": path.resolve(__dirname, "./packages/test/src"),
+  '@renegade-fi/core': path.resolve(__dirname, './packages/core/src'),
+  '@renegade-fi/test': path.resolve(__dirname, './packages/test/src'),
 }
 
 export default defineWorkspace([
-    {
-        test: {
-            name: "@renegade-fi/core",
-            include: ["./packages/core/src/**/*.test.ts"],
-            environment: "happy-dom",
-            testTimeout: 10_000,
-        },
-        resolve: { alias },
+  {
+    test: {
+      name: '@renegade-fi/core',
+      include: ['./packages/core/src/**/*.test.ts'],
+      environment: 'happy-dom',
+      testTimeout: 10_000,
     },
-    {
-        test: {
-            name: "@renegade-fi/test",
-            include: ["./packages/test/src/**/*.test.ts"],
-        },
-        resolve: { alias },
+    resolve: { alias },
+  },
+  {
+    test: {
+      name: '@renegade-fi/test',
+      include: ['./packages/test/src/**/*.test.ts'],
     },
+    resolve: { alias },
+  },
 ])

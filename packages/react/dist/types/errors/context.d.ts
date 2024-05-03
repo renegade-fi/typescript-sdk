@@ -1,6 +1,6 @@
-import { BaseError } from "./base.js";
+import { BaseError } from './base.js';
 export type RenegadeProviderNotFoundErrorType = RenegadeProviderNotFoundError & {
-    name: "RenegadeProviderNotFoundError";
+    name: 'RenegadeProviderNotFoundError';
 };
 export declare class RenegadeProviderNotFoundError extends BaseError {
     name: string;

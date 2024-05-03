@@ -1,8 +1,6 @@
-import { getRelayerRaw } from "../utils/http.js";
-import { GET_NETWORK_ORDERS_ROUTE } from "../constants.js";
-import {} from "../createConfig.js";
-export async function getNetworkOrders(config, parameters = {}) {
-    const {} = parameters;
+import { getRelayerRaw } from '../utils/http.js';
+import { GET_NETWORK_ORDERS_ROUTE } from '../constants.js';
+export async function getNetworkOrders(config) {
     const { getRelayerBaseUrl } = config;
     const res = await getRelayerRaw(getRelayerBaseUrl(GET_NETWORK_ORDERS_ROUTE));
     return res.orders;

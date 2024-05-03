@@ -1,9 +1,7 @@
-import { getSkRoot } from "./getSkRoot.js";
-import { getRelayerWithAuth } from "../utils/http.js";
-import { GET_BALANCES_ROUTE } from "../constants.js";
-import {} from "../createConfig.js";
-export async function getBalances(config, parameters = {}) {
-    const {} = parameters;
+import { getSkRoot } from './getSkRoot.js';
+import { getRelayerWithAuth } from '../utils/http.js';
+import { GET_BALANCES_ROUTE } from '../constants.js';
+export async function getBalances(config) {
     const { getRelayerBaseUrl, utils } = config;
     const skRoot = getSkRoot(config);
     const walletId = utils.wallet_id(skRoot);

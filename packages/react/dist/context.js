@@ -1,6 +1,6 @@
-"use client";
-import { Hydrate } from "./hydrate.js";
-import { createContext, createElement } from "react";
+'use client';
+import { createContext, createElement } from 'react';
+import { Hydrate } from './hydrate.js';
 export const RenegadeContext = createContext(undefined);
 export function RenegadeProvider(parameters) {
     const { children, config } = parameters;

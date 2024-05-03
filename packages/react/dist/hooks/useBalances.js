@@ -1,9 +1,9 @@
-"use client";
-import { useConfig } from "./useConfig.js";
-import { useWallet } from "./useWallet.js";
-import { getBalances } from "@renegade-fi/core";
-import { useEffect, useState } from "react";
-import { useStatus } from "../index.js";
+'use client';
+import { getBalances } from '@renegade-fi/core';
+import { useEffect, useState } from 'react';
+import { useConfig } from './useConfig.js';
+import { useWallet } from './useWalletWebSocket.js';
+import { useStatus } from './useStatus.js';
 export function useBalances(parameters = {}) {
     const config = useConfig(parameters);
     const status = useStatus(parameters);
@@ -11,8 +11,10 @@ export function useBalances(parameters = {}) {
     const [balances, setBalances] = useState([]);
     const wallet = useWallet();
     useEffect(() => {
-        if (status !== "in relayer")
+        if (status !== 'in relayer') {
+            setBalances([]);
             return;
+        }
         async function fetchBalance() {
             const initialBalance = await getBalances(config);
             setBalances(initialBalance);
@@ -22,12 +24,12 @@ export function useBalances(parameters = {}) {
         return () => clearInterval(interval);
     }, [status, config]);
     useEffect(() => {
-        if (wallet && wallet.balances) {
+        if (wallet?.balances) {
             setBalances(wallet.balances);
         }
     }, [wallet]);
     if (filter) {
-        return balances.filter(balance => balance.mint !== "0x0" && balance.amount);
+        return balances.filter((balance) => balance.mint !== '0x0' && balance.amount);
     }
     return balances;
 }

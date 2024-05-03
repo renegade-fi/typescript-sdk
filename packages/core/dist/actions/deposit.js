@@ -1,17 +1,16 @@
-import { getBackOfQueueWallet } from "./getBackOfQueueWallet.js";
-import { getWalletId } from "./getWalletId.js";
-import JSONBigInt from "json-bigint";
-import invariant from "tiny-invariant";
-import { toHex } from "viem";
-import { postRelayerWithAuth } from "../utils/http.js";
-import { DEPOSIT_BALANCE_ROUTE } from "../constants.js";
-import {} from "../createConfig.js";
-import { Token } from "../types/token.js";
+import JSONBigInt from 'json-bigint';
+import invariant from 'tiny-invariant';
+import { toHex } from 'viem';
+import { getBackOfQueueWallet } from './getBackOfQueueWallet.js';
+import { getWalletId } from './getWalletId.js';
+import { postRelayerWithAuth } from '../utils/http.js';
+import { DEPOSIT_BALANCE_ROUTE } from '../constants.js';
+import { Token } from '../types/token.js';
 export async function deposit(config, parameters) {
     const { fromAddr, mint, amount, permitNonce, permitDeadline, permit } = parameters;
     const { getRelayerBaseUrl, utils } = config;
     const token = Token.findByAddress(mint);
-    invariant(token, "Token not found");
+    invariant(token, 'Token not found');
     const walletId = getWalletId(config);
     const wallet = await getBackOfQueueWallet(config);
     const body = utils.deposit(JSONBigInt.stringify(wallet), fromAddr, mint, toHex(amount), toHex(permitNonce), toHex(permitDeadline), permit);

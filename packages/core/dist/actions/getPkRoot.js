@@ -1,5 +1,4 @@
-import { getSkRoot } from "./getSkRoot.js";
-import {} from "viem";
+import { getSkRoot } from './getSkRoot.js';
 export function getPkRoot(config) {
     const { utils } = config;
     const skRoot = getSkRoot(config);

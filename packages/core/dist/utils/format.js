@@ -1,11 +1,11 @@
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits, parseUnits } from 'viem';
 export function formatAmount(amount, token) {
     const decimals = token.decimals;
     if (!decimals)
         throw new Error(`Decimals not found for 0x${token.address}`);
     let formatted = formatUnits(amount, decimals);
-    if (formatted.includes(".")) {
-        const [integerPart, decimalPart = ""] = formatted.split(".");
+    if (formatted.includes('.')) {
+        const [integerPart, decimalPart = ''] = formatted.split('.');
         formatted = `${integerPart}.${decimalPart.substring(0, 2)}`;
     }
     return formatted;

@@ -4,10 +4,10 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _BaseError_instances, _BaseError_walk;
-import { getVersion } from "../utils/getVersion.js";
+import { getVersion } from '../utils/getVersion.js';
 export class BaseError extends Error {
     get docsBaseUrl() {
-        return "todo: put a docs link here";
+        return 'todo: put a docs link here';
     }
     get version() {
         return getVersion();
@@ -43,7 +43,7 @@ export class BaseError extends Error {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: "RenegadeCoreError"
+            value: 'RenegadeCoreError'
         });
         const details = options.cause instanceof BaseError
             ? options.cause.details
@@ -54,17 +54,17 @@ export class BaseError extends Error {
             ? options.cause.docsPath || options.docsPath
             : options.docsPath;
         this.message = [
-            shortMessage || "An error occurred.",
-            "",
-            ...(options.metaMessages ? [...options.metaMessages, ""] : []),
+            shortMessage || 'An error occurred.',
+            '',
+            ...(options.metaMessages ? [...options.metaMessages, ''] : []),
             ...(docsPath
                 ? [
-                    `Docs: ${this.docsBaseUrl}${docsPath}.html${options.docsSlug ? `#${options.docsSlug}` : ""}`,
+                    `Docs: ${this.docsBaseUrl}${docsPath}.html${options.docsSlug ? `#${options.docsSlug}` : ''}`,
                 ]
                 : []),
             ...(details ? [`Details: ${details}`] : []),
             `Version: ${this.version}`,
-        ].join("\n");
+        ].join('\n');
         if (options.cause)
             this.cause = options.cause;
         this.details = details;

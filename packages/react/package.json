@@ -1,56 +1,56 @@
 {
-    "name": "@renegade-fi/react",
-    "version": "0.0.8",
-    "description": "React library for Renegade",
-    "files": [
-        "dist/**",
-        "!dist/**/*.tsbuildinfo",
-        "renegade-utils/*",
-        "src/**/*.ts",
-        "!src/**/*.test.ts",
-        "!src/**/*.test-d.ts"
-    ],
-    "sideEffects": false,
-    "type": "module",
-    "main": "./dist/index.js",
-    "types": "./dist/types/index.d.ts",
-    "exports": {
-        ".": {
-            "types": "./dist/types/index.d.ts",
-            "default": "./dist/index.js"
-        }
-    },
-    "scripts": {
-        "build": "pnpm run clean && pnpm run build:esm+types",
-        "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist --declaration --declarationMap --declarationDir ./dist/types",
-        "clean": "rm -rf dist tsconfig.tsbuildinfo",
-        "typecheck": "tsc --noEmit"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "peerDependencies": {
-        "@tanstack/react-query": ">=5.0.0",
-        "react": ">=18",
-        "typescript": ">=5.0.4"
-    },
-    "peerDependenciesMeta": {
-        "typescript": {
-            "optional": true
-        }
-    },
-    "dependencies": {
-        "@renegade-fi/core": "workspace:*",
-        "json-bigint": "^1.0.0",
-        "react-use-websocket": "^4.8.1",
-        "tiny-invariant": "^1.3.3"
-    },
-    "devDependencies": {
-        "@tanstack/react-query": ">=5.0.0",
-        "@types/json-bigint": "^1.0.4",
-        "@types/react": ">=18",
-        "@types/react-dom": ">=18",
-        "react": ">=18",
-        "react-dom": ">=18"
+  "name": "@renegade-fi/react",
+  "version": "0.0.8",
+  "description": "React library for Renegade",
+  "files": [
+    "dist/**",
+    "!dist/**/*.tsbuildinfo",
+    "renegade-utils/*",
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "!src/**/*.test-d.ts"
+  ],
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
     }
+  },
+  "scripts": {
+    "build": "pnpm run clean && pnpm run build:esm+types",
+    "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist --declaration --declarationMap --declarationDir ./dist/types",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "@tanstack/react-query": ">=5.0.0",
+    "react": ">=18",
+    "typescript": ">=5.0.4"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@renegade-fi/core": "workspace:*",
+    "json-bigint": "^1.0.0",
+    "react-use-websocket": "^4.8.1",
+    "tiny-invariant": "^1.3.3"
+  },
+  "devDependencies": {
+    "@tanstack/react-query": ">=5.0.0",
+    "@types/json-bigint": "^1.0.4",
+    "@types/react": ">=18",
+    "@types/react-dom": ">=18",
+    "react": ">=18",
+    "react-dom": ">=18"
+  }
 }

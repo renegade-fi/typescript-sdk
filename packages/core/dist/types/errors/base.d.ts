@@ -1,5 +1,5 @@
-import type { Evaluate, OneOf } from "../types/utils.js";
-export type ErrorType<name extends string = "Error"> = Error & {
+import type { Evaluate, OneOf } from '../types/utils.js';
+export type ErrorType<name extends string = 'Error'> = Error & {
     name: name;
 };
 type BaseErrorOptions = Evaluate<OneOf<{
@@ -12,7 +12,7 @@ type BaseErrorOptions = Evaluate<OneOf<{
     metaMessages?: string[] | undefined;
 }>;
 export type BaseErrorType = BaseError & {
-    name: "RenegadeCoreError";
+    name: 'RenegadeCoreError';
 };
 export declare class BaseError extends Error {
     #private;

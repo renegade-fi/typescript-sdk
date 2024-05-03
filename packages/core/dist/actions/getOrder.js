@@ -1,7 +1,6 @@
-import { getSkRoot } from "./getSkRoot.js";
-import { getRelayerWithAuth } from "../utils/http.js";
-import { GET_ORDER_BY_ID_ROUTE } from "../constants.js";
-import {} from "../createConfig.js";
+import { getSkRoot } from './getSkRoot.js';
+import { getRelayerWithAuth } from '../utils/http.js';
+import { GET_ORDER_BY_ID_ROUTE } from '../constants.js';
 export async function getOrder(config, parameters) {
     const { id } = parameters;
     const { getRelayerBaseUrl, utils } = config;
