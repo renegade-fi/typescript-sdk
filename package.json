@@ -13,9 +13,9 @@
   "scripts": {
     "build": "pnpm run --r --filter \"./packages/**\" build",
     "build:wasm": "cd wasm && ./build.sh && ./build.sh --node",
-    "changeset": "changeset",
-    "publish:packages": "changeset publish",
-    "version:packages": "changeset version",
+    "changeset:prepublish": "pnpm build",
+    "changeset:publish": "pnpm changeset:prepublish && changeset publish",
+    "changeset:version": "changeset version",
     "format": "biome format . --write",
     "lint": "biome check .",
     "test": "vitest",

@@ -1,1 +1,0 @@
-{"version":3,"file":"watchStatus.js","sourceRoot":"","sources":["../../src/actions/watchStatus.ts"],"names":[],"mappings":"AAWA,MAAM,UAAU,WAAW,CACzB,MAAc,EACd,UAAiC;IAEjC,MAAM,EAAE,QAAQ,EAAE,GAAG,UAAU,CAAA;IAE/B,OAAO,MAAM,CAAC,SAAS,CAAC,CAAC,KAAK,EAAE,EAAE,CAAC,KAAK,CAAC,MAAM,EAAE,QAAQ,CAAC,CAAA;AAC5D,CAAC"}

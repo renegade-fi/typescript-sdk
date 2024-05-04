@@ -1,1 +1,0 @@
-{"version":3,"file":"useStatus.d.ts","sourceRoot":"","sources":["../../../src/hooks/useStatus.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,KAAK,MAAM,EAAe,MAAM,mBAAmB,CAAA;AAI5D,MAAM,MAAM,mBAAmB,GAAG;IAChC,MAAM,CAAC,EAAE,MAAM,CAAA;CAChB,CAAA;AAED,MAAM,MAAM,mBAAmB,GAAG,MAAM,CAAC,OAAO,CAAC,CAAC,QAAQ,CAAC,CAAA;AAE3D,wBAAgB,SAAS,CACvB,UAAU,GAAE,mBAAwB,GACnC,mBAAmB,CAgBrB"}
