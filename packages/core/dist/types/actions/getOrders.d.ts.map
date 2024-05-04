@@ -1,1 +1,0 @@
-{"version":3,"file":"getOrders.d.ts","sourceRoot":"","sources":["../../../src/actions/getOrders.ts"],"names":[],"mappings":"AAKA,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,oBAAoB,CAAA;AAChD,OAAO,KAAK,EAAE,KAAK,EAAE,MAAM,oBAAoB,CAAA;AAE/C,MAAM,MAAM,mBAAmB,GAAG,OAAO,CAAC,KAAK,EAAE,CAAC,CAAA;AAElD,wBAAsB,SAAS,CAAC,MAAM,EAAE,MAAM,GAAG,mBAAmB,CASnE"}

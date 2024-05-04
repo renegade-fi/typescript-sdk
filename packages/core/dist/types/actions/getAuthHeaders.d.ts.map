@@ -1,1 +1,0 @@
-{"version":3,"file":"getAuthHeaders.d.ts","sourceRoot":"","sources":["../../../src/actions/getAuthHeaders.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,oBAAoB,CAAA;AAEhD,MAAM,MAAM,iCAAiC,GAAG;IAC9C,OAAO,EAAE,MAAM,CAAA;CAChB,CAAA;AACD,MAAM,MAAM,iCAAiC,GAAG,CAAC,MAAM,EAAE,MAAM,CAAC,CAAA;AAChE,eAAO,MAAM,uBAAuB,WAC1B,MAAM,cACF,iCAAiC,sCAU9C,CAAA"}
