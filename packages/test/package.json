@@ -32,9 +32,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "typescript": "^5.4.3"
-  },
   "dependencies": {
     "@renegade-fi/core": "workspace:^"
   }

@@ -30,14 +30,7 @@
   "author": "",
   "license": "ISC",
   "peerDependencies": {
-    "@tanstack/react-query": ">=5.0.0",
-    "react": ">=18",
-    "typescript": ">=5.0.4"
-  },
-  "peerDependenciesMeta": {
-    "typescript": {
-      "optional": true
-    }
+    "react": ">=18"
   },
   "dependencies": {
     "@renegade-fi/core": "workspace:*",
@@ -46,7 +39,6 @@
     "tiny-invariant": "^1.3.3"
   },
   "devDependencies": {
-    "@tanstack/react-query": ">=5.0.0",
     "@types/json-bigint": "^1.0.4",
     "@types/react": ">=18",
     "@types/react-dom": ">=18",
