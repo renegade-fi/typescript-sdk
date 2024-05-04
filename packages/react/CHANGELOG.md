@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.12
+
+### Patch Changes
+
+- remove /dist from vc
+- Updated dependencies
+  - @renegade-fi/core@0.0.12
+
 ## 0.0.11
 
 ### Patch Changes

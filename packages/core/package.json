@@ -1,6 +1,6 @@
 {
   "name": "@renegade-fi/core",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "VanillaJS library for Renegade",
   "files": [
     "dist/**",
