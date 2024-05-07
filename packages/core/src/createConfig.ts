@@ -12,9 +12,9 @@ import { persist, subscribeWithSelector } from 'zustand/middleware'
 import { type Mutate, type StoreApi, createStore } from 'zustand/vanilla'
 import { type Storage, createStorage, noopStorage } from './createStorage.js'
 import type { Evaluate, ExactPartial } from './types/utils.js'
-import type * as rustUtils from './utils.d.ts'
+import type * as UtilsType from './utils.d.ts'
 
-export type CreateConfigParameters = {
+export type CreateConfigParameters<U = typeof UtilsType> = {
   darkPoolAddress: Address
   priceReporterUrl: string
   relayerUrl: string
@@ -23,11 +23,13 @@ export type CreateConfigParameters = {
   rpcUrl: string
   ssr?: boolean | undefined
   storage?: Storage | null | undefined
-  utils?: typeof rustUtils
+  utils?: U
   websocketPort?: number
 }
 
-export function createConfig(parameters: CreateConfigParameters): Config {
+export function createConfig<U = typeof UtilsType>(
+  parameters: CreateConfigParameters<U>,
+): Config<U> {
   const {
     relayerUrl,
     priceReporterUrl,
@@ -150,7 +152,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
   }
 }
 
-export type Config = {
+export type Config<U = typeof UtilsType> = {
   darkPoolAddress: Address
   getPriceReporterBaseUrl: () => string
   getRelayerBaseUrl: (route?: string) => string
@@ -173,7 +175,7 @@ export type Config = {
       | undefined,
   ): () => void
   getViemClient: () => PublicClient
-  utils: typeof rustUtils
+  utils: U
   /**
    * Not part of versioned API, proceed with caution.
    * @internal
