@@ -43,7 +43,7 @@ export async function createOrder(
     quote,
     side,
     amount,
-    body: JSON.parse(body),
+    body: JSONBigInt.parse(body),
     wallet,
   }
 

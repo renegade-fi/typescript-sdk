@@ -56,6 +56,16 @@ export function new_order(wallet_str: string, id: string, base_mint: string, quo
 */
 export function cancel_order(wallet_str: string, order_id: string): any;
 /**
+* @param {string} wallet_str
+* @param {string} id
+* @param {string} base_mint
+* @param {string} quote_mint
+* @param {string} side
+* @param {string} amount
+* @returns {any}
+*/
+export function update_order(wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string): any;
+/**
 * Build authentication headers for a request
 * @param {string} sk_root
 * @param {string} req
@@ -63,11 +73,6 @@ export function cancel_order(wallet_str: string, order_id: string): any;
 * @returns {any[]}
 */
 export function build_auth_headers(sk_root: string, req: string, current_timestamp: bigint): any[];
-/**
-* @param {string} seed
-* @returns {any}
-*/
-export function derive_signing_key_from_seed(seed: string): any;
 /**
 * @param {string} sk_root
 * @returns {any}
@@ -89,3 +94,8 @@ export function sign_message(sk_root: string, message: string): any;
 * @returns {any}
 */
 export function bigint_to_limbs(value: string): any;
+/**
+* @param {string} seed
+* @returns {any}
+*/
+export function derive_signing_key_from_seed(seed: string): any;

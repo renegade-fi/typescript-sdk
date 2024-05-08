@@ -51,7 +51,7 @@ export async function deposit(
     permitNonce,
     permitDeadline,
     permit,
-    body: JSON.parse(body),
+    body: JSONBigInt.parse(body),
     wallet,
   }
 

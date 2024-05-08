@@ -59,6 +59,17 @@ export {
 } from './actions/getBalances.js'
 
 export {
+  type GetBackOfQueueWalletParameters,
+  type GetBackOfQueueWalletReturnType,
+  getBackOfQueueWallet,
+} from './actions/getBackOfQueueWallet.js'
+
+export {
+  type GetNetworkOrdersReturnType,
+  getNetworkOrders,
+} from './actions/getNetworkOrders.js'
+
+export {
   type GetOrderParameters,
   type GetOrderReturnType,
   getOrder,
@@ -68,11 +79,6 @@ export {
   type GetOrderHistoryReturnType,
   getOrderHistory,
 } from './actions/getOrderHistory.js'
-
-export {
-  type GetNetworkOrdersReturnType,
-  getNetworkOrders,
-} from './actions/getNetworkOrders.js'
 
 export {
   type GetOrdersReturnType,
@@ -85,6 +91,12 @@ export {
   type GetPkRootScalarsReturnType,
   getPkRootScalars,
 } from './actions/getPkRoot.js'
+
+export {
+  type GetPriceParameters,
+  type GetPriceReturnType,
+  getPriceFromPriceReporter,
+} from './actions/getPriceFromPriceReporter.js'
 
 export {
   type GetSkRootParameters,
@@ -133,6 +145,12 @@ export {
   type SignMessageReturnType,
   signMessage,
 } from './actions/signMessage.js'
+
+export {
+  type UpdateOrderParameters,
+  type UpdateOrderReturnType,
+  updateOrder,
+} from './actions/updateOrder.js'
 
 export {
   type WaitForTaskCompletionParameters,

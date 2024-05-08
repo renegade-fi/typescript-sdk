@@ -130,6 +130,13 @@ export const PRICE_REPORTER_TOPIC = (
   quote: Address,
 ) => `${exchange}-${base.toLowerCase()}-${quote.toLowerCase()}`
 
+// HTTP GET route to fetch price from price reporter
+export const PRICE_REPORTER_ROUTE = (
+  exchange: string,
+  base: Address,
+  quote: Address,
+) => `/price/${PRICE_REPORTER_TOPIC(exchange, base, quote)}`
+
 ////////////////////////////////////////////////////////////////////////////////
 // Token
 ////////////////////////////////////////////////////////////////////////////////
@@ -372,7 +379,10 @@ export const testnetTokenMapping = {
   ],
 }
 
-const isDevelopment = process.env.NEXT_PUBLIC_RPC_URL?.includes('dev')
+const isDevelopment =
+  process.env.VERCEL_ENV === 'development' ||
+  process.env.VERCEL_ENV === 'preview' ||
+  process.env.NODE_ENV === 'development'
 
 export const tokenMapping = isDevelopment
   ? devnetTokenMapping
