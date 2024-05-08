@@ -6,7 +6,6 @@ import { postRelayerWithAuth } from '../utils/http.js'
 
 import { CANCEL_ORDER_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import { getWalletFromRelayer } from './getWalletFromRelayer.js'
 
 export type CancelOrderParameters = {
   id: string
@@ -23,15 +22,12 @@ export async function cancelOrder(
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
-  const _wallet = await getWalletFromRelayer(config)
-  console.log('🚀 ~ wallet:', wallet)
-  console.log('🚀 ~ _wallet:', _wallet)
   const body = utils.cancel_order(JSONBigInt.stringify(wallet), id)
 
   const logContext = {
     walletId,
     orderId: id,
-    body: JSON.parse(body),
+    body: JSONBigInt.parse(body),
     wallet,
   }
 

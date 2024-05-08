@@ -1,7 +1,8 @@
 import axios from 'axios'
 import JSONBigint from 'json-bigint'
 
-import { getSkRoot } from '../index.js'
+import { getSkRoot } from '../actions/getSkRoot.js'
+import { BaseError } from '../errors/base.js'
 
 import {
   RENEGADE_AUTH_HEADER_NAME,
@@ -21,7 +22,9 @@ export async function postRelayerRaw(url: string, body: any, headers = {}) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
         console.error('Response error:', error.response.data)
-      } else if (error.request) {
+        throw new BaseError(error.response.data)
+      }
+      if (error.request) {
         // The request was made but no response was received
         console.error('Request error: No response received')
       } else {

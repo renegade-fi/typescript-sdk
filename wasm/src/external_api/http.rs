@@ -32,6 +32,8 @@ use web_sys::console;
 
 /// The amount of buffer time to add to the signature expiration
 const SIG_EXPIRATION_BUFFER_MS: u64 = 10_000; // 5 seconds
+/// Error message displayed when a given order cannot be found
+const ERR_ORDER_NOT_FOUND: &str = "order not found";
 
 /// The request type to create a new wallet
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -395,6 +397,52 @@ pub fn cancel_order(wallet_str: &str, order_id: &str) -> Result<JsValue, JsError
         statement_sig: sig.to_vec(),
     };
 
+    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+}
+
+/// The request type to update an order
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct UpdateOrderRequest {
+    /// The order to be updated
+    pub order: ApiOrder,
+    /// A signature of the circuit statement used in the proof of
+    /// VALID WALLET UPDATE by `sk_root`. This allows the contract
+    /// to guarantee that the wallet updates are properly authorized
+    pub statement_sig: Vec<u8>,
+}
+
+#[wasm_bindgen]
+pub fn update_order(
+    wallet_str: &str,
+    id: &str,
+    base_mint: &str,
+    quote_mint: &str,
+    side: &str,
+    amount: &str,
+) -> Result<JsValue, JsError> {
+    let mut new_wallet = deserialize_wallet(wallet_str);
+    let new_order = create_order(id, base_mint, quote_mint, side, amount)?;
+
+    // Modify the wallet
+    // We edit the value of the underlying map in-place (as opposed to `pop` and
+    // `insert`) to maintain ordering of the orders. This is important for
+    // the circuit, which relies on the order of the orders to be consistent
+    // between the old and new wallets
+    let order = new_wallet
+        .orders
+        .get_mut(&new_order.id)
+        .ok_or_else(|| JsError::new(ERR_ORDER_NOT_FOUND))?;
+    *order = new_order.clone().into();
+    new_wallet.reblind_wallet();
+
+    // Sign a commitment to the new shares
+    let comm = new_wallet.get_wallet_share_commitment();
+    let sig = wrap_eyre!(new_wallet.sign_commitment(comm)).unwrap();
+
+    let req = UpdateOrderRequest {
+        order: new_order,
+        statement_sig: sig.to_vec(),
+    };
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
 

@@ -332,6 +332,43 @@ export function cancel_order(wallet_str, order_id) {
     }
 }
 
+/**
+* @param {string} wallet_str
+* @param {string} id
+* @param {string} base_mint
+* @param {string} quote_mint
+* @param {string} side
+* @param {string} amount
+* @returns {any}
+*/
+export function update_order(wallet_str, id, base_mint, quote_mint, side, amount) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        const ptr0 = passStringToWasm0(wallet_str, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(id, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ptr2 = passStringToWasm0(base_mint, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len2 = WASM_VECTOR_LEN;
+        const ptr3 = passStringToWasm0(quote_mint, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len3 = WASM_VECTOR_LEN;
+        const ptr4 = passStringToWasm0(side, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len4 = WASM_VECTOR_LEN;
+        const ptr5 = passStringToWasm0(amount, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len5 = WASM_VECTOR_LEN;
+        wasm.update_order(retptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        var r2 = getInt32Memory0()[retptr / 4 + 2];
+        if (r2) {
+            throw takeObject(r1);
+        }
+        return takeObject(r0);
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
 let cachedUint32Memory0 = null;
 
 function getUint32Memory0() {
@@ -379,17 +416,6 @@ export function build_auth_headers(sk_root, req, current_timestamp) {
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
     }
-}
-
-/**
-* @param {string} seed
-* @returns {any}
-*/
-export function derive_signing_key_from_seed(seed) {
-    const ptr0 = passStringToWasm0(seed, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.derive_signing_key_from_seed(ptr0, len0);
-    return takeObject(ret);
 }
 
 /**
@@ -448,6 +474,17 @@ export function bigint_to_limbs(value) {
     return takeObject(ret);
 }
 
+/**
+* @param {string} seed
+* @returns {any}
+*/
+export function derive_signing_key_from_seed(seed) {
+    const ptr0 = passStringToWasm0(seed, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.derive_signing_key_from_seed(ptr0, len0);
+    return takeObject(ret);
+}
+
 function handleError(f, args) {
     try {
         return f.apply(this, args);
@@ -490,19 +527,13 @@ async function __wbg_load(module, imports) {
 function __wbg_get_imports() {
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
-        const ret = getStringFromWasm0(arg0, arg1);
-        return addHeapObject(ret);
-    };
     imports.wbg.__wbindgen_error_new = function(arg0, arg1) {
         const ret = new Error(getStringFromWasm0(arg0, arg1));
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
-        takeObject(arg0);
-    };
-    imports.wbg.__wbg_log_5bb5f88f245d7762 = function(arg0) {
-        console.log(getObject(arg0));
+    imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
+        const ret = getStringFromWasm0(arg0, arg1);
+        return addHeapObject(ret);
     };
     imports.wbg.__wbg_crypto_6a16ba611e8c0315 = function(arg0) {
         const ret = getObject(arg0).crypto;
@@ -528,6 +559,9 @@ function __wbg_get_imports() {
     imports.wbg.__wbindgen_is_string = function(arg0) {
         const ret = typeof(getObject(arg0)) === 'string';
         return ret;
+    };
+    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
+        takeObject(arg0);
     };
     imports.wbg.__wbg_require_8c61ef97678a5df5 = function() { return handleError(function () {
         const ret = module.require;

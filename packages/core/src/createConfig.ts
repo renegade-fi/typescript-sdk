@@ -118,6 +118,13 @@ export function createConfig(parameters: CreateConfigParameters): Config {
         : `wss://${parameters.priceReporterUrl}:${websocketPort}/`
       return baseUrl
     },
+    getPriceReporterHTTPBaseUrl: (route = '') => {
+      const baseUrl = parameters.priceReporterUrl.includes('localhost')
+        ? `http://127.0.0.1:${httpPort}`
+        : `https://${parameters.priceReporterUrl}:${httpPort}`
+      const formattedRoute = route.startsWith('/') ? route : `/${route}`
+      return `${baseUrl}${formattedRoute}`
+    },
     getWebsocketBaseUrl: () => {
       const baseUrl = parameters.relayerUrl.includes('localhost')
         ? `ws://127.0.0.1:${websocketPort}`
@@ -153,6 +160,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 export type Config = {
   darkPoolAddress: Address
   getPriceReporterBaseUrl: () => string
+  getPriceReporterHTTPBaseUrl: (route?: string) => string
   getRelayerBaseUrl: (route?: string) => string
   getRenegadeChain: (rpcUrl?: string) => Chain
   getWebsocketBaseUrl: () => string

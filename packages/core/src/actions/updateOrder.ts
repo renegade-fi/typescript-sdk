@@ -1,46 +1,48 @@
 import JSONBigInt from 'json-bigint'
-import { type Address, toHex } from 'viem'
+import { toHex, type Address } from 'viem'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
 
 import { postRelayerWithAuth } from '../utils/http.js'
 
-import { WITHDRAW_BALANCE_ROUTE } from '../constants.js'
+import { UPDATE_ORDER_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { Token } from '../types/token.js'
 
-export type WithdrawParameters = {
-  mint: Address
+export type UpdateOrderParameters = {
+  id?: string
+  base: Address
+  quote: Address
+  side: 'buy' | 'sell'
   amount: bigint
-  destinationAddr: Address
 }
 
-export type WithdrawReturnType = Promise<{ taskId: string }>
+export type UpdateOrderReturnType = Promise<{ taskId: string }>
 
-export async function withdraw(
+export async function updateOrder(
   config: Config,
-  parameters: WithdrawParameters,
-): WithdrawReturnType {
-  const { mint, amount, destinationAddr } = parameters
+  parameters: UpdateOrderParameters,
+): UpdateOrderReturnType {
+  const { id = '', base, quote, side, amount } = parameters
   const { getRelayerBaseUrl, utils } = config
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
-
-  // Withdraw
-  const body = utils.withdraw(
+  const body = utils.update_order(
     JSONBigInt.stringify(wallet),
-    mint,
+    id,
+    base,
+    quote,
+    side,
     toHex(amount),
-    destinationAddr,
   )
 
   const logContext = {
     walletId,
-    mint,
-    ticker: Token.findByAddress(mint).ticker,
+    base,
+    quote,
+    side,
     amount,
-    destinationAddr,
     body: JSONBigInt.parse(body),
     wallet,
   }
@@ -48,15 +50,15 @@ export async function withdraw(
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(WITHDRAW_BALANCE_ROUTE(walletId, mint)),
+      getRelayerBaseUrl(UPDATE_ORDER_ROUTE(walletId, id)),
       body,
     )
     console.log(`task update-wallet(${res.task_id}): ${walletId}`, logContext)
     return { taskId: res.task_id }
   } catch (error) {
     console.error(
-      `wallet id: ${walletId} withdrawing ${amount} ${
-        Token.findByAddress(mint).ticker
+      `wallet id: ${walletId} updating order ${id} to ${side} ${amount} ${
+        Token.findByAddress(base).ticker
       } failed`,
       {
         error,
