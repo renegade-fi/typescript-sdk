@@ -5,5 +5,5 @@ Node.js library for Renegade
 ## Installation
 
 ```bash
-pnpm add @renegade-fi/core
+pnpm add @renegade-fi/node
 ```
