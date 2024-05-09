@@ -26,24 +26,28 @@ export async function lookupWallet(
   const res = await postRelayerRaw(getRelayerBaseUrl(FIND_WALLET_ROUTE), body)
   if (res.task_id) {
     config.setState({ ...config.state, status: 'looking up' })
-    waitForTaskCompletion(config, { id: res.task_id }).then(async () => {
-      await getWalletFromRelayer(config, { seed }).then((wallet) => {
-        if (wallet) {
-          config.setState({
-            ...config.state,
-            status: 'in relayer',
-            id: res.wallet_id,
-          })
-          console.log(
-            `task lookup-wallet(${res.task_id}) completed: ${res.wallet_id}`,
-            {
+    waitForTaskCompletion(config, { id: res.task_id })
+      .then(async () => {
+        await getWalletFromRelayer(config, { seed }).then((wallet) => {
+          if (wallet) {
+            config.setState({
+              ...config.state,
               status: 'in relayer',
-              walletId: res.wallet_id,
-            },
-          )
-        }
+              id: res.wallet_id,
+            })
+            console.log(
+              `task lookup-wallet(${res.task_id}) completed: ${res.wallet_id}`,
+              {
+                status: 'in relayer',
+                walletId: res.wallet_id,
+              },
+            )
+          }
+        })
       })
-    })
+      .catch(() => {
+        console.error('Could not lookup wallet')
+      })
   }
   return { taskId: res.task_id, walletId: res.wallet_id }
 }
