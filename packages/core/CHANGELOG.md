@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.15
+
+### Patch Changes
+
+- Allow for insecure transport to be set in config
+
 ## 0.0.14
 
 ### Patch Changes
