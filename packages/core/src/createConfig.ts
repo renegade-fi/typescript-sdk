@@ -23,6 +23,7 @@ export type CreateConfigParameters = {
   rpcUrl: string
   ssr?: boolean | undefined
   storage?: Storage | null | undefined
+  useInsecureTransport?: boolean
   utils?: typeof rustUtils
   websocketPort?: number
 }
@@ -40,6 +41,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
           ? window.localStorage
           : noopStorage,
     }),
+    useInsecureTransport = false,
     websocketPort = 4000,
   } = parameters
 
@@ -106,11 +108,15 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     darkPoolAddress: parameters.darkPoolAddress,
     getRenegadeChain,
     getRelayerBaseUrl: (route = '') => {
+      const protocol =
+        useInsecureTransport || parameters.relayerUrl.includes('localhost')
+          ? 'http'
+          : 'https'
       const baseUrl = parameters.relayerUrl.includes('localhost')
-        ? `http://127.0.0.1:${httpPort}/v0`
-        : `https://${parameters.relayerUrl}:${httpPort}/v0`
+        ? `127.0.0.1:${httpPort}`
+        : `${parameters.relayerUrl}:${httpPort}`
       const formattedRoute = route.startsWith('/') ? route : `/${route}`
-      return `${baseUrl}${formattedRoute}`
+      return `${protocol}://${baseUrl}${formattedRoute}`
     },
     getPriceReporterBaseUrl: () => {
       const baseUrl = parameters.priceReporterUrl.includes('localhost')
@@ -126,10 +132,14 @@ export function createConfig(parameters: CreateConfigParameters): Config {
       return `${baseUrl}${formattedRoute}`
     },
     getWebsocketBaseUrl: () => {
+      const protocol =
+        useInsecureTransport || parameters.relayerUrl.includes('localhost')
+          ? 'ws'
+          : 'wss'
       const baseUrl = parameters.relayerUrl.includes('localhost')
-        ? `ws://127.0.0.1:${websocketPort}`
-        : `wss://${parameters.relayerUrl}:${websocketPort}`
-      return baseUrl
+        ? `127.0.0.1:${websocketPort}`
+        : `${parameters.relayerUrl}:${websocketPort}`
+      return `${protocol}://${baseUrl}`
     },
     getViemClient: () =>
       createPublicClient({
