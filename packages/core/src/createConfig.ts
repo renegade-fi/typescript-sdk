@@ -113,8 +113,8 @@ export function createConfig(parameters: CreateConfigParameters): Config {
           ? 'http'
           : 'https'
       const baseUrl = parameters.relayerUrl.includes('localhost')
-        ? `127.0.0.1:${httpPort}`
-        : `${parameters.relayerUrl}:${httpPort}`
+        ? `127.0.0.1:${httpPort}/v0`
+        : `${parameters.relayerUrl}:${httpPort}/v0`
       const formattedRoute = route.startsWith('/') ? route : `/${route}`
       return `${protocol}://${baseUrl}${formattedRoute}`
     },
