@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.14
+
+### Patch Changes
+
+- Handle lookup/create wallet errors gracefully
+
 ## 0.0.13
 
 ### Patch Changes

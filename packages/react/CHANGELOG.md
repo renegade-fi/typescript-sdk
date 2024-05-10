@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.14
+
+### Patch Changes
+
+- Handle lookup/create wallet errors gracefully
+- Updated dependencies
+  - @renegade-fi/core@0.0.14
+
 ## 0.0.13
 
 ### Patch Changes
