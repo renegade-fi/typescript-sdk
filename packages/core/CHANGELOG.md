@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.16
+
+### Patch Changes
+
+- Add /v0 suffix
+
 ## 0.0.15
 
 ### Patch Changes

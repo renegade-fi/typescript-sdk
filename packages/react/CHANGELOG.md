@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.16
+
+### Patch Changes
+
+- Add /v0 suffix
+- Updated dependencies
+  - @renegade-fi/core@0.0.16
+
 ## 0.0.15
 
 ### Patch Changes
