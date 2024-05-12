@@ -206,6 +206,8 @@ export { formatAmount, parseAmount } from './utils/format.js'
 
 export { deepEqual } from './utils/deepEqual.js'
 
+export { postRelayerRaw } from './utils/http.js'
+
 export { WebSocketManager } from './utils/websocket.js'
 
 ////////////////////////////////////////////////////////////////////////////////
