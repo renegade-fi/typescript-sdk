@@ -66,10 +66,9 @@ importers:
       '@renegade-fi/core':
         specifier: workspace:*
         version: link:../core
-    devDependencies:
-      typescript:
-        specifier: ^5.4.3
-        version: 5.4.4
+      viem:
+        specifier: 2.9.28
+        version: 2.9.28(typescript@5.4.4)
 
   packages/react:
     dependencies:
@@ -107,10 +106,6 @@ importers:
       '@renegade-fi/core':
         specifier: workspace:^
         version: link:../core
-    devDependencies:
-      typescript:
-        specifier: ^5.4.3
-        version: 5.4.4
 
 packages:
 

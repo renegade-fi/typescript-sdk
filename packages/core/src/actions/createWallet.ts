@@ -26,17 +26,13 @@ export async function createWallet(config: Config): CreateWalletReturnType {
   )
   if (res.task_id) {
     config.setState({ ...config.state, status: 'creating wallet' })
-    waitForTaskCompletion(config, { id: res.task_id })
-      .then(() => {
-        config.setState({
-          ...config.state,
-          id: res.wallet_id,
-          status: 'in relayer',
-        })
+    waitForTaskCompletion(config, { id: res.task_id }).then(() => {
+      config.setState({
+        ...config.state,
+        id: res.wallet_id,
+        status: 'in relayer',
       })
-      .catch(() => {
-        console.error('Could not create wallet')
-      })
+    })
   }
   return { walletId: res.wallet_id, taskId: res.task_id }
 }

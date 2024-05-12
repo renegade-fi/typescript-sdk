@@ -32,6 +32,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@renegade-fi/core": "workspace:*"
+    "@renegade-fi/core": "workspace:*",
+    "viem": "2.9.28"
   }
 }
