@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.17
+
+### Patch Changes
+
+- Move node specific connect logic
+
 ## 0.0.16
 
 ### Patch Changes

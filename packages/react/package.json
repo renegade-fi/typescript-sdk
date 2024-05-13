@@ -1,6 +1,6 @@
 {
   "name": "@renegade-fi/react",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "React library for Renegade",
   "files": [
     "dist/**",

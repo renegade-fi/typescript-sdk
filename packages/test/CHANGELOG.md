@@ -1,5 +1,13 @@
 # @renegade-fi/test
 
+## 0.0.17
+
+### Patch Changes
+
+- Move node specific connect logic
+- Updated dependencies
+  - @renegade-fi/core@0.0.17
+
 ## 0.0.16
 
 ### Patch Changes
