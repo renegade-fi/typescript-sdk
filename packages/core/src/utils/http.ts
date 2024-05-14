@@ -45,7 +45,10 @@ export async function getRelayerRaw(url: string, headers = {}) {
       headers,
       transformResponse: (data) => {
         try {
-          return JSONBigint({ useNativeBigInt: true }).parse(data)
+          return JSONBigint({
+            useNativeBigInt: true,
+            alwaysParseAsBig: true,
+          }).parse(data)
         } catch (_error) {
           return data
         }
