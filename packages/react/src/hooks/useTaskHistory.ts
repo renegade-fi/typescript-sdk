@@ -48,9 +48,9 @@ export function useTaskHistory(
   if (sort) {
     sortedTaskHistory.sort((a, b) => {
       if (sort === 'asc') {
-        return a.created_at - b.created_at
+        return Number(a.created_at) - Number(b.created_at)
       }
-      return b.created_at - a.created_at
+      return Number(b.created_at) - Number(a.created_at)
     })
   }
 

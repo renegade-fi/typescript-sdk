@@ -4,26 +4,11 @@ export type Exchange = 'binance' | 'coinbase' | 'kraken' | 'okx'
 
 export type NetworkOrder = {
   id: string
-  public_share_nullifier: number[]
+  public_share_nullifier: bigint[]
   local: boolean
   cluster: string
   state: string
-  validity_proofs: (ValidityProof | number[])[]
-  timestamp: number
-}
-
-type ValidityProof = {
-  statement: {
-    original_shares_nullifier?: number[]
-    reblinded_private_share_commitment?: number[]
-    merkle_root?: number[]
-    indices?: {
-      balance_send: number
-      balance_receive: number
-      order: number
-    }
-  }
-  proof: string
+  timestamp: bigint
 }
 
 export type Order = {
@@ -31,7 +16,7 @@ export type Order = {
   quote_mint: Address
   base_mint: Address
   side: 'Buy' | 'Sell'
-  type: 'Midpoint'
+  type: string
   worst_case_price: string
   amount: bigint
 }
@@ -86,6 +71,6 @@ export type OrderMetadata = {
   id: string
   state: OrderState
   filled: bigint
-  created: number
+  created: bigint
   data: Order
 }

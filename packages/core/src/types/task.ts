@@ -3,7 +3,7 @@ import type { Address } from 'viem'
 export type Task = {
   id: string
   state: TaskState
-  created_at: number
+  created_at: bigint
   task_info: TaskInfo
 }
 

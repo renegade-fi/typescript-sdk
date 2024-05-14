@@ -54,9 +54,9 @@ export function useOrderHistory(
   if (sort) {
     sortedOrderHistory.sort((a, b) => {
       if (sort === 'asc') {
-        return a.created - b.created
+        return Number(a.created) - Number(b.created)
       }
-      return b.created - a.created
+      return Number(b.created) - Number(a.created)
     })
   }
 
