@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.18
+
+### Patch Changes
+
+- Parse all numerical values as bigint
+
 ## 0.0.17
 
 ### Patch Changes
