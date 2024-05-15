@@ -5,6 +5,7 @@ use ethers::{
     types::{Signature, U256},
     utils::keccak256,
 };
+use contracts_common::custom_serde::BytesSerializable;
 
 use crate::types::Scalar;
 
@@ -29,7 +30,7 @@ impl Wallet {
         let key = EthersSigningKey::try_from(root_key)?;
 
         // Hash the message and sign it
-        let comm_bytes = commitment.to_biguint().to_bytes_be();
+        let comm_bytes = commitment.inner().serialize_to_bytes();
         let digest = keccak256(comm_bytes);
         let (sig, recovery_id) = key
             .sign_prehash_recoverable(&digest)
