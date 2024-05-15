@@ -1,5 +1,13 @@
 # @renegade-fi/test
 
+## 0.0.19
+
+### Patch Changes
+
+- Add function to reinitialize store if user does not want persistence
+- Updated dependencies
+  - @renegade-fi/core@0.0.19
+
 ## 0.0.18
 
 ### Patch Changes
