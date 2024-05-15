@@ -1,16 +1,8 @@
 import invariant from 'tiny-invariant'
-import {
-  http,
-  type Address,
-  type Chain,
-  type Hex,
-  type PublicClient,
-  createPublicClient,
-  defineChain,
-} from 'viem'
+import type { Address, Hex } from 'viem'
 import { persist, subscribeWithSelector } from 'zustand/middleware'
-import { type Mutate, type StoreApi, createStore } from 'zustand/vanilla'
-import { type Storage, createStorage, noopStorage } from './createStorage.js'
+import { createStore, type Mutate, type StoreApi } from 'zustand/vanilla'
+import { createStorage, noopStorage, type Storage } from './createStorage.js'
 import type { Evaluate, ExactPartial } from './types/utils.js'
 import type * as rustUtils from './utils.d.ts'
 
@@ -115,30 +107,11 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     }
   }
 
-  const getRenegadeChain = (_rpcUrl?: string) => {
-    const rpcUrl =
-      _rpcUrl ??
-      `https://${parameters.rpcUrl}` ??
-      `https://${relayerUrl.includes('dev') ? 'dev.' : ''}sequencer.renegade.fi`
-    return defineChain({
-      id: 473474,
-      name: 'Renegade Testnet',
-      network: 'Renegade Testnet',
-      testnet: true,
-      nativeCurrency: { decimals: 18, name: 'Ether', symbol: 'ETH' },
-      rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
-      blockExplorers: {
-        default: { name: 'Explorer', url: 'https://explorer.renegade.fi' },
-      },
-    })
-  }
-
   return {
     utils: parameters.utils,
     relayerUrl,
     priceReporterUrl,
     darkPoolAddress: parameters.darkPoolAddress,
-    getRenegadeChain,
     getRelayerBaseUrl: (route = '') => {
       const protocol =
         useInsecureTransport || parameters.relayerUrl.includes('localhost')
@@ -173,11 +146,6 @@ export function createConfig(parameters: CreateConfigParameters): Config {
         : `${parameters.relayerUrl}:${websocketPort}`
       return `${protocol}://${baseUrl}`
     },
-    getViemClient: () =>
-      createPublicClient({
-        chain: getRenegadeChain(),
-        transport: http(),
-      }),
     pollingInterval,
     get state() {
       return store.getState()
@@ -205,7 +173,6 @@ export type Config = {
   getPriceReporterBaseUrl: () => string
   getPriceReporterHTTPBaseUrl: (route?: string) => string
   getRelayerBaseUrl: (route?: string) => string
-  getRenegadeChain: (rpcUrl?: string) => Chain
   getWebsocketBaseUrl: () => string
   pollingInterval: number
   priceReporterUrl: string
@@ -224,7 +191,6 @@ export type Config = {
         }
       | undefined,
   ): () => void
-  getViemClient: () => PublicClient
   utils: typeof rustUtils
   /**
    * Not part of versioned API, proceed with caution.

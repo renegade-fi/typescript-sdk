@@ -380,11 +380,8 @@ export const testnetTokenMapping = {
 }
 
 const isDevelopment =
-  process.env.VERCEL_ENV === 'development' ||
-  process.env.VERCEL_ENV === 'preview' ||
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ||
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' ||
-  process.env.NODE_ENV === 'development'
+  process.env.RPC_URL?.includes('dev') ||
+  process.env.NEXT_PUBLIC_RPC_URL?.includes('dev')
 
 export const tokenMapping = isDevelopment
   ? devnetTokenMapping

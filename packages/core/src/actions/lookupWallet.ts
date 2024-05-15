@@ -1,4 +1,4 @@
-import { http, type Hex, createPublicClient, parseAbiItem } from 'viem'
+import { createPublicClient, http, parseAbiItem, type Hex } from 'viem'
 import { getSkRoot } from './getSkRoot.js'
 import { getWalletFromRelayer } from './getWalletFromRelayer.js'
 import { waitForTaskCompletion } from './waitForTaskCompletion.js'
@@ -7,6 +7,7 @@ import { postRelayerRaw } from '../utils/http.js'
 
 import { FIND_WALLET_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
+import { chain } from '../utils/viem.js'
 
 export type LookupWalletParameters = { seed?: Hex }
 
@@ -55,7 +56,7 @@ export async function lookupWalletOnChain(config: Config) {
     const blinderShare = utils.derive_blinder_share(skRoot)
 
     const publicClient = createPublicClient({
-      chain: config.getRenegadeChain(),
+      chain,
       transport: http(),
     })
 
