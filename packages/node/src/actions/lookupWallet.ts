@@ -1,5 +1,6 @@
 import {
   FIND_WALLET_ROUTE,
+  chain,
   getSkRoot,
   getWalletId,
   postRelayerRaw,
@@ -40,7 +41,7 @@ export async function lookupWalletOnChain(config: Config) {
     const blinderShare = utils.derive_blinder_share(skRoot)
 
     const publicClient = createPublicClient({
-      chain: config.getRenegadeChain(),
+      chain,
       transport: http(),
     })
 
