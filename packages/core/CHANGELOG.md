@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.20
+
+### Patch Changes
+
+- wasm: implement fix for signature generation
+
 ## 0.0.19
 
 ### Patch Changes
