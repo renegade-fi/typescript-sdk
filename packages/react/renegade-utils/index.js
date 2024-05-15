@@ -419,6 +419,17 @@ export function build_auth_headers(sk_root, req, current_timestamp) {
 }
 
 /**
+* @param {string} seed
+* @returns {any}
+*/
+export function derive_signing_key_from_seed(seed) {
+    const ptr0 = passStringToWasm0(seed, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.derive_signing_key_from_seed(ptr0, len0);
+    return takeObject(ret);
+}
+
+/**
 * @param {string} sk_root
 * @returns {any}
 */
@@ -471,17 +482,6 @@ export function bigint_to_limbs(value) {
     const ptr0 = passStringToWasm0(value, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     const ret = wasm.bigint_to_limbs(ptr0, len0);
-    return takeObject(ret);
-}
-
-/**
-* @param {string} seed
-* @returns {any}
-*/
-export function derive_signing_key_from_seed(seed) {
-    const ptr0 = passStringToWasm0(seed, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.derive_signing_key_from_seed(ptr0, len0);
     return takeObject(ret);
 }
 

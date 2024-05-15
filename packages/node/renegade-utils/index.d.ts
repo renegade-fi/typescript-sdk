@@ -74,6 +74,11 @@ export function update_order(wallet_str: string, id: string, base_mint: string, 
 */
 export function build_auth_headers(sk_root: string, req: string, current_timestamp: bigint): any[];
 /**
+* @param {string} seed
+* @returns {any}
+*/
+export function derive_signing_key_from_seed(seed: string): any;
+/**
 * @param {string} sk_root
 * @returns {any}
 */
@@ -94,8 +99,3 @@ export function sign_message(sk_root: string, message: string): any;
 * @returns {any}
 */
 export function bigint_to_limbs(value: string): any;
-/**
-* @param {string} seed
-* @returns {any}
-*/
-export function derive_signing_key_from_seed(seed: string): any;
