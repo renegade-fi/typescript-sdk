@@ -16,6 +16,8 @@
     "changeset:prepublish": "pnpm build:wasm && pnpm build",
     "changeset:publish": "pnpm changeset:prepublish && changeset publish",
     "changeset:version": "changeset version",
+    "changeset:version-canary": "changeset version --no-git-tag --snapshot canary",
+    "changeset:publish-canary": "pnpm changeset:prepublish && changeset publish --no-git-tag --snapshot canary --tag canary",
     "format": "biome format . --write",
     "lint": "biome check .",
     "test": "vitest",
