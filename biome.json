@@ -6,7 +6,8 @@
       "tsconfig.base.json",
       "wasm/**",
       "dist/**",
-      "renegade-utils/**"
+      "renegade-utils/**",
+      "*.d.ts"
     ]
   },
   "formatter": {
