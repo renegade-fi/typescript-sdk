@@ -2,6 +2,7 @@ import JSONBigInt from 'json-bigint'
 import { toHex, type Address } from 'viem'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
+import { BaseError } from '../errors/base.js'
 
 import { postRelayerWithAuth } from '../utils/http.js'
 
@@ -28,6 +29,25 @@ export async function createOrder(
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
+
+  // Safety
+  const filteredWallet = await getBackOfQueueWallet(config, {
+    filterDefaults: true,
+  })
+  const balances = filteredWallet?.balances
+  console.log('order error debug: ', {
+    side,
+    balances,
+    base,
+  })
+  if (
+    side === 'buy' &&
+    balances?.length === 5 &&
+    !balances.find((b) => b.mint === base)
+  ) {
+    throw new BaseError('Order would result in too many balances')
+  }
+
   const body = utils.new_order(
     JSONBigInt.stringify(wallet),
     id,
