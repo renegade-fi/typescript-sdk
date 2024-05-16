@@ -13,7 +13,7 @@ export type HydrateProps = {
 export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
   const { children, config, initialState, reconnectOnMount = true } = parameters
 
-  const { onMount } = hydrate(config, {
+  const { onMount, resetState } = hydrate(config, {
     initialState,
     reconnectOnMount,
   })
@@ -42,8 +42,11 @@ export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
 
     return () => {
       active.current = false
+      if (!config._internal.shouldPersist) {
+        resetState()
+      }
     }
-  }, [onMount, config])
+  }, [onMount, config, resetState])
 
   return children as ReactElement
 }

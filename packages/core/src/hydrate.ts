@@ -21,13 +21,16 @@ export function hydrate(config: Config, parameters: HydrateParameters) {
     async onMount() {
       if (config._internal.ssr) {
         console.log('💧 SSR enabled, rehydrating state')
-        await config._internal.store.persist?.rehydrate()
+        await config._internal.store.persist.rehydrate()
       }
 
       if (reconnectOnMount) {
         console.log('🚝 Reconnecting on mount')
         reconnect(config, { id: config.state.id })
       }
+    },
+    resetState() {
+      config._internal.store.persist.clearStorage()
     },
   }
 }

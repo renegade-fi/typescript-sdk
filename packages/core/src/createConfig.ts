@@ -16,11 +16,12 @@ import type * as rustUtils from './utils.d.ts'
 
 export type CreateConfigParameters = {
   darkPoolAddress: Address
-  priceReporterUrl: string
-  relayerUrl: string
   httpPort?: number
   pollingInterval?: number
+  priceReporterUrl: string
+  relayerUrl: string
   rpcUrl: string
+  shouldPersist?: boolean
   ssr?: boolean | undefined
   storage?: Storage | null | undefined
   useInsecureTransport?: boolean
@@ -34,6 +35,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     priceReporterUrl,
     httpPort = 3000,
     pollingInterval = 5000,
+    shouldPersist = false,
     ssr,
     storage = createStorage({
       storage:
@@ -62,7 +64,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     }
   }
 
-  let store = createStore(
+  const store = createStore(
     subscribeWithSelector(
       // only use persist middleware if storage exists
       storage
@@ -82,38 +84,6 @@ export function createConfig(parameters: CreateConfigParameters): Config {
         : getInitialState,
     ),
   )
-
-  function reinitializeStore(usePersist: boolean) {
-    const currentStorage = createStorage({
-      storage:
-        usePersist && typeof window !== 'undefined' && window.localStorage
-          ? window.localStorage
-          : noopStorage,
-    })
-    const prevState = store.getState()
-    store = createStore(
-      subscribeWithSelector(
-        usePersist && currentStorage
-          ? persist(store.getState, {
-              name: 'store',
-              partialize(state) {
-                return {
-                  id: state.id,
-                  seed: state.seed,
-                  status: state.status,
-                } satisfies PartializedState
-              },
-              skipHydration: ssr,
-              storage: currentStorage as Storage<Record<string, unknown>>,
-            })
-          : store.getState,
-      ),
-    )
-    store.setState(prevState)
-    if (!usePersist) {
-      localStorage.removeItem('renegade.store')
-    }
-  }
 
   const getRenegadeChain = (_rpcUrl?: string) => {
     const rpcUrl =
@@ -192,10 +162,10 @@ export function createConfig(parameters: CreateConfigParameters): Config {
           : undefined,
       )
     },
-    reinitializeStore,
     _internal: {
-      store,
+      shouldPersist: Boolean(shouldPersist),
       ssr: Boolean(ssr),
+      store,
     },
   }
 }
@@ -210,7 +180,6 @@ export type Config = {
   pollingInterval: number
   priceReporterUrl: string
   relayerUrl: string
-  reinitializeStore: (usePersist: boolean) => void
   rpcUrl?: string
   setState: (newState: State) => void
   state: State
@@ -231,8 +200,9 @@ export type Config = {
    * @internal
    */
   _internal: {
-    readonly store: Mutate<StoreApi<any>, [['zustand/persist', any]]>
+    readonly shouldPersist: boolean
     readonly ssr: boolean
+    readonly store: Mutate<StoreApi<any>, [['zustand/persist', any]]>
   }
 }
 
