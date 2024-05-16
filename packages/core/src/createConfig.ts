@@ -62,7 +62,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     }
   }
 
-  let store = createStore(
+  const store = createStore(
     subscribeWithSelector(
       // only use persist middleware if storage exists
       storage
@@ -82,38 +82,6 @@ export function createConfig(parameters: CreateConfigParameters): Config {
         : getInitialState,
     ),
   )
-
-  function reinitializeStore(usePersist: boolean) {
-    const currentStorage = createStorage({
-      storage:
-        usePersist && typeof window !== 'undefined' && window.localStorage
-          ? window.localStorage
-          : noopStorage,
-    })
-    const prevState = store.getState()
-    store = createStore(
-      subscribeWithSelector(
-        usePersist && currentStorage
-          ? persist(store.getState, {
-              name: 'store',
-              partialize(state) {
-                return {
-                  id: state.id,
-                  seed: state.seed,
-                  status: state.status,
-                } satisfies PartializedState
-              },
-              skipHydration: ssr,
-              storage: currentStorage as Storage<Record<string, unknown>>,
-            })
-          : store.getState,
-      ),
-    )
-    store.setState(prevState)
-    if (!usePersist) {
-      localStorage.removeItem('renegade.store')
-    }
-  }
 
   const getRenegadeChain = (_rpcUrl?: string) => {
     const rpcUrl =
@@ -192,7 +160,6 @@ export function createConfig(parameters: CreateConfigParameters): Config {
           : undefined,
       )
     },
-    reinitializeStore,
     _internal: {
       store,
       ssr: Boolean(ssr),
@@ -210,7 +177,6 @@ export type Config = {
   pollingInterval: number
   priceReporterUrl: string
   relayerUrl: string
-  reinitializeStore: (usePersist: boolean) => void
   rpcUrl?: string
   setState: (newState: State) => void
   state: State
