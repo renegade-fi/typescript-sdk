@@ -1,5 +1,13 @@
 # @renegade-fi/test
 
+## 0.0.22
+
+### Patch Changes
+
+- use env variable for network detection
+- Updated dependencies
+  - @renegade-fi/core@0.0.22
+
 ## 0.0.21
 
 ### Patch Changes
