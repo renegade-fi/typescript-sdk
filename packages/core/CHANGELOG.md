@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.24
+
+### Patch Changes
+
+- adjust decimal count in formatAmount fn
+
 ## 0.0.23
 
 ### Patch Changes
