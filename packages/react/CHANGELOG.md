@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.23
+
+### Patch Changes
+
+- core: error if order would result in too many balances
+- Updated dependencies
+  - @renegade-fi/core@0.0.23
+
 ## 0.0.22
 
 ### Patch Changes
