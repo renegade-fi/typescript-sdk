@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.25
+
+### Patch Changes
+
+- core, react: fix bigint parsing error
+
 ## 0.0.24
 
 ### Patch Changes
