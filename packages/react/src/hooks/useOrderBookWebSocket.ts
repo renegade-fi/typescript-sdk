@@ -4,8 +4,8 @@ import {
   type Config,
   type NetworkOrder,
   ORDER_BOOK_ROUTE,
+  parseBigJSON,
 } from '@renegade-fi/core'
-import JSONBigint from 'json-bigint'
 import { useEffect, useState } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { useConfig } from './useConfig.js'
@@ -48,9 +48,7 @@ export function useOrderBookWebSocket(
   useEffect(() => {
     if (lastMessage) {
       try {
-        const messageData = JSONBigint({ useNativeBigInt: true }).parse(
-          lastMessage.data,
-        )
+        const messageData = parseBigJSON(lastMessage.data)
         if (
           messageData.topic === ORDER_BOOK_ROUTE &&
           (messageData.event?.type === 'NewOrder' ||

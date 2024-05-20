@@ -6,8 +6,8 @@ import {
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
   WALLET_ROUTE,
   type Wallet,
+  parseBigJSON,
 } from '@renegade-fi/core'
-import JSONBigint from 'json-bigint'
 import { useEffect, useState } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { useConfig } from './useConfig.js'
@@ -65,9 +65,7 @@ export function useWalletWebsocket(
   useEffect(() => {
     if (lastMessage && walletId) {
       try {
-        const messageData = JSONBigint({ useNativeBigInt: true }).parse(
-          lastMessage.data,
-        )
+        const messageData = parseBigJSON(lastMessage.data)
         if (
           messageData.topic === WALLET_ROUTE(walletId) &&
           messageData.event?.type === 'WalletUpdate' &&

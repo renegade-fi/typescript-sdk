@@ -1,4 +1,3 @@
-import JSONBigInt from 'json-bigint'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
 
@@ -6,6 +5,7 @@ import { postRelayerWithAuth } from '../utils/http.js'
 
 import { CANCEL_ORDER_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
+import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
 
 export type CancelOrderParameters = {
   id: string
@@ -22,12 +22,12 @@ export async function cancelOrder(
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
-  const body = utils.cancel_order(JSONBigInt.stringify(wallet), id)
+  const body = utils.cancel_order(stringifyForWasm(wallet), id)
 
   const logContext = {
     walletId,
     orderId: id,
-    body: JSONBigInt.parse(body),
+    body: parseBigJSON(body),
     wallet,
   }
 
