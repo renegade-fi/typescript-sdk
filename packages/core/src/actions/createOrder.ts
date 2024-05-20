@@ -1,4 +1,3 @@
-import JSONBigInt from 'json-bigint'
 import { toHex, type Address } from 'viem'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
@@ -9,6 +8,7 @@ import { postRelayerWithAuth } from '../utils/http.js'
 import { WALLET_ORDERS_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { Token } from '../types/token.js'
+import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
 
 export type CreateOrderParameters = {
   id?: string
@@ -49,7 +49,7 @@ export async function createOrder(
   }
 
   const body = utils.new_order(
-    JSONBigInt.stringify(wallet),
+    stringifyForWasm(wallet),
     id,
     base,
     quote,
@@ -63,7 +63,7 @@ export async function createOrder(
     quote,
     side,
     amount,
-    body: JSONBigInt.parse(body),
+    body: parseBigJSON(body),
     wallet,
   }
 

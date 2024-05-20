@@ -1,4 +1,3 @@
-import JSONBigInt from 'json-bigint'
 import invariant from 'tiny-invariant'
 import { toHex, type Address } from 'viem'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
@@ -9,6 +8,7 @@ import { postRelayerWithAuth } from '../utils/http.js'
 import { DEPOSIT_BALANCE_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { Token } from '../types/token.js'
+import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
 
 export type DepositParameters = {
   fromAddr: Address
@@ -35,7 +35,7 @@ export async function deposit(
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
   const body = utils.deposit(
-    JSONBigInt.stringify(wallet),
+    stringifyForWasm(wallet),
     fromAddr,
     mint,
     toHex(amount),
@@ -51,7 +51,7 @@ export async function deposit(
     permitNonce,
     permitDeadline,
     permit,
-    body: JSONBigInt.parse(body),
+    body: parseBigJSON(body),
     wallet,
   }
 

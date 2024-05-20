@@ -1,4 +1,3 @@
-import JSONBigInt from 'json-bigint'
 import { type Address, toHex } from 'viem'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
@@ -8,6 +7,7 @@ import { postRelayerWithAuth } from '../utils/http.js'
 import { WITHDRAW_BALANCE_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { Token } from '../types/token.js'
+import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
 
 export type WithdrawParameters = {
   mint: Address
@@ -29,7 +29,7 @@ export async function withdraw(
 
   // Withdraw
   const body = utils.withdraw(
-    JSONBigInt.stringify(wallet),
+    stringifyForWasm(wallet),
     mint,
     toHex(amount),
     destinationAddr,
@@ -41,7 +41,7 @@ export async function withdraw(
     ticker: Token.findByAddress(mint).ticker,
     amount,
     destinationAddr,
-    body: JSONBigInt.parse(body),
+    body: parseBigJSON(body),
     wallet,
   }
 

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import JSONBigint from 'json-bigint'
 
 import { getSkRoot } from '../actions/getSkRoot.js'
 import { BaseError } from '../errors/base.js'
@@ -9,6 +8,7 @@ import {
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
 } from '../constants.js'
 import type { Config } from '../createConfig.js'
+import { parseBigJSON } from './bigJSON.js'
 
 export async function postRelayerRaw(url: string, body: any, headers = {}) {
   try {
@@ -45,10 +45,7 @@ export async function getRelayerRaw(url: string, headers = {}) {
       headers,
       transformResponse: (data) => {
         try {
-          return JSONBigint({
-            useNativeBigInt: true,
-            alwaysParseAsBig: true,
-          }).parse(data)
+          return parseBigJSON(data)
         } catch (_error) {
           return data
         }
