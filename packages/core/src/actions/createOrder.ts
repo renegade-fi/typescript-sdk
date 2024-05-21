@@ -1,11 +1,10 @@
 import { toHex, type Address } from 'viem'
+
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
 import { BaseError } from '../errors/base.js'
-
 import { postRelayerWithAuth } from '../utils/http.js'
-
-import { WALLET_ORDERS_ROUTE } from '../constants.js'
+import { MAX_BALANCES, WALLET_ORDERS_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { Token } from '../types/token.js'
 import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
@@ -30,19 +29,14 @@ export async function createOrder(
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
 
-  // Safety
+  // If the order would result in more than 5 balances, panic
   const filteredWallet = await getBackOfQueueWallet(config, {
     filterDefaults: true,
   })
   const balances = filteredWallet?.balances
-  console.log('order error debug: ', {
-    side,
-    balances,
-    base,
-  })
   if (
     side === 'buy' &&
-    balances?.length === 5 &&
+    balances?.length === MAX_BALANCES &&
     !balances.find((b) => b.mint === base)
   ) {
     throw new BaseError('Order would result in too many balances')
