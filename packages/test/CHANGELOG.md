@@ -1,5 +1,13 @@
 # @renegade-fi/test
 
+## 0.0.26
+
+### Patch Changes
+
+- prevent deposit if MAX_BALANCES would be exceeded
+- Updated dependencies
+  - @renegade-fi/core@0.0.26
+
 ## 0.0.25
 
 ### Patch Changes
