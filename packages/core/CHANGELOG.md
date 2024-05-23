@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.27
+
+### Patch Changes
+
+- add function to wait for wallet indexing completion
+
 ## 0.0.26
 
 ### Patch Changes
