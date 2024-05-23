@@ -8,7 +8,10 @@ import type { Config } from '../createConfig.js'
 
 export type ConnectParameters = { seed?: Hex }
 
-export type ConnectReturnType = Promise<{ taskId: string } | undefined>
+export type ConnectReturnType = Promise<{
+  isLookup: boolean
+  job: Promise<void>
+} | null>
 
 export async function connect(
   config: Config,
@@ -38,7 +41,7 @@ export async function connect(
         status: 'in relayer',
         walletId: wallet.id,
       })
-      return
+      return Promise.resolve(null)
     }
   } catch (error) {
     console.error('Error getting wallet from relayer', { error, walletId })
@@ -47,45 +50,15 @@ export async function connect(
   // If wallet on chain, start lookup wallet task
   const isOnChain = await lookupWalletOnChain(config)
   if (isOnChain) {
-    try {
-      const res = await lookupWallet(config, { seed })
-      walletId = res.walletId
-      console.log(`task lookup-wallet(${res.taskId}): ${res.walletId}`, {
-        status: 'looking up',
-        walletId: res.walletId,
-      })
-      return { taskId: res.taskId }
-    } catch (error) {
-      console.error(`wallet id: ${walletId} looking up failed`, {
-        error,
-        status: 'looking up',
-        walletId,
-      })
-      config.setState({
-        status: 'disconnected',
-        id: undefined,
-        seed: undefined,
-      })
-      throw error
-    }
+    return Promise.resolve({
+      isLookup: true,
+      job: lookupWallet(config, { seed }),
+    })
   }
 
   // If wallet not in relayer or on chain, call createWallet
-  try {
-    const res = await createWallet(config)
-    walletId = res.walletId
-    console.log(`task create-wallet(${res.taskId}): ${res.walletId}`, {
-      status: 'creating wallet',
-      walletId: res.walletId,
-    })
-    return { taskId: res.taskId }
-  } catch (error) {
-    console.error(`wallet id: ${walletId} creating wallet failed`, {
-      error,
-      status: 'creating wallet',
-      walletId,
-    })
-    config.setState({ status: 'disconnected', id: undefined, seed: undefined })
-    throw error
-  }
+  return Promise.resolve({
+    isLookup: false,
+    job: createWallet(config, { seed }),
+  })
 }
