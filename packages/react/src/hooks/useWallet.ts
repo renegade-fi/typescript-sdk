@@ -54,11 +54,11 @@ export function useWallet<selectData = GetWalletData>(
   const incomingWallet = useWalletWebsocket({ enabled })
 
   useEffect(() => {
-    if (incomingWallet) {
+    if (incomingWallet && queryClient && options.queryKey) {
       console.log('🚀 ~ useEffect ~ incomingWallet:', incomingWallet)
       queryClient.setQueryData(options.queryKey, incomingWallet)
     }
-  }, [incomingWallet])
+  }, [incomingWallet, queryClient, options.queryKey])
 
   return useQuery({ ...query, ...options, enabled })
 }

@@ -1,58 +1,68 @@
 'use client'
 
-import type { Config, Task } from '@renegade-fi/core'
-import { getTaskHistory } from '@renegade-fi/core'
-import { useEffect, useState } from 'react'
+import {
+  getTaskHistoryQueryOptions,
+  type Evaluate,
+  type GetTaskHistoryData,
+  type GetTaskHistoryErrorType,
+  type GetTaskHistoryOptions,
+  type GetTaskHistoryQueryFnData,
+  type GetTaskHistoryQueryKey,
+  type Task,
+} from '@renegade-fi/core'
+import { useQueryClient } from '@tanstack/react-query'
+import type { ConfigParameter, QueryParameter } from '../types/properties.js'
+import { useQuery, type UseQueryReturnType } from '../utils/query.js'
 import { useConfig } from './useConfig.js'
 import { useStatus } from './useStatus.js'
 import { useTaskHistoryWebSocket } from './useTaskHistoryWebSocket.js'
 
-export type UseTaskHistoryParameters = {
-  config?: Config
-  sort?: 'asc' | 'desc'
-}
+export type UseTaskHistoryParameters<selectData = GetTaskHistoryData> =
+  Evaluate<
+    GetTaskHistoryOptions &
+      ConfigParameter &
+      QueryParameter<
+        GetTaskHistoryQueryFnData,
+        GetTaskHistoryErrorType,
+        selectData,
+        GetTaskHistoryQueryKey
+      >
+  >
 
-export type UseTaskHistoryReturnType = Task[]
+export type UseTaskHistoryReturnType<selectData = GetTaskHistoryData> =
+  UseQueryReturnType<selectData, GetTaskHistoryErrorType>
 
-export function useTaskHistory(
-  parameters: UseTaskHistoryParameters = {},
-): UseTaskHistoryReturnType {
+export function useTaskHistory<selectData = GetTaskHistoryData>(
+  parameters: UseTaskHistoryParameters<selectData> = {},
+): UseTaskHistoryReturnType<selectData> {
+  const { query = {} } = parameters
+
   const config = useConfig(parameters)
   const status = useStatus(parameters)
-  const { sort } = parameters
-  const [taskHistory, setTaskHistory] = useState<Map<string, Task>>(new Map())
-  const incomingTask = useTaskHistoryWebSocket()
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    if (status !== 'in relayer') {
-      setTaskHistory(new Map())
-      return
-    }
+  const options = getTaskHistoryQueryOptions(config, {
+    ...parameters,
+  })
+  const enabled = Boolean(status === 'in relayer' && (query.enabled ?? true))
 
-    async function fetchTaskHistory() {
-      const initialTaskHistory = await getTaskHistory(config)
-      const taskMap = new Map(initialTaskHistory.map((task) => [task.id, task]))
-      setTaskHistory(taskMap)
-    }
+  useTaskHistoryWebSocket({
+    enabled,
+    onUpdate: (incoming: Task) => {
+      if (queryClient && options.queryKey) {
+        const existingMap =
+          queryClient.getQueryData<GetTaskHistoryData>(options.queryKey) ||
+          new Map()
+        const existingTask = existingMap.get(incoming.id)
 
-    fetchTaskHistory()
-  }, [status, config])
-
-  useEffect(() => {
-    if (incomingTask) {
-      setTaskHistory((prev) => new Map(prev).set(incomingTask.id, incomingTask))
-    }
-  }, [incomingTask])
-
-  const sortedTaskHistory = Array.from(taskHistory.values())
-  if (sort) {
-    sortedTaskHistory.sort((a, b) => {
-      if (sort === 'asc') {
-        return Number(a.created_at) - Number(b.created_at)
+        if (!existingTask || incoming.state !== existingTask.state) {
+          const newMap = new Map(existingMap)
+          newMap.set(incoming.id, incoming)
+          queryClient.setQueryData(options.queryKey, newMap)
+        }
       }
-      return Number(b.created_at) - Number(a.created_at)
-    })
-  }
+    },
+  })
 
-  return sortedTaskHistory
+  return useQuery({ ...query, ...options, enabled })
 }
