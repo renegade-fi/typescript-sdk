@@ -185,7 +185,6 @@ export {
 export {
   useTaskHistoryWebSocket,
   type UseTaskHistoryWebSocketParameters,
-  type UseTaskHistoryWebSocketReturnType,
 } from './hooks/useTaskHistoryWebSocket.js'
 
 export {
@@ -235,3 +234,4 @@ export { chain } from '@renegade-fi/core'
 ////////////////////////////////////////////////////////////////////////////////
 
 export { useWallet } from './hooks/useWallet.js'
+export { useTaskHistory as useTaskHistoryQuery } from './hooks/useTaskHistoryQuery.js'

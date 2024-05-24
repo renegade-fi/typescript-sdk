@@ -6,7 +6,7 @@ import { getRelayerWithAuth } from '../utils/http.js'
 import { GET_WALLET_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import type { Balance, Order, Wallet } from '../types/wallet.js'
-import { BaseError } from '../errors/base.js'
+import { BaseError, type BaseErrorType } from '../errors/base.js'
 
 export type GetWalletFromRelayerParameters = {
   seed?: Hex
@@ -15,7 +15,7 @@ export type GetWalletFromRelayerParameters = {
 
 export type GetWalletFromRelayerReturnType = Wallet
 
-export type GetWalletFromRelayerErrorType = undefined
+export type GetWalletFromRelayerErrorType = BaseErrorType
 
 export async function getWalletFromRelayer(
   config: Config,

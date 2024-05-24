@@ -105,6 +105,7 @@ export {
 } from './actions/getSkRoot.js'
 
 export {
+  type GetTaskHistoryErrorType,
   type GetTaskHistoryReturnType,
   getTaskHistory,
 } from './actions/getTaskHistory.js'
@@ -234,3 +235,12 @@ export {
   getWalletQueryKey,
   getWalletQueryOptions,
 } from './query/getWallet.js'
+
+export {
+  type GetTaskHistoryData,
+  type GetTaskHistoryOptions,
+  type GetTaskHistoryQueryFnData,
+  type GetTaskHistoryQueryKey,
+  getTaskHistoryQueryKey,
+  getTaskHistoryQueryOptions,
+} from './query/getTaskHistory.js'

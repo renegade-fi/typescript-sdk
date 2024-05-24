@@ -5,15 +5,23 @@ import { getRelayerWithAuth } from '../utils/http.js'
 import { TASK_HISTORY_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import type { Task as TaskHistoryItem } from '../types/task.js'
+import { BaseError, type BaseErrorType } from '../errors/base.js'
 
-export type GetTaskHistoryReturnType = Promise<TaskHistoryItem[]>
+export type GetTaskHistoryReturnType = Map<string, TaskHistoryItem>
 
-export async function getTaskHistory(config: Config): GetTaskHistoryReturnType {
+export type GetTaskHistoryErrorType = BaseErrorType
+
+export async function getTaskHistory(
+  config: Config,
+): Promise<GetTaskHistoryReturnType> {
   const { getRelayerBaseUrl } = config
   const walletId = getWalletId(config)
   const res = await getRelayerWithAuth(
     config,
     getRelayerBaseUrl(TASK_HISTORY_ROUTE(walletId)),
   )
-  return res.tasks
+  if (!res.tasks) {
+    throw new BaseError('No tasks found')
+  }
+  return new Map(res.tasks.map((task: TaskHistoryItem) => [task.id, task]))
 }
