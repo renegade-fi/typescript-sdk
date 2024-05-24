@@ -123,6 +123,7 @@ export {
 export {
   type GetWalletFromRelayerParameters,
   type GetWalletFromRelayerReturnType,
+  type GetWalletFromRelayerErrorType as GetWalletErrorType,
   getWalletFromRelayer,
 } from './actions/getWalletFromRelayer.js'
 
@@ -195,6 +196,8 @@ export { Token } from './types/token.js'
 
 export * from './types/wallet.js'
 
+export * from './types/utils.js'
+
 export type { Task, TaskInfo, TaskState } from './types/task.js'
 export { UpdateType, TaskType } from './types/task.js'
 
@@ -216,3 +219,18 @@ export { parseBigJSON } from './utils/bigJSON.js'
 // Viem
 ////////////////////////////////////////////////////////////////////////////////
 export { chain } from './utils/viem.js'
+
+////////////////////////////////////////////////////////////////////////////////
+// Tanstack Query
+////////////////////////////////////////////////////////////////////////////////
+
+export { hashFn, structuralSharing } from './query/utils.js'
+
+export {
+  type GetWalletData,
+  type GetWalletOptions,
+  type GetWalletQueryFnData,
+  type GetWalletQueryKey,
+  getWalletQueryKey,
+  getWalletQueryOptions,
+} from './query/getWallet.js'

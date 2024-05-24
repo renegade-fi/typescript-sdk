@@ -25,10 +25,10 @@ importers:
         version: 5.4.4
       vite-plugin-top-level-await:
         specifier: ^1.4.1
-        version: 1.4.1(vite@5.2.8)
+        version: 1.4.1(rollup@4.14.1)(vite@5.2.8(@types/node@20.12.7))
       vite-plugin-wasm:
         specifier: ^3.3.0
-        version: 3.3.0(vite@5.2.8)
+        version: 3.3.0(vite@5.2.8(@types/node@20.12.7))
       vitest:
         specifier: ^1.5.0
         version: 1.5.0(@types/node@20.12.7)(happy-dom@12.10.3)
@@ -52,11 +52,14 @@ importers:
         version: 2.9.28(typescript@5.4.4)
       zustand:
         specifier: ^4.5.2
-        version: 4.5.2(react@18.2.0)
+        version: 4.5.2(@types/react@18.2.75)(react@18.2.0)
     devDependencies:
       '@renegade-fi/test':
         specifier: workspace:*
         version: link:../test
+      '@tanstack/query-core':
+        specifier: '>=5.35.1'
+        version: 5.40.0
       '@types/json-bigint':
         specifier: ^1.0.4
         version: 1.0.4
@@ -80,11 +83,14 @@ importers:
         version: 1.0.0
       react-use-websocket:
         specifier: ^4.8.1
-        version: 4.8.1(react-dom@18.2.0)(react@18.2.0)
+        version: 4.8.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
     devDependencies:
+      '@tanstack/react-query':
+        specifier: '>=5.35.1'
+        version: 5.40.0(react@18.2.0)
       '@types/json-bigint':
         specifier: ^1.0.4
         version: 1.0.4
@@ -573,6 +579,14 @@ packages:
 
   '@swc/types@0.1.6':
     resolution: {integrity: sha512-/JLo/l2JsT/LRd80C3HfbmVpxOAJ11FO2RCEslFrgzLltoP9j8XIbsyDcfCt2WWyX+CM96rBoNM+IToAkFOugg==}
+
+  '@tanstack/query-core@5.40.0':
+    resolution: {integrity: sha512-eD8K8jsOIq0Z5u/QbvOmfvKKE/XC39jA7yv4hgpl/1SRiU+J8QCIwgM/mEHuunQsL87dcvnHqSVLmf9pD4CiaA==}
+
+  '@tanstack/react-query@5.40.0':
+    resolution: {integrity: sha512-iv/W0Axc4aXhFzkrByToE1JQqayxTPNotCoSCnarR/A1vDIHaoKpg7FTIfP3Ev2mbKn1yrxq0ZKYUdLEJxs6Tg==}
+    peerDependencies:
+      react: ^18.0.0
 
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
@@ -2300,7 +2314,9 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@rollup/plugin-virtual@3.0.2': {}
+  '@rollup/plugin-virtual@3.0.2(rollup@4.14.1)':
+    optionalDependencies:
+      rollup: 4.14.1
 
   '@rollup/rollup-android-arm-eabi@4.14.1':
     optional: true
@@ -2414,6 +2430,13 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
+  '@tanstack/query-core@5.40.0': {}
+
+  '@tanstack/react-query@5.40.0(react@18.2.0)':
+    dependencies:
+      '@tanstack/query-core': 5.40.0
+      react: 18.2.0
+
   '@types/estree@1.0.5': {}
 
   '@types/json-bigint@1.0.4': {}
@@ -2471,7 +2494,7 @@ snapshots:
       pretty-format: 29.7.0
 
   abitype@1.0.0(typescript@5.4.4):
-    dependencies:
+    optionalDependencies:
       typescript: 5.4.4
 
   acorn-walk@8.3.2: {}
@@ -3386,7 +3409,7 @@ snapshots:
 
   react-is@18.2.0: {}
 
-  react-use-websocket@4.8.1(react-dom@18.2.0)(react@18.2.0):
+  react-use-websocket@4.8.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -3734,8 +3757,9 @@ snapshots:
       '@scure/bip39': 1.2.1
       abitype: 1.0.0(typescript@5.4.4)
       isows: 1.0.3(ws@8.13.0)
-      typescript: 5.4.4
       ws: 8.13.0
+    optionalDependencies:
+      typescript: 5.4.4
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -3758,9 +3782,9 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-top-level-await@1.4.1(vite@5.2.8):
+  vite-plugin-top-level-await@1.4.1(rollup@4.14.1)(vite@5.2.8(@types/node@20.12.7)):
     dependencies:
-      '@rollup/plugin-virtual': 3.0.2
+      '@rollup/plugin-virtual': 3.0.2(rollup@4.14.1)
       '@swc/core': 1.4.13
       uuid: 9.0.1
       vite: 5.2.8(@types/node@20.12.7)
@@ -3768,22 +3792,21 @@ snapshots:
       - '@swc/helpers'
       - rollup
 
-  vite-plugin-wasm@3.3.0(vite@5.2.8):
+  vite-plugin-wasm@3.3.0(vite@5.2.8(@types/node@20.12.7)):
     dependencies:
       vite: 5.2.8(@types/node@20.12.7)
 
   vite@5.2.8(@types/node@20.12.7):
     dependencies:
-      '@types/node': 20.12.7
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.14.1
     optionalDependencies:
+      '@types/node': 20.12.7
       fsevents: 2.3.3
 
   vitest@1.5.0(@types/node@20.12.7)(happy-dom@12.10.3):
     dependencies:
-      '@types/node': 20.12.7
       '@vitest/expect': 1.5.0
       '@vitest/runner': 1.5.0
       '@vitest/snapshot': 1.5.0
@@ -3793,7 +3816,6 @@ snapshots:
       chai: 4.4.1
       debug: 4.3.4
       execa: 8.0.1
-      happy-dom: 12.10.3
       local-pkg: 0.5.0
       magic-string: 0.30.9
       pathe: 1.1.2
@@ -3805,6 +3827,9 @@ snapshots:
       vite: 5.2.8(@types/node@20.12.7)
       vite-node: 1.5.0(@types/node@20.12.7)
       why-is-node-running: 2.2.2
+    optionalDependencies:
+      '@types/node': 20.12.7
+      happy-dom: 12.10.3
     transitivePeerDependencies:
       - less
       - lightningcss
@@ -3919,7 +3944,9 @@ snapshots:
 
   yocto-queue@1.0.0: {}
 
-  zustand@4.5.2(react@18.2.0):
+  zustand@4.5.2(@types/react@18.2.75)(react@18.2.0):
     dependencies:
-      react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
+    optionalDependencies:
+      '@types/react': 18.2.75
+      react: 18.2.0

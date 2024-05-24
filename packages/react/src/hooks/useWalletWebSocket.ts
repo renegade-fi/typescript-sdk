@@ -16,6 +16,7 @@ import { getSkRoot, useStatus, useWalletId } from '../index.js'
 
 export type UseWalletParameters = {
   config?: Config
+  enabled?: boolean
 }
 
 export type UseWalletReturnType = Wallet | undefined
@@ -24,6 +25,7 @@ export function useWalletWebsocket(
   parameters: UseWalletParameters = {},
 ): UseWalletReturnType {
   const config = useConfig(parameters)
+  const { enabled = true } = parameters
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
@@ -39,7 +41,12 @@ export function useWalletWebsocket(
 
   // Subscribe to wallet updates with auth headers
   useEffect(() => {
-    if (readyState !== ReadyState.OPEN || !walletId || status !== 'in relayer')
+    if (
+      !enabled ||
+      readyState !== ReadyState.OPEN ||
+      !walletId ||
+      status !== 'in relayer'
+    )
       return
 
     const body = {
