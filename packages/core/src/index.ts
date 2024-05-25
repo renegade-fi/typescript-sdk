@@ -66,6 +66,7 @@ export {
 
 export {
   type GetNetworkOrdersReturnType,
+  type GetNetworkOrdersErrorType,
   getNetworkOrders,
 } from './actions/getNetworkOrders.js'
 
@@ -254,3 +255,12 @@ export {
   getOrderHistoryQueryKey,
   getOrderHistoryQueryOptions,
 } from './query/getOrderHistory.js'
+
+export {
+  type GetNetworkOrdersData,
+  type GetNetworkOrdersOptions,
+  type GetNetworkOrdersQueryFnData,
+  type GetNetworkOrdersQueryKey,
+  getNetworkOrdersQueryKey,
+  getNetworkOrdersQueryOptions,
+} from './query/getNetworkOrders.js'

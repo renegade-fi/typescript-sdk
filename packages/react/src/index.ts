@@ -141,12 +141,6 @@ export {
 } from './hooks/useFees.js'
 
 export {
-  useOrderBook,
-  type UseOrderBookParameters,
-  type UseOrderBookReturnType,
-} from './hooks/useOrderBook.js'
-
-export {
   useOrderBookWebSocket,
   type UseOrderBookWebSocketParameters,
   type UseOrderBookWebSocketReturnType,
@@ -227,4 +221,14 @@ export {
   type UseTaskHistoryReturnType,
 } from './hooks/useTaskHistory.js'
 
-export { useOrderHistory } from './hooks/useOrderHistory.js'
+export {
+  useOrderHistory,
+  type UseOrderHistoryParameters,
+  type UseOrderHistoryReturnType,
+} from './hooks/useOrderHistory.js'
+
+export {
+  useNetworkOrders,
+  type UseNetworkOrdersParameters,
+  type UseNetworkOrdersReturnType,
+} from './hooks/useNetworkOrders.js'
