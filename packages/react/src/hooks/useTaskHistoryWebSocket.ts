@@ -32,9 +32,7 @@ export function useTaskHistoryWebSocket(
   const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
     {
-      filter: () => {
-        return false
-      },
+      filter: () => false,
       onMessage(event) {
         const messageData = parseBigJSON(event.data)
         if (

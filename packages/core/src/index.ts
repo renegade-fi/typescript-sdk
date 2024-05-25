@@ -76,6 +76,7 @@ export {
 } from './actions/getOrder.js'
 
 export {
+  type GetOrderHistoryErrorType,
   type GetOrderHistoryReturnType,
   getOrderHistory,
 } from './actions/getOrderHistory.js'
@@ -244,3 +245,12 @@ export {
   getTaskHistoryQueryKey,
   getTaskHistoryQueryOptions,
 } from './query/getTaskHistory.js'
+
+export {
+  type GetOrderHistoryData,
+  type GetOrderHistoryOptions,
+  type GetOrderHistoryQueryFnData,
+  type GetOrderHistoryQueryKey,
+  getOrderHistoryQueryKey,
+  getOrderHistoryQueryOptions,
+} from './query/getOrderHistory.js'

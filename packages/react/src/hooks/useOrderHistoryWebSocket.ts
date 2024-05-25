@@ -1,14 +1,14 @@
 'use client'
 
 import {
-  type Config,
-  type OrderMetadata,
   RENEGADE_AUTH_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
   WS_WALLET_ORDERS_ROUTE,
   parseBigJSON,
+  type Config,
+  type OrderMetadata,
 } from '@renegade-fi/core'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { useConfig } from './useConfig.js'
 
@@ -16,25 +16,37 @@ import { getSkRoot, useStatus, useWalletId } from '../index.js'
 
 export type UseOrderHistoryWebSocketParameters = {
   config?: Config
+  onUpdate?: (order: OrderMetadata) => void
+  enabled?: boolean
 }
-
-export type UseOrderHistoryWebSocketReturnType = OrderMetadata | undefined
 
 export function useOrderHistoryWebSocket(
   parameters: UseOrderHistoryWebSocketParameters = {},
-): UseOrderHistoryWebSocketReturnType {
+) {
   const config = useConfig(parameters)
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
-  const [incomingOrder, setIncomingOrder] = useState<OrderMetadata>()
+  const { onUpdate } = parameters
 
-  const { lastMessage, readyState, sendJsonMessage } = useWebSocket.default(
+  const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
     {
+      filter: () => false,
+      onMessage(event) {
+        const messageData = parseBigJSON(event.data)
+        if (
+          walletId &&
+          messageData.topic === WS_WALLET_ORDERS_ROUTE(walletId) &&
+          messageData.event?.type === 'OrderMetadataUpdated' &&
+          messageData.event?.order
+        )
+          onUpdate?.(messageData.event.order)
+      },
       share: true,
       shouldReconnect: () => true,
     },
+    parameters.enabled,
   )
 
   // Subscribe to wallet updates with auth headers
@@ -61,26 +73,4 @@ export function useOrderHistoryWebSocket(
     }
     sendJsonMessage(message)
   }, [readyState, walletId, status, sendJsonMessage, config])
-
-  useEffect(() => {
-    if (lastMessage && walletId) {
-      try {
-        const messageData = parseBigJSON(lastMessage.data)
-        if (
-          messageData.topic === WS_WALLET_ORDERS_ROUTE(walletId) &&
-          messageData.event?.type === 'OrderMetadataUpdated' &&
-          messageData.event?.order
-        )
-          setIncomingOrder(messageData.event.order)
-      } catch (error) {
-        console.error(
-          'Error parsing data in WebSocket:',
-          lastMessage.data,
-          error,
-        )
-      }
-    }
-  }, [lastMessage, walletId])
-
-  return incomingOrder
 }

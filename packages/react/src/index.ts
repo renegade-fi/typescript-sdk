@@ -159,15 +159,8 @@ export {
 } from './hooks/useOrders.js'
 
 export {
-  useOrderHistory,
-  type UseOrderHistoryParameters,
-  type UseOrderHistoryReturnType,
-} from './hooks/useOrderHistory.js'
-
-export {
   useOrderHistoryWebSocket,
   type UseOrderHistoryWebSocketParameters,
-  type UseOrderHistoryWebSocketReturnType,
 } from './hooks/useOrderHistoryWebSocket.js'
 
 export {
@@ -175,12 +168,6 @@ export {
   type UseStatusParameters,
   type UseStatusReturnType,
 } from './hooks/useStatus.js'
-
-export {
-  useTaskHistory,
-  type UseTaskHistoryParameters,
-  type UseTaskHistoryReturnType,
-} from './hooks/useTaskHistory.js'
 
 export {
   useTaskHistoryWebSocket,
@@ -234,4 +221,11 @@ export { chain } from '@renegade-fi/core'
 ////////////////////////////////////////////////////////////////////////////////
 
 export { useWallet } from './hooks/useWallet.js'
-export { useTaskHistory as useTaskHistoryQuery } from './hooks/useTaskHistoryQuery.js'
+
+export {
+  useTaskHistory,
+  type UseTaskHistoryParameters,
+  type UseTaskHistoryReturnType,
+} from './hooks/useTaskHistory.js'
+
+export { useOrderHistory } from './hooks/useOrderHistory.js'

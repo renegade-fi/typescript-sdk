@@ -1,64 +1,68 @@
 'use client'
 
-import type { Config, OrderMetadata } from '@renegade-fi/core'
-import { getOrderHistory } from '@renegade-fi/core'
-import { useEffect, useState } from 'react'
+import {
+  type Evaluate,
+  type GetOrderHistoryData,
+  type GetOrderHistoryErrorType,
+  type GetOrderHistoryOptions,
+  type GetOrderHistoryQueryFnData,
+  type GetOrderHistoryQueryKey,
+  type OrderMetadata,
+  getOrderHistoryQueryOptions,
+} from '@renegade-fi/core'
+import { useQueryClient } from '@tanstack/react-query'
+import type { ConfigParameter, QueryParameter } from '../types/properties.js'
+import { type UseQueryReturnType, useQuery } from '../utils/query.js'
 import { useConfig } from './useConfig.js'
 import { useOrderHistoryWebSocket } from './useOrderHistoryWebSocket.js'
 import { useStatus } from './useStatus.js'
 
-export type UseOrderHistoryParameters = {
-  config?: Config
-  sort?: 'asc' | 'desc'
-}
+export type UseOrderHistoryParameters<selectData = GetOrderHistoryData> =
+  Evaluate<
+    GetOrderHistoryOptions &
+      ConfigParameter &
+      QueryParameter<
+        GetOrderHistoryQueryFnData,
+        GetOrderHistoryErrorType,
+        selectData,
+        GetOrderHistoryQueryKey
+      >
+  >
 
-export type UseOrderHistoryReturnType = OrderMetadata[]
+export type UseOrderHistoryReturnType<selectData = GetOrderHistoryData> =
+  UseQueryReturnType<selectData, GetOrderHistoryErrorType>
 
-export function useOrderHistory(
-  parameters: UseOrderHistoryParameters = {},
-): UseOrderHistoryReturnType {
+export function useOrderHistory<selectData = GetOrderHistoryData>(
+  parameters: UseOrderHistoryParameters<selectData> = {},
+): UseOrderHistoryReturnType<selectData> {
+  const { query = {} } = parameters
+
   const config = useConfig(parameters)
   const status = useStatus(parameters)
-  const { sort } = parameters
-  const [orderHistory, setOrderHistory] = useState<Map<string, OrderMetadata>>(
-    new Map(),
-  )
-  const incomingOrder = useOrderHistoryWebSocket()
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    if (status !== 'in relayer') {
-      setOrderHistory(new Map())
-      return
-    }
+  const options = getOrderHistoryQueryOptions(config, {
+    ...parameters,
+  })
+  const enabled = Boolean(status === 'in relayer' && (query.enabled ?? true))
 
-    async function fetchOrderHistory() {
-      const initialOrderHistory = await getOrderHistory(config)
-      const orderMap = new Map(
-        initialOrderHistory.map((order) => [order.id, order]),
-      )
-      setOrderHistory(orderMap)
-    }
+  useOrderHistoryWebSocket({
+    enabled,
+    onUpdate: (incoming: OrderMetadata) => {
+      if (queryClient && options.queryKey) {
+        const existingMap =
+          queryClient.getQueryData<GetOrderHistoryData>(options.queryKey) ||
+          new Map()
+        const existingOrder = existingMap.get(incoming.id)
 
-    fetchOrderHistory()
-  }, [status, config])
-
-  useEffect(() => {
-    if (incomingOrder) {
-      setOrderHistory((prev) =>
-        new Map(prev).set(incomingOrder.id, incomingOrder),
-      )
-    }
-  }, [incomingOrder])
-
-  const sortedOrderHistory = Array.from(orderHistory.values())
-  if (sort) {
-    sortedOrderHistory.sort((a, b) => {
-      if (sort === 'asc') {
-        return Number(a.created) - Number(b.created)
+        if (!existingOrder || incoming.state !== existingOrder.state) {
+          const newMap = new Map(existingMap)
+          newMap.set(incoming.id, incoming)
+          queryClient.setQueryData(options.queryKey, newMap)
+        }
       }
-      return Number(b.created) - Number(a.created)
-    })
-  }
+    },
+  })
 
-  return sortedOrderHistory
+  return useQuery({ ...query, ...options, enabled })
 }
