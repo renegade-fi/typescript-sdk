@@ -27,7 +27,7 @@ export function useOrderHistoryWebSocket(
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
-  const { onUpdate } = parameters
+  const { enabled, onUpdate } = parameters
 
   const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
@@ -46,12 +46,17 @@ export function useOrderHistoryWebSocket(
       share: true,
       shouldReconnect: () => true,
     },
-    parameters.enabled,
+    enabled,
   )
 
   // Subscribe to wallet updates with auth headers
   useEffect(() => {
-    if (readyState !== ReadyState.OPEN || !walletId || status !== 'in relayer')
+    if (
+      !enabled ||
+      readyState !== ReadyState.OPEN ||
+      !walletId ||
+      status !== 'in relayer'
+    )
       return
 
     const body = {
@@ -72,5 +77,5 @@ export function useOrderHistoryWebSocket(
       body,
     }
     sendJsonMessage(message)
-  }, [readyState, walletId, status, sendJsonMessage, config])
+  }, [enabled, readyState, walletId, status, sendJsonMessage, config])
 }

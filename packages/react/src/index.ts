@@ -177,7 +177,6 @@ export {
 export {
   useWalletWebsocket,
   type UseWalletParameters,
-  type UseWalletReturnType,
 } from './hooks/useWalletWebSocket.js'
 
 export {

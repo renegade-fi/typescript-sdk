@@ -27,7 +27,7 @@ export function useTaskHistoryWebSocket(
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
-  const { onUpdate } = parameters
+  const { enabled, onUpdate } = parameters
 
   const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
@@ -46,10 +46,8 @@ export function useTaskHistoryWebSocket(
       share: true,
       shouldReconnect: () => true,
     },
-    parameters.enabled,
+    enabled,
   )
-
-  const enabled = Boolean(parameters.enabled && walletId)
 
   useEffect(() => {
     if (

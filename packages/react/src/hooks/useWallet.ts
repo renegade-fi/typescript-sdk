@@ -9,13 +9,12 @@ import {
   type GetWalletQueryFnData,
   type GetWalletQueryKey,
 } from '@renegade-fi/core'
+import { useQueryClient } from '@tanstack/react-query'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'
 import { useQuery, type UseQueryReturnType } from '../utils/query.js'
 import { useConfig } from './useConfig.js'
 import { useStatus } from './useStatus.js'
-import { useQueryClient } from '@tanstack/react-query'
 import { useWalletWebsocket } from './useWalletWebSocket.js'
-import { useEffect } from 'react'
 
 export type UseWalletParameters<selectData = GetWalletData> = Evaluate<
   GetWalletOptions &
@@ -38,6 +37,7 @@ export function useWallet<selectData = GetWalletData>(
 
   const config = useConfig(parameters)
   const status = useStatus(parameters)
+  const queryClient = useQueryClient()
 
   const options = getWalletQueryOptions(config, {
     ...parameters,
@@ -50,15 +50,14 @@ export function useWallet<selectData = GetWalletData>(
       (query.enabled ?? true),
   )
 
-  const queryClient = useQueryClient()
-  const incomingWallet = useWalletWebsocket({ enabled })
-
-  useEffect(() => {
-    if (incomingWallet && queryClient && options.queryKey) {
-      console.log('🚀 ~ useEffect ~ incomingWallet:', incomingWallet)
-      queryClient.setQueryData(options.queryKey, incomingWallet)
-    }
-  }, [incomingWallet, queryClient, options.queryKey])
+  useWalletWebsocket({
+    enabled,
+    onUpdate: (wallet) => {
+      if (wallet && queryClient && options.queryKey) {
+        queryClient.setQueryData(options.queryKey, wallet)
+      }
+    },
+  })
 
   return useQuery({ ...query, ...options, enabled })
 }
