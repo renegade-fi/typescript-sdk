@@ -1,14 +1,14 @@
 'use client'
 
 import {
-  type Config,
   RENEGADE_AUTH_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
   WALLET_ROUTE,
-  type Wallet,
   parseBigJSON,
+  type Config,
+  type Wallet,
 } from '@renegade-fi/core'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { useConfig } from './useConfig.js'
 
@@ -16,35 +16,43 @@ import { getSkRoot, useStatus, useWalletId } from '../index.js'
 
 export type UseWalletParameters = {
   config?: Config
+  onUpdate?: (wallet: Wallet) => void
   enabled?: boolean
 }
 
-export type UseWalletReturnType = Wallet | undefined
-
-export function useWalletWebsocket(
-  parameters: UseWalletParameters = {},
-): UseWalletReturnType {
+export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
   const config = useConfig(parameters)
-  const { enabled = true } = parameters
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
-  const [wallet, setWallet] = useState<Wallet>()
+  const { enabled, onUpdate } = parameters
 
-  const { lastMessage, readyState, sendJsonMessage } = useWebSocket.default(
+  const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
     {
+      filter: () => false,
+      onMessage: (event) => {
+        const messageData = parseBigJSON(event.data)
+        if (
+          walletId &&
+          messageData.topic === WALLET_ROUTE(walletId) &&
+          messageData.event?.type === 'WalletUpdate' &&
+          messageData.event?.wallet
+        )
+          onUpdate?.(messageData.event.wallet)
+      },
       share: true,
       shouldReconnect: () => true,
     },
+    enabled,
   )
 
   // Subscribe to wallet updates with auth headers
   useEffect(() => {
     if (
       !enabled ||
-      readyState !== ReadyState.OPEN ||
       !walletId ||
+      readyState !== ReadyState.OPEN ||
       status !== 'in relayer'
     )
       return
@@ -67,27 +75,5 @@ export function useWalletWebsocket(
       body,
     }
     sendJsonMessage(message)
-  }, [readyState, walletId, status, sendJsonMessage, config])
-
-  useEffect(() => {
-    if (lastMessage && walletId) {
-      try {
-        const messageData = parseBigJSON(lastMessage.data)
-        if (
-          messageData.topic === WALLET_ROUTE(walletId) &&
-          messageData.event?.type === 'WalletUpdate' &&
-          messageData.event?.wallet
-        )
-          setWallet(messageData.event.wallet)
-      } catch (error) {
-        console.error(
-          'Error parsing data in WebSocket:',
-          lastMessage.data,
-          error,
-        )
-      }
-    }
-  }, [lastMessage, walletId])
-
-  return wallet
+  }, [readyState, walletId, status, sendJsonMessage, config, enabled])
 }
