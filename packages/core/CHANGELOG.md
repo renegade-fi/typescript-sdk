@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.29
+
+### Patch Changes
+
+- use core connect function in all packages
+
 ## 0.0.28
 
 ### Patch Changes
