@@ -13,7 +13,7 @@ export type CreateWalletReturnType = ReturnType<typeof waitForWalletIndexing>
 
 export async function createWallet(
   config: Config,
-  parameters: CreateWalletParameters,
+  parameters: CreateWalletParameters = {},
 ): CreateWalletReturnType {
   const { getRelayerBaseUrl, utils } = config
   const { seed } = parameters
