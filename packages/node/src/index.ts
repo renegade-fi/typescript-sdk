@@ -14,4 +14,3 @@ function createConfig(
 }
 
 export { createConfig }
-export { connect } from './actions/connect.js'
