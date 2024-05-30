@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.30
+
+### Patch Changes
+
+- set token mapping using env var
+
 ## 0.0.29
 
 ### Patch Changes
