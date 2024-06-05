@@ -1,5 +1,13 @@
 # @renegade-fi/test
 
+## 0.0.32
+
+### Patch Changes
+
+- react: prevent orderbook refetching
+- Updated dependencies
+  - @renegade-fi/core@0.0.32
+
 ## 0.0.31
 
 ### Patch Changes
