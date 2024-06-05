@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.31
+
+### Patch Changes
+
+- use react-query for queries
+
 ## 0.0.30
 
 ### Patch Changes

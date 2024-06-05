@@ -1,6 +1,6 @@
 {
   "name": "@renegade-fi/core",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "VanillaJS library for Renegade",
   "files": [
     "dist/**",
@@ -32,7 +32,6 @@
   },
   "devDependencies": {
     "@tanstack/query-core": ">=5.35.1",
-    "@renegade-fi/test": "workspace:*",
     "@types/json-bigint": "^1.0.4"
   },
   "dependencies": {
