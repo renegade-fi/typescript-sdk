@@ -25,7 +25,7 @@ export function getWalletQueryOptions(
       })
       return wallet ?? null
     },
-    queryKey: getWalletQueryKey(options),
+    queryKey: getWalletQueryKey({ scopeKey: config.state.id, ...options }),
   } as const satisfies QueryOptions<
     GetWalletQueryFnData,
     GetWalletFromRelayerErrorType,

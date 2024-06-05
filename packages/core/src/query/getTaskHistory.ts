@@ -20,7 +20,10 @@ export function getTaskHistoryQueryOptions(
       const history = await getTaskHistory(config)
       return history ?? null
     },
-    queryKey: getTaskHistoryQueryKey(options),
+    queryKey: getTaskHistoryQueryKey({
+      scopeKey: config.state.id,
+      ...options,
+    }),
   } as const satisfies QueryOptions<
     GetTaskHistoryQueryFnData,
     GetTaskHistoryErrorType,

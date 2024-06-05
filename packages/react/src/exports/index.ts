@@ -17,8 +17,6 @@ function createConfig(
 
 export { createConfig }
 
-export { type Config, type CreateConfigParameters } from '@renegade-fi/core'
-
 ////////////////////////////////////////////////////////////////////////////////
 // Context
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +66,12 @@ export {
   type UseFeesParameters,
   type UseFeesReturnType,
 } from '../hooks/useFees.js'
+
+export {
+  useInitialized,
+  type UseInitializedParameters,
+  type UseInitializedReturnType,
+} from '../hooks/useInitialized.js'
 
 export {
   useOrderBookWebSocket,
@@ -141,6 +145,8 @@ export { useWallet } from '../hooks/useWallet.js'
 // Types
 export type {
   Balance,
+  Config,
+  CreateConfigParameters,
   Exchange,
   NetworkOrder,
   Order,
@@ -151,6 +157,12 @@ export type {
 } from '@renegade-fi/core'
 
 export {
+  // createStorage
+  type CreateStorageParameters,
+  type Storage,
+  type StorageItemMap,
+  createStorage,
+  noopStorage,
   // Viem
   chain,
   // Utils

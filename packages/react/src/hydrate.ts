@@ -30,6 +30,7 @@ export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
     const initRustUtils = async () => {
       try {
         await config.utils.default()
+        config.setState(x => ({ ...x, initialized: true }))
         console.log('🦀 Rust utils initialized successfully')
         // Hydration needs to wait for WASM to initialize, causing state flash
         if (!config._internal.ssr) return

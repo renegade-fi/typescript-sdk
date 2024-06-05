@@ -51,6 +51,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
       seed: undefined,
       status: 'disconnected',
       id: undefined,
+      initialized: false,
     }
   }
 
@@ -189,6 +190,8 @@ export interface State {
     | 'creating wallet'
     | 'connecting'
   id?: string | undefined
+  // Whether the Rust utils have been initialized, used only in React
+  initialized?: boolean
 }
 
 export type PartializedState = Evaluate<

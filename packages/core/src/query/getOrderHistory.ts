@@ -20,7 +20,10 @@ export function getOrderHistoryQueryOptions(
       const history = await getOrderHistory(config)
       return history ?? null
     },
-    queryKey: getOrderHistoryQueryKey(options),
+    queryKey: getOrderHistoryQueryKey({
+      scopeKey: config.state.id,
+      ...options,
+    }),
   } as const satisfies QueryOptions<
     GetOrderHistoryQueryFnData,
     GetOrderHistoryErrorType,
