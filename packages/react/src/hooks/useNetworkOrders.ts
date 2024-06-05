@@ -15,7 +15,6 @@ import type { ConfigParameter, QueryParameter } from '../types/properties.js'
 import { useQuery, type UseQueryReturnType } from '../utils/query.js'
 import { useConfig } from './useConfig.js'
 import { useOrderBookWebSocket } from './useOrderBookWebSocket.js'
-import { useStatus } from './useStatus.js'
 
 export type UseNetworkOrdersParameters<selectData = GetNetworkOrdersData> =
   Evaluate<
@@ -38,13 +37,12 @@ export function useNetworkOrders<selectData = GetNetworkOrdersData>(
   const { query = {} } = parameters
 
   const config = useConfig(parameters)
-  const status = useStatus(parameters)
   const queryClient = useQueryClient()
 
   const options = getNetworkOrdersQueryOptions(config, {
     ...parameters,
   })
-  const enabled = Boolean(status === 'in relayer' && (query.enabled ?? true))
+  const enabled = Boolean(query.enabled ?? true)
 
   useOrderBookWebSocket({
     enabled,
@@ -64,5 +62,6 @@ export function useNetworkOrders<selectData = GetNetworkOrdersData>(
     },
   })
 
-  return useQuery({ ...query, ...options, enabled })
+  // Disable refetch to prevent flickering in multinode cluster (orderbook is not part of consensus)
+  return useQuery({ ...query, ...options, enabled, refetchInterval: false, refetchOnWindowFocus: false })
 }
