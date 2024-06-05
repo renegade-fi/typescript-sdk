@@ -149,6 +149,11 @@ export {
 } from '../actions/waitForTaskCompletion.js'
 
 export {
+  type WatchInitializedReturnType,
+  watchInitialized,
+} from '../actions/watchInitialized.js'
+
+export {
   type WatchStatusParameters,
   type WatchStatusReturnType,
   watchStatus,
@@ -176,6 +181,18 @@ export {
   type State,
   createConfig,
 } from '../createConfig.js'
+
+////////////////////////////////////////////////////////////////////////////////
+// createStorage
+////////////////////////////////////////////////////////////////////////////////
+
+export {
+  type CreateStorageParameters,
+  type Storage,
+  type StorageItemMap,
+  createStorage,
+  noopStorage,
+} from '../createStorage.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Hydrate

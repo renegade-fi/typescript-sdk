@@ -24,7 +24,10 @@ export function getBackOfQueueWalletQueryOptions(
       })
       return wallet ?? null
     },
-    queryKey: getBackOfQueueWalletQueryKey(options),
+    queryKey: getBackOfQueueWalletQueryKey({
+      scopeKey: config.state.id,
+      ...options,
+    }),
   } as const satisfies QueryOptions<
     GetBackOfQueueWalletQueryFnData,
     GetBackOfQueueWalletErrorType,
