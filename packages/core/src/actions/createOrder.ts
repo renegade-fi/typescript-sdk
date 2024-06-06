@@ -28,7 +28,6 @@ export async function createOrder(
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
 
-
   const body = utils.new_order(
     stringifyForWasm(wallet),
     id,

@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.34
+
+### Patch Changes
+
+- export hooks
+
 ## 0.0.33
 
 ### Patch Changes
