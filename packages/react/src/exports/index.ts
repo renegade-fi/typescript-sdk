@@ -91,6 +91,13 @@ export {
   type UseOrdersParameters,
   type UseOrdersReturnType,
 } from '../hooks/useOrders.js'
+
+export {
+  usePing,
+  type UsePingParameters,
+  type UsePingReturnType,
+} from '../hooks/usePing.js'
+
 export {
   useNetworkOrders,
   type UseNetworkOrdersParameters,

@@ -40,15 +40,9 @@
   },
   "typesVersions": {
     "*": {
-      "actions": [
-        "./dist/types/exports/actions.d.ts"
-      ],
-      "constants": [
-        "./dist/types/exports/constants.d.ts"
-      ],
-      "query": [
-        "./dist/types/exports/query.d.ts"
-      ]
+      "actions": ["./dist/types/exports/actions.d.ts"],
+      "constants": ["./dist/types/exports/constants.d.ts"],
+      "query": ["./dist/types/exports/query.d.ts"]
     }
   },
   "peerDependencies": {
@@ -60,7 +54,7 @@
     }
   },
   "devDependencies": {
-    "@tanstack/query-core": ">=5.35.1",
+    "@tanstack/query-core": ">=5.0.0",
     "@types/json-bigint": "^1.0.4"
   },
   "dependencies": {

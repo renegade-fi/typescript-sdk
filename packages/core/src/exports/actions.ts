@@ -84,6 +84,12 @@ export {
 } from '../actions/getPkRoot.js'
 
 export {
+  type GetPingErrorType,
+  type GetPingReturnType,
+  getPing,
+} from '../actions/ping.js'
+
+export {
   type GetPriceParameters,
   type GetPriceReturnType,
   getPriceFromPriceReporter,
