@@ -13,7 +13,7 @@
   "scripts": {
     "build": "pnpm run --r --filter \"./packages/**\" build",
     "build:wasm": "cd wasm && ./build.sh && ./build.sh --node",
-    "changeset:prepublish": "pnpm build:wasm && pnpm build",
+    "changeset:prepublish": "./check-deps.sh && pnpm build:wasm && pnpm build",
     "changeset:publish": "pnpm changeset:prepublish && changeset publish",
     "changeset:version": "changeset version",
     "changeset:version-canary": "changeset version --no-git-tag --snapshot canary",

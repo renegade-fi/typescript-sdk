@@ -21,6 +21,15 @@ export {
 } from '../query/getOrderHistory.js'
 
 export {
+  type GetPingData,
+  type GetPingOptions,
+  type GetPingQueryFnData,
+  type GetPingQueryKey,
+  getPingQueryKey,
+  getPingQueryOptions,
+} from '../query/getPing.js'
+
+export {
   type GetNetworkOrdersData,
   type GetNetworkOrdersOptions,
   type GetNetworkOrdersQueryFnData,
