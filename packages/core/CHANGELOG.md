@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.33
+
+### Patch Changes
+
+- add back of queue queries, remove placeholder block explorer url
+
 ## 0.0.32
 
 ### Patch Changes
