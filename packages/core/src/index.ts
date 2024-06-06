@@ -230,6 +230,15 @@ export { chain } from './utils/viem.js'
 export { hashFn, structuralSharing } from './query/utils.js'
 
 export {
+  type GetBackOfQueueWalletData,
+  type GetBackOfQueueWalletOptions,
+  type GetBackOfQueueWalletQueryFnData,
+  type GetBackOfQueueWalletQueryKey,
+  getBackOfQueueWalletQueryKey,
+  getBackOfQueueWalletQueryOptions,
+} from './query/getBackOfQueueWallet.js'
+
+export {
   type GetWalletData,
   type GetWalletOptions,
   type GetWalletQueryFnData,

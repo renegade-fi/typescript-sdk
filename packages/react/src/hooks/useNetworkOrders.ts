@@ -63,5 +63,11 @@ export function useNetworkOrders<selectData = GetNetworkOrdersData>(
   })
 
   // Disable refetch to prevent flickering in multinode cluster (orderbook is not part of consensus)
-  return useQuery({ ...query, ...options, enabled, refetchInterval: false, refetchOnWindowFocus: false })
+  return useQuery({
+    ...query,
+    ...options,
+    enabled,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+  })
 }
