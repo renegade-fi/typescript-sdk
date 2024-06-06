@@ -24,15 +24,6 @@ export const chain = defineChain({
     default: {
       http: [rpcURL],
     },
-    public: {
-      http: [rpcURL],
-    },
-  },
-  blockExplorers: {
-    default: {
-      name: 'Explorer',
-      url: 'https://explorer.renegade.fi/',
-    },
   },
 })
 
