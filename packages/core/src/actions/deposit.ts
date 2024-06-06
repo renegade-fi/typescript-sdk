@@ -1,9 +1,8 @@
 import invariant from 'tiny-invariant'
 import { toHex, type Address } from 'viem'
 
-import { DEPOSIT_BALANCE_ROUTE, MAX_BALANCES } from '../constants.js'
+import { DEPOSIT_BALANCE_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import { BaseError } from '../errors/base.js'
 import { Token } from '../types/token.js'
 import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
 import { postRelayerWithAuth } from '../utils/http.js'
@@ -34,26 +33,6 @@ export async function deposit(
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
-
-  // If deposit would result in > 5 balances, including potential balance from buy order, throw
-  const filteredWallet = await getBackOfQueueWallet(config, {
-    filterDefaults: true,
-  })
-  const balances = filteredWallet?.balances
-  const mints = balances?.map((balance) => balance.mint)
-  const isNewBalance = !mints?.includes(mint)
-  const orders = filteredWallet?.orders
-  const orderThatWouldResultInNewBalance = orders?.find((order) => {
-    return order.side === 'Buy' && !mints?.includes(order.base_mint)
-  })
-
-  if (
-    balances?.length === MAX_BALANCES - 1 &&
-    isNewBalance &&
-    orderThatWouldResultInNewBalance?.amount
-  ) {
-    throw new BaseError('Buy order would result in more than 5 balances')
-  }
 
   const body = utils.deposit(
     stringifyForWasm(wallet),

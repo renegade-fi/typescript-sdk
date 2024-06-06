@@ -5,6 +5,9 @@ import type { Address } from 'viem'
 export const RENEGADE_AUTH_HEADER_NAME = 'renegade-auth'
 /// Header name for the expiration timestamp of a signature
 export const RENEGADE_SIG_EXPIRATION_HEADER_NAME = 'renegade-auth-expiration'
+/// The message used to derive the wallet's root key
+export const ROOT_KEY_MESSAGE_PREFIX =
+  'Unlock your Renegade Wallet on chain ID:'
 
 ////////////////////////////////////////////////////////////////////////////////
 // System-Wide Constants
