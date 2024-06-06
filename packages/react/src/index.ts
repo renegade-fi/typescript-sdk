@@ -23,7 +23,13 @@ export { type Config, type CreateConfigParameters } from '@renegade-fi/core'
 // Constants
 ////////////////////////////////////////////////////////////////////////////////
 
-export { PRICE_REPORTER_TOPIC, tokenMapping } from '@renegade-fi/core'
+export {
+  PRICE_REPORTER_TOPIC,
+  tokenMapping,
+  MAX_BALANCES,
+  MAX_ORDERS,
+  ROOT_KEY_MESSAGE_PREFIX,
+} from '@renegade-fi/core'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Context
@@ -232,7 +238,6 @@ export {
   type UseNetworkOrdersParameters,
   type UseNetworkOrdersReturnType,
 } from './hooks/useNetworkOrders.js'
-
 
 export {
   useBackOfQueueOrders,
