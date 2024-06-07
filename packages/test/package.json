@@ -31,7 +31,6 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
   "dependencies": {
     "@renegade-fi/core": "workspace:^"
   }
