@@ -134,6 +134,11 @@ export {
 export { type PayFeesReturnType, payFees } from '../actions/payFees.js'
 
 export {
+  type RefreshWalletReturnType,
+  refreshWallet,
+} from '../actions/refreshWallet.js'
+
+export {
   type SignMessageParameters,
   type SignMessageReturnType,
   signMessage,
