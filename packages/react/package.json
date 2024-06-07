@@ -1,7 +1,7 @@
 {
   "name": "@renegade-fi/react",
   "description": "React library for Renegade",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "scripts": {
     "build": "pnpm run clean && pnpm run build:esm+types",
     "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist --declaration --declarationMap --declarationDir ./dist/types",
@@ -41,9 +41,15 @@
   },
   "typesVersions": {
     "*": {
-      "actions": ["./dist/types/exports/actions.d.ts"],
-      "constants": ["./dist/types/exports/constants.d.ts"],
-      "query": ["./dist/types/exports/query.d.ts"]
+      "actions": [
+        "./dist/types/exports/actions.d.ts"
+      ],
+      "constants": [
+        "./dist/types/exports/constants.d.ts"
+      ],
+      "query": [
+        "./dist/types/exports/query.d.ts"
+      ]
     }
   },
   "peerDependencies": {

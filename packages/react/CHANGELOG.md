@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.36
+
+### Patch Changes
+
+- use proxied exports
+- Updated dependencies
+  - @renegade-fi/core@0.0.35
+
 ## 0.0.35
 
 ### Patch Changes
