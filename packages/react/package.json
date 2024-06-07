@@ -1,7 +1,13 @@
 {
   "name": "@renegade-fi/react",
-  "version": "0.0.35",
   "description": "React library for Renegade",
+  "version": "0.0.35",
+  "scripts": {
+    "build": "pnpm run clean && pnpm run build:esm+types",
+    "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist --declaration --declarationMap --declarationDir ./dist/types",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "typecheck": "tsc --noEmit"
+  },
   "files": [
     "dist/**",
     "!dist/**/*.tsbuildinfo",
@@ -12,23 +18,34 @@
   ],
   "sideEffects": false,
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./dist/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "typings": "./dist/types/exports/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./dist/types/exports/index.d.ts",
+      "default": "./dist/exports/index.js"
+    },
+    "./actions": {
+      "types": "./dist/types/exports/actions.d.ts",
+      "default": "./dist/exports/actions.js"
+    },
+    "./constants": {
+      "types": "./dist/types/exports/constants.d.ts",
+      "default": "./dist/exports/constants.js"
+    },
+    "./query": {
+      "types": "./dist/types/exports/query.d.ts",
+      "default": "./dist/exports/query.js"
     }
   },
-  "scripts": {
-    "build": "pnpm run clean && pnpm run build:esm+types",
-    "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist --declaration --declarationMap --declarationDir ./dist/types",
-    "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "typecheck": "tsc --noEmit"
+  "typesVersions": {
+    "*": {
+      "actions": ["./dist/types/exports/actions.d.ts"],
+      "constants": ["./dist/types/exports/constants.d.ts"],
+      "query": ["./dist/types/exports/query.d.ts"]
+    }
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "peerDependencies": {
     "@tanstack/react-query": ">=5.0.0",
     "react": ">=18"
@@ -46,5 +63,6 @@
     "@types/react-dom": ">=18",
     "react": ">=18",
     "react-dom": ">=18"
-  }
+  },
+  "keywords": []
 }

@@ -4,6 +4,7 @@ import {
   RENEGADE_AUTH_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
   WS_WALLET_ORDERS_ROUTE,
+  getSkRoot,
   parseBigJSON,
   type Config,
   type OrderMetadata,
@@ -11,8 +12,8 @@ import {
 import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { useConfig } from './useConfig.js'
-
-import { getSkRoot, useStatus, useWalletId } from '../index.js'
+import { useStatus } from './useStatus.js'
+import { useWalletId } from './useWalletId.js'
 
 export type UseOrderHistoryWebSocketParameters = {
   config?: Config

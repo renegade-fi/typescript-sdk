@@ -1,7 +1,13 @@
 {
   "name": "@renegade-fi/core",
-  "version": "0.0.34",
   "description": "VanillaJS library for Renegade",
+  "version": "0.0.34",
+  "scripts": {
+    "build": "pnpm run clean && pnpm run build:esm+types",
+    "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "typecheck": "tsc --noEmit"
+  },
   "files": [
     "dist/**",
     "!dist/**/*.tsbuildinfo",
@@ -39,15 +45,6 @@
       "query": ["./dist/types/exports/query.d.ts"]
     }
   },
-  "scripts": {
-    "build": "pnpm run clean && pnpm run build:esm+types",
-    "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
-    "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "typecheck": "tsc --noEmit"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "peerDependencies": {
     "@tanstack/query-core": ">=5.0.0"
   },
@@ -67,5 +64,6 @@
     "tiny-invariant": "^1.3.3",
     "viem": "^2.9.28",
     "zustand": "^4.5.2"
-  }
+  },
+  "keywords": []
 }
