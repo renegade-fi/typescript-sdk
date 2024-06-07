@@ -27,6 +27,9 @@ export const MAX_ORDERS = 5
 export const CREATE_WALLET_ROUTE = '/wallet'
 // Find a wallet in contract storage
 export const FIND_WALLET_ROUTE = '/wallet/lookup'
+// Refresh a wallet from on-chain state
+export const REFRESH_WALLET_ROUTE = (wallet_id: string) =>
+  `/wallet/${wallet_id}/refresh`
 // Returns the wallet information for the given id
 export const GET_WALLET_ROUTE = (wallet_id: string) => `/wallet/${wallet_id}`
 /// Get the wallet at the "back of the queue", i.e. the speculatively updated
