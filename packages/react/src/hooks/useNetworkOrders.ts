@@ -1,15 +1,17 @@
 'use client'
 
+import type {
+  Evaluate,
+  GetNetworkOrdersErrorType,
+  NetworkOrder,
+} from '@renegade-fi/core'
 import {
   getNetworkOrdersQueryOptions,
-  type Evaluate,
   type GetNetworkOrdersData,
-  type GetNetworkOrdersErrorType,
   type GetNetworkOrdersOptions,
   type GetNetworkOrdersQueryFnData,
   type GetNetworkOrdersQueryKey,
-  type NetworkOrder,
-} from '@renegade-fi/core'
+} from '@renegade-fi/core/query'
 import { useQueryClient } from '@tanstack/react-query'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'
 import { useQuery, type UseQueryReturnType } from '../utils/query.js'

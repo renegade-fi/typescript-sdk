@@ -1,18 +1,20 @@
 'use client'
 
+import type {
+  Evaluate,
+  GetOrderHistoryErrorType,
+  OrderMetadata,
+} from '@renegade-fi/core'
 import {
-  type Evaluate,
+  getOrderHistoryQueryOptions,
   type GetOrderHistoryData,
-  type GetOrderHistoryErrorType,
   type GetOrderHistoryOptions,
   type GetOrderHistoryQueryFnData,
   type GetOrderHistoryQueryKey,
-  type OrderMetadata,
-  getOrderHistoryQueryOptions,
-} from '@renegade-fi/core'
+} from '@renegade-fi/core/query'
 import { useQueryClient } from '@tanstack/react-query'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'
-import { type UseQueryReturnType, useQuery } from '../utils/query.js'
+import { useQuery, type UseQueryReturnType } from '../utils/query.js'
 import { useConfig } from './useConfig.js'
 import { useOrderHistoryWebSocket } from './useOrderHistoryWebSocket.js'
 import { useStatus } from './useStatus.js'

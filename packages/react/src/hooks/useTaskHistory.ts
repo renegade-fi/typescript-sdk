@@ -1,15 +1,13 @@
 'use client'
 
+import type { Evaluate, GetTaskHistoryErrorType, Task } from '@renegade-fi/core'
 import {
   getTaskHistoryQueryOptions,
-  type Evaluate,
   type GetTaskHistoryData,
-  type GetTaskHistoryErrorType,
   type GetTaskHistoryOptions,
   type GetTaskHistoryQueryFnData,
   type GetTaskHistoryQueryKey,
-  type Task,
-} from '@renegade-fi/core'
+} from '@renegade-fi/core/query'
 import { useQueryClient } from '@tanstack/react-query'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'
 import { useQuery, type UseQueryReturnType } from '../utils/query.js'

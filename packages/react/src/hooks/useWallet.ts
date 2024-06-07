@@ -1,14 +1,13 @@
 'use client'
 
+import type { Evaluate, GetWalletErrorType } from '@renegade-fi/core'
 import {
   getWalletQueryOptions,
-  type Evaluate,
   type GetWalletData,
-  type GetWalletErrorType,
   type GetWalletOptions,
   type GetWalletQueryFnData,
   type GetWalletQueryKey,
-} from '@renegade-fi/core'
+} from '@renegade-fi/core/query'
 import { useQueryClient } from '@tanstack/react-query'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'
 import { useQuery, type UseQueryReturnType } from '../utils/query.js'
