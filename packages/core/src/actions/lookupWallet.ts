@@ -28,6 +28,7 @@ export async function lookupWallet(
     })
     config.setState({ ...config.state, status: 'looking up' })
     return waitForWalletIndexing(config, {
+      timeout: 300000,
       isLookup: true,
       onComplete(wallet) {
         config.setState({
