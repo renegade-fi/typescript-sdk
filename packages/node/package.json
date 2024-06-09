@@ -7,7 +7,7 @@
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "typecheck": "tsc --noEmit"
   },
-  "version": "0.0.35",
+  "version": "0.0.36",
   "files": [
     "dist/**",
     "!dist/**/*.tsbuildinfo",

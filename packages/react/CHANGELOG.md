@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.37
+
+### Patch Changes
+
+- core: add refresh wallet action
+- Updated dependencies
+  - @renegade-fi/core@0.0.36
+
 ## 0.0.36
 
 ### Patch Changes
