@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.37
+
+### Patch Changes
+
+- core: increase lookup wallet timeout
+
 ## 0.0.36
 
 ### Patch Changes
