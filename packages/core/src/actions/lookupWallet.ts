@@ -22,7 +22,7 @@ export async function lookupWallet(
   const body = utils.find_wallet(skRoot)
   const res = await postRelayerRaw(getRelayerBaseUrl(FIND_WALLET_ROUTE), body)
   if (res.task_id) {
-    console.log(`task lookup-wallet(${res.taskId}): ${res.walletId}`, {
+    console.log(`task lookup-wallet(${res.task_id}): ${res.wallet_id}`, {
       status: 'looking up',
       walletId: res.wallet_id,
     })
