@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.39
+
+### Patch Changes
+
+- core, react: add ping query, fix lookup wallet log
+- Updated dependencies
+  - @renegade-fi/core@0.0.38
+
 ## 0.0.38
 
 ### Patch Changes
