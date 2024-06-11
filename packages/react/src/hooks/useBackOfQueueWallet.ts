@@ -35,7 +35,7 @@ export type UseBackOfQueueWalletReturnType<
 export function useBackOfQueueWallet<selectData = GetBackOfQueueWalletData>(
   parameters: UseBackOfQueueWalletParameters<selectData> = {},
 ): UseBackOfQueueWalletReturnType<selectData> {
-  const { filterDefaults, seed, query = {} } = parameters
+  const { filterDefaults, query = {} } = parameters
 
   const config = useConfig(parameters)
   const status = useStatus(parameters)
@@ -43,13 +43,10 @@ export function useBackOfQueueWallet<selectData = GetBackOfQueueWalletData>(
 
   const options = getBackOfQueueWalletQueryOptions(config, {
     ...parameters,
-    seed: seed ?? config.state.seed,
     filterDefaults,
   })
   const enabled = Boolean(
-    status === 'in relayer' &&
-      (seed || config.state.seed) &&
-      (query.enabled ?? true),
+    status === 'in relayer' && config.state.seed && (query.enabled ?? true),
   )
 
   useWalletWebsocket({

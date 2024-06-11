@@ -6,12 +6,11 @@ import {
   type GetBackOfQueueWalletReturnType,
 } from '../actions/getBackOfQueueWallet.js'
 import type { Config } from '../createConfig.js'
-import type { Evaluate, PartialBy } from '../types/utils.js'
+import type { Evaluate } from '../types/utils.js'
 import { filterQueryOptions, type ScopeKeyParameter } from './utils.js'
 
-export type GetBackOfQueueWalletOptions = Evaluate<
-  PartialBy<GetBackOfQueueWalletParameters, 'seed'> & ScopeKeyParameter
->
+export type GetBackOfQueueWalletOptions =
+  Evaluate<GetBackOfQueueWalletParameters> & ScopeKeyParameter
 
 export function getBackOfQueueWalletQueryOptions(
   config: Config,
@@ -19,11 +18,9 @@ export function getBackOfQueueWalletQueryOptions(
 ) {
   return {
     async queryFn({ queryKey }) {
-      const { seed, scopeKey: _, ...parameters } = queryKey[1]
-      if (!seed) throw new Error('seed is required')
+      const { scopeKey: _, ...parameters } = queryKey[1]
       const wallet = await getBackOfQueueWallet(config, {
         ...(parameters as GetBackOfQueueWalletParameters),
-        seed,
       })
       return wallet ?? null
     },

@@ -40,15 +40,9 @@
   },
   "typesVersions": {
     "*": {
-      "actions": [
-        "./dist/types/exports/actions.d.ts"
-      ],
-      "constants": [
-        "./dist/types/exports/constants.d.ts"
-      ],
-      "query": [
-        "./dist/types/exports/query.d.ts"
-      ]
+      "actions": ["./dist/types/exports/actions.d.ts"],
+      "constants": ["./dist/types/exports/constants.d.ts"],
+      "query": ["./dist/types/exports/query.d.ts"]
     }
   },
   "peerDependencies": {

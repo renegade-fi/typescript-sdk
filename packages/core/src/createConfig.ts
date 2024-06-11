@@ -118,7 +118,19 @@ export function createConfig(parameters: CreateConfigParameters): Config {
     get state() {
       return store.getState()
     },
-    setState: (newState: State) => store.setState(newState),
+    setState(value) {
+      let newState: State
+      if (typeof value === 'function') newState = value(store.getState() as any)
+      else newState = value
+
+      // Reset state if it got set to something not matching the base state
+      const initialState = getInitialState()
+      if (typeof newState !== 'object') newState = initialState
+      const isCorrupt = Object.keys(initialState).some((x) => !(x in newState))
+      if (isCorrupt) newState = initialState
+
+      store.setState(newState, true)
+    },
     subscribe(selector, listener, options) {
       return store.subscribe(
         selector as unknown as (state: State) => any,
@@ -145,7 +157,7 @@ export type Config = {
   priceReporterUrl: string
   relayerUrl: string
   rpcUrl?: string
-  setState: (newState: State) => void
+  setState(value: State | ((state: State) => State)): void
   state: State
   subscribe<state>(
     selector: (state: State) => state,

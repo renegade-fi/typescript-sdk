@@ -25,8 +25,7 @@ export function hydrate(config: Config, parameters: HydrateParameters) {
       }
 
       if (reconnectOnMount) {
-        console.log('🚝 Reconnecting on mount')
-        reconnect(config, { id: config.state.id })
+        reconnect(config)
       }
     },
   }

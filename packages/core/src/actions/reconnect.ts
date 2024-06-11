@@ -1,38 +1,26 @@
-import { getRelayerWithAuth } from '../utils/http.js'
-
-import { GET_WALLET_ROUTE } from '../constants.js'
+import invariant from 'tiny-invariant'
 import type { Config } from '../createConfig.js'
+import { getWalletFromRelayer } from './getWalletFromRelayer.js'
 
-export type ReconnectParameters = { id?: string }
-
-export type ReconnectReturnType = Promise<void>
-
-export async function reconnect(
-  config: Config,
-  parameters: ReconnectParameters,
-): ReconnectReturnType {
-  const { getRelayerBaseUrl } = config
-  const { id } = parameters
-  if (!id) {
-    // Persisted state is malformed
-    config.setState({ status: 'disconnected' })
-    return
-  }
-  // If wallet in relayer, set status to in relayer
-  await getRelayerWithAuth(config, getRelayerBaseUrl(GET_WALLET_ROUTE(id)))
-    .then((res) => {
-      if (res.wallet) {
-        config.setState({ ...config.state, status: 'in relayer' })
-      }
-      return res.wallet
-    })
-    .catch((err) => {
-      console.error('Error reconnecting: ', err)
-      // Should lookup wallet in connect
-      config.setState({
-        status: 'disconnected',
-        id: undefined,
-        seed: undefined,
+export async function reconnect(config: Config) {
+  try {
+    invariant(config.state.seed, 'No seed found')
+    invariant(config.state.id, 'No id found')
+    invariant(config.state.status === 'in relayer', 'Not previously connected')
+    const wallet = await getWalletFromRelayer(config)
+    if (wallet) {
+      console.log('🚝 Reconnecting on mount')
+      config.setState((x) => ({
+        ...x,
+        status: 'in relayer',
+      }))
+      console.log('Wallet found in relayer', {
+        status: 'in relayer',
+        walletId: wallet.id,
       })
-    })
+    }
+  } catch (error) {
+    console.error('Could not reconnect', { error })
+    config.setState({})
+  }
 }

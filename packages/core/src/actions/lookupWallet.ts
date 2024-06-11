@@ -1,24 +1,17 @@
-import { createPublicClient, http, parseAbiItem, type Hex } from 'viem'
+import { createPublicClient, http, parseAbiItem } from 'viem'
 import { FIND_WALLET_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
+import { BaseError } from '../errors/base.js'
 import { postRelayerRaw } from '../utils/http.js'
 import { chain } from '../utils/viem.js'
 import { getSkRoot } from './getSkRoot.js'
 import { waitForWalletIndexing } from './waitForWalletIndexing.js'
-import { BaseError } from '../errors/base.js'
-import { getWalletId } from './getWalletId.js'
-
-export type LookupWalletParameters = { seed?: Hex }
 
 export type LookupWalletReturnType = ReturnType<typeof waitForWalletIndexing>
 
-export async function lookupWallet(
-  config: Config,
-  parameters: LookupWalletParameters = {},
-): LookupWalletReturnType {
-  const { seed } = parameters
+export async function lookupWallet(config: Config): LookupWalletReturnType {
   const { getRelayerBaseUrl, utils } = config
-  const skRoot = getSkRoot(config, { seed })
+  const skRoot = getSkRoot(config)
   const body = utils.find_wallet(skRoot)
   const res = await postRelayerRaw(getRelayerBaseUrl(FIND_WALLET_ROUTE), body)
   if (res.task_id) {
@@ -26,16 +19,15 @@ export async function lookupWallet(
       status: 'looking up',
       walletId: res.wallet_id,
     })
-    config.setState({ ...config.state, status: 'looking up' })
+    config.setState((x) => ({ ...x, status: 'looking up' }))
     return waitForWalletIndexing(config, {
       timeout: 300000,
       isLookup: true,
       onComplete(wallet) {
-        config.setState({
-          ...config.state,
+        config.setState((x) => ({
+          ...x,
           status: 'in relayer',
-          id: wallet.id,
-        })
+        }))
         console.log(
           `task lookup-wallet(${res.task_id}) completed: ${wallet.id}`,
           {
@@ -45,16 +37,11 @@ export async function lookupWallet(
         )
       },
       onFailure() {
-        const walletId = getWalletId(config, { seed })
-        console.error(`wallet id: ${walletId} looking up failed`, {
+        console.error(`wallet id: ${config.state.id} looking up failed`, {
           status: 'looking up',
-          walletId,
+          walletId: config.state.id,
         })
-        config.setState({
-          status: 'disconnected',
-          id: undefined,
-          seed: undefined,
-        })
+        config.setState({})
       },
     })
   }
@@ -85,6 +72,6 @@ export async function lookupWalletOnChain(config: Config) {
     return logs.length > 0
   } catch (error) {
     console.error(`Error looking up wallet on chain: ${error}`)
-    throw error
+    return
   }
 }

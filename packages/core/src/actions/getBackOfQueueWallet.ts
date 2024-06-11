@@ -1,4 +1,3 @@
-import type { Hex } from 'viem'
 import { BACK_OF_QUEUE_WALLET_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
@@ -7,7 +6,6 @@ import { getRelayerWithAuth } from '../utils/http.js'
 import { getSkRoot } from './getSkRoot.js'
 
 export type GetBackOfQueueWalletParameters = {
-  seed?: Hex
   filterDefaults?: boolean
 }
 
@@ -19,9 +17,9 @@ export async function getBackOfQueueWallet(
   config: Config,
   parameters: GetBackOfQueueWalletParameters = {},
 ): Promise<GetBackOfQueueWalletReturnType> {
-  const { filterDefaults, seed } = parameters
+  const { filterDefaults } = parameters
   const { getRelayerBaseUrl, utils } = config
-  const skRoot = getSkRoot(config, { seed })
+  const skRoot = getSkRoot(config)
   const walletId = utils.wallet_id(skRoot)
   const res = await getRelayerWithAuth(
     config,

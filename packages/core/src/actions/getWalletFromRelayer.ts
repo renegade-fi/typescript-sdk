@@ -1,15 +1,11 @@
-import type { Hex } from 'viem'
-import { getSkRoot } from './getSkRoot.js'
-
-import { getRelayerWithAuth } from '../utils/http.js'
-
 import { GET_WALLET_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import type { Balance, Order, Wallet } from '../types/wallet.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
+import type { Balance, Order, Wallet } from '../types/wallet.js'
+import { getRelayerWithAuth } from '../utils/http.js'
+import { getSkRoot } from './getSkRoot.js'
 
 export type GetWalletFromRelayerParameters = {
-  seed?: Hex
   filterDefaults?: boolean
 }
 
@@ -21,9 +17,9 @@ export async function getWalletFromRelayer(
   config: Config,
   parameters: GetWalletFromRelayerParameters = {},
 ): Promise<GetWalletFromRelayerReturnType> {
-  const { filterDefaults, seed } = parameters
+  const { filterDefaults } = parameters
   const { getRelayerBaseUrl, utils } = config
-  const skRoot = getSkRoot(config, { seed })
+  const skRoot = getSkRoot(config)
   const walletId = utils.wallet_id(skRoot)
   const res = await getRelayerWithAuth(
     config,
@@ -32,11 +28,10 @@ export async function getWalletFromRelayer(
   if (!res.wallet) {
     throw new BaseError('Wallet not found')
   }
-  config.setState({
-    ...config.state,
+  config.setState((x) => ({
+    ...x,
     status: 'in relayer',
-    id: res.wallet.id,
-  })
+  }))
   if (filterDefaults) {
     return {
       ...res.wallet,

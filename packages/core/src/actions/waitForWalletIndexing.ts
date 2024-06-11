@@ -1,11 +1,9 @@
-import type { Hex } from 'viem'
-import { BaseError } from '../errors/base.js'
 import type { Config } from '../createConfig.js'
+import { BaseError } from '../errors/base.js'
 import type { Wallet } from '../types/wallet.js'
 import { getWalletFromRelayer } from './getWalletFromRelayer.js'
 
 export type WaitForWalletIndexParameters = {
-  seed?: Hex
   onComplete?: (wallet: Wallet) => void
   onFailure?: () => void
   timeout?: number
@@ -19,7 +17,7 @@ export async function waitForWalletIndexing(
   parameters: WaitForWalletIndexParameters,
 ): WaitForWalletIndexReturnType {
   const { pollingInterval } = config
-  const { seed, onComplete, onFailure, timeout = 60000, isLookup } = parameters
+  const { onComplete, onFailure, timeout = 60000, isLookup } = parameters
 
   const startTime = Date.now()
 
@@ -32,7 +30,7 @@ export async function waitForWalletIndexing(
     }
 
     try {
-      const wallet = await getWalletFromRelayer(config, { seed })
+      const wallet = await getWalletFromRelayer(config)
       if (wallet) {
         onComplete?.(wallet)
         break

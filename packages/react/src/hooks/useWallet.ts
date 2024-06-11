@@ -32,7 +32,7 @@ export type UseWalletReturnType<selectData = GetWalletData> =
 export function useWallet<selectData = GetWalletData>(
   parameters: UseWalletParameters<selectData> = {},
 ): UseWalletReturnType<selectData> {
-  const { filterDefaults, seed, query = {} } = parameters
+  const { filterDefaults, query = {} } = parameters
 
   const config = useConfig(parameters)
   const status = useStatus(parameters)
@@ -40,13 +40,10 @@ export function useWallet<selectData = GetWalletData>(
 
   const options = getWalletQueryOptions(config, {
     ...parameters,
-    seed: seed ?? config.state.seed,
     filterDefaults,
   })
   const enabled = Boolean(
-    status === 'in relayer' &&
-      (seed || config.state.seed) &&
-      (query.enabled ?? true),
+    status === 'in relayer' && config.state.seed && (query.enabled ?? true),
   )
 
   useWalletWebsocket({
