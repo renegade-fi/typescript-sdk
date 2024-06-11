@@ -9,7 +9,6 @@ export {
 } from '../actions/cancelOrder.js'
 
 export {
-  type ConnectParameters,
   type ConnectReturnType,
   connect,
 } from '../actions/connect.js'
@@ -91,7 +90,6 @@ export {
 } from '../actions/getPriceFromPriceReporter.js'
 
 export {
-  type GetSkRootParameters,
   type GetSkRootReturnType,
   getSkRoot,
 } from '../actions/getSkRoot.js'
@@ -121,13 +119,11 @@ export {
 } from '../actions/getWalletFromRelayer.js'
 
 export {
-  type GetWalletIdParameters,
   type GetWalletIdReturnType,
   getWalletId,
 } from '../actions/getWalletId.js'
 
 export {
-  type LookupWalletParameters,
   type LookupWalletReturnType,
   lookupWallet,
 } from '../actions/lookupWallet.js'

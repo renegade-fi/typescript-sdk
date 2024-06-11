@@ -6,11 +6,11 @@ import {
   type GetWalletFromRelayerReturnType,
 } from '../actions/getWalletFromRelayer.js'
 import type { Config } from '../createConfig.js'
-import type { Evaluate, PartialBy } from '../types/utils.js'
+import type { Evaluate } from '../types/utils.js'
 import { filterQueryOptions, type ScopeKeyParameter } from './utils.js'
 
 export type GetWalletOptions = Evaluate<
-  PartialBy<GetWalletFromRelayerParameters, 'seed'> & ScopeKeyParameter
+  GetWalletFromRelayerParameters & ScopeKeyParameter
 >
 
 export function getWalletQueryOptions(
@@ -19,11 +19,9 @@ export function getWalletQueryOptions(
 ) {
   return {
     async queryFn({ queryKey }) {
-      const { seed, scopeKey: _, ...parameters } = queryKey[1]
-      if (!seed) throw new Error('seed is required')
+      const { scopeKey: _, ...parameters } = queryKey[1]
       const wallet = await getWalletFromRelayer(config, {
         ...(parameters as GetWalletFromRelayerParameters),
-        seed,
       })
       return wallet ?? null
     },

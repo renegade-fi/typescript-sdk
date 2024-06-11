@@ -1,64 +1,57 @@
-import type { Hex } from 'viem'
+import type { Config } from '../createConfig.js'
 import { createWallet } from './createWallet.js'
 import { getWalletFromRelayer } from './getWalletFromRelayer.js'
 import { getWalletId } from './getWalletId.js'
 import { lookupWallet, lookupWalletOnChain } from './lookupWallet.js'
 
-import type { Config } from '../createConfig.js'
-
-export type ConnectParameters = { seed?: Hex }
-
-export type ConnectReturnType = Promise<{
+export type ConnectReturnType = {
   isLookup: boolean
   job: Promise<void>
-} | null>
+} | void
 
-export async function connect(
-  config: Config,
-  parameters: ConnectParameters = {},
-): ConnectReturnType {
-  const { seed } = parameters
-  let walletId = config.state.id
+export async function connect(config: Config): Promise<ConnectReturnType> {
   try {
-    walletId = getWalletId(config, { seed })
-  } catch (error: any) {
-    console.error('Error getting wallet id', {
-      errorStack: error.stack,
-      errorMessage: error.message,
-      walletId,
-      seed,
-    })
-    throw error
-  }
+    const walletId = getWalletId(config)
+    config.setState((x) => ({ ...x, id: walletId }))
 
-  console.log('Attempting to connect wallet', { walletId })
+    console.log('Attempting to connect wallet', { walletId: config.state.id })
 
-  try {
-    const wallet = await getWalletFromRelayer(config, { seed })
-    if (wallet) {
-      config.setState({ ...config.state, status: 'in relayer', id: wallet.id })
-      console.log('Wallet found in relayer', {
-        status: 'in relayer',
-        walletId: wallet.id,
+    try {
+      const wallet = await getWalletFromRelayer(config)
+      if (wallet) {
+        config.setState((x) => ({ ...x, status: 'in relayer' }))
+        console.log('Wallet found in relayer', {
+          status: 'in relayer',
+          walletId: config.state.id,
+        })
+        return
+      }
+    } catch (error) {
+      console.error('Wallet not found in relayer', {
+        error,
+        walletId: config.state.id,
       })
-      return Promise.resolve(null)
     }
-  } catch (error) {
-    console.error('Error getting wallet from relayer', { error, walletId })
-  }
 
-  // If wallet on chain, start lookup wallet task
-  const isOnChain = await lookupWalletOnChain(config)
-  if (isOnChain) {
+    // If wallet on chain, start lookup wallet task
+    const isOnChain = await lookupWalletOnChain(config)
+    if (isOnChain) {
+      return Promise.resolve({
+        isLookup: true,
+        job: lookupWallet(config),
+      })
+    }
+
+    // If wallet not in relayer or on chain, call createWallet
     return Promise.resolve({
-      isLookup: true,
-      job: lookupWallet(config, { seed }),
+      isLookup: false,
+      job: createWallet(config),
     })
+  } catch (error) {
+    console.error('Could not connect wallet', {
+      error,
+      walletId: config.state.id,
+    })
+    config.setState({})
   }
-
-  // If wallet not in relayer or on chain, call createWallet
-  return Promise.resolve({
-    isLookup: false,
-    job: createWallet(config, { seed }),
-  })
 }

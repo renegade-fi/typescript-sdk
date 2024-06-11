@@ -1,22 +1,14 @@
-import type { Hex } from 'viem'
 import { CREATE_WALLET_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { postRelayerRaw } from '../utils/http.js'
 import { getSkRoot } from './getSkRoot.js'
-import { getWalletId } from './getWalletId.js'
 import { waitForWalletIndexing } from './waitForWalletIndexing.js'
-
-export type CreateWalletParameters = { seed?: Hex }
 
 export type CreateWalletReturnType = ReturnType<typeof waitForWalletIndexing>
 
-export async function createWallet(
-  config: Config,
-  parameters: CreateWalletParameters = {},
-): CreateWalletReturnType {
+export async function createWallet(config: Config): CreateWalletReturnType {
   const { getRelayerBaseUrl, utils } = config
-  const { seed } = parameters
   const skRoot = getSkRoot(config)
   const body = utils.create_wallet(skRoot)
   const headers = {
@@ -29,7 +21,7 @@ export async function createWallet(
     headers,
   )
   if (res.task_id) {
-    config.setState({ ...config.state, status: 'creating wallet' })
+    config.setState((x) => ({ ...x, status: 'creating wallet' }))
     console.log(`task create-wallet(${res.task_id}): ${res.wallet_id}`, {
       status: 'creating wallet',
       walletId: res.wallet_id,
@@ -37,11 +29,7 @@ export async function createWallet(
     return waitForWalletIndexing(config, {
       isLookup: false,
       onComplete: (wallet) => {
-        config.setState({
-          ...config.state,
-          id: wallet.id,
-          status: 'in relayer',
-        })
+        config.setState((x) => ({ ...x, status: 'in relayer' }))
         console.log(
           `task create-wallet(${res.task_id}) completed: ${wallet.id}`,
           {
@@ -51,16 +39,11 @@ export async function createWallet(
         )
       },
       onFailure: () => {
-        const walletId = getWalletId(config, { seed })
-        console.error(`wallet id: ${walletId} creating wallet failed`, {
+        console.error(`wallet id: ${config.state.id} creating wallet failed`, {
           status: 'creating wallet',
-          walletId,
+          walletId: config.state.id,
         })
-        config.setState({
-          status: 'disconnected',
-          id: undefined,
-          seed: undefined,
-        })
+        config.setState({})
       },
     })
   }
