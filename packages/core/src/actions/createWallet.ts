@@ -30,7 +30,7 @@ export async function createWallet(
   )
   if (res.task_id) {
     config.setState({ ...config.state, status: 'creating wallet' })
-    console.log(`task create-wallet(${res.taskId}): ${res.walletId}`, {
+    console.log(`task create-wallet(${res.task_id}): ${res.wallet_id}`, {
       status: 'creating wallet',
       walletId: res.wallet_id,
     })
