@@ -1,0 +1,34 @@
+export type Order = {
+  id: string
+  quote_mint: `0x${string}`
+  base_mint: `0x${string}`
+  side: 'Buy' | 'Sell'
+  type: string
+  worst_case_price: string
+  amount: bigint
+}
+
+export enum OrderState {
+  Created = 'Created',
+  Matching = 'Matching',
+  SettlingMatch = 'SettlingMatch',
+  Filled = 'Filled',
+  Cancelled = 'Cancelled',
+}
+
+export type OrderMetadata = {
+  id: string
+  state: OrderState
+  fills: PartialOrderFill[]
+  created: bigint
+  data: Order
+}
+
+export type PartialOrderFill = {
+  // The amount filled by the partial fill
+  amount: bigint
+  // The price at which the fill executed
+  price: bigint
+  // The time at which the fill executed, in milliseconds since the epoch
+  timestamp: bigint
+}

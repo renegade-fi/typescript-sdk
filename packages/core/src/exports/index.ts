@@ -194,13 +194,10 @@ export { BaseError } from '../errors/base.js'
 ////////////////////////////////////////////////////////////////////////////////
 
 export { Token } from '../types/token.js'
-
 export * from '../types/wallet.js'
-
+export * from '../types/order.js'
 export * from '../types/utils.js'
-
-export type { Task, TaskInfo, TaskState } from '../types/task.js'
-export { UpdateType, TaskType } from '../types/task.js'
+export * from '../types/task.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Utils

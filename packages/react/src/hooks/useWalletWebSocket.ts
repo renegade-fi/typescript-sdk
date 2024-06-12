@@ -33,14 +33,16 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
     {
       filter: () => false,
       onMessage: (event) => {
-        const messageData = parseBigJSON(event.data)
-        if (
-          walletId &&
-          messageData.topic === WALLET_ROUTE(walletId) &&
-          messageData.event?.type === 'WalletUpdate' &&
-          messageData.event?.wallet
-        )
-          onUpdate?.(messageData.event.wallet)
+        try {
+          const messageData = parseBigJSON(event.data)
+          if (
+            walletId &&
+            messageData.topic === WALLET_ROUTE(walletId) &&
+            messageData.event?.type === 'WalletUpdate' &&
+            messageData.event?.wallet
+          )
+            onUpdate?.(messageData.event.wallet)
+        } catch (_) {}
       },
       share: true,
       shouldReconnect: () => true,

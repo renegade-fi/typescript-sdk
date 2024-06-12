@@ -35,14 +35,16 @@ export function useTaskHistoryWebSocket(
     {
       filter: () => false,
       onMessage(event) {
-        const messageData = parseBigJSON(event.data)
-        if (
-          walletId &&
-          messageData.topic === WS_TASK_HISTORY_ROUTE(walletId) &&
-          messageData.event?.type === 'TaskHistoryUpdate' &&
-          messageData.event?.task
-        )
-          onUpdate?.(messageData.event.task)
+        try {
+          const messageData = parseBigJSON(event.data)
+          if (
+            walletId &&
+            messageData.topic === WS_TASK_HISTORY_ROUTE(walletId) &&
+            messageData.event?.type === 'TaskHistoryUpdate' &&
+            messageData.event?.task
+          )
+            onUpdate?.(messageData.event.task)
+        } catch (_) {}
       },
       share: true,
       shouldReconnect: () => true,
