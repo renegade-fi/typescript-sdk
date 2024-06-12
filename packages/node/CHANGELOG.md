@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.0.39
+
+### Patch Changes
+
+- core: react, remove `seed` parameter, fix connect / reconnect logic
+- Updated dependencies
+  - @renegade-fi/core@0.0.39
+
 ## 0.0.38
 
 ### Patch Changes
