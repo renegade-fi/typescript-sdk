@@ -1,5 +1,13 @@
 # @renegade-fi/test
 
+## 0.0.40
+
+### Patch Changes
+
+- core: downstream API changes for orders / tasks
+- Updated dependencies
+  - @renegade-fi/core@0.0.40
+
 ## 0.0.39
 
 ### Patch Changes
