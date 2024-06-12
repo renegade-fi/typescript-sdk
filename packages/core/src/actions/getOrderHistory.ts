@@ -1,11 +1,9 @@
-import { getSkRoot } from './getSkRoot.js'
-
-import { getRelayerWithAuth } from '../utils/http.js'
-
 import { ORDER_HISTORY_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import type { OrderMetadata } from '../types/wallet.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
+import type { OrderMetadata } from '../types/order.js'
+import { getRelayerWithAuth } from '../utils/http.js'
+import { getSkRoot } from './getSkRoot.js'
 
 export type GetOrderHistoryReturnType = Map<string, OrderMetadata>
 

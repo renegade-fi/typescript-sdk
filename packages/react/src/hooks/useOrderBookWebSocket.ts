@@ -30,15 +30,17 @@ export function useOrderBookWebSocket(
     {
       filter: () => false,
       onMessage: (event) => {
-        const messageData = parseBigJSON(event.data)
-        if (
-          messageData.topic === ORDER_BOOK_ROUTE &&
-          (messageData.event?.type === 'NewOrder' ||
-            messageData.event?.type === 'OrderStateChange') &&
-          messageData.event?.order
-        ) {
-          onUpdate?.(messageData.event.order)
-        }
+        try {
+          const messageData = parseBigJSON(event.data)
+          if (
+            messageData.topic === ORDER_BOOK_ROUTE &&
+            (messageData.event?.type === 'NewOrder' ||
+              messageData.event?.type === 'OrderStateChange') &&
+            messageData.event?.order
+          ) {
+            onUpdate?.(messageData.event.order)
+          }
+        } catch (_) {}
       },
       share: true,
       shouldReconnect: () => true,

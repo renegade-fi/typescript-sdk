@@ -1,4 +1,5 @@
-import type { Address, Hex } from 'viem'
+import type { Hex } from 'viem'
+import type { Order } from './order.js'
 
 export type Exchange = 'binance' | 'coinbase' | 'kraken' | 'okx'
 
@@ -11,18 +12,8 @@ export type NetworkOrder = {
   timestamp: bigint
 }
 
-export type Order = {
-  id: string
-  quote_mint: Address
-  base_mint: Address
-  side: 'Buy' | 'Sell'
-  type: string
-  worst_case_price: string
-  amount: bigint
-}
-
 export type Balance = {
-  mint: Address
+  mint: `0x${string}`
   amount: bigint
   relayer_fee_balance: bigint
   protocol_fee_balance: bigint
@@ -56,21 +47,4 @@ export type OldTask = {
   description: string
   state: string
   committed: boolean
-}
-
-// Order History
-export enum OrderState {
-  Created = 'Created',
-  Matching = 'Matching',
-  SettlingMatch = 'SettlingMatch',
-  Filled = 'Filled',
-  Cancelled = 'Cancelled',
-}
-
-export type OrderMetadata = {
-  id: string
-  state: OrderState
-  filled: bigint
-  created: bigint
-  data: Order
 }

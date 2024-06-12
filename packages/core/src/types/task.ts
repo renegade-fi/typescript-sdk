@@ -1,5 +1,3 @@
-import type { Address } from 'viem'
-
 export type Task = {
   id: string
   state: TaskState
@@ -37,40 +35,43 @@ export type TaskInfo =
   | {
       update_type: UpdateType.Deposit
       task_type: TaskType.UpdateWallet
-      mint: Address
+      mint: `0x${string}`
       amount: bigint
     }
   | {
       update_type: UpdateType.Withdraw
       task_type: TaskType.UpdateWallet
-      mint: Address
+      mint: `0x${string}`
       amount: bigint
     }
   | {
       update_type: UpdateType.PlaceOrder
       task_type: TaskType.UpdateWallet
       amount: bigint
-      base: Address
-      quote: Address
+      base: `0x${string}`
+      quote: `0x${string}`
       side: 'Buy' | 'Sell'
     }
   | {
       update_type: UpdateType.CancelOrder
       task_type: TaskType.UpdateWallet
       amount: bigint
-      base: Address
-      quote: Address
+      base: `0x${string}`
+      quote: `0x${string}`
       side: 'Buy' | 'Sell'
     }
   | {
       task_type: TaskType.SettleMatch
-      base: Address
+      base: `0x${string}`
       is_sell: boolean
-      quote: Address
+      quote: `0x${string}`
       volume: bigint
     }
   | {
       task_type: TaskType.PayOfflineFee
+      mint: `0x${string}`
+      amount: bigint
+      is_protocol: boolean
     }
   | {
       task_type: TaskType.NewWallet

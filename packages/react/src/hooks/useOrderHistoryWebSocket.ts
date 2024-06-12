@@ -5,7 +5,6 @@ import {
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
   WS_WALLET_ORDERS_ROUTE,
   getSkRoot,
-  parseBigJSON,
   type Config,
   type OrderMetadata,
 } from '@renegade-fi/core'
@@ -35,14 +34,21 @@ export function useOrderHistoryWebSocket(
     {
       filter: () => false,
       onMessage(event) {
-        const messageData = parseBigJSON(event.data)
-        if (
-          walletId &&
-          messageData.topic === WS_WALLET_ORDERS_ROUTE(walletId) &&
-          messageData.event?.type === 'OrderMetadataUpdated' &&
-          messageData.event?.order
-        )
-          onUpdate?.(messageData.event.order)
+        try {
+          const messageData = JSON.parse(event.data, (key, value) => {
+            if (typeof value === 'number' && key !== 'price') {
+              return BigInt(value)
+            }
+            return value
+          })
+          if (
+            walletId &&
+            messageData.topic === WS_WALLET_ORDERS_ROUTE(walletId) &&
+            messageData.event?.type === 'OrderMetadataUpdated' &&
+            messageData.event?.order
+          )
+            onUpdate?.(messageData.event.order)
+        } catch (_) {}
       },
       share: true,
       shouldReconnect: () => true,
