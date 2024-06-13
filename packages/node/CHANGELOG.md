@@ -1,5 +1,11 @@
 # @renegade-fi/node
 
+## 0.0.41
+
+### Patch Changes
+
+- node: export core actions and constants
+
 ## 0.0.40
 
 ### Patch Changes
