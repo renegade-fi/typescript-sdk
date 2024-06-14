@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.42
+
+### Patch Changes
+
+- core, react: changes for quoter dashboard
+- Updated dependencies
+  - @renegade-fi/core@0.0.41
+
 ## 0.0.41
 
 ### Patch Changes
