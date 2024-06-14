@@ -1,5 +1,11 @@
 # @renegade-fi/node
 
+## 0.0.42
+
+### Patch Changes
+
+- node: fix index import
+
 ## 0.0.41
 
 ### Patch Changes
