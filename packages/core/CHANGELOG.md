@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.42
+
+### Patch Changes
+
+- core: Add Arbitrum Sepolia
+
 ## 0.0.41
 
 ### Patch Changes
