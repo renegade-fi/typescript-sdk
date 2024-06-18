@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.43
+
+### Patch Changes
+
+- core, react: delay setting init flag until after rehydration
+
 ## 0.0.42
 
 ### Patch Changes
