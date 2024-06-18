@@ -29,8 +29,10 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@renegade-fi/core": "workspace:*",
-    "viem": "2.9.28"
+    "@renegade-fi/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "viem": "2.x"
   },
   "keywords": []
 }

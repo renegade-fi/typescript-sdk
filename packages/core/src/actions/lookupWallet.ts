@@ -1,9 +1,8 @@
-import { createPublicClient, http, parseAbiItem } from 'viem'
+import { parseAbiItem } from 'viem'
 import { FIND_WALLET_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { postRelayerRaw } from '../utils/http.js'
-import { chain } from '../utils/viem.js'
 import { getSkRoot } from './getSkRoot.js'
 import { waitForWalletIndexing } from './waitForWalletIndexing.js'
 
@@ -54,12 +53,7 @@ export async function lookupWalletOnChain(config: Config) {
     const skRoot = getSkRoot(config)
     const blinderShare = utils.derive_blinder_share(skRoot)
 
-    const publicClient = createPublicClient({
-      chain,
-      transport: http(),
-    })
-
-    const logs = await publicClient.getLogs({
+    const logs = await config.viemClient.getLogs({
       address: config.darkPoolAddress,
       event: parseAbiItem(
         'event WalletUpdated(uint256 indexed wallet_blinder_share)',
