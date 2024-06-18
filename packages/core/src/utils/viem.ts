@@ -1,19 +1,22 @@
 import { createPublicClient, defineChain, http } from 'viem'
-
-const isDevelopment =
-  process.env.RPC_URL?.includes('dev') ||
-  process.env.NEXT_PUBLIC_RPC_URL?.includes('dev')
+import { arbitrumSepolia } from 'viem/chains'
 
 const rpcURL = process.env.RPC_URL
   ? `https://${process.env.RPC_URL}`
   : process.env.NEXT_PUBLIC_RPC_URL
     ? `https://${process.env.NEXT_PUBLIC_RPC_URL}`
-    : `https://${isDevelopment ? 'dev' : ''}sequencer.renegade.fi`
+    : 'https://dev.sequencer.renegade.fi'
 
-export const chain = defineChain({
+const chainId = process.env.CHAIN_ID
+  ? process.env.CHAIN_ID
+  : process.env.NEXT_PUBLIC_CHAIN_ID
+    ? process.env.NEXT_PUBLIC_CHAIN_ID
+    : 473474
+
+const renegadeDevnet = defineChain({
   id: 473474,
-  name: isDevelopment ? 'Renegade Devnet' : 'Renegade Testnet',
-  network: isDevelopment ? 'Renegade Devnet' : 'Renegade Testnet',
+  name: 'Renegade Devnet',
+  network: 'Renegade Devnet',
   testnet: true,
   nativeCurrency: {
     decimals: 18,
@@ -26,6 +29,9 @@ export const chain = defineChain({
     },
   },
 })
+
+export const chain =
+  Number(chainId) === 421_614 ? arbitrumSepolia : renegadeDevnet
 
 export const viemClient = createPublicClient({
   chain,
