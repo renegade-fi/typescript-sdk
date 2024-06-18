@@ -163,8 +163,6 @@ export {
   type StorageItemMap,
   createStorage,
   noopStorage,
-  // Viem
-  chain,
   // Utils
   formatAmount,
   parseAmount,

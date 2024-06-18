@@ -1,10 +1,17 @@
 import invariant from 'tiny-invariant'
-import type { Address, Hex } from 'viem'
+import {
+  createPublicClient,
+  http,
+  type Address,
+  type Hex,
+  type PublicClient,
+} from 'viem'
 import { persist, subscribeWithSelector } from 'zustand/middleware'
 import { createStore, type Mutate, type StoreApi } from 'zustand/vanilla'
 import { createStorage, noopStorage, type Storage } from './createStorage.js'
 import type { Evaluate, ExactPartial } from './types/utils.js'
 import type * as rustUtils from './utils.d.ts'
+import { arbitrumSepolia } from 'viem/chains'
 
 export type CreateConfigParameters = {
   darkPoolAddress: Address
@@ -12,12 +19,12 @@ export type CreateConfigParameters = {
   relayerUrl: string
   httpPort?: number
   pollingInterval?: number
-  rpcUrl: string
   ssr?: boolean | undefined
   storage?: Storage | null | undefined
   useInsecureTransport?: boolean
   utils?: typeof rustUtils
   websocketPort?: number
+  viemClient?: PublicClient
 }
 
 export function createConfig(parameters: CreateConfigParameters): Config {
@@ -34,6 +41,10 @@ export function createConfig(parameters: CreateConfigParameters): Config {
           : noopStorage,
     }),
     useInsecureTransport = false,
+    viemClient = createPublicClient({
+      chain: arbitrumSepolia,
+      transport: http(),
+    }),
     websocketPort = 4000,
   } = parameters
 
@@ -141,6 +152,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
           : undefined,
       )
     },
+    viemClient,
     _internal: {
       store,
       ssr: Boolean(ssr),
@@ -157,7 +169,6 @@ export type Config = {
   pollingInterval: number
   priceReporterUrl: string
   relayerUrl: string
-  rpcUrl?: string
   setState(value: State | ((state: State) => State)): void
   state: State
   subscribe<state>(
@@ -171,6 +182,7 @@ export type Config = {
       | undefined,
   ): () => void
   utils: typeof rustUtils
+  viemClient: PublicClient
   /**
    * Not part of versioned API, proceed with caution.
    * @internal

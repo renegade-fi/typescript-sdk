@@ -229,5 +229,3 @@ export { postRelayerRaw } from '../utils/http.js'
 export { WebSocketManager } from '../utils/websocket.js'
 
 export { parseBigJSON } from '../utils/bigJSON.js'
-
-export { chain } from '../utils/viem.js'
