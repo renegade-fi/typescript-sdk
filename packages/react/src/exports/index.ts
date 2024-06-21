@@ -151,6 +151,7 @@ export type {
   NetworkOrder,
   Order,
   OrderMetadata,
+  PartialOrderFill,
   Task,
   TaskInfo,
   TaskState,
