@@ -167,6 +167,10 @@ export {
   // Utils
   formatAmount,
   parseAmount,
+  cookieStorage,
+  cookieToInitialState,
+  deepEqual,
+  parseCookie,
   // Types
   OrderState,
   TaskType,

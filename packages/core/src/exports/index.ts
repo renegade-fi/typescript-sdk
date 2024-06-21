@@ -222,6 +222,12 @@ export * from '../types/task.js'
 
 export { formatAmount, parseAmount } from '../utils/format.js'
 
+export {
+  cookieStorage,
+  cookieToInitialState,
+  parseCookie,
+} from '../utils/cookie.js'
+
 export { deepEqual } from '../utils/deepEqual.js'
 
 export { postRelayerRaw } from '../utils/http.js'

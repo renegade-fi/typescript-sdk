@@ -62,7 +62,6 @@ export function createConfig(parameters: CreateConfigParameters): Config {
       seed: undefined,
       status: 'disconnected',
       id: undefined,
-      initialized: false,
     }
   }
 
@@ -89,6 +88,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 
   return {
     utils: parameters.utils,
+    storage,
     relayerUrl,
     priceReporterUrl,
     darkPoolAddress: parameters.darkPoolAddress,
@@ -161,6 +161,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 }
 
 export type Config = {
+  readonly storage: Storage | null
   darkPoolAddress: Address
   getPriceReporterBaseUrl: () => string
   getPriceReporterHTTPBaseUrl: (route?: string) => string

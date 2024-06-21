@@ -9,12 +9,10 @@ type HydrateParameters = {
 export function hydrate(config: Config, parameters: HydrateParameters) {
   const { initialState, reconnectOnMount } = parameters
 
-  // TODO: Handle initial state
   if (initialState && !config._internal.store.persist.hasHydrated())
     config.setState({
       ...initialState,
-      status: reconnectOnMount ? 'looking up' : 'disconnected',
-      seed: reconnectOnMount ? config.state.seed : undefined,
+      status: reconnectOnMount ? initialState.status : 'disconnected',
     })
 
   return {
@@ -22,8 +20,6 @@ export function hydrate(config: Config, parameters: HydrateParameters) {
       if (config._internal.ssr) {
         console.log('💧 SSR enabled, rehydrating state')
         await config._internal.store.persist.rehydrate()
-        // Must delay initialization until after rehydration
-        config.setState((x) => ({ ...x, initialized: true }))
       }
 
       if (reconnectOnMount) {
