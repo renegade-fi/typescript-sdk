@@ -35,7 +35,9 @@ export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
         if (!config._internal.ssr) {
           config.setState((x) => ({ ...x, initialized: true }))
         }
-        onMount()
+        onMount().then(() =>
+          config.setState((x) => ({ ...x, initialized: true })),
+        )
       } catch (error) {
         console.error('❌ Failed to initialize Rust utils', error)
       }
