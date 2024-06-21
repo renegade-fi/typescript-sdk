@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.0.46
+
+### Patch Changes
+
+- set viem as config option and export cookie storage module
+- Updated dependencies
+  - @renegade-fi/core@0.0.44
+
 ## 0.0.45
 
 ### Patch Changes
