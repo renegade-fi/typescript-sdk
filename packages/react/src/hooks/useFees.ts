@@ -1,24 +1,27 @@
 'use client'
 
 import type { Balance, Config } from '@renegade-fi/core'
-import { useBalances } from './useBalances.js'
+import { useWallet } from './useWallet.js'
 
 export type UseFeesParameters = {
   config?: Config
   filter?: boolean
 }
 
-export type UseFeesReturnType = Balance[]
+export type UseFeesReturnType = Map<string, Balance>
 
 export function useFees(parameters: UseFeesParameters = {}): UseFeesReturnType {
   const { filter = true } = parameters
-  const balances = useBalances({ filter: false })
+  const { data: wallet } = useWallet()
 
+  if (!wallet?.balances) return new Map()
+
+  let balances = wallet.balances
   if (filter) {
-    return balances.filter(
+    balances = balances.filter(
       (balance) => balance.protocol_fee_balance || balance.relayer_fee_balance,
     )
   }
 
-  return balances
+  return new Map(balances.map((balance) => [balance.mint, balance]))
 }

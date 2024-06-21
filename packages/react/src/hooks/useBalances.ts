@@ -8,18 +8,19 @@ export type UseBalancesParameters = {
   filter?: boolean
 }
 
-export type UseBalancesReturnType = Balance[]
+export type UseBalancesReturnType = Map<string, Balance>
 
 export function useBalances(
   parameters: UseBalancesParameters = {},
 ): UseBalancesReturnType {
   const { filter = true } = parameters
   const { data: wallet } = useWallet()
-  if (!wallet) return []
+  if (!wallet?.balances) return new Map()
+  let balances = wallet.balances
   if (filter) {
-    return wallet.balances.filter(
+    balances = balances.filter(
       (balance) => balance.mint !== '0x0' && balance.amount,
     )
   }
-  return wallet.balances
+  return new Map(balances.map((balance) => [balance.mint, balance]))
 }
