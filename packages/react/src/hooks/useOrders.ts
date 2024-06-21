@@ -8,16 +8,17 @@ export type UseOrdersParameters = {
   filter?: boolean
 }
 
-export type UseOrdersReturnType = Order[]
+export type UseOrdersReturnType = Map<string, Order>
 
 export function useOrders(
   parameters: UseOrdersParameters = {},
 ): UseOrdersReturnType {
   const { filter = true } = parameters
   const { data: wallet } = useWallet()
-  if (!wallet) return []
+  if (!wallet?.orders) return new Map()
+  let orders = wallet.orders
   if (filter) {
-    return wallet.orders.filter((order) => order.amount > 0)
+    orders = orders.filter((order) => order.amount > 0)
   }
-  return wallet.orders
+  return new Map(orders.map((order) => [order.id, order]))
 }
