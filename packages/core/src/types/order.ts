@@ -28,8 +28,13 @@ export type PartialOrderFill = {
   // The amount filled by the partial fill
   amount: bigint
   // The price at which the fill executed
-  price: bigint
-  // The time at which the fill executed, in milliseconds since the epoch
+  price: TimestampedPrice
+}
+
+export type TimestampedPrice = {
+  // The price
+  price: number
+  // The time the price was sampled, in milliseconds since the epoch
   timestamp: bigint
 }
 
