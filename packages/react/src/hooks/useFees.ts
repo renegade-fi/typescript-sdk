@@ -8,7 +8,7 @@ export type UseFeesParameters = {
   filter?: boolean
 }
 
-export type UseFeesReturnType = Map<string, Balance>
+export type UseFeesReturnType = Map<`0x${string}`, Balance>
 
 export function useFees(parameters: UseFeesParameters = {}): UseFeesReturnType {
   const { filter = true } = parameters

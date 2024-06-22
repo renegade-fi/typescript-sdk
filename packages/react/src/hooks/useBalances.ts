@@ -8,7 +8,7 @@ export type UseBalancesParameters = {
   filter?: boolean
 }
 
-export type UseBalancesReturnType = Map<string, Balance>
+export type UseBalancesReturnType = Map<`0x${string}`, Balance>
 
 export function useBalances(
   parameters: UseBalancesParameters = {},
