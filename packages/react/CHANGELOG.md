@@ -1,5 +1,11 @@
 # @renegade-fi/react
 
+## 0.0.46
+
+### Patch Changes
+
+- react: refactor useBalances useOrders useFees to return Map
+
 ## 0.0.45
 
 ### Patch Changes
