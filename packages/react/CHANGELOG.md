@@ -1,5 +1,11 @@
 # @renegade-fi/react
 
+## 0.0.47
+
+### Patch Changes
+
+- react: use `0x{string}` as balance / fee map index type
+
 ## 0.0.46
 
 ### Patch Changes
