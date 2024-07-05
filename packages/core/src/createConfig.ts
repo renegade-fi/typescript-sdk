@@ -12,7 +12,6 @@ import { createStorage, noopStorage, type Storage } from './createStorage.js'
 import type { Evaluate, ExactPartial } from './types/utils.js'
 import type * as rustUtils from './utils.d.ts'
 import { arbitrumSepolia } from 'viem/chains'
-import type { Input } from '@noble/hashes/utils'
 
 export type CreateConfigParameters = {
   darkPoolAddress: Address
@@ -26,7 +25,7 @@ export type CreateConfigParameters = {
   utils?: typeof rustUtils
   websocketPort?: number
   viemClient?: PublicClient
-  adminKey?: Input
+  adminKey?: string
 }
 
 export function createConfig(parameters: CreateConfigParameters): Config {
@@ -188,7 +187,7 @@ export type Config = {
   ): () => void
   utils: typeof rustUtils
   viemClient: PublicClient
-  adminKey?: Input
+  adminKey?: string
   /**
    * Not part of versioned API, proceed with caution.
    * @internal
