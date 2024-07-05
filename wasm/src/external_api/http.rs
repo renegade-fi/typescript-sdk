@@ -482,7 +482,7 @@ pub fn build_admin_headers(
 ) -> Result<Vec<JsValue>, JsError> {
     let expiration = current_timestamp + SIG_EXPIRATION_BUFFER_MS;
 
-    let admin_key: SymmetricAuthKey = b64_general_purpose::STANDARD_NO_PAD
+    let admin_key: SymmetricAuthKey = b64_general_purpose::STANDARD
         .decode(key)?
         .try_into()
         .unwrap();
