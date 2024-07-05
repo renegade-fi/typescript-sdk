@@ -1,4 +1,6 @@
+#![allow(incomplete_features)]
 #![feature(generic_const_exprs)]
+
 use crate::helpers::hex_to_signing_key;
 use common::derivation::{derive_wallet_keychain, wrap_eyre};
 use helpers::biguint_from_hex_string;
@@ -27,6 +29,9 @@ pub const MAX_ORDERS: usize = 5;
 
 // Substitute for SizedWalletShare::NUM_SCALARS
 pub const NUM_SCALARS: usize = 54;
+
+/// The number of bytes in a cluster symmetric key
+pub const CLUSTER_SYMMETRIC_KEY_LENGTH: usize = 32;
 
 #[wasm_bindgen]
 // sk_root: Hex

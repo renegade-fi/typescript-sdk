@@ -191,7 +191,7 @@ pub fn hex_to_signing_key(hex: &str) -> Result<SigningKey, String> {
     } else {
         stripped.to_string()
     };
-    let bytes = hex::decode(&padded).map_err(|e| e.to_string())?;
+    let bytes = hex::decode(padded).map_err(|e| e.to_string())?;
     SigningKey::from_slice(&bytes).map_err(|e| e.to_string())
 }
 

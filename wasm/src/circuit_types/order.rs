@@ -66,15 +66,13 @@ impl Order {
 
     /// Converts the order into a list of scalars.
     pub fn to_scalars(&self) -> Vec<Scalar> {
-        let mut scalars = Vec::new();
-
-        scalars.push(biguint_to_scalar(&self.quote_mint));
-        scalars.push(biguint_to_scalar(&self.base_mint));
-        scalars.push(Scalar::from(self.side.to_biguint()));
-        scalars.push(Scalar::from(self.amount));
-        scalars.push(self.worst_case_price.repr);
-
-        scalars
+        vec![
+            biguint_to_scalar(&self.quote_mint),
+            biguint_to_scalar(&self.base_mint),
+            Scalar::from(self.side.to_biguint()),
+            Scalar::from(self.amount),
+            self.worst_case_price.repr,
+        ]
     }
 }
 

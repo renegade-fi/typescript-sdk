@@ -12,13 +12,12 @@ use crate::{
     },
     helpers::{evaluate_hash_chain, PoseidonCSPRNG},
     types::Scalar,
-    MAX_BALANCES, MAX_ORDERS, NUM_SCALARS,
+    CLUSTER_SYMMETRIC_KEY_LENGTH, MAX_BALANCES, MAX_ORDERS, NUM_SCALARS,
 };
 use derivative::Derivative;
 use itertools::Itertools;
 use num_bigint::BigUint;
 use serde::{Deserialize, Serialize};
-use std::iter;
 use uuid::Uuid;
 
 use super::keyed_list::KeyedList;
@@ -27,6 +26,8 @@ use super::keyed_list::KeyedList;
 pub type WalletIdentifier = Uuid;
 /// An identifier of an order used for caching
 pub type OrderIdentifier = Uuid;
+/// The type representing a cluster's symmetric key
+pub type SymmetricAuthKey = [u8; CLUSTER_SYMMETRIC_KEY_LENGTH];
 
 /// Represents the private keys a relayer has access to for a given wallet
 #[derive(Clone, Debug, Derivative, Serialize, Deserialize)]
@@ -103,8 +104,6 @@ impl Wallet {
         key_chain: KeyChain,
     ) -> Self {
         // Create a wallet with dummy shares, compute the shares, then update the wallet
-        let zero_iter = iter::repeat(Scalar::zero());
-        // let dummy_shares = SizedWalletShare::from_scalars(&mut zero_iter);
         let dummy_shares = vec![Scalar::zero(); 54];
 
         let mut wallet = Self {

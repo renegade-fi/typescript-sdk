@@ -5,15 +5,12 @@ use crate::{
     types::Scalar,
 };
 
-
 use ethers::utils::keccak256;
 use eyre::Result;
-use k256::{
-    ecdsa::{signature::Signer, Signature, SigningKey},
-};
+use k256::ecdsa::{signature::Signer, Signature, SigningKey};
 use lazy_static::lazy_static;
 use num_bigint::BigUint;
-use num_traits::{Num};
+use num_traits::Num;
 use wasm_bindgen::prelude::*;
 
 use super::types::{KeyChain, PrivateKeyChain, Wallet, WalletIdentifier};
@@ -22,8 +19,6 @@ use super::types::{KeyChain, PrivateKeyChain, Wallet, WalletIdentifier};
 const BLINDER_STREAM_SEED_MESSAGE: &[u8] = b"blinder seed";
 /// The messages used to derive the share stream seed
 const SHARE_STREAM_SEED_MESSAGE: &[u8] = b"share seed";
-/// The message used to derive the wallet's root key
-const ROOT_KEY_MESSAGE_PREFIX: &str = "Unlock your Renegade Wallet on chain ID:";
 /// The message used to derive the wallet's match key
 const MATCH_KEY_MESSAGE: &[u8] = b"match key";
 /// The message used to derive the wallet's ID

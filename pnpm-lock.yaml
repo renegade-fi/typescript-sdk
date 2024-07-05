@@ -35,6 +35,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@noble/hashes':
+        specifier: 1.x
+        version: 1.3.2
       axios:
         specifier: ^1.6.8
         version: 1.6.8
@@ -73,7 +76,7 @@ importers:
   packages/react:
     dependencies:
       '@renegade-fi/core':
-        specifier: file:../core
+        specifier: workspace:*
         version: link:../core
       json-bigint:
         specifier: ^1.0.0

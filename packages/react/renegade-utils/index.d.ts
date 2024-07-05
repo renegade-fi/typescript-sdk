@@ -74,6 +74,14 @@ export function update_order(wallet_str: string, id: string, base_mint: string, 
 */
 export function build_auth_headers(sk_root: string, req: string, current_timestamp: bigint): any[];
 /**
+* Build admin authentication headers
+* @param {string} key
+* @param {string} req
+* @param {bigint} current_timestamp
+* @returns {any[]}
+*/
+export function build_admin_headers(key: string, req: string, current_timestamp: bigint): any[];
+/**
 * @param {string} seed
 * @returns {any}
 */
@@ -114,6 +122,7 @@ export interface InitOutput {
   readonly cancel_order: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly update_order: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number) => void;
   readonly build_auth_headers: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+  readonly build_admin_headers: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
   readonly derive_signing_key_from_seed: (a: number, b: number) => number;
   readonly get_pk_root: (a: number, b: number) => number;
   readonly pk_root_scalars: (a: number, b: number, c: number) => void;

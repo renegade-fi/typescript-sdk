@@ -102,8 +102,8 @@ where
 
 /// Compute a commitment to the shares of a wallet
 pub fn compute_wallet_share_commitment<const MAX_BALANCES: usize, const MAX_ORDERS: usize>(
-    public_shares: &Vec<Scalar>,
-    private_shares: &Vec<Scalar>,
+    public_shares: &[Scalar],
+    private_shares: &[Scalar],
 ) -> Scalar
 where
     [(); MAX_BALANCES + MAX_ORDERS]: Sized,
@@ -111,14 +111,14 @@ where
     // Hash the private input, then append the public input and re-hash
     let private_input_commitment = compute_wallet_private_share_commitment(private_shares);
     let mut hash_input = vec![private_input_commitment];
-    hash_input.append(&mut public_shares.clone());
+    hash_input.append(&mut public_shares.to_vec());
 
     compute_poseidon_hash(&hash_input)
 }
 
 /// Compute a commitment to a single share of a wallet
 pub fn compute_wallet_private_share_commitment<const MAX_BALANCES: usize, const MAX_ORDERS: usize>(
-    private_share: &Vec<Scalar>,
+    private_share: &[Scalar],
 ) -> Scalar
 where
     [(); MAX_BALANCES + MAX_ORDERS]: Sized,
@@ -151,7 +151,7 @@ where
     private_shares[NUM_SCALARS - 1] = private_blinder_share;
     public_shares[NUM_SCALARS - 1] = blinder - private_blinder_share;
 
-    let blinded_public_shares = blind_shares(&mut public_shares, blinder);
+    let blinded_public_shares = blind_shares(&public_shares, blinder);
 
     (private_shares, blinded_public_shares)
 }
@@ -162,14 +162,14 @@ where
 /// Note that the private shares returned are exactly those passed in
 pub fn create_wallet_shares_from_private<const MAX_BALANCES: usize, const MAX_ORDERS: usize>(
     wallet: &Wallet<MAX_BALANCES, MAX_ORDERS>,
-    private_shares: &Vec<Scalar>,
+    private_shares: &[Scalar],
     blinder: Scalar,
 ) -> (Vec<Scalar>, Vec<Scalar>)
 where
     [(); MAX_BALANCES + MAX_ORDERS]: Sized,
 {
     // Serialize the wallet's private shares and use this as the secret share stream
-    let private_shares_ser: Vec<Scalar> = private_shares.clone();
+    let private_shares_ser = private_shares.to_vec();
     create_wallet_shares_with_randomness(
         wallet,
         blinder,
@@ -183,7 +183,7 @@ where
 /// This is necessary because the default implementation of `blind` that is
 /// derived by the macro will blind the blinder as well as the shares,
 /// which is undesirable
-pub fn blind_shares(shares: &mut Vec<Scalar>, blinder: Scalar) -> Vec<Scalar> {
+pub fn blind_shares(shares: &[Scalar], blinder: Scalar) -> Vec<Scalar> {
     let prev_blinder = shares[NUM_SCALARS - 1];
     let mut blinded = shares.iter().map(|share| *share + blinder).collect_vec();
     blinded[NUM_SCALARS - 1] = prev_blinder;
