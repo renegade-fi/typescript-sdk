@@ -11,6 +11,7 @@ export function new_order(a: number, b: number, c: number, d: number, e: number,
 export function cancel_order(a: number, b: number, c: number, d: number, e: number): void;
 export function update_order(a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number): void;
 export function build_auth_headers(a: number, b: number, c: number, d: number, e: number, f: number): void;
+export function build_admin_headers(a: number, b: number, c: number, d: number, e: number, f: number): void;
 export function derive_signing_key_from_seed(a: number, b: number): number;
 export function get_pk_root(a: number, b: number): number;
 export function pk_root_scalars(a: number, b: number, c: number): void;

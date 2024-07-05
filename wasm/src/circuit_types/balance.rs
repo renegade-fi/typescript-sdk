@@ -57,12 +57,11 @@ impl Balance {
 
     /// Converts the balance into a list of scalars.
     pub fn to_scalars(&self) -> Vec<Scalar> {
-        let mut scalars = Vec::new();
-        scalars.push(biguint_to_scalar(&self.mint));
-        scalars.push(Scalar::from(self.amount));
-        scalars.push(Scalar::from(self.relayer_fee_balance));
-        scalars.push(Scalar::from(self.protocol_fee_balance));
-
-        scalars
+        vec![
+            biguint_to_scalar(&self.mint),
+            Scalar::from(self.amount),
+            Scalar::from(self.relayer_fee_balance),
+            Scalar::from(self.protocol_fee_balance),
+        ]
     }
 }

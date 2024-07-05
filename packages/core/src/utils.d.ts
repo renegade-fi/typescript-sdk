@@ -74,6 +74,14 @@ export function update_order(wallet_str: string, id: string, base_mint: string, 
 */
 export function build_auth_headers(sk_root: string, req: string, current_timestamp: bigint): any[];
 /**
+* Build admin authentication headers
+* @param {string} key
+* @param {string} req
+* @param {bigint} current_timestamp
+* @returns {any[]}
+*/
+export function build_admin_headers(key: string, req: string, current_timestamp: bigint): any[];
+/**
 * @param {string} seed
 * @returns {any}
 */

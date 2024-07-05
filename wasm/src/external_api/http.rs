@@ -9,7 +9,7 @@ use crate::{
     },
     common::{
         derivation::{derive_blinder_seed, derive_wallet_from_key, derive_wallet_id, wrap_eyre},
-        types::WalletIdentifier,
+        types::{SymmetricAuthKey, WalletIdentifier},
     },
     helpers::{
         biguint_from_hex_string, deserialize_biguint_from_hex_string, deserialize_wallet,
@@ -21,6 +21,7 @@ use ethers::{
     types::{Bytes, Signature, U256},
     utils::keccak256,
 };
+use hmac::Mac;
 use itertools::Itertools;
 use k256::ecdsa::{signature::Signer, Signature as K256Signature, SigningKey};
 use num_bigint::BigUint;
@@ -28,7 +29,9 @@ use num_traits::ToPrimitive;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use wasm_bindgen::prelude::*;
-use web_sys::console;
+
+/// The HMAC type
+type HmacSha256 = hmac::Hmac<sha2::Sha256>;
 
 /// The amount of buffer time to add to the signature expiration
 const SIG_EXPIRATION_BUFFER_MS: u64 = 10_000; // 5 seconds
@@ -145,11 +148,9 @@ pub fn deposit(
     wrap_eyre!(new_wallet.add_balance(Balance::new_from_mint_and_amount(
         mint.clone(),
         amount.to_u128().unwrap()
-    )));
+    )))
+    .unwrap();
     new_wallet.reblind_wallet();
-    // let wallet: ApiWallet = new_wallet.clone().into();
-    // let _wallet = serde_json::to_string(&wallet).unwrap();
-    // console::log_1(&JsValue::from_str(&_wallet));
 
     // Sign a commitment to the new shares
     let comm = new_wallet.get_wallet_share_commitment();
@@ -205,7 +206,7 @@ pub fn withdraw(
     // Modify the wallet
     let mint = wrap_eyre!(biguint_from_hex_string(mint)).unwrap();
     let amount = wrap_eyre!(biguint_from_hex_string(amount)).unwrap();
-    let destination_addr = wrap_eyre!(biguint_from_hex_string(&destination_addr)).unwrap();
+    let destination_addr = wrap_eyre!(biguint_from_hex_string(destination_addr)).unwrap();
 
     for (mint, balance) in new_wallet.balances.clone() {
         if balance.relayer_fee_balance > 0 {
@@ -225,7 +226,7 @@ pub fn withdraw(
         }
     }
 
-    wrap_eyre!(new_wallet.withdraw(&mint, amount.to_u128().unwrap()));
+    wrap_eyre!(new_wallet.withdraw(&mint, amount.to_u128().unwrap())).unwrap();
     new_wallet.reblind_wallet();
     let wallet: ApiWallet = new_wallet.clone().into();
     let _wallet = serde_json::to_string(&wallet).unwrap();
@@ -331,10 +332,10 @@ fn create_order(
     };
 
     Ok(ApiOrder {
-        id: id,
-        base_mint: biguint_from_hex_string(&base_mint).unwrap(),
-        quote_mint: biguint_from_hex_string(&quote_mint).unwrap(),
-        side: side,
+        id,
+        base_mint: biguint_from_hex_string(base_mint).unwrap(),
+        quote_mint: biguint_from_hex_string(quote_mint).unwrap(),
+        side,
         amount,
         worst_case_price,
         type_: ApiOrderType::Midpoint,
@@ -353,7 +354,7 @@ pub fn new_order(
     let mut new_wallet = deserialize_wallet(wallet_str);
     let order = create_order(id, base_mint, quote_mint, side, amount)?;
     // Modify the wallet
-    wrap_eyre!(new_wallet.add_order(order.id, order.clone().into()));
+    wrap_eyre!(new_wallet.add_order(order.id, order.clone().into())).unwrap();
     new_wallet.reblind_wallet();
     // Sign a commitment to the new shares
     let comm = new_wallet.get_wallet_share_commitment();
@@ -453,9 +454,6 @@ pub fn build_auth_headers(
     req: &str,
     current_timestamp: u64,
 ) -> Result<Vec<JsValue>, JsError> {
-    // console::log_1(&JsValue::from_str(&sk_root));
-    // console::log_1(&JsValue::from_str(&req));
-    // console::log_1(&JsValue::from_str(&current_timestamp.to_string()));
     let expiration = current_timestamp + SIG_EXPIRATION_BUFFER_MS;
 
     let root_key: SigningKey = hex_to_signing_key(sk_root).unwrap();
@@ -463,16 +461,45 @@ pub fn build_auth_headers(
     // Sign the concatenation of the message and the expiration timestamp
     let req_bytes = req.as_bytes();
     let msg_bytes = req_bytes.to_vec();
-    // let payload = [msg_bytes, &expiration.to_le_bytes()].concat();
     let payload = [msg_bytes, expiration.to_le_bytes().to_vec()].concat();
 
     let signature: K256Signature = root_key.sign(&payload);
     let encoded_sig = b64_general_purpose::STANDARD_NO_PAD.encode(signature.to_bytes());
+
     // Convert encoded_sig and expiration into JsValue and return them in an array
-    // console::log_1(&JsValue::from_str(&encoded_sig));
-    // console::log_1(&JsValue::from_str(&expiration.to_string()));
     Ok(vec![
         JsValue::from_str(&encoded_sig),
+        JsValue::from_str(&expiration.to_string()),
+    ])
+}
+
+#[wasm_bindgen]
+/// Build admin authentication headers
+pub fn build_admin_headers(
+    key: &str,
+    req: &str,
+    current_timestamp: u64,
+) -> Result<Vec<JsValue>, JsError> {
+    let expiration = current_timestamp + SIG_EXPIRATION_BUFFER_MS;
+
+    let admin_key: SymmetricAuthKey = b64_general_purpose::STANDARD_NO_PAD
+        .decode(key)?
+        .try_into()
+        .unwrap();
+
+    // HMAC the request body with the key
+    let req_bytes = req.as_bytes();
+    let msg_bytes = req_bytes.to_vec();
+    let payload = [msg_bytes, expiration.to_le_bytes().to_vec()].concat();
+
+    let mut hmac = HmacSha256::new_from_slice(&admin_key).unwrap();
+    hmac.update(&payload);
+    let mac_bytes: [u8; 32] = hmac.finalize().into_bytes().to_vec().try_into().unwrap();
+    let encoded_hmac = b64_general_purpose::STANDARD_NO_PAD.encode(mac_bytes);
+
+    // Convert encoded_hmac and expiration into JsValue and return them in an array
+    Ok(vec![
+        JsValue::from_str(&encoded_hmac),
         JsValue::from_str(&expiration.to_string()),
     ])
 }
