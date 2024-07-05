@@ -3,6 +3,8 @@ import type { Address } from 'viem'
 
 /// Header name for the HTTP auth signature
 export const RENEGADE_AUTH_HEADER_NAME = 'renegade-auth'
+/// Header name for the HTTP auth HMAC
+export const RENEGADE_AUTH_HMAC_HEADER_NAME = 'renegade-auth-symmetric'
 /// Header name for the expiration timestamp of a signature
 export const RENEGADE_SIG_EXPIRATION_HEADER_NAME = 'renegade-auth-expiration'
 /// The message used to derive the wallet's root key
@@ -148,7 +150,7 @@ export const WS_WALLET_ORDERS_ROUTE = (wallet_id: string) =>
 // Admin
 ////////////////////////////////////////////////////////////////////////////////
 
-export const ADMIN_OPEN_ORDERS_ROUTE = '/v0/admin/open-orders';
+export const ADMIN_OPEN_ORDERS_ROUTE = '/v0/admin/open-orders'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Price Reporter

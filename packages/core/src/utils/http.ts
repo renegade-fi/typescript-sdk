@@ -5,10 +5,12 @@ import { BaseError } from '../errors/base.js'
 
 import {
   RENEGADE_AUTH_HEADER_NAME,
+  RENEGADE_AUTH_HMAC_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
 } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { parseBigJSON } from './bigJSON.js'
+import invariant from 'tiny-invariant'
 
 export async function postRelayerRaw(url: string, body: any, headers = {}) {
   try {
@@ -114,5 +116,24 @@ export async function getRelayerWithAuth(config: Config, url: string) {
     [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
     'Content-Type': 'application/json',
   }
+  return await getRelayerRaw(url, headers)
+}
+
+export async function getRelayerWithAdmin(config: Config, url: string) {
+  const { adminKey } = config
+  invariant(adminKey, 'Admin key is required')
+
+  const [auth, expiration] = config.utils.build_admin_headers(
+    adminKey,
+    '',
+    BigInt(Date.now()),
+  )
+
+  const headers = {
+    [RENEGADE_AUTH_HMAC_HEADER_NAME]: auth,
+    [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
+    'Content-Type': 'application/json',
+  }
+
   return await getRelayerRaw(url, headers)
 }
