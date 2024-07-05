@@ -169,3 +169,9 @@ export {
   type WithdrawReturnType,
   withdraw,
 } from '../actions/withdraw.js'
+
+export {
+  type GetOpenOrdersReturnType,
+  type GetOpenOrdersErrorType,
+  getOpenOrders,
+} from '../actions/getOpenOrders.js'

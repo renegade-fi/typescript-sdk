@@ -57,3 +57,12 @@ export {
 } from '../query/getWallet.js'
 
 export { hashFn, structuralSharing } from '../query/utils.js'
+
+export {
+  type GetOpenOrdersData,
+  type GetOpenOrdersOptions,
+  type GetOpenOrdersQueryFnData,
+  type GetOpenOrdersQueryKey,
+  getOpenOrdersQueryKey,
+  getOpenOrdersQueryOptions,
+} from '../query/getOpenOrders.js'

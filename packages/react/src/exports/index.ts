@@ -74,6 +74,12 @@ export {
 } from '../hooks/useInitialized.js'
 
 export {
+  useOpenOrders,
+  type UseOpenOrdersParameters,
+  type UseOpenOrdersReturnType,
+} from '../hooks/useOpenOrders.js'
+
+export {
   useOrderBookWebSocket,
   type UseOrderBookWebSocketParameters,
   type UseOrderBookWebSocketReturnType,
