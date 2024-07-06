@@ -161,6 +161,11 @@ export const ADMIN_MATCHING_POOL_DESTROY_ROUTE = (matching_pool: string) =>
 // Creates an order in the given matching pool
 export const ADMIN_CREATE_ORDER_IN_MATCHING_POOL_ROUTE = (wallet_id: string) =>
   `/admin/wallet/${wallet_id}/order-in-pool`
+// Route to assign an order to a matching pool
+export const ADMIN_ASSIGN_ORDER_ROUTE = (
+  order_id: string,
+  matching_pool: string,
+) => `/v0/admin/orders/${order_id}/assign-pool/${matching_pool}`
 
 ////////////////////////////////////////////////////////////////////////////////
 // Price Reporter
