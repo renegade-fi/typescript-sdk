@@ -8,10 +8,12 @@ export {
   cancelOrder,
 } from '../actions/cancelOrder.js'
 
+export { type ConnectReturnType, connect } from '../actions/connect.js'
+
 export {
-  type ConnectReturnType,
-  connect,
-} from '../actions/connect.js'
+  type CreateMatchingPoolParameters,
+  createMatchingPool,
+} from '../actions/createMatchingPool.js'
 
 export {
   type CreateOrderParameters,
@@ -31,9 +33,11 @@ export {
 } from '../actions/deposit.js'
 
 export {
-  type DisconnectReturnType,
-  disconnect,
-} from '../actions/disconnect.js'
+  type DestroyMatchingPoolParameters,
+  destroyMatchingPool,
+} from '../actions/destroyMatchingPool.js'
+
+export { type DisconnectReturnType, disconnect } from '../actions/disconnect.js'
 
 export {
   type GetAuthorizationHeadersParameters,
@@ -70,10 +74,7 @@ export {
   getOrderHistory,
 } from '../actions/getOrderHistory.js'
 
-export {
-  type GetOrdersReturnType,
-  getOrders,
-} from '../actions/getOrders.js'
+export { type GetOrdersReturnType, getOrders } from '../actions/getOrders.js'
 
 export {
   type GetPkRootReturnType,
@@ -94,10 +95,7 @@ export {
   getPriceFromPriceReporter,
 } from '../actions/getPriceFromPriceReporter.js'
 
-export {
-  type GetSkRootReturnType,
-  getSkRoot,
-} from '../actions/getSkRoot.js'
+export { type GetSkRootReturnType, getSkRoot } from '../actions/getSkRoot.js'
 
 export {
   type GetTaskHistoryErrorType,
