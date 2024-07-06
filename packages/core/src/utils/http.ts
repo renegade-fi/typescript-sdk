@@ -104,6 +104,29 @@ export async function postRelayerWithAuth(
   return await postRelayerRaw(url, body, headers)
 }
 
+export async function postRelayerWithAdmin(
+  config: Config,
+  url: string,
+  body?: string,
+) {
+  const { adminKey } = config
+  invariant(adminKey, 'Admin key is required')
+
+  const [auth, expiration] = config.utils.build_admin_headers(
+    adminKey,
+    body ?? '',
+    BigInt(Date.now()),
+  )
+
+  const headers = {
+    [RENEGADE_AUTH_HMAC_HEADER_NAME]: auth,
+    [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
+    'Content-Type': 'application/json',
+  }
+
+  return await postRelayerRaw(url, body, headers)
+}
+
 export async function getRelayerWithAuth(config: Config, url: string) {
   const skRoot = await getSkRoot(config)
   const [auth, expiration] = config.utils.build_auth_headers(

@@ -150,7 +150,14 @@ export const WS_WALLET_ORDERS_ROUTE = (wallet_id: string) =>
 // Admin
 ////////////////////////////////////////////////////////////////////////////////
 
+// Fetches all open orders
 export const ADMIN_OPEN_ORDERS_ROUTE = '/admin/open-orders'
+// Creates a matching pool
+export const ADMIN_MATCHING_POOL_CREATE_ROUTE = (matching_pool: string) =>
+  `/admin/matching_pools/${matching_pool}`
+// Destroys a matching pool
+export const ADMIN_MATCHING_POOL_DESTROY_ROUTE = (matching_pool: string) =>
+  `/admin/matching_pools/${matching_pool}/destroy`
 
 ////////////////////////////////////////////////////////////////////////////////
 // Price Reporter
