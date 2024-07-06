@@ -298,6 +298,20 @@ pub struct CreateOrderRequest {
     pub statement_sig: Vec<u8>,
 }
 
+/// The request type to add a new order to a given wallet, within a non-global
+/// matching pool
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct CreateOrderInMatchingPoolRequest {
+    /// The order to be created
+    pub order: ApiOrder,
+    /// A signature of the circuit statement used in the proof of
+    /// VALID WALLET UPDATE by `sk_root`. This allows the contract
+    /// to guarantee that the wallet updates are properly authorized
+    pub statement_sig: Vec<u8>,
+    /// The matching pool to create the order in
+    pub matching_pool: String,
+}
+
 /// Create an order type from the args
 fn create_order(
     id: &str,
@@ -342,15 +356,14 @@ fn create_order(
     })
 }
 
-#[wasm_bindgen]
-pub fn new_order(
+pub fn create_order_request(
     wallet_str: &str,
     id: &str,
     base_mint: &str,
     quote_mint: &str,
     side: &str,
     amount: &str,
-) -> Result<JsValue, JsError> {
+) -> Result<CreateOrderRequest, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
     let order = create_order(id, base_mint, quote_mint, side, amount)?;
     // Modify the wallet
@@ -360,9 +373,41 @@ pub fn new_order(
     let comm = new_wallet.get_wallet_share_commitment();
     let sig = wrap_eyre!(new_wallet.sign_commitment(comm)).unwrap();
 
-    let req = CreateOrderRequest {
+    Ok(CreateOrderRequest {
         order,
         statement_sig: sig.to_vec(),
+    })
+}
+
+#[wasm_bindgen]
+pub fn new_order(
+    wallet_str: &str,
+    id: &str,
+    base_mint: &str,
+    quote_mint: &str,
+    side: &str,
+    amount: &str,
+) -> Result<JsValue, JsError> {
+    let req = create_order_request(wallet_str, id, base_mint, quote_mint, side, amount)?;
+    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+}
+
+#[wasm_bindgen]
+pub fn new_order_in_matching_pool(
+    wallet_str: &str,
+    id: &str,
+    base_mint: &str,
+    quote_mint: &str,
+    side: &str,
+    amount: &str,
+    matching_pool: &str,
+) -> Result<JsValue, JsError> {
+    let create_order_req =
+        create_order_request(wallet_str, id, base_mint, quote_mint, side, amount)?;
+    let req = CreateOrderInMatchingPoolRequest {
+        order: create_order_req.order,
+        statement_sig: create_order_req.statement_sig,
+        matching_pool: matching_pool.to_string(),
     };
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }

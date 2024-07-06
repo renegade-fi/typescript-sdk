@@ -312,6 +312,46 @@ module.exports.new_order = function(wallet_str, id, base_mint, quote_mint, side,
 
 /**
 * @param {string} wallet_str
+* @param {string} id
+* @param {string} base_mint
+* @param {string} quote_mint
+* @param {string} side
+* @param {string} amount
+* @param {string} matching_pool
+* @returns {any}
+*/
+module.exports.new_order_in_matching_pool = function(wallet_str, id, base_mint, quote_mint, side, amount, matching_pool) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        const ptr0 = passStringToWasm0(wallet_str, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(id, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ptr2 = passStringToWasm0(base_mint, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len2 = WASM_VECTOR_LEN;
+        const ptr3 = passStringToWasm0(quote_mint, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len3 = WASM_VECTOR_LEN;
+        const ptr4 = passStringToWasm0(side, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len4 = WASM_VECTOR_LEN;
+        const ptr5 = passStringToWasm0(amount, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len5 = WASM_VECTOR_LEN;
+        const ptr6 = passStringToWasm0(matching_pool, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len6 = WASM_VECTOR_LEN;
+        wasm.new_order_in_matching_pool(retptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        var r2 = getInt32Memory0()[retptr / 4 + 2];
+        if (r2) {
+            throw takeObject(r1);
+        }
+        return takeObject(r0);
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+};
+
+/**
+* @param {string} wallet_str
 * @param {string} order_id
 * @returns {any}
 */
@@ -452,17 +492,6 @@ module.exports.build_admin_headers = function(key, req, current_timestamp) {
 };
 
 /**
-* @param {string} seed
-* @returns {any}
-*/
-module.exports.derive_signing_key_from_seed = function(seed) {
-    const ptr0 = passStringToWasm0(seed, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.derive_signing_key_from_seed(ptr0, len0);
-    return takeObject(ret);
-};
-
-/**
 * @param {string} sk_root
 * @returns {any}
 */
@@ -515,6 +544,17 @@ module.exports.bigint_to_limbs = function(value) {
     const ptr0 = passStringToWasm0(value, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     const ret = wasm.bigint_to_limbs(ptr0, len0);
+    return takeObject(ret);
+};
+
+/**
+* @param {string} seed
+* @returns {any}
+*/
+module.exports.derive_signing_key_from_seed = function(seed) {
+    const ptr0 = passStringToWasm0(seed, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.derive_signing_key_from_seed(ptr0, len0);
     return takeObject(ret);
 };
 
