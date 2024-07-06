@@ -22,6 +22,11 @@ export {
 } from '../actions/createOrder.js'
 
 export {
+  type CreateOrderInMatchingPoolParameters,
+  createOrderInMatchingPool,
+} from '../actions/createOrderInMatchingPool.js'
+
+export {
   type CreateWalletReturnType,
   createWallet,
 } from '../actions/createWallet.js'
