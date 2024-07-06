@@ -3,6 +3,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 export {
+  type AssignOrderParameters,
+  assignOrder,
+} from '../actions/assignOrder.js'
+
+export {
   type CancelOrderParameters,
   type CancelOrderReturnType,
   cancelOrder,
