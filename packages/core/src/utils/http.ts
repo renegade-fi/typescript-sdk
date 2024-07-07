@@ -47,7 +47,7 @@ export async function getRelayerRaw(url: string, headers = {}) {
       headers,
       transformResponse: (data) => {
         try {
-          if (url.includes('/order-history')) {
+          if (url.includes('/order-history') || url.includes('/open-orders')) {
             return JSON.parse(data, (key, value) => {
               if (typeof value === 'number' && key !== 'price') {
                 return BigInt(value)
