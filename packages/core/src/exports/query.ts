@@ -21,6 +21,15 @@ export {
 } from '../query/getOrderHistory.js'
 
 export {
+  type GetOrderMetadataData,
+  type GetOrderMetadataOptions,
+  type GetOrderMetadataQueryFnData,
+  type GetOrderMetadataQueryKey,
+  getOrderMetadataQueryKey,
+  getOrderMetadataQueryOptions,
+} from '../query/getOrderMetadata.js'
+
+export {
   type GetPingData,
   type GetPingOptions,
   type GetPingQueryFnData,

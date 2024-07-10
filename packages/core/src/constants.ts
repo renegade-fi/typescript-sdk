@@ -152,6 +152,9 @@ export const WS_WALLET_ORDERS_ROUTE = (wallet_id: string) =>
 
 // Fetches all open orders
 export const ADMIN_OPEN_ORDERS_ROUTE = '/admin/open-orders'
+// Get the order metadata for a given order
+export const ADMIN_ORDER_METADATA_ROUTE = (order_id: string) =>
+  `/admin/orders/${order_id}/metadata`
 // Creates a matching pool
 export const ADMIN_MATCHING_POOL_CREATE_ROUTE = (matching_pool: string) =>
   `/admin/matching_pools/${matching_pool}`
@@ -165,7 +168,7 @@ export const ADMIN_CREATE_ORDER_IN_MATCHING_POOL_ROUTE = (wallet_id: string) =>
 export const ADMIN_ASSIGN_ORDER_ROUTE = (
   order_id: string,
   matching_pool: string,
-) => `/v0/admin/orders/${order_id}/assign-pool/${matching_pool}`
+) => `/admin/orders/${order_id}/assign-pool/${matching_pool}`
 
 ////////////////////////////////////////////////////////////////////////////////
 // Price Reporter
