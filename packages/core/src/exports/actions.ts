@@ -73,6 +73,12 @@ export {
 } from '../actions/getNetworkOrders.js'
 
 export {
+  type GetOpenOrdersReturnType,
+  type GetOpenOrdersErrorType,
+  getOpenOrders,
+} from '../actions/getOpenOrders.js'
+
+export {
   type GetOrderParameters,
   type GetOrderReturnType,
   getOrder,
@@ -83,6 +89,13 @@ export {
   type GetOrderHistoryReturnType,
   getOrderHistory,
 } from '../actions/getOrderHistory.js'
+
+export {
+  type GetOrderMetadataParameters,
+  type GetOrderMetadataReturnType,
+  type GetOrderMetadataErrorType,
+  getOrderMetadata,
+} from '../actions/getOrderMetadata.js'
 
 export { type GetOrdersReturnType, getOrders } from '../actions/getOrders.js'
 
@@ -177,9 +190,3 @@ export {
   type WithdrawReturnType,
   withdraw,
 } from '../actions/withdraw.js'
-
-export {
-  type GetOpenOrdersReturnType,
-  type GetOpenOrdersErrorType,
-  getOpenOrders,
-} from '../actions/getOpenOrders.js'

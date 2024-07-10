@@ -103,6 +103,12 @@ export {
 } from '../hooks/useOrders.js'
 
 export {
+  useOrderMetadata,
+  type UseOrderMetadataParameters,
+  type UseOrderMetadataReturnType,
+} from '../hooks/useOrderMetadata.js'
+
+export {
   usePing,
   type UsePingParameters,
   type UsePingReturnType,
