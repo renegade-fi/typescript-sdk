@@ -22,8 +22,8 @@ export async function getOrderMetadata(
     getRelayerBaseUrl(ADMIN_ORDER_METADATA_ROUTE(id)),
   )
 
-  if (!res.orders) {
-    throw new BaseError('No orders found')
+  if (!res.order) {
+    throw new BaseError('No order found')
   }
   return res.order
 }
