@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.46
+
+### Patch Changes
+
+- core: allow client to get logs and force create wallet in connect
+
 ## 0.0.45
 
 ### Patch Changes
