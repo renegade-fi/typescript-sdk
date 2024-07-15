@@ -47,7 +47,8 @@ export async function lookupWallet(config: Config): LookupWalletReturnType {
   return Promise.reject(new BaseError('Failed to lookup wallet'))
 }
 
-export async function lookupWalletOnChain(config: Config) {
+// Returns true iff the query successfully returns 0 logs
+export async function checkForWalletUpdatesOnChain(config: Config) {
   try {
     const { utils } = config
     const skRoot = getSkRoot(config)
@@ -61,11 +62,13 @@ export async function lookupWalletOnChain(config: Config) {
       args: {
         wallet_blinder_share: blinderShare,
       },
-      fromBlock: 0n,
+      fromBlock: BigInt(
+        process.env.FROM_BLOCK || process.env.NEXT_PUBLIC_FROM_BLOCK || 0,
+      ),
     })
-    return logs.length > 0
+    return logs.length === 0
   } catch (error) {
     console.error(`Error looking up wallet on chain: ${error}`)
-    return
+    return false
   }
 }
