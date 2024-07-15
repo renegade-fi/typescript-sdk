@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.45
+
+### Patch Changes
+
+- core: prevent create wallet when rpc getLogs req fails
+
 ## 0.0.44
 
 ### Patch Changes
