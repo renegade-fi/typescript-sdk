@@ -2,7 +2,7 @@ import type { Config } from '../createConfig.js'
 import { createWallet } from './createWallet.js'
 import { getWalletFromRelayer } from './getWalletFromRelayer.js'
 import { getWalletId } from './getWalletId.js'
-import { lookupWallet, lookupWalletOnChain } from './lookupWallet.js'
+import { checkForWalletUpdatesOnChain, lookupWallet } from './lookupWallet.js'
 
 export type ConnectReturnType = {
   isLookup: boolean
@@ -33,19 +33,17 @@ export async function connect(config: Config): Promise<ConnectReturnType> {
       })
     }
 
-    // If wallet on chain, start lookup wallet task
-    const isOnChain = await lookupWalletOnChain(config)
-    if (isOnChain) {
+    // Create wallet iff no WalletUpdated events found onchain
+    const shouldCreateWallet = await checkForWalletUpdatesOnChain(config)
+    if (shouldCreateWallet) {
       return Promise.resolve({
-        isLookup: true,
-        job: lookupWallet(config),
+        isLookup: false,
+        job: createWallet(config),
       })
     }
-
-    // If wallet not in relayer or on chain, call createWallet
     return Promise.resolve({
-      isLookup: false,
-      job: createWallet(config),
+      isLookup: true,
+      job: lookupWallet(config),
     })
   } catch (error) {
     console.error('Could not connect wallet', {
