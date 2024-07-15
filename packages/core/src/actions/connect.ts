@@ -4,13 +4,21 @@ import { getWalletFromRelayer } from './getWalletFromRelayer.js'
 import { getWalletId } from './getWalletId.js'
 import { checkForWalletUpdatesOnChain, lookupWallet } from './lookupWallet.js'
 
+export type ConnectParameters = {
+  isCreateWallet?: boolean
+}
+
 export type ConnectReturnType = {
   isLookup: boolean
   job: Promise<void>
 } | void
 
-export async function connect(config: Config): Promise<ConnectReturnType> {
+export async function connect(
+  config: Config,
+  params: ConnectParameters = {},
+): Promise<ConnectReturnType> {
   try {
+    const { isCreateWallet = false } = params
     const walletId = getWalletId(config)
     config.setState((x) => ({ ...x, id: walletId }))
 
@@ -35,7 +43,7 @@ export async function connect(config: Config): Promise<ConnectReturnType> {
 
     // Create wallet iff no WalletUpdated events found onchain
     const shouldCreateWallet = await checkForWalletUpdatesOnChain(config)
-    if (shouldCreateWallet) {
+    if (shouldCreateWallet || isCreateWallet) {
       return Promise.resolve({
         isLookup: false,
         job: createWallet(config),
