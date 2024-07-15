@@ -9,6 +9,7 @@ export {
 } from '../actions/cancelOrder.js'
 
 export {
+  type ConnectParameters,
   type ConnectReturnType,
   connect,
 } from '../actions/connect.js'
