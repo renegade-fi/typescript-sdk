@@ -1,5 +1,20 @@
 # @renegade-fi/test
 
+## 0.0.48
+
+### Patch Changes
+
+- order mutation & timestamped prices
+- Updated dependencies
+  - @renegade-fi/core@0.0.48
+
+## 0.0.47
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.0.47
+
 ## 0.0.46
 
 ### Patch Changes

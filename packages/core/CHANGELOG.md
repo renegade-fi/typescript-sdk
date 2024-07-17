@@ -1,5 +1,17 @@
 # @renegade-fi/core
 
+## 0.0.48
+
+### Patch Changes
+
+- order mutation & timestamped prices
+
+## 0.0.47
+
+### Patch Changes
+
+- core: types: order: use timestamped prices in partial order fills
+
 ## 0.0.46
 
 ### Patch Changes
