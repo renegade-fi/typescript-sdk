@@ -3,12 +3,15 @@ import {
   getOpenOrders,
   type GetOpenOrdersErrorType,
   type GetOpenOrdersReturnType,
+  type GetOpenOrdersParams,
 } from '../actions/getOpenOrders.js'
 import type { Config } from '../createConfig.js'
 import type { Evaluate } from '../types/utils.js'
 import { filterQueryOptions, type ScopeKeyParameter } from './utils.js'
 
-export type GetOpenOrdersOptions = Evaluate<ScopeKeyParameter>
+export type GetOpenOrdersOptions = Evaluate<
+  GetOpenOrdersParams & ScopeKeyParameter
+>
 
 export function getOpenOrdersQueryOptions(
   config: Config,
@@ -16,8 +19,8 @@ export function getOpenOrdersQueryOptions(
 ) {
   return {
     async queryFn({ queryKey }) {
-      const { scopeKey: _ } = queryKey[1]
-      const orders = await getOpenOrders(config)
+      const { scopeKey: _, ...parameters } = queryKey[1]
+      const orders = await getOpenOrders(config, parameters)
       return orders ?? null
     },
     queryKey: getOpenOrdersQueryKey(options),

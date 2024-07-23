@@ -32,3 +32,8 @@ export type PartialOrderFill = {
   // The time at which the fill executed, in milliseconds since the epoch
   timestamp: bigint
 }
+
+export type OpenOrder = {
+  order: OrderMetadata
+  fillable: bigint
+}
