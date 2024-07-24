@@ -35,5 +35,6 @@ export type PartialOrderFill = {
 
 export type OpenOrder = {
   order: OrderMetadata
-  fillable: bigint
+  fillable?: bigint
+  price?: number
 }
