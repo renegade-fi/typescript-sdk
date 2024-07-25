@@ -15,10 +15,18 @@ export {
 } from '../actions/connect.js'
 
 export {
+  type CreateOrderErrorType,
   type CreateOrderParameters,
   type CreateOrderReturnType,
   createOrder,
 } from '../actions/createOrder.js'
+
+export {
+  type CreateOrderRequestErrorType,
+  type CreateOrderRequestParameters,
+  type CreateOrderRequestReturnType,
+  createOrderRequest,
+} from '../actions/createOrderRequest.js'
 
 export {
   type CreateWalletReturnType,
@@ -214,8 +222,19 @@ export { BaseError } from '../errors/base.js'
 export { Token } from '../types/token.js'
 export * from '../types/wallet.js'
 export * from '../types/order.js'
-export * from '../types/utils.js'
 export * from '../types/task.js'
+
+export {
+  type Evaluate,
+  type ExactPartial,
+  type Mutable,
+  type StrictOmit as Omit,
+  type OneOf,
+  type RemoveUndefined,
+  type UnionCompute,
+  type UnionStrictOmit,
+  type UnionExactPartial,
+} from '../types/utils.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Utils
@@ -235,4 +254,4 @@ export { postRelayerRaw } from '../utils/http.js'
 
 export { WebSocketManager } from '../utils/websocket.js'
 
-export { parseBigJSON } from '../utils/bigJSON.js'
+export { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'

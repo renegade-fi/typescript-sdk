@@ -1,4 +1,4 @@
-import type { Evaluate, ExactPartial, Omit, UnionOmit } from '@renegade-fi/core'
+import type { Evaluate, ExactPartial, Omit, UnionStrictOmit } from '@renegade-fi/core'
 import { hashFn } from '@renegade-fi/core/query'
 import {
   useInfiniteQuery as tanstack_useInfiniteQuery,
@@ -32,7 +32,7 @@ export type UseMutationReturnType<
   variables = void,
   context = unknown,
 > = Evaluate<
-  UnionOmit<
+  UnionStrictOmit<
     UseMutationResult<data, error, variables, context>,
     'mutate' | 'mutateAsync'
   >

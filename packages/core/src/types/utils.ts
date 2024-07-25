@@ -47,7 +47,7 @@ export type Mutable<type extends object> = {
 }
 
 /** Strict version of built-in Omit type */
-export type Omit<type, keys extends keyof type> = Pick<
+export type StrictOmit<type, keys extends keyof type> = Pick<
   type,
   Exclude<keyof type, keys>
 >
@@ -67,12 +67,17 @@ type KeyofUnion<type> = type extends type ? keyof type : never
 export type PartialBy<type, key extends keyof type> = ExactPartial<
   Pick<type, key>
 > &
-  Omit<type, key>
+  StrictOmit<type, key>
+
+/* Removes `undefined` from object property */
+export type RemoveUndefined<type> = {
+  [key in keyof type]: NonNullable<type[key]>
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // Loose types
 
-/** Loose version of {@link Omit} */
+/** Loose version of {@link StrictOmit} */
 export type LooseOmit<type, keys extends string> = Pick<
   type,
   Exclude<keyof type, keys>
@@ -81,14 +86,16 @@ export type LooseOmit<type, keys extends string> = Pick<
 ///////////////////////////////////////////////////////////////////////////
 // Union types
 
-export type UnionEvaluate<type> = type extends object ? Evaluate<type> : type
+export type UnionCompute<type> = type extends object ? Evaluate<type> : type
 
 export type UnionLooseOmit<type, keys extends string> = type extends any
   ? LooseOmit<type, keys>
   : never
 
-export type UnionOmit<type, keys extends keyof type> = type extends any
-  ? Omit<type, keys>
+export type UnionStrictOmit<type, keys extends keyof type> = type extends any
+  ? StrictOmit<type, keys>
   : never
 
-export type UnionPartial<type> = type extends object ? ExactPartial<type> : type
+export type UnionExactPartial<type> = type extends object
+  ? ExactPartial<type>
+  : type

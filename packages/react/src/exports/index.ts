@@ -62,6 +62,12 @@ export {
 } from '../hooks/useConfig.js'
 
 export {
+  useCreateOrder,
+  type UseCreateOrderParameters,
+  type UseCreateOrderReturnType,
+} from '../hooks/useCreateOrder.js'
+
+export {
   useFees,
   type UseFeesParameters,
   type UseFeesReturnType,
@@ -113,6 +119,12 @@ export {
   type UsePingParameters,
   type UsePingReturnType,
 } from '../hooks/usePing.js'
+
+export {
+  usePrepareCreateOrder,
+  type UsePrepareCreateOrderParameters,
+  type UsePrepareCreateOrderReturnType,
+} from '../hooks/usePrepareCreateOrder.js'
 
 export {
   useNetworkOrders,

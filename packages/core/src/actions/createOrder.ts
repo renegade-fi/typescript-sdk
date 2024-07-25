@@ -1,7 +1,7 @@
 import { toHex, type Address } from 'viem'
-
 import { WALLET_ORDERS_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
+import type { BaseErrorType } from '../errors/base.js'
 import { Token } from '../types/token.js'
 import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
 import { postRelayerWithAuth } from '../utils/http.js'
@@ -16,12 +16,14 @@ export type CreateOrderParameters = {
   amount: bigint
 }
 
-export type CreateOrderReturnType = Promise<{ taskId: string }>
+export type CreateOrderReturnType = { taskId: string }
+
+export type CreateOrderErrorType = BaseErrorType
 
 export async function createOrder(
   config: Config,
   parameters: CreateOrderParameters,
-): CreateOrderReturnType {
+): Promise<CreateOrderReturnType> {
   const { id = '', base, quote, side, amount } = parameters
   const { getRelayerBaseUrl, utils } = config
 
@@ -57,8 +59,7 @@ export async function createOrder(
     return { taskId: res.task_id }
   } catch (error) {
     console.error(
-      `wallet id: ${walletId} creating order to ${side} ${amount} ${
-        Token.findByAddress(base).ticker
+      `wallet id: ${walletId} creating order to ${side} ${amount} ${Token.findByAddress(base).ticker
       } failed`,
       {
         error,
