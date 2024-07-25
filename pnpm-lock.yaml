@@ -84,6 +84,9 @@ importers:
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
+      viem:
+        specifier: 2.x
+        version: 2.9.28(typescript@5.4.4)
     devDependencies:
       '@tanstack/react-query':
         specifier: '>=5.0.0'

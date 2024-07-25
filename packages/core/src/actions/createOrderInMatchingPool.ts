@@ -18,7 +18,7 @@ export type CreateOrderInMatchingPoolParameters = {
 export async function createOrderInMatchingPool(
   config: Config,
   parameters: CreateOrderInMatchingPoolParameters,
-): CreateOrderReturnType {
+): Promise<CreateOrderReturnType> {
   const { id = '', base, quote, side, amount, matchingPool } = parameters
   const { getRelayerBaseUrl, utils } = config
 
@@ -55,8 +55,7 @@ export async function createOrderInMatchingPool(
     return { taskId: res.task_id }
   } catch (error) {
     console.error(
-      `wallet id: ${walletId} creating order to ${side} ${amount} ${
-        Token.findByAddress(base).ticker
+      `wallet id: ${walletId} creating order to ${side} ${amount} ${Token.findByAddress(base).ticker
       } in matching pool ${matchingPool} failed`,
       {
         error,
