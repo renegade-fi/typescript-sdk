@@ -19,6 +19,14 @@ export {
 } from '../query/createOrderRequest.js'
 
 export {
+  type DepositRequestData,
+  type DepositRequestVariables,
+  type DepositRequestMutate,
+  type DepositRequestMutateAsync,
+  depositRequestMutationOptions,
+} from '../query/depositRequest.js'
+
+export {
   type GetBackOfQueueWalletData,
   type GetBackOfQueueWalletOptions,
   type GetBackOfQueueWalletQueryFnData,

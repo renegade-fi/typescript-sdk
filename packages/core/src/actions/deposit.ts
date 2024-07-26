@@ -1,8 +1,8 @@
 import invariant from 'tiny-invariant'
 import { toHex, type Address } from 'viem'
-
 import { DEPOSIT_BALANCE_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
+import type { BaseErrorType } from '../errors/base.js'
 import { Token } from '../types/token.js'
 import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
 import { postRelayerWithAuth } from '../utils/http.js'
@@ -19,6 +19,8 @@ export type DepositParameters = {
 }
 
 export type DepositReturnType = Promise<{ taskId: string }>
+
+export type DepositErrorType = BaseErrorType
 
 export async function deposit(
   config: Config,
@@ -65,8 +67,7 @@ export async function deposit(
     return { taskId: res.task_id }
   } catch (error) {
     console.error(
-      `wallet id: ${walletId} depositing ${amount} ${
-        Token.findByAddress(mint).ticker
+      `wallet id: ${walletId} depositing ${amount} ${Token.findByAddress(mint).ticker
       } failed`,
       {
         error,
