@@ -3,6 +3,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 export {
+  type CancelOrderRequestData,
+  type CancelOrderRequestVariables,
+  type CancelOrderRequestMutate,
+  type CancelOrderRequestMutateAsync,
+  cancelOrderRequestMutationOptions,
+} from '../query/cancelOrderRequest.js'
+
+export {
   type CreateOrderRequestData,
   type CreateOrderRequestVariables,
   type CreateOrderRequestMutate,
