@@ -3,10 +3,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 export {
-  type CancelOrderParameters,
-  type CancelOrderReturnType,
-  cancelOrder,
-} from '../actions/cancelOrder.js'
+  type CancelOrderRequestErrorType,
+  type CancelOrderRequestParameters,
+  type CancelOrderRequestReturnType,
+  cancelOrderRequest,
+} from '../actions/cancelOrderRequest.js'
 
 export {
   type ConnectParameters,

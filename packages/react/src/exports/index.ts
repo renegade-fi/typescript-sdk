@@ -62,6 +62,12 @@ export {
 } from '../hooks/useConfig.js'
 
 export {
+  useCancelOrder,
+  type UseCancelOrderParameters,
+  type UseCancelOrderReturnType,
+} from '../hooks/useCancelOrder.js'
+
+export {
   useCreateOrder,
   type UseCreateOrderParameters,
   type UseCreateOrderReturnType,
@@ -125,6 +131,12 @@ export {
   type UsePingParameters,
   type UsePingReturnType,
 } from '../hooks/usePing.js'
+
+export {
+  usePrepareCancelOrder,
+  type UsePrepareCancelOrderParameters,
+  type UsePrepareCancelOrderReturnType,
+} from '../hooks/usePrepareCancelOrder.js'
 
 export {
   usePrepareCreateOrder,
