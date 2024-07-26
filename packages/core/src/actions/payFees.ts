@@ -1,14 +1,15 @@
+import { PAY_FEES_ROUTE } from '../constants.js'
+import type { Config } from '../createConfig.js'
+import type { BaseError } from '../errors/base.js'
+import { postRelayerWithAuth } from '../utils/http.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
 
-import { postRelayerWithAuth } from '../utils/http.js'
+export type PayFeesReturnType = { taskIds: string[] }
 
-import { PAY_FEES_ROUTE } from '../constants.js'
-import type { Config } from '../createConfig.js'
+export type PayFeesErrorType = BaseError
 
-export type PayFeesReturnType = Promise<{ taskIds: string[] }>
-
-export async function payFees(config: Config): PayFeesReturnType {
+export async function payFees(config: Config): Promise<PayFeesReturnType> {
   const { getRelayerBaseUrl } = config
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)

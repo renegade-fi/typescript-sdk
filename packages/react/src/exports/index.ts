@@ -115,6 +115,12 @@ export {
 } from '../hooks/useOrderMetadata.js'
 
 export {
+  usePayFees,
+  type UsePayFeesParameters,
+  type UsePayFeesReturnType,
+} from '../hooks/usePayFees.js'
+
+export {
   usePing,
   type UsePingParameters,
   type UsePingReturnType,
@@ -125,6 +131,13 @@ export {
   type UsePrepareCreateOrderParameters,
   type UsePrepareCreateOrderReturnType,
 } from '../hooks/usePrepareCreateOrder.js'
+
+export {
+  usePrepareWithdraw,
+  type UsePrepareWithdrawParameters,
+  type UsePrepareWithdrawReturnType,
+} from '../hooks/usePrepareWithdraw.js'
+
 
 export {
   useNetworkOrders,
@@ -161,6 +174,13 @@ export {
 } from '../hooks/useWalletWebSocket.js'
 
 export { useWallet } from '../hooks/useWallet.js'
+
+export {
+  useWithdraw,
+  type UseWithdrawParameters,
+  type UseWithdrawReturnType,
+} from '../hooks/useWithdraw.js'
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade/core

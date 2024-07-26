@@ -83,3 +83,19 @@ export {
   getOpenOrdersQueryKey,
   getOpenOrdersQueryOptions,
 } from '../query/getOpenOrders.js'
+
+export {
+  type PayFeesRequestData,
+  type PayFeesRequestVariables,
+  type PayFeesRequestMutate,
+  type PayFeesRequestMutateAsync,
+  payFeesRequestMutationOptions,
+} from '../query/payFeesRequest.js'
+
+export {
+  type WithdrawRequestData,
+  type WithdrawRequestVariables,
+  type WithdrawRequestMutate,
+  type WithdrawRequestMutateAsync,
+  withdrawRequestMutationOptions,
+} from '../query/withdrawRequest.js'
