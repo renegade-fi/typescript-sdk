@@ -74,6 +74,12 @@ export {
 } from '../hooks/useCreateOrder.js'
 
 export {
+  useDeposit,
+  type UseDepositParameters,
+  type UseDepositReturnType,
+} from '../hooks/useDeposit.js'
+
+export {
   useFees,
   type UseFeesParameters,
   type UseFeesReturnType,
@@ -133,6 +139,12 @@ export {
 } from '../hooks/usePing.js'
 
 export {
+  usePkRootScalars,
+  type UsePkRootParameters,
+  type UsePkRootScalarsReturnType,
+} from '../hooks/usePkRootScalars.js'
+
+export {
   usePrepareCancelOrder,
   type UsePrepareCancelOrderParameters,
   type UsePrepareCancelOrderReturnType,
@@ -143,6 +155,13 @@ export {
   type UsePrepareCreateOrderParameters,
   type UsePrepareCreateOrderReturnType,
 } from '../hooks/usePrepareCreateOrder.js'
+
+
+export {
+  usePrepareDeposit,
+  type UsePrepareDepositParameters,
+  type UsePrepareDepositReturnType,
+} from '../hooks/usePrepareDeposit.js'
 
 export {
   usePrepareWithdraw,

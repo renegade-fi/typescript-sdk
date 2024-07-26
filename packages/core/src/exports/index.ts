@@ -41,6 +41,14 @@ export {
 } from '../actions/deposit.js'
 
 export {
+  type DepositRequestErrorType,
+  type DepositRequestParameters,
+  type DepositRequestReturnType,
+  depositRequest,
+} from '../actions/depositRequest.js'
+
+
+export {
   type DisconnectReturnType,
   disconnect,
 } from '../actions/disconnect.js'
