@@ -137,7 +137,7 @@ export {
   lookupWallet,
 } from '../actions/lookupWallet.js'
 
-export { type PayFeesReturnType, payFees } from '../actions/payFees.js'
+export { type PayFeesReturnType, type PayFeesErrorType, payFees } from '../actions/payFees.js'
 
 export {
   type SignMessageParameters,
@@ -173,6 +173,13 @@ export {
   type WithdrawReturnType,
   withdraw,
 } from '../actions/withdraw.js'
+
+export {
+  type WithdrawRequestErrorType,
+  type WithdrawRequestParameters,
+  type WithdrawRequestReturnType,
+  withdrawRequest,
+} from '../actions/withdrawRequest.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constants
