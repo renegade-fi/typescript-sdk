@@ -23,7 +23,7 @@ export function useOrderBookWebSocket(
 ) {
   const config = useConfig(parameters)
   const { getWebsocketBaseUrl } = config
-  const { onUpdate, enabled } = parameters
+  const { enabled = true, onUpdate } = parameters
 
   const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
@@ -40,7 +40,7 @@ export function useOrderBookWebSocket(
           ) {
             onUpdate?.(messageData.event.order)
           }
-        } catch (_) {}
+        } catch (_) { }
       },
       share: true,
       shouldReconnect: () => true,

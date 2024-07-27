@@ -26,7 +26,7 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
-  const { enabled, onUpdate } = parameters
+  const { enabled = true, onUpdate } = parameters
 
   const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
@@ -42,7 +42,7 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
             messageData.event?.wallet
           )
             onUpdate?.(messageData.event.wallet)
-        } catch (_) {}
+        } catch (_) { }
       },
       share: true,
       shouldReconnect: () => true,

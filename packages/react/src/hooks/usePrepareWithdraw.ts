@@ -12,7 +12,7 @@ import { useWallet } from "./useWallet.js"
 export type UsePrepareWithdrawParameters = Evaluate<
     {
         mint?: string
-        amount?: number
+        amount?: number | bigint
         destinationAddr?: string
         enabled?: boolean
     } &
@@ -39,7 +39,12 @@ export function usePrepareWithdraw(parameters: UsePrepareWithdrawParameters): Us
         console.log("prepare withdrawal debug 3", { mint, amount, destinationAddr })
 
         const token = Token.findByAddress(mint)
-        const parsedAmount = parseAmount(amount.toString(), token)
+        let parsedAmount: bigint
+        if (typeof amount === "number") {
+            parsedAmount = parseAmount(amount.toString(), token)
+        } else {
+            parsedAmount = amount
+        }
 
         console.log("prepare withdrawal debug 4", {
             wallet: stringifyForWasm(wallet),

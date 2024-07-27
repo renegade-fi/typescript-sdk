@@ -27,7 +27,7 @@ export function useOrderHistoryWebSocket(
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
-  const { enabled, onUpdate } = parameters
+  const { enabled = true, onUpdate } = parameters
 
   const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
@@ -48,7 +48,7 @@ export function useOrderHistoryWebSocket(
             messageData.event?.order
           )
             onUpdate?.(messageData.event.order)
-        } catch (_) {}
+        } catch (_) { }
       },
       share: true,
       shouldReconnect: () => true,

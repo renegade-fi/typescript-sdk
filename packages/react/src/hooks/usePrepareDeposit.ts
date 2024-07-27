@@ -11,7 +11,7 @@ import { useWallet } from "./useWallet.js"
 
 export type UsePrepareDepositParameters = Evaluate<
     {
-        amount?: number
+        amount?: number | bigint
         fromAddr?: string
         mint?: string
         permit?: `0x${string}`
@@ -37,7 +37,13 @@ export function usePrepareDeposit(parameters: UsePrepareDepositParameters) {
         if (!isAddress(mint) || !isAddress(fromAddr) || !isHex(permit)) return undefined
 
         const token = Token.findByAddress(mint)
-        const parsedAmount = parseAmount(amount.toString(), token)
+        let parsedAmount: bigint
+        if (typeof amount === "number") {
+            parsedAmount = parseAmount(amount.toString(), token)
+        } else {
+            parsedAmount = amount
+        }
+
 
         return config.utils.deposit(
             stringifyForWasm(wallet),
