@@ -28,7 +28,7 @@ export function useTaskHistoryWebSocket(
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
-  const { enabled, onUpdate } = parameters
+  const { enabled = true, onUpdate } = parameters
 
   const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
@@ -44,7 +44,7 @@ export function useTaskHistoryWebSocket(
             messageData.event?.task
           )
             onUpdate?.(messageData.event.task)
-        } catch (_) {}
+        } catch (_) { }
       },
       share: true,
       shouldReconnect: () => true,
@@ -58,8 +58,7 @@ export function useTaskHistoryWebSocket(
       !walletId ||
       readyState !== ReadyState.OPEN ||
       status !== 'in relayer'
-    )
-      return
+    ) return
 
     const body = {
       method: 'subscribe',
