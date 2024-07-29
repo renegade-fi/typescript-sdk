@@ -11,6 +11,14 @@ export {
 } from '../query/cancelOrderRequest.js'
 
 export {
+  type ConnectData,
+  type ConnectVariables,
+  type ConnectMutate,
+  type ConnectMutateAsync,
+  connectMutationOptions,
+} from '../query/connect.js'
+
+export {
   type CreateOrderRequestData,
   type CreateOrderRequestVariables,
   type CreateOrderRequestMutate,
