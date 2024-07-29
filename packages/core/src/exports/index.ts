@@ -10,6 +10,7 @@ export {
 } from '../actions/cancelOrderRequest.js'
 
 export {
+  type ConnectErrorType,
   type ConnectParameters,
   type ConnectReturnType,
   connect,

@@ -74,6 +74,12 @@ export {
 } from '../hooks/useCreateOrder.js'
 
 export {
+  useConnect,
+  type UseConnectParameters,
+  type UseConnectReturnType,
+} from '../hooks/useConnect.js'
+
+export {
   useDeposit,
   type UseDepositParameters,
   type UseDepositReturnType,

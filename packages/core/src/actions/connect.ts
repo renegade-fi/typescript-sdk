@@ -1,4 +1,5 @@
 import type { Config } from '../createConfig.js'
+import type { BaseErrorType } from '../errors/base.js'
 import { createWallet } from './createWallet.js'
 import { getWalletFromRelayer } from './getWalletFromRelayer.js'
 import { getWalletId } from './getWalletId.js'
@@ -12,6 +13,8 @@ export type ConnectReturnType = {
   isLookup: boolean
   job: Promise<void>
 } | void
+
+export type ConnectErrorType = BaseErrorType
 
 export async function connect(
   config: Config,
