@@ -54,8 +54,7 @@
   },
   "peerDependencies": {
     "@tanstack/react-query": ">=5.0.0",
-    "react": ">=18",
-    "viem": "2.x"
+    "react": ">=18"
   },
   "dependencies": {
     "@renegade-fi/core": "workspace:*",
