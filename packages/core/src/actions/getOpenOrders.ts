@@ -6,6 +6,7 @@ import { BaseError, type BaseErrorType } from '../errors/base.js'
 
 export type GetOpenOrdersParams = {
   matchingPool?: string
+  includeFillable?: boolean
 }
 
 export type GetOpenOrdersReturnType = Map<string, OpenOrder>
@@ -18,14 +19,17 @@ export async function getOpenOrders(
 ): Promise<GetOpenOrdersReturnType> {
   const { getRelayerBaseUrl } = config
 
-  let url = getRelayerBaseUrl(ADMIN_OPEN_ORDERS_ROUTE)
+  const url = new URL(getRelayerBaseUrl(ADMIN_OPEN_ORDERS_ROUTE))
+
   if (parameters.matchingPool) {
-    const temp = new URL(url)
-    temp.searchParams.set('matching_pool', parameters.matchingPool)
-    url = temp.toString()
+    url.searchParams.set('matching_pool', parameters.matchingPool)
   }
 
-  const res = await getRelayerWithAdmin(config, url)
+  if (parameters.includeFillable) {
+    url.searchParams.set('include_fillable', String(true))
+  }
+
+  const res = await getRelayerWithAdmin(config, url.toString())
 
   if (!res.orders) {
     throw new BaseError('No orders found')
