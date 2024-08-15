@@ -48,7 +48,6 @@ export {
   depositRequest,
 } from '../actions/depositRequest.js'
 
-
 export {
   type DisconnectReturnType,
   disconnect,
@@ -147,7 +146,11 @@ export {
   lookupWallet,
 } from '../actions/lookupWallet.js'
 
-export { type PayFeesReturnType, type PayFeesErrorType, payFees } from '../actions/payFees.js'
+export {
+  type PayFeesReturnType,
+  type PayFeesErrorType,
+  payFees,
+} from '../actions/payFees.js'
 
 export {
   type SignMessageParameters,
@@ -242,6 +245,7 @@ export { Token } from '../types/token.js'
 export * from '../types/wallet.js'
 export * from '../types/order.js'
 export * from '../types/task.js'
+export * from '../types/ws.js'
 
 export {
   type Evaluate,
@@ -272,5 +276,7 @@ export { deepEqual } from '../utils/deepEqual.js'
 export { postRelayerRaw } from '../utils/http.js'
 
 export { WebSocketManager } from '../utils/websocket.js'
+
+export { websocketWaiter } from '../utils/websocketWaiter.js'
 
 export { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'

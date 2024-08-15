@@ -27,16 +27,15 @@ import type { RelayerWebsocketMessage } from '../types/ws.js'
  */
 export async function websocketWaiter<T>(
   config: Config,
-  url: string,
   topic: string,
   messageHandler: (message: RelayerWebsocketMessage) => T | undefined,
   prefetch?: () => Promise<T | undefined>,
   timeout?: number,
-): Promise<T | undefined> {
+): Promise<T> {
   return new Promise((resolve, reject) => {
     let promiseSettled = false
 
-    const ws = new WebSocket(url)
+    const ws = new WebSocket(config.getWebsocketBaseUrl())
     ws.onopen = () => {
       const message = buildSubscriptionMessage(config, topic)
       ws.send(JSON.stringify(message))

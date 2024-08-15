@@ -1,4 +1,4 @@
 export type RelayerWebsocketMessage = {
-  topic: string,
+  topic: string
   event: any
 }
