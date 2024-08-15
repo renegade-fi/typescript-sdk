@@ -4,12 +4,21 @@ import {
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
 } from '../constants.js'
 import type { Config } from '../createConfig.js'
+import type { RelayerWebsocketMessage } from '../types/ws.js'
 
 /**
  * A lightweight method which resolves when a short-lived websocket connection is closed.
+ *
  * The method will open the websocket connection, subscribe to the given topic
  * (sending a subscription message in the format expected by the relayer),
  * and close it when the message handler returns a value, resolving the promise with the value.
+ *
+ * The message handler should return undefined *only* if the message is not relevant to the waiter.
+ * If the message satisfies the waiter's criteria but no return value is needed, the handler
+ * should return null.
+ *
+ * Additionally, the method accepts an async `prefetch` function which can be used ahead of the websocket
+ * connection being opened to fetch a value which will be returned immediately if it is not undefined.
  *
  * If the timeout is reached, the promise will reject.
  *
@@ -20,8 +29,9 @@ export async function websocketWaiter<T>(
   config: Config,
   url: string,
   topic: string,
-  messageHandler: (message: any) => T | undefined,
-  timeout: number | undefined = undefined,
+  messageHandler: (message: RelayerWebsocketMessage) => T | undefined,
+  prefetch?: () => Promise<T | undefined>,
+  timeout?: number,
 ): Promise<T | undefined> {
   return new Promise((resolve, reject) => {
     let promiseSettled = false
@@ -36,7 +46,7 @@ export async function websocketWaiter<T>(
       const message = JSON.parse(event.data)
       try {
         const result = messageHandler(message)
-        if (result) {
+        if (result !== undefined) {
           promiseSettled = true
           resolve(result)
           ws.close()
@@ -62,12 +72,24 @@ export async function websocketWaiter<T>(
       }
     }
 
-    setTimeout(() => {
-      if (!promiseSettled) {
-        promiseSettled = true
-        reject(new Error('Websocket connection timed out'))
-      }
-    }, timeout)
+    if (timeout) {
+      setTimeout(() => {
+        if (!promiseSettled) {
+          promiseSettled = true
+          reject(new Error('Websocket connection timed out'))
+        }
+      }, timeout)
+    }
+
+    if (prefetch) {
+      prefetch().then((result) => {
+        if (result) {
+          promiseSettled = true
+          resolve(result)
+          ws.close()
+        }
+      })
+    }
   })
 }
 

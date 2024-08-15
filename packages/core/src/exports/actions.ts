@@ -180,6 +180,8 @@ export {
   waitForTaskCompletion,
 } from '../actions/waitForTaskCompletion.js'
 
+export { waitForTaskCompletionWs } from '../actions/waitForTaskCompletionWs.js'
+
 export {
   type WatchStatusParameters,
   type WatchStatusReturnType,
