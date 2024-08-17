@@ -47,13 +47,13 @@ export async function websocketWaiter<T>(
         const result = messageHandler(message)
         if (result !== undefined) {
           promiseSettled = true
-          resolve(result)
           ws.close()
+          resolve(result)
         }
       } catch (error) {
         promiseSettled = true
-        reject(error)
         ws.close()
+        reject(error)
       }
     }
 
@@ -75,6 +75,7 @@ export async function websocketWaiter<T>(
       setTimeout(() => {
         if (!promiseSettled) {
           promiseSettled = true
+          ws.close()
           reject(new Error('Websocket connection timed out'))
         }
       }, timeout)
@@ -84,8 +85,8 @@ export async function websocketWaiter<T>(
       prefetch().then((result) => {
         if (result) {
           promiseSettled = true
-          resolve(result)
           ws.close()
+          resolve(result)
         }
       })
     }
