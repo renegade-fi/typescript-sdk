@@ -40,6 +40,7 @@ export type TimestampedPrice = {
 
 export type OpenOrder = {
   order: OrderMetadata
+  wallet_id: string
   fillable?: bigint
   price?: number
 }
