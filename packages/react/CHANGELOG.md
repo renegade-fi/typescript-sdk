@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.0.52
+
+### Patch Changes
+
+- wasm, core: update wallet parameterization
+- Updated dependencies
+  - @renegade-fi/core@0.0.49
+
 ## 0.0.51
 
 ### Patch Changes
