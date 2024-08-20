@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.49
+
+### Patch Changes
+
+- wasm, core: update wallet parameterization
+
 ## 0.0.48
 
 ### Patch Changes
