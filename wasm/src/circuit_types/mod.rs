@@ -18,7 +18,7 @@ use itertools::Itertools;
 // | Constants |
 // -------------
 // Subsctitution for SizedWalletShare::NUM_SCALARS
-const NUM_SCALARS: usize = 54;
+const NUM_SCALARS: usize = 69;
 
 /// The type used to track an amount
 pub type Amount = u128;

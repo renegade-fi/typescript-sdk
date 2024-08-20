@@ -93,11 +93,6 @@ export function build_auth_headers(sk_root: string, req: string, current_timesta
 */
 export function build_admin_headers(key: string, req: string, current_timestamp: bigint): any[];
 /**
-* @param {string} seed
-* @returns {any}
-*/
-export function derive_signing_key_from_seed(seed: string): any;
-/**
 * @param {string} sk_root
 * @returns {any}
 */
@@ -118,6 +113,11 @@ export function sign_message(sk_root: string, message: string): any;
 * @returns {any}
 */
 export function bigint_to_limbs(value: string): any;
+/**
+* @param {string} seed
+* @returns {any}
+*/
+export function derive_signing_key_from_seed(seed: string): any;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -135,11 +135,11 @@ export interface InitOutput {
   readonly update_order: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number) => void;
   readonly build_auth_headers: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
   readonly build_admin_headers: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
-  readonly derive_signing_key_from_seed: (a: number, b: number) => number;
   readonly get_pk_root: (a: number, b: number) => number;
   readonly pk_root_scalars: (a: number, b: number, c: number) => void;
   readonly sign_message: (a: number, b: number, c: number, d: number) => number;
   readonly bigint_to_limbs: (a: number, b: number) => number;
+  readonly derive_signing_key_from_seed: (a: number, b: number) => number;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;

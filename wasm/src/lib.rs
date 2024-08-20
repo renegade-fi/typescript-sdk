@@ -21,14 +21,14 @@ pub mod types;
 
 /// The system-wide value of MAX_BALANCES; the number of allowable balances a
 /// wallet holds
-pub const MAX_BALANCES: usize = 5;
+pub const MAX_BALANCES: usize = 10;
 
 /// The system-wide value of MAX_ORDERS; the number of allowable orders a wallet
 /// holds
-pub const MAX_ORDERS: usize = 5;
+pub const MAX_ORDERS: usize = 4;
 
 // Substitute for SizedWalletShare::NUM_SCALARS
-pub const NUM_SCALARS: usize = 54;
+pub const NUM_SCALARS: usize = 69;
 
 /// The number of bytes in a cluster symmetric key
 pub const CLUSTER_SYMMETRIC_KEY_LENGTH: usize = 32;
