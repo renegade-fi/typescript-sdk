@@ -13,11 +13,11 @@ export function cancel_order(a: number, b: number, c: number, d: number, e: numb
 export function update_order(a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number): void;
 export function build_auth_headers(a: number, b: number, c: number, d: number, e: number, f: number): void;
 export function build_admin_headers(a: number, b: number, c: number, d: number, e: number, f: number): void;
-export function derive_signing_key_from_seed(a: number, b: number): number;
 export function get_pk_root(a: number, b: number): number;
 export function pk_root_scalars(a: number, b: number, c: number): void;
 export function sign_message(a: number, b: number, c: number, d: number): number;
 export function bigint_to_limbs(a: number, b: number): number;
+export function derive_signing_key_from_seed(a: number, b: number): number;
 export function __wbindgen_add_to_stack_pointer(a: number): number;
 export function __wbindgen_malloc(a: number, b: number): number;
 export function __wbindgen_realloc(a: number, b: number, c: number, d: number): number;

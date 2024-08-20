@@ -104,7 +104,7 @@ impl Wallet {
         key_chain: KeyChain,
     ) -> Self {
         // Create a wallet with dummy shares, compute the shares, then update the wallet
-        let dummy_shares = vec![Scalar::zero(); 54];
+        let dummy_shares = vec![Scalar::zero(); 69];
 
         let mut wallet = Self {
             wallet_id,

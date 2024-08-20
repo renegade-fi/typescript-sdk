@@ -16,10 +16,10 @@ export const ROOT_KEY_MESSAGE_PREFIX =
 ////////////////////////////////////////////////////////////////////////////////
 
 // The system-wide value of MAX_BALANCES; the number of allowable balances a wallet holds
-export const MAX_BALANCES = 5
+export const MAX_BALANCES = 10
 
 /// The system-wide value of MAX_ORDERS; the number of allowable orders a wallet holds
-export const MAX_ORDERS = 5
+export const MAX_ORDERS = 4
 
 ////////////////////////////////////////////////////////////////////////////////
 // Wallet
