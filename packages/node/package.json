@@ -26,6 +26,10 @@
       "types": "./dist/types/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./renegade-utils": {
+      "types": "./renegade-utils/index.d.ts",
+      "default": "./renegade-utils/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
