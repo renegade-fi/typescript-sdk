@@ -18,13 +18,17 @@
   ],
   "sideEffects": false,
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/types/index.d.ts",
-  "typings": "./dist/types/index.d.ts",
+  "main": "./dist/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "typings": "./dist/types/exports/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./dist/types/exports/index.d.ts",
+      "default": "./dist/exports/index.js"
+    },
+    "./actions": {
+      "types": "./dist/types/exports/actions.d.ts",
+      "default": "./dist/exports/actions.js"
     },
     "./renegade-utils": {
       "types": "./renegade-utils/index.d.ts",
@@ -32,8 +36,19 @@
     },
     "./package.json": "./package.json"
   },
+  "typesVersions": {
+    "*": {
+      "actions": [
+        "./dist/types/exports/actions.d.ts"
+      ]
+    }
+  },
   "dependencies": {
-    "@renegade-fi/core": "workspace:*"
+    "@renegade-fi/core": "workspace:*",
+    "@wagmi/core": "^2.13.4"
+  },
+  "devDependencies": {
+    "@wagmi/cli": "^2.1.15"
   },
   "peerDependencies": {
     "viem": "2.x"
