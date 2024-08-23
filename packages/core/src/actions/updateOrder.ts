@@ -8,6 +8,7 @@ import { UPDATE_ORDER_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { Token } from '../types/token.js'
 import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
+import invariant from 'tiny-invariant'
 
 export type UpdateOrderParameters = {
   id?: string
@@ -24,11 +25,14 @@ export async function updateOrder(
   parameters: UpdateOrderParameters,
 ): UpdateOrderReturnType {
   const { id = '', base, quote, side, amount } = parameters
-  const { getRelayerBaseUrl, utils } = config
+  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  invariant(seed, 'Seed is required')
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
+
   const body = utils.update_order(
+    seed,
     stringifyForWasm(wallet),
     id,
     base,
@@ -57,8 +61,7 @@ export async function updateOrder(
     return { taskId: res.task_id }
   } catch (error) {
     console.error(
-      `wallet id: ${walletId} updating order ${id} to ${side} ${amount} ${
-        Token.findByAddress(base).ticker
+      `wallet id: ${walletId} updating order ${id} to ${side} ${amount} ${Token.findByAddress(base).ticker
       } failed`,
       {
         error,

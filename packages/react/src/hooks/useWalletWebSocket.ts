@@ -1,13 +1,13 @@
 'use client'
 
 import {
+  type Config,
   RENEGADE_AUTH_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
   WALLET_ROUTE,
-  getSkRoot,
-  parseBigJSON,
-  type Config,
   type Wallet,
+  getSymmetricKey,
+  parseBigJSON
 } from '@renegade-fi/core'
 import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
@@ -64,9 +64,9 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
       method: 'subscribe',
       topic: WALLET_ROUTE(walletId),
     }
-    const skRoot = getSkRoot(config)
-    const [auth, expiration] = config.utils.build_auth_headers(
-      skRoot,
+    const symmetricKey = getSymmetricKey(config)
+    const [auth, expiration] = config.utils.build_auth_headers_symmetric(
+      symmetricKey,
       JSON.stringify(body),
       BigInt(Date.now()),
     )

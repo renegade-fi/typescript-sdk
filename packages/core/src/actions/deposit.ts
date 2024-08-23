@@ -28,16 +28,20 @@ export async function deposit(
 ): DepositReturnType {
   const { fromAddr, mint, amount, permitNonce, permitDeadline, permit } =
     parameters
-  const { getRelayerBaseUrl, utils } = config
+  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  invariant(seed, 'Seed is required')
 
   const token = Token.findByAddress(mint)
   invariant(token, 'Token not found')
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
+  const walletStr = stringifyForWasm(wallet)
+
 
   const body = utils.deposit(
-    stringifyForWasm(wallet),
+    seed,
+    walletStr,
     fromAddr,
     mint,
     toHex(amount),

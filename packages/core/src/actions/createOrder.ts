@@ -7,6 +7,7 @@ import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
 import { postRelayerWithAuth } from '../utils/http.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
+import invariant from 'tiny-invariant'
 
 export type CreateOrderParameters = {
   id?: string
@@ -25,12 +26,14 @@ export async function createOrder(
   parameters: CreateOrderParameters,
 ): Promise<CreateOrderReturnType> {
   const { id = '', base, quote, side, amount } = parameters
-  const { getRelayerBaseUrl, utils } = config
+  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  invariant(seed, 'Seed is required')
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
 
   const body = utils.new_order(
+    seed,
     stringifyForWasm(wallet),
     id,
     base,

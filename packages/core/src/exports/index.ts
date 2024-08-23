@@ -54,12 +54,6 @@ export {
 } from '../actions/disconnect.js'
 
 export {
-  type GetAuthorizationHeadersParameters,
-  type GetAuthorizationHeadersReturnType,
-  getAuthorizationHeaders,
-} from '../actions/getAuthHeaders.js'
-
-export {
   type GetBalancesReturnType,
   getBalances,
 } from '../actions/getBalances.js'
@@ -111,6 +105,11 @@ export {
   type GetSkRootReturnType,
   getSkRoot,
 } from '../actions/getSkRoot.js'
+
+export {
+  type GetSymmetricKeyReturnType,
+  getSymmetricKey,
+} from '../actions/getSymmetricKey.js'
 
 export {
   type GetTaskHistoryErrorType,
@@ -245,7 +244,6 @@ export { Token } from '../types/token.js'
 export * from '../types/wallet.js'
 export * from '../types/order.js'
 export * from '../types/task.js'
-export * from '../types/ws.js'
 
 export {
   type Evaluate,

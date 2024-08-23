@@ -1,7 +1,7 @@
 use crate::{
     circuit_types::keychain::{NonNativeScalar, PublicKeyChain, SecretIdentificationKey},
     external_api::types::ApiWallet,
-    helpers::nonnative_scalar_to_hex_string,
+    helpers::{hex_to_signing_key, nonnative_scalar_to_hex_string},
     types::Scalar,
 };
 
@@ -11,14 +11,20 @@ use k256::ecdsa::{signature::Signer, Signature, SigningKey};
 use lazy_static::lazy_static;
 use num_bigint::BigUint;
 use num_traits::Num;
-use wasm_bindgen::prelude::*;
 
-use super::types::{KeyChain, PrivateKeyChain, Wallet, WalletIdentifier};
+use super::{
+    keychain::{HmacKey, KeyChain, PrivateKeyChain},
+    types::{Wallet, WalletIdentifier},
+};
 
 /// The message used to derive the blinder stream seed
 const BLINDER_STREAM_SEED_MESSAGE: &[u8] = b"blinder seed";
 /// The messages used to derive the share stream seed
 const SHARE_STREAM_SEED_MESSAGE: &[u8] = b"share seed";
+/// The message (concatenated with the nonce) used to derive the wallet's root key
+const ROOT_KEY_MESSAGE: &[u8] = b"root key";
+/// The message used to derive the wallet's symmetric key
+const SYMMETRIC_KEY_MESSAGE: &[u8] = b"symmetric key";
 /// The message used to derive the wallet's match key
 const MATCH_KEY_MESSAGE: &[u8] = b"match key";
 /// The message used to derive the wallet's ID
@@ -31,23 +37,15 @@ const EXTENDED_BYTES: usize = 64;
 /// The number of bytes in a wallet ID
 const WALLET_ID_BYTES: usize = 16;
 
-#[wasm_bindgen]
-pub fn derive_signing_key_from_seed(seed: &str) -> JsValue {
+/// Derive the root key from a seed
+/// "root key" is used to refer to the signing key that is used to derive the first sk_root key,
+/// which is used to derive the wallet_id, the blinder_seed, and the share_seed
+pub fn derive_root_signing_key(seed: &str) -> Result<SigningKey, String> {
     let stripped = seed.strip_prefix("0x").unwrap_or(seed);
     let bytes = hex::decode(stripped).unwrap();
     // Generate the root key
-    let sk_root_key = derive_signing_key(&bytes).unwrap();
-    let bigint = BigUint::from_bytes_be(&sk_root_key.to_bytes());
-    // TODO: Should be able to .into() here
-    let sk_root: NonNativeScalar<2> = NonNativeScalar::from(&bigint);
-
-    JsValue::from(nonnative_scalar_to_hex_string(&sk_root))
-}
-
-/// Derive a signing key from a signature on a message (message has already signed in the frontend)
-/// Derives sk_root from seed (Signed root key message from browser wallet)
-fn derive_signing_key(seed: &[u8]) -> Result<SigningKey, String> {
-    let sig_bytes = get_extended_sig_bytes(seed)?;
+    let keccak_bytes = keccak256(bytes);
+    let sig_bytes = extend_to_64_bytes(&keccak_bytes);
 
     // We must manually reduce the bytes to the base field as the k256 library
     // expects byte representations to be of a valid base field element directly
@@ -57,6 +55,43 @@ fn derive_signing_key(seed: &[u8]) -> Result<SigningKey, String> {
     let key_bytes = reduced_val.to_bytes_be();
     SigningKey::from_bytes(key_bytes.as_slice().into())
         .map_err(|e| format!("failed to derive signing key from signature: {}", e))
+}
+
+/// Derive the sk_root signing key using the root key
+/// The first sk_root key (not rotated) is used to derive wallet_id, the blinder_seed, and the share_seed
+pub fn derive_sk_root_signing_key(
+    seed: &str,
+    nonce: Option<&Scalar>,
+) -> Result<SigningKey, String> {
+    let sk_root_scalar = derive_sk_root_scalars(seed, nonce.unwrap_or(&Scalar::zero()));
+    let sk_root_hex = nonnative_scalar_to_hex_string(&sk_root_scalar);
+    Ok(hex_to_signing_key(&sk_root_hex).unwrap())
+}
+
+/// Derive the sk_root scalar from the root key and nonce
+pub fn derive_sk_root_scalars(seed: &str, nonce: &Scalar) -> NonNativeScalar<2> {
+    let root_key = derive_root_signing_key(seed).unwrap();
+
+    let sk_root = derive_sk_root(&root_key, Some(&nonce)).unwrap();
+    let sk_root_biguint = BigUint::from_bytes_be(&sk_root.to_bytes_be());
+    // TODO: Should be able to .into() here
+    NonNativeScalar::from(&sk_root_biguint)
+}
+
+/// Construct sk_root by signing the concat of the root key message and the nonce
+pub fn derive_sk_root(root_key: &SigningKey, nonce: Option<&Scalar>) -> Result<Scalar, String> {
+    // Use the provided nonce or default to 0
+    let default_nonce = Scalar::zero();
+    let nonce = nonce.unwrap_or(&default_nonce);
+
+    // Sign the concat of the root key message and the nonce and convert to a scalar
+    let msg = [ROOT_KEY_MESSAGE, nonce.to_bytes_be().as_slice()].concat();
+    derive_scalar(&msg, root_key)
+}
+
+/// Derive a symmetric key from a signing key
+pub fn derive_symmetric_key(root_key: &SigningKey) -> Result<HmacKey, String> {
+    get_sig_bytes(SYMMETRIC_KEY_MESSAGE, root_key).map(HmacKey)
 }
 
 lazy_static! {
@@ -84,11 +119,15 @@ pub fn derive_wallet_keychain(root_key: &SigningKey) -> Result<KeyChain, String>
     let sk_match = SecretIdentificationKey::from(sk_match_key);
     let pk_match = sk_match.get_public_key();
 
+    // Generate the symmetric key
+    let symmetric_key = derive_symmetric_key(root_key)?;
+
     Ok(KeyChain {
-        public_keys: PublicKeyChain { pk_root, pk_match },
+        public_keys: PublicKeyChain::new(pk_root, pk_match),
         secret_keys: PrivateKeyChain {
             sk_root: Some(sk_root),
             sk_match,
+            symmetric_key,
         },
     })
 }
@@ -109,8 +148,7 @@ pub fn derive_share_seed(root_key: &SigningKey) -> Result<Scalar, String> {
 ///
 /// This is done to ensure deterministic wallet recovery
 pub fn derive_wallet_id(root_key: &SigningKey) -> Result<WalletIdentifier, String> {
-    let sig: Signature = root_key.sign(WALLET_ID_MESSAGE);
-    let bytes = get_extended_sig_bytes(&sig.to_bytes())?;
+    let bytes = get_extended_sig_bytes(WALLET_ID_MESSAGE, root_key)?;
     WalletIdentifier::from_slice(&bytes[..WALLET_ID_BYTES])
         .map_err(|e| format!("failed to derive wallet ID from key: {}", e))
 }
@@ -118,33 +156,41 @@ pub fn derive_wallet_id(root_key: &SigningKey) -> Result<WalletIdentifier, Strin
 /// Derive a new wallet from a private key
 ///
 /// Returns the wallet, the blinder seed, and the share seed
-pub fn derive_wallet_from_key(root_key: &SigningKey) -> Result<(ApiWallet, Scalar, Scalar)> {
+/// Should pass in first sk_root
+pub fn derive_wallet_from_key(signing_key: &SigningKey) -> Result<(ApiWallet, Scalar, Scalar)> {
     // Derive the seeds and keychain
-    let wallet_id = wrap_eyre!(derive_wallet_id(root_key))?;
-    let blinder_seed = wrap_eyre!(derive_blinder_seed(root_key))?;
-    let share_seed = wrap_eyre!(derive_share_seed(root_key))?;
-    // TODO: Pass seed into here
-    let keychain = wrap_eyre!(derive_wallet_keychain(root_key))?;
+    let wallet_id = wrap_eyre!(derive_wallet_id(signing_key))?;
+    let blinder_seed = wrap_eyre!(derive_blinder_seed(signing_key))?;
+    let share_seed = wrap_eyre!(derive_share_seed(signing_key))?;
+    let keychain = wrap_eyre!(derive_wallet_keychain(signing_key))?;
 
     let wallet = Wallet::new_empty_wallet(wallet_id, blinder_seed, share_seed, keychain);
     Ok((wallet.into(), blinder_seed, share_seed))
 }
 
-/// Get a `Scalar` from a signature on a message (message should already be signed)
+/// Get a `Scalar` from a signature on a message
 fn derive_scalar(msg: &[u8], key: &SigningKey) -> Result<Scalar, String> {
-    let sig: Signature = key.sign(msg);
-    let bytes = get_extended_sig_bytes(&sig.to_bytes())?;
+    let bytes = get_extended_sig_bytes(msg, key)?;
 
     // TODO: Impelement Scalar::from_be_bytes_mod_order
     Ok(Scalar::from(BigUint::from_bytes_be(&bytes)))
 }
 
-// Hash and extend a signature to 64 bytes
-fn get_extended_sig_bytes(msg: &[u8]) -> Result<[u8; EXTENDED_BYTES], String> {
+/// Sign a message, serialize the signature into bytes
+fn get_sig_bytes(msg: &[u8], key: &SigningKey) -> Result<[u8; KECCAK_HASH_BYTES], String> {
+    let digest = keccak256(msg);
+    let sig: Signature = key.sign(&digest);
+
     // Take the keccak hash of the signature to disperse its elements
-    let bytes = msg.to_vec();
-    let keccak_bytes = keccak256(bytes);
-    Ok(extend_to_64_bytes(&keccak_bytes))
+    let bytes = sig.to_vec();
+    Ok(keccak256(bytes))
+}
+
+/// Sign a message, serialize the signature into bytes, and extend the bytes to
+/// support secure reduction into a field
+fn get_extended_sig_bytes(msg: &[u8], key: &SigningKey) -> Result<[u8; EXTENDED_BYTES], String> {
+    let bytes = get_sig_bytes(msg, key)?;
+    Ok(extend_to_64_bytes(&bytes))
 }
 
 /// Extend the given byte array to 64 bytes, double the length of the original

@@ -75,6 +75,18 @@ impl Iterator for PoseidonCSPRNG {
 // | Hex |
 // -------
 
+/// Convert a byte array to a hex string
+pub fn bytes_to_hex_string(bytes: &[u8]) -> String {
+    let encoded = hex::encode(bytes);
+    format!("0x{encoded}")
+}
+
+/// Convert a hex string to a byte array
+pub fn bytes_from_hex_string(hex: &str) -> Result<Vec<u8>, String> {
+    let hex = hex.strip_prefix("0x").unwrap_or(hex);
+    hex::decode(hex).map_err(|e| format!("error deserializing bytes from hex string: {e}"))
+}
+
 /// A helper to serialize a BigUint to a hex string
 pub fn biguint_to_hex_string(val: &BigUint) -> String {
     format!("0x{}", val.to_str_radix(16 /* radix */))
@@ -202,7 +214,6 @@ pub fn hex_to_signing_key(hex: &str) -> Result<SigningKey, String> {
 /// Deserializes a JSON string into a `Wallet` object.
 pub fn deserialize_wallet(wallet_str: &str) -> Wallet {
     let deserialized_wallet: ApiWallet = serde_json::from_reader(wallet_str.as_bytes()).unwrap();
-    println!("Api Wallet: {:?}", deserialized_wallet);
     deserialized_wallet.try_into().unwrap()
 }
 

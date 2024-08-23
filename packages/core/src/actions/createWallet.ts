@@ -1,16 +1,16 @@
+import invariant from 'tiny-invariant'
 import { CREATE_WALLET_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { postRelayerRaw } from '../utils/http.js'
-import { getSkRoot } from './getSkRoot.js'
 import { waitForWalletIndexing } from './waitForWalletIndexing.js'
 
 export type CreateWalletReturnType = ReturnType<typeof waitForWalletIndexing>
 
 export async function createWallet(config: Config): CreateWalletReturnType {
-  const { getRelayerBaseUrl, utils } = config
-  const skRoot = getSkRoot(config)
-  const body = utils.create_wallet(skRoot)
+  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  invariant(seed, 'seed is required')
+  const body = utils.create_wallet(seed)
   const headers = {
     'Content-Type': 'application/json',
   }

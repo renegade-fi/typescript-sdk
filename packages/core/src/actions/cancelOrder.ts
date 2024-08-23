@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import { CANCEL_ORDER_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import type { BaseErrorType } from '../errors/base.js'
@@ -19,11 +20,13 @@ export async function cancelOrder(
   parameters: CancelOrderParameters,
 ): Promise<CancelOrderReturnType> {
   const { id } = parameters
-  const { getRelayerBaseUrl, utils } = config
+  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  invariant(seed, 'Seed is required')
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
-  const body = utils.cancel_order(stringifyForWasm(wallet), id)
+
+  const body = utils.cancel_order(seed, stringifyForWasm(wallet), id)
 
   const logContext = {
     walletId,

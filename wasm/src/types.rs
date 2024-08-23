@@ -2,9 +2,16 @@ use ark_bn254::Fr;
 use ark_ff::PrimeField;
 use num_bigint::BigUint;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use std::ops::{Add, Mul, Sub};
+use std::ops::{Add, AddAssign, Mul, Sub};
 
 pub type ScalarField = Fr;
+
+pub const fn n_bytes_field() -> usize {
+    // We add 7 and divide by 8 to emulate a ceiling operation considering that usize
+    // division is a floor
+    let n_bits = ScalarField::MODULUS_BIT_SIZE as usize;
+    (n_bits + 7) / 8
+}
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct Scalar(ScalarField);
@@ -15,6 +22,11 @@ impl Scalar {
         Scalar(ScalarField::from(0u8))
     }
 
+    /// Returns the one element of the scalar field.
+    pub fn one() -> Self {
+        Scalar(ScalarField::from(1u8))
+    }
+
     /// Construct a scalar from an inner field element
     pub fn new(inner: ScalarField) -> Self {
         Scalar(inner)
@@ -23,6 +35,21 @@ impl Scalar {
     /// Get the inner value of the scalar
     pub fn inner(&self) -> ScalarField {
         self.0
+    }
+
+    /// Convert to big endian bytes
+    ///
+    /// Pad to the maximum amount of bytes needed so that the resulting bytes
+    /// are of predictable length
+    pub fn to_bytes_be(&self) -> Vec<u8> {
+        let val_biguint = self.to_biguint();
+        let mut bytes = val_biguint.to_bytes_be();
+
+        let n_bytes = n_bytes_field();
+        let mut padding = vec![0u8; n_bytes - bytes.len()];
+        padding.append(&mut bytes);
+
+        padding
     }
 
     /// Converts the Scalar back into a BigUint
@@ -89,6 +116,12 @@ impl Add for Scalar {
     }
 }
 
+impl AddAssign for Scalar {
+    fn add_assign(&mut self, other: Self) {
+        self.0 += other.0;
+    }
+}
+
 impl Sub for Scalar {
     type Output = Self;
 
@@ -110,10 +143,28 @@ pub fn get_scalar_field_modulus() -> BigUint {
     ScalarField::MODULUS.into()
 }
 
+// ---------------------------
+// | Conversions From Scalar |
+// ---------------------------
+
 /// Convert a scalar to a BigUint
 pub fn scalar_to_biguint(a: &Scalar) -> BigUint {
     a.to_biguint()
 }
+
+/// Reduces the scalar to a u64, truncating anything above 2^64 - 1
+pub fn scalar_to_u64(a: &Scalar) -> u64 {
+    let bytes = a.to_bytes_be();
+    let len = bytes.len();
+
+    // Take the last 8 bytes (64 bits)
+    let bytes: [u8; 8] = bytes[len - 8..len].try_into().unwrap();
+    u64::from_be_bytes(bytes)
+}
+
+// ----------------------------
+// | Conversions from Bigints |
+// ----------------------------
 
 /// Convert a BigUint to a scalar
 pub fn biguint_to_scalar(a: &BigUint) -> Scalar {

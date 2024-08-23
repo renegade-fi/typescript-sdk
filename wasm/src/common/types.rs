@@ -1,14 +1,9 @@
+use super::{keychain::KeyChain, keyed_list::KeyedList};
 use crate::{
     circuit_types::{
-        balance::Balance,
-        compute_wallet_share_commitment, create_wallet_shares_from_private,
-        create_wallet_shares_with_randomness,
-        elgamal::EncryptionKey,
-        fixed_point::FixedPoint,
-        keychain::{PublicKeyChain, SecretIdentificationKey, SecretSigningKey},
-        order::Order,
-        wallet::WalletShareStateCommitment,
-        SizedWallet as SizedCircuitWallet,
+        balance::Balance, compute_wallet_share_commitment, create_wallet_shares_from_private,
+        create_wallet_shares_with_randomness, elgamal::EncryptionKey, fixed_point::FixedPoint,
+        order::Order, wallet::WalletShareStateCommitment, SizedWallet as SizedCircuitWallet,
     },
     helpers::{evaluate_hash_chain, PoseidonCSPRNG},
     types::Scalar,
@@ -20,38 +15,12 @@ use num_bigint::BigUint;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use super::keyed_list::KeyedList;
-
 /// A type alias for the wallet identifier type, currently a UUID
 pub type WalletIdentifier = Uuid;
 /// An identifier of an order used for caching
 pub type OrderIdentifier = Uuid;
 /// The type representing a cluster's symmetric key
 pub type SymmetricAuthKey = [u8; CLUSTER_SYMMETRIC_KEY_LENGTH];
-
-/// Represents the private keys a relayer has access to for a given wallet
-#[derive(Clone, Debug, Derivative, Serialize, Deserialize)]
-#[derivative(PartialEq, Eq)]
-pub struct PrivateKeyChain {
-    /// Optionally the relayer holds sk_root, in which case the relayer has
-    /// heightened permissions than the standard case
-    ///
-    /// We call such a relayer a "super relayer"
-    pub sk_root: Option<SecretSigningKey>,
-    /// The match private key, authorizes the relayer to match orders for the
-    /// wallet
-    pub sk_match: SecretIdentificationKey,
-}
-
-/// Represents the public and private keys given to the relayer managing a
-/// wallet
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct KeyChain {
-    /// The public keys in the wallet
-    pub public_keys: PublicKeyChain,
-    /// The secret keys in the wallet
-    pub secret_keys: PrivateKeyChain,
-}
 
 /// Represents a wallet managed by the local relayer
 #[derive(Clone, Debug, Serialize, Derivative, Deserialize)]
@@ -104,7 +73,7 @@ impl Wallet {
         key_chain: KeyChain,
     ) -> Self {
         // Create a wallet with dummy shares, compute the shares, then update the wallet
-        let dummy_shares = vec![Scalar::zero(); 69];
+        let dummy_shares = vec![Scalar::zero(); 70];
 
         let mut wallet = Self {
             wallet_id,

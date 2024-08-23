@@ -1,12 +1,12 @@
 'use client'
 
 import {
+  type Config,
+  type OrderMetadata,
   RENEGADE_AUTH_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
   WS_WALLET_ORDERS_ROUTE,
-  getSkRoot,
-  type Config,
-  type OrderMetadata,
+  getSymmetricKey
 } from '@renegade-fi/core'
 import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
@@ -60,8 +60,8 @@ export function useOrderHistoryWebSocket(
   useEffect(() => {
     if (
       !enabled ||
-      readyState !== ReadyState.OPEN ||
       !walletId ||
+      readyState !== ReadyState.OPEN ||
       status !== 'in relayer'
     )
       return
@@ -70,9 +70,9 @@ export function useOrderHistoryWebSocket(
       method: 'subscribe',
       topic: WS_WALLET_ORDERS_ROUTE(walletId),
     }
-    const skRoot = getSkRoot(config)
-    const [auth, expiration] = config.utils.build_auth_headers(
-      skRoot,
+    const symmetricKey = getSymmetricKey(config)
+    const [auth, expiration] = config.utils.build_auth_headers_symmetric(
+      symmetricKey,
       JSON.stringify(body),
       BigInt(Date.now()),
     )

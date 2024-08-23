@@ -50,12 +50,6 @@ export {
 export { type DisconnectReturnType, disconnect } from '../actions/disconnect.js'
 
 export {
-  type GetAuthorizationHeadersParameters,
-  type GetAuthorizationHeadersReturnType,
-  getAuthorizationHeaders,
-} from '../actions/getAuthHeaders.js'
-
-export {
   type GetBalancesReturnType,
   getBalances,
 } from '../actions/getBalances.js'
@@ -120,6 +114,11 @@ export {
 } from '../actions/getPriceFromPriceReporter.js'
 
 export { type GetSkRootReturnType, getSkRoot } from '../actions/getSkRoot.js'
+
+export {
+  type GetSymmetricKeyReturnType,
+  getSymmetricKey,
+} from '../actions/getSymmetricKey.js'
 
 export {
   type GetTaskHistoryErrorType,

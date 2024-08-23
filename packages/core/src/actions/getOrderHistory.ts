@@ -3,7 +3,7 @@ import type { Config } from '../createConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type { OrderMetadata } from '../types/order.js'
 import { getRelayerWithAuth } from '../utils/http.js'
-import { getSkRoot } from './getSkRoot.js'
+import { getWalletId } from './getWalletId.js'
 
 export type GetOrderHistoryReturnType = Map<string, OrderMetadata>
 
@@ -12,9 +12,8 @@ export type GetOrderHistoryErrorType = BaseErrorType
 export async function getOrderHistory(
   config: Config,
 ): Promise<GetOrderHistoryReturnType> {
-  const { getRelayerBaseUrl, utils } = config
-  const skRoot = getSkRoot(config)
-  const walletId = utils.wallet_id(skRoot)
+  const { getRelayerBaseUrl } = config
+  const walletId = getWalletId(config)
   const res = await getRelayerWithAuth(
     config,
     getRelayerBaseUrl(ORDER_HISTORY_ROUTE(walletId)),
