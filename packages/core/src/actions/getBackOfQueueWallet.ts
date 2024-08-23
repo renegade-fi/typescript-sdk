@@ -4,7 +4,7 @@ import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type { Order } from '../types/order.js'
 import type { Balance, Wallet } from '../types/wallet.js'
 import { getRelayerWithAuth } from '../utils/http.js'
-import { getSkRoot } from './getSkRoot.js'
+import { getWalletId } from './getWalletId.js'
 
 export type GetBackOfQueueWalletParameters = {
   filterDefaults?: boolean
@@ -19,9 +19,8 @@ export async function getBackOfQueueWallet(
   parameters: GetBackOfQueueWalletParameters = {},
 ): Promise<GetBackOfQueueWalletReturnType> {
   const { filterDefaults } = parameters
-  const { getRelayerBaseUrl, utils } = config
-  const skRoot = getSkRoot(config)
-  const walletId = utils.wallet_id(skRoot)
+  const { getRelayerBaseUrl, } = config
+  const walletId = getWalletId(config)
   const res = await getRelayerWithAuth(
     config,
     getRelayerBaseUrl(BACK_OF_QUEUE_WALLET_ROUTE(walletId)),

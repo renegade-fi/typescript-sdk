@@ -1,17 +1,17 @@
+import invariant from 'tiny-invariant'
 import { parseAbiItem } from 'viem'
 import { FIND_WALLET_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { postRelayerRaw } from '../utils/http.js'
-import { getSkRoot } from './getSkRoot.js'
 import { waitForWalletIndexing } from './waitForWalletIndexing.js'
 
 export type LookupWalletReturnType = ReturnType<typeof waitForWalletIndexing>
 
 export async function lookupWallet(config: Config): LookupWalletReturnType {
-  const { getRelayerBaseUrl, utils } = config
-  const skRoot = getSkRoot(config)
-  const body = utils.find_wallet(skRoot)
+  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  invariant(seed, 'seed is required')
+  const body = utils.find_wallet(seed)
   const res = await postRelayerRaw(getRelayerBaseUrl(FIND_WALLET_ROUTE), body)
   if (res.task_id) {
     console.log(`task lookup-wallet(${res.task_id}): ${res.wallet_id}`, {
@@ -50,9 +50,9 @@ export async function lookupWallet(config: Config): LookupWalletReturnType {
 // Returns true iff the query successfully returns 0 logs
 export async function checkForWalletUpdatesOnChain(config: Config) {
   try {
-    const { utils } = config
-    const skRoot = getSkRoot(config)
-    const blinderShare = utils.derive_blinder_share(skRoot)
+    const { utils, state: { seed } } = config
+    invariant(seed, 'Seed is required')
+    const blinderShare = utils.derive_blinder_share(seed)
 
     const logs = await config.viemClient.getLogs({
       address: config.darkPoolAddress,

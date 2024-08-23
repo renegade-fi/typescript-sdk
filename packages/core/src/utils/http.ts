@@ -1,16 +1,15 @@
 import axios from 'axios'
+import invariant from 'tiny-invariant'
 
-import { getSkRoot } from '../actions/getSkRoot.js'
-import { BaseError } from '../errors/base.js'
-
+import { getSymmetricKey } from '../actions/getSymmetricKey.js'
 import {
   RENEGADE_AUTH_HEADER_NAME,
   RENEGADE_AUTH_HMAC_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
 } from '../constants.js'
 import type { Config } from '../createConfig.js'
+import { BaseError } from '../errors/base.js'
 import { parseBigJSON } from './bigJSON.js'
-import invariant from 'tiny-invariant'
 
 export async function postRelayerRaw(url: string, body: any, headers = {}) {
   try {
@@ -94,17 +93,21 @@ export async function postRelayerWithAuth(
   url: string,
   body?: string,
 ) {
-  const skRoot = await getSkRoot(config)
-  const [auth, expiration] = config.utils.build_auth_headers(
-    skRoot,
+  const symmetricKey = getSymmetricKey(config)
+  invariant(symmetricKey, 'Failed to derive symmetric key')
+
+  const [auth, expiration] = config.utils.build_auth_headers_symmetric(
+    symmetricKey,
     body ?? '',
     BigInt(Date.now()),
   )
+
   const headers = {
     [RENEGADE_AUTH_HEADER_NAME]: auth,
     [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
     'Content-Type': 'application/json',
   }
+
   return await postRelayerRaw(url, body, headers)
 }
 
@@ -132,17 +135,21 @@ export async function postRelayerWithAdmin(
 }
 
 export async function getRelayerWithAuth(config: Config, url: string) {
-  const skRoot = await getSkRoot(config)
-  const [auth, expiration] = config.utils.build_auth_headers(
-    skRoot,
+  const symmetricKey = getSymmetricKey(config)
+  invariant(symmetricKey, 'Failed to derive symmetric key')
+
+  const [auth, expiration] = config.utils.build_auth_headers_symmetric(
+    symmetricKey,
     '',
     BigInt(Date.now()),
   )
+
   const headers = {
     [RENEGADE_AUTH_HEADER_NAME]: auth,
     [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
     'Content-Type': 'application/json',
   }
+
   return await getRelayerRaw(url, headers)
 }
 

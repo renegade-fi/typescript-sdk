@@ -1,6 +1,8 @@
+import invariant from 'tiny-invariant'
 import { toHex } from 'viem'
 import { ADMIN_CREATE_ORDER_IN_MATCHING_POOL_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
+import { Token } from '../types/token.js'
 import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
 import { postRelayerWithAdmin } from '../utils/http.js'
 import type {
@@ -9,7 +11,6 @@ import type {
 } from './createOrder.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
-import { Token } from '../types/token.js'
 
 export type CreateOrderInMatchingPoolParameters = {
   matchingPool: string
@@ -20,12 +21,14 @@ export async function createOrderInMatchingPool(
   parameters: CreateOrderInMatchingPoolParameters,
 ): Promise<CreateOrderReturnType> {
   const { id = '', base, quote, side, amount, matchingPool } = parameters
-  const { getRelayerBaseUrl, utils } = config
+  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  invariant(seed, 'Seed is required')
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
 
   const body = utils.new_order_in_matching_pool(
+    seed,
     stringifyForWasm(wallet),
     id,
     base,

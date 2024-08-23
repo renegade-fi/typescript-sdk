@@ -8,6 +8,7 @@ import { WITHDRAW_BALANCE_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { Token } from '../types/token.js'
 import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
+import invariant from 'tiny-invariant'
 
 export type WithdrawParameters = {
   mint: Address
@@ -22,13 +23,15 @@ export async function withdraw(
   parameters: WithdrawParameters,
 ): WithdrawReturnType {
   const { mint, amount, destinationAddr } = parameters
-  const { getRelayerBaseUrl, utils } = config
+  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  invariant(seed, 'Seed is required')
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
 
   // Withdraw
   const body = utils.withdraw(
+    seed,
     stringifyForWasm(wallet),
     mint,
     toHex(amount),
@@ -55,8 +58,7 @@ export async function withdraw(
     return { taskId: res.task_id }
   } catch (error) {
     console.error(
-      `wallet id: ${walletId} withdrawing ${amount} ${
-        Token.findByAddress(mint).ticker
+      `wallet id: ${walletId} withdrawing ${amount} ${Token.findByAddress(mint).ticker
       } failed`,
       {
         error,

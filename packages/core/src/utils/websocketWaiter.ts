@@ -1,10 +1,9 @@
-import { getSkRoot } from '../actions/getSkRoot.js'
+import { getSymmetricKey } from '../actions/getSymmetricKey.js'
 import {
   RENEGADE_AUTH_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
 } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import type { RelayerWebsocketMessage } from '../types/ws.js'
 
 /**
  * A lightweight method which resolves when a short-lived websocket connection is closed.
@@ -16,6 +15,9 @@ import type { RelayerWebsocketMessage } from '../types/ws.js'
  * The message handler should return undefined *only* if the message is not relevant to the waiter.
  * If the message satisfies the waiter's criteria but no return value is needed, the handler
  * should return null.
+ * 
+ * The message handler is also responsible for parsing the message, to give it control over e.g. how
+ * bigint values are parsed.
  *
  * Additionally, the method accepts an async `prefetch` function which can be used ahead of the websocket
  * connection being opened to fetch a value which will be returned immediately if it is not undefined.
@@ -28,7 +30,7 @@ import type { RelayerWebsocketMessage } from '../types/ws.js'
 export async function websocketWaiter<T>(
   config: Config,
   topic: string,
-  messageHandler: (message: RelayerWebsocketMessage) => T | undefined,
+  messageHandler: (message: any) => T | undefined,
   prefetch?: () => Promise<T | undefined>,
   timeout?: number,
 ): Promise<T> {
@@ -42,9 +44,8 @@ export async function websocketWaiter<T>(
     }
 
     ws.onmessage = (event) => {
-      const message = JSON.parse(event.data)
       try {
-        const result = messageHandler(message)
+        const result = messageHandler(event.data)
         if (result !== undefined) {
           promiseSettled = true
           ws.close()
@@ -98,9 +99,9 @@ function buildSubscriptionMessage(config: Config, topic: string) {
     method: 'subscribe',
     topic,
   }
-  const skRoot = getSkRoot(config)
-  const [auth, expiration] = config.utils.build_auth_headers(
-    skRoot,
+  const symmetricKey = getSymmetricKey(config)
+  const [auth, expiration] = config.utils.build_auth_headers_symmetric(
+    symmetricKey,
     JSON.stringify(body),
     BigInt(Date.now()),
   )
