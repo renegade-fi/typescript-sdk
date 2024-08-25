@@ -245,7 +245,6 @@ export { Token } from '../types/token.js'
 export * from '../types/wallet.js'
 export * from '../types/order.js'
 export * from '../types/task.js'
-export * from '../types/ws.js'
 
 export {
   type Evaluate,
