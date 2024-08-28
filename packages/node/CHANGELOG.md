@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.0.52
+
+### Patch Changes
+
+- wasm, core, react, node: implement keychain rotation
+- Updated dependencies
+  - @renegade-fi/core@0.0.50
+
 ## 0.0.51
 
 ### Patch Changes
