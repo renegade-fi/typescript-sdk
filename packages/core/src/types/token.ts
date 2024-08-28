@@ -53,7 +53,7 @@ export class Token {
 
   static findByAddress(address: Address): Token {
     const tokenData = tokenMapping.tokens.find(
-      (token) => token.address === address,
+      (token) => token.address.toLowerCase() === address.toLowerCase(),
     )
     if (tokenData) {
       return new Token(
