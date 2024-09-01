@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.0.53
+
+### Patch Changes
+
+- pre-mainnet release
+- Updated dependencies
+  - @renegade-fi/core@0.0.51
+
 ## 0.0.52
 
 ### Patch Changes
