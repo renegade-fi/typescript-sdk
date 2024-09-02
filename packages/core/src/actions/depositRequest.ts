@@ -29,10 +29,9 @@ export async function depositRequest(
         return { taskId: res.task_id }
     } catch (error) {
         console.error(
-            `wallet id: ${walletId} depositing failed`,
+            `${walletId}`,
             {
                 error,
-                request,
             },
         )
         throw error

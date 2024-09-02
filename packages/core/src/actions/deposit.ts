@@ -1,10 +1,10 @@
 import invariant from 'tiny-invariant'
-import { toHex, type Address } from 'viem'
+import { type Address, toHex } from 'viem'
 import { DEPOSIT_BALANCE_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import type { BaseErrorType } from '../errors/base.js'
 import { Token } from '../types/token.js'
-import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
+import { stringifyForWasm } from '../utils/bigJSON.js'
 import { postRelayerWithAuth } from '../utils/http.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
@@ -50,32 +50,19 @@ export async function deposit(
     permit,
   )
 
-  const logContext = {
-    walletId,
-    mint,
-    amount,
-    permitNonce,
-    permitDeadline,
-    permit,
-    body: parseBigJSON(body),
-    wallet,
-  }
-
   try {
     const res = await postRelayerWithAuth(
       config,
       getRelayerBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
       body,
     )
-    console.log(`task update-wallet(${res.task_id}): ${walletId}`, logContext)
+    console.log(`task update-wallet(${res.task_id}): ${walletId}`)
     return { taskId: res.task_id }
   } catch (error) {
     console.error(
-      `wallet id: ${walletId} depositing ${amount} ${Token.findByAddress(mint).ticker
-      } failed`,
+      `${walletId}`,
       {
         error,
-        ...logContext,
       },
     )
     throw error

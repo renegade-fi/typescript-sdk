@@ -29,10 +29,9 @@ export async function createOrderRequest(
         return { taskId: res.task_id }
     } catch (error) {
         console.error(
-            `wallet id: ${walletId} creating order failed`,
+            `${walletId}`,
             {
                 error,
-                request,
             })
         throw error
     }

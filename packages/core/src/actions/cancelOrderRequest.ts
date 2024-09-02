@@ -25,14 +25,11 @@ export async function cancelOrderRequest(
             getRelayerBaseUrl(CANCEL_ORDER_ROUTE(walletId, id)),
             request,
         )
-        console.log(`task update-wallet(${res.task_id}): ${walletId}`, {
-            request,
-        })
+        console.log(`task update-wallet(${res.task_id}): ${walletId}`)
         return { taskId: res.task_id }
     } catch (error) {
-        console.error(`wallet id: ${walletId} canceling order ${id} failed`, {
+        console.error(`${walletId}`, {
             error,
-            request,
         })
         throw error
     }

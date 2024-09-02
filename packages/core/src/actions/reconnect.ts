@@ -8,7 +8,6 @@ export async function reconnect(config: Config) {
     invariant(config.state.id, 'No id found')
     const wallet = await getWalletFromRelayer(config)
     if (wallet) {
-      console.log('🚝 Reconnecting on mount')
       config.setState((x) => ({
         ...x,
         status: 'in relayer',

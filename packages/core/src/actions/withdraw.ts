@@ -1,14 +1,11 @@
+import invariant from 'tiny-invariant'
 import { type Address, toHex } from 'viem'
-import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
-import { getWalletId } from './getWalletId.js'
-
-import { postRelayerWithAuth } from '../utils/http.js'
-
 import { WITHDRAW_BALANCE_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import { Token } from '../types/token.js'
-import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
-import invariant from 'tiny-invariant'
+import { stringifyForWasm } from '../utils/bigJSON.js'
+import { postRelayerWithAuth } from '../utils/http.js'
+import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
+import { getWalletId } from './getWalletId.js'
 
 export type WithdrawParameters = {
   mint: Address
@@ -38,31 +35,19 @@ export async function withdraw(
     destinationAddr,
   )
 
-  const logContext = {
-    walletId,
-    mint,
-    ticker: Token.findByAddress(mint).ticker,
-    amount,
-    destinationAddr,
-    body: parseBigJSON(body),
-    wallet,
-  }
-
   try {
     const res = await postRelayerWithAuth(
       config,
       getRelayerBaseUrl(WITHDRAW_BALANCE_ROUTE(walletId, mint)),
       body,
     )
-    console.log(`task update-wallet(${res.task_id}): ${walletId}`, logContext)
+    console.log(`task update-wallet(${res.task_id}): ${walletId}`)
     return { taskId: res.task_id }
   } catch (error) {
     console.error(
-      `wallet id: ${walletId} withdrawing ${amount} ${Token.findByAddress(mint).ticker
-      } failed`,
+      `${walletId}`,
       {
         error,
-        ...logContext,
       },
     )
     throw error

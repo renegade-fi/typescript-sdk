@@ -9,10 +9,6 @@ export async function refreshWallet(config: Config): RefreshWalletReturnType {
   const { getRelayerBaseUrl } = config
   const walletId = getWalletId(config)
 
-  const logContext = {
-    walletId,
-  }
-
   try {
     const res = await postRelayerWithAuth(
       config,
@@ -21,14 +17,12 @@ export async function refreshWallet(config: Config): RefreshWalletReturnType {
     if (res?.task_id) {
       console.log(
         `task refresh-wallet(${res.task_id}): ${walletId}`,
-        logContext,
       )
     }
     return { taskId: res.task_id }
   } catch (error) {
-    console.error(`wallet id: ${walletId} refresh wallet failed`, {
+    console.error(`${walletId}`, {
       error,
-      ...logContext,
     })
     throw error
   }
