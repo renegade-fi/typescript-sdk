@@ -1,14 +1,11 @@
-import { toHex, type Address } from 'viem'
-import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
-import { getWalletId } from './getWalletId.js'
-
-import { postRelayerWithAuth } from '../utils/http.js'
-
+import invariant from 'tiny-invariant'
+import { type Address, toHex } from 'viem'
 import { UPDATE_ORDER_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import { Token } from '../types/token.js'
-import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
-import invariant from 'tiny-invariant'
+import { stringifyForWasm } from '../utils/bigJSON.js'
+import { postRelayerWithAuth } from '../utils/http.js'
+import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
+import { getWalletId } from './getWalletId.js'
 
 export type UpdateOrderParameters = {
   id?: string
@@ -41,32 +38,20 @@ export async function updateOrder(
     toHex(amount),
   )
 
-  const logContext = {
-    walletId,
-    base,
-    quote,
-    side,
-    amount,
-    body: parseBigJSON(body),
-    wallet,
-  }
-
   try {
     const res = await postRelayerWithAuth(
       config,
       getRelayerBaseUrl(UPDATE_ORDER_ROUTE(walletId, id)),
       body,
     )
-    console.log(`task update-wallet(${res.task_id}): ${walletId}`, logContext)
+    console.log(`task update-wallet(${res.task_id}): ${walletId}`)
     return { taskId: res.task_id }
   } catch (error) {
     console.error(
-      `wallet id: ${walletId} updating order ${id} to ${side} ${amount} ${Token.findByAddress(base).ticker
-      } failed`,
+      `${walletId}`,
       {
         error,
-        ...logContext,
-      },
+      }
     )
     throw error
   }

@@ -2,8 +2,7 @@ import invariant from 'tiny-invariant'
 import { toHex } from 'viem'
 import { ADMIN_CREATE_ORDER_IN_MATCHING_POOL_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import { Token } from '../types/token.js'
-import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
+import { stringifyForWasm } from '../utils/bigJSON.js'
 import { postRelayerWithAdmin } from '../utils/http.js'
 import type {
   CreateOrderParameters,
@@ -38,31 +37,19 @@ export async function createOrderInMatchingPool(
     matchingPool,
   )
 
-  const logContext = {
-    walletId,
-    base,
-    quote,
-    side,
-    amount,
-    body: parseBigJSON(body),
-    wallet,
-  }
-
   try {
     const res = await postRelayerWithAdmin(
       config,
       getRelayerBaseUrl(ADMIN_CREATE_ORDER_IN_MATCHING_POOL_ROUTE(walletId)),
       body,
     )
-    console.log(`task update-wallet(${res.task_id}): ${walletId}`, logContext)
+    console.log(`task update-wallet(${res.task_id}): ${walletId}`)
     return { taskId: res.task_id }
   } catch (error) {
     console.error(
-      `wallet id: ${walletId} creating order to ${side} ${amount} ${Token.findByAddress(base).ticker
-      } in matching pool ${matchingPool} failed`,
+      `${walletId}`,
       {
         error,
-        ...logContext,
       },
     )
     throw error

@@ -18,7 +18,6 @@ export function hydrate(config: Config, parameters: HydrateParameters) {
   return {
     async onMount() {
       if (config._internal.ssr) {
-        console.log('💧 SSR enabled, rehydrating state')
         await config._internal.store.persist.rehydrate()
       }
 

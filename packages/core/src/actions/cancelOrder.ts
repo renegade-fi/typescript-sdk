@@ -2,7 +2,7 @@ import invariant from 'tiny-invariant'
 import { CANCEL_ORDER_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import type { BaseErrorType } from '../errors/base.js'
-import { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
+import { stringifyForWasm } from '../utils/bigJSON.js'
 import { postRelayerWithAuth } from '../utils/http.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
@@ -28,25 +28,17 @@ export async function cancelOrder(
 
   const body = utils.cancel_order(seed, stringifyForWasm(wallet), id)
 
-  const logContext = {
-    walletId,
-    orderId: id,
-    body: parseBigJSON(body),
-    wallet,
-  }
-
   try {
     const res = await postRelayerWithAuth(
       config,
       getRelayerBaseUrl(CANCEL_ORDER_ROUTE(walletId, id)),
       body,
     )
-    console.log(`task update-wallet(${res.task_id}): ${walletId}`, logContext)
+    console.log(`task update-wallet(${res.task_id}): ${walletId}`)
     return { taskId: res.task_id }
   } catch (error) {
-    console.error(`wallet id: ${walletId} canceling order ${id} failed`, {
+    console.error(`${walletId}`, {
       error,
-      ...logContext,
     })
     throw error
   }

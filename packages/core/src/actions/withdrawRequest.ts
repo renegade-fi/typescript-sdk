@@ -1,7 +1,6 @@
 import { WITHDRAW_BALANCE_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import type { BaseErrorType } from '../errors/base.js'
-import { Token } from '../types/token.js'
 import { postRelayerWithAuth } from '../utils/http.js'
 import { getWalletId } from './getWalletId.js'
 
@@ -30,11 +29,9 @@ export async function withdrawRequest(
         return { taskId: res.task_id }
     } catch (error) {
         console.error(
-            `wallet id: ${walletId} withdrawing  ${Token.findByAddress(mint).ticker
-            } failed`,
+            `${walletId}`,
             {
                 error,
-                request,
             },
         )
         throw error

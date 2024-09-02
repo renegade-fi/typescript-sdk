@@ -22,7 +22,6 @@ export async function waitForTaskCompletion(
       const taskState = response.state
       onStateChange?.(response)
       if (taskState !== lastState) {
-        // console.log(`Task ${response.description} is ${taskState}...`)
         lastState = taskState
       }
     } catch (error) {

@@ -21,7 +21,7 @@ importers:
         specifier: ^12.2.1
         version: 12.10.3
       typescript:
-        specifier: ^5.4.3
+        specifier: ^5.5.4
         version: 5.5.4
       vite-plugin-top-level-await:
         specifier: ^1.4.1
