@@ -240,6 +240,13 @@ pub struct ApiPrivateKeychain {
     pub symmetric_key: String,
 }
 
+impl ApiPrivateKeychain {
+    /// Deletes the sk_root by setting it to None
+    pub fn delete_sk_root(&mut self) {
+        self.sk_root = None;
+    }
+}
+
 impl TryFrom<ApiPrivateKeychain> for PrivateKeyChain {
     type Error = String;
 

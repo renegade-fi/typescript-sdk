@@ -66,7 +66,8 @@ pub struct CreateWalletRequest {
 #[wasm_bindgen]
 pub fn create_wallet(seed: &str) -> Result<JsValue, JsError> {
     let sk_root = derive_sk_root_signing_key(&seed, None).unwrap();
-    let (wallet, _, _) = derive_wallet_from_key(&sk_root).unwrap();
+    let (mut wallet, _, _) = derive_wallet_from_key(&sk_root).unwrap();
+    wallet.key_chain.private_keys.delete_sk_root();
     let req = CreateWalletRequest { wallet };
 
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
@@ -88,7 +89,8 @@ pub struct FindWalletRequest {
 #[wasm_bindgen]
 pub fn find_wallet(seed: &str) -> Result<JsValue, JsError> {
     let sk_root = derive_sk_root_signing_key(&seed, None).unwrap();
-    let (wallet, blinder_seed, share_seed) = derive_wallet_from_key(&sk_root).unwrap();
+    let (mut wallet, blinder_seed, share_seed) = derive_wallet_from_key(&sk_root).unwrap();
+    wallet.key_chain.private_keys.delete_sk_root();
     let req = FindWalletRequest {
         wallet_id: wallet.id,
         blinder_seed: blinder_seed.to_biguint(),
