@@ -1,5 +1,11 @@
 # @renegade-fi/node
 
+## 0.2.1
+
+### Patch Changes
+
+- wasm: modify fixed point precision'
+
 ## 0.2.0
 
 ### Minor Changes
