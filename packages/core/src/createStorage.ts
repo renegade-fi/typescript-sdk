@@ -54,7 +54,7 @@ export function createStorage<
 >(parameters: CreateStorageParameters): Evaluate<Storage<storageItemMap>> {
   const {
     deserialize = deserialize_,
-    key: prefix = 'renegade',
+    key: prefix = 'trade.renegade',
     serialize = serialize_,
     storage = noopStorage,
   } = parameters
@@ -86,6 +86,6 @@ export function createStorage<
 
 export const noopStorage = {
   getItem: () => null,
-  setItem: () => {},
-  removeItem: () => {},
+  setItem: () => { },
+  removeItem: () => { },
 } satisfies BaseStorage
