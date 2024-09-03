@@ -1,5 +1,18 @@
 # @renegade-fi/core
 
+## 0.2.0
+
+### Minor Changes
+
+- meta: ensure cookie storage rename
+- ensure storage rename
+
+## 0.1.0
+
+### Minor Changes
+
+- core: new storage key
+
 ## 0.0.53
 
 ### Patch Changes
