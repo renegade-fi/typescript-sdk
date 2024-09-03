@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.52
+
+### Patch Changes
+
+- core: add refresh wallet task def
+
 ## 0.0.51
 
 ### Patch Changes
