@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.54
+
+### Patch Changes
+
+- core: new cookie storage key
+
 ## 0.0.53
 
 ### Patch Changes
