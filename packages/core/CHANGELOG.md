@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.0.53
+
+### Patch Changes
+
+- core, react: scrub console logs
+
 ## 0.0.52
 
 ### Patch Changes
