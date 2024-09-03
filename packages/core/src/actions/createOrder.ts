@@ -14,6 +14,7 @@ export type CreateOrderParameters = {
   quote: Address
   side: 'buy' | 'sell'
   amount: bigint
+  worstCasePrice: string
 }
 
 export type CreateOrderReturnType = { taskId: string }
@@ -24,7 +25,7 @@ export async function createOrder(
   config: Config,
   parameters: CreateOrderParameters,
 ): Promise<CreateOrderReturnType> {
-  const { id = '', base, quote, side, amount } = parameters
+  const { id = '', base, quote, side, amount, worstCasePrice } = parameters
   const { getRelayerBaseUrl, utils, state: { seed } } = config
   invariant(seed, 'Seed is required')
 
@@ -39,6 +40,7 @@ export async function createOrder(
     quote,
     side,
     toHex(amount),
+    worstCasePrice,
   )
 
   try {

@@ -13,6 +13,7 @@ export type UpdateOrderParameters = {
   quote: Address
   side: 'buy' | 'sell'
   amount: bigint
+  worstCasePrice: string
 }
 
 export type UpdateOrderReturnType = Promise<{ taskId: string }>
@@ -21,7 +22,7 @@ export async function updateOrder(
   config: Config,
   parameters: UpdateOrderParameters,
 ): UpdateOrderReturnType {
-  const { id = '', base, quote, side, amount } = parameters
+  const { id = '', base, quote, side, amount, worstCasePrice } = parameters
   const { getRelayerBaseUrl, utils, state: { seed } } = config
   invariant(seed, 'Seed is required')
 
@@ -36,6 +37,7 @@ export async function updateOrder(
     quote,
     side,
     toHex(amount),
+    worstCasePrice,
   )
 
   try {

@@ -1,8 +1,8 @@
 use ark_bn254::Fr;
 use ark_ff::PrimeField;
-use num_bigint::BigUint;
+use num_bigint::{BigInt, BigUint, Sign};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use std::ops::{Add, AddAssign, Mul, Sub};
+use std::ops::{Add, AddAssign, Mul, Neg, Sub};
 
 pub type ScalarField = Fr;
 
@@ -130,6 +130,14 @@ impl Sub for Scalar {
     }
 }
 
+impl Neg for Scalar {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Scalar(-self.0)
+    }
+}
+
 impl Mul for Scalar {
     type Output = Self;
 
@@ -165,6 +173,17 @@ pub fn scalar_to_u64(a: &Scalar) -> u64 {
 // ----------------------------
 // | Conversions from Bigints |
 // ----------------------------
+
+/// Convert a bigint to a scalar
+pub fn bigint_to_scalar(a: &BigInt) -> Scalar {
+    match a.sign() {
+        Sign::Minus => {
+            let biguint = a.neg().to_biguint().unwrap();
+            -Scalar::from(biguint)
+        }
+        _ => Scalar::from(a.to_biguint().unwrap()),
+    }
+}
 
 /// Convert a BigUint to a scalar
 pub fn biguint_to_scalar(a: &BigUint) -> Scalar {

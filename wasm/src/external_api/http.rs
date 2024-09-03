@@ -354,7 +354,14 @@ fn create_order(
     quote_mint: &str,
     side: &str,
     amount: &str,
+    worst_case_price: &str,
 ) -> Result<ApiOrder, JsError> {
+    web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(
+        &serde_json::to_string("worst_case_price: ").unwrap(),
+    ));
+    web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(
+        &serde_json::to_string(&worst_case_price).unwrap(),
+    ));
     // Parse the UUID from the string, or generate a new one if the string is empty
     let id = if id.is_empty() {
         Uuid::new_v4()
@@ -375,10 +382,22 @@ fn create_order(
         .unwrap();
 
     // Create the order
-    let worst_case_price = match side {
-        OrderSide::Sell => FixedPoint::from_integer(0),
-        OrderSide::Buy => FixedPoint::from_integer(u64::MAX),
-    };
+    // let worst_case_price = match side {
+    //     OrderSide::Sell => FixedPoint::from_integer(0),
+    //     OrderSide::Buy => FixedPoint::from_integer(u64::MAX),
+    // };
+    let worst_case_price = worst_case_price
+        .parse::<f64>()
+        .map_err(|e| JsError::new(&format!("Invalid worst_case_price: {}", e)))?;
+
+    let worst_case_price = FixedPoint::from_f64_round_down(worst_case_price);
+
+    web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(
+        &serde_json::to_string("converted worst case price: ").unwrap(),
+    ));
+    web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(
+        &serde_json::to_string(&worst_case_price).unwrap(),
+    ));
 
     Ok(ApiOrder {
         id,
@@ -399,12 +418,13 @@ pub fn create_order_request(
     quote_mint: &str,
     side: &str,
     amount: &str,
+    worst_case_price: &str,
 ) -> Result<CreateOrderRequest, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
     new_wallet.key_chain.rotate(seed);
 
-    let order = create_order(id, base_mint, quote_mint, side, amount)?;
+    let order = create_order(id, base_mint, quote_mint, side, amount, worst_case_price)?;
     // Modify the wallet
     wrap_eyre!(new_wallet.add_order(order.id, order.clone().into())).unwrap();
     new_wallet.reblind_wallet();
@@ -432,8 +452,18 @@ pub fn new_order(
     quote_mint: &str,
     side: &str,
     amount: &str,
+    worst_case_price: &str,
 ) -> Result<JsValue, JsError> {
-    let req = create_order_request(seed, wallet_str, id, base_mint, quote_mint, side, amount)?;
+    let req = create_order_request(
+        seed,
+        wallet_str,
+        id,
+        base_mint,
+        quote_mint,
+        side,
+        amount,
+        worst_case_price,
+    )?;
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
 
@@ -446,10 +476,19 @@ pub fn new_order_in_matching_pool(
     quote_mint: &str,
     side: &str,
     amount: &str,
+    worst_case_price: &str,
     matching_pool: &str,
 ) -> Result<JsValue, JsError> {
-    let create_order_req =
-        create_order_request(seed, wallet_str, id, base_mint, quote_mint, side, amount)?;
+    let create_order_req = create_order_request(
+        seed,
+        wallet_str,
+        id,
+        base_mint,
+        quote_mint,
+        side,
+        amount,
+        worst_case_price,
+    )?;
     let req = CreateOrderInMatchingPoolRequest {
         order: create_order_req.order,
         update_auth: create_order_req.update_auth,
@@ -519,12 +558,13 @@ pub fn update_order(
     quote_mint: &str,
     side: &str,
     amount: &str,
+    worst_case_price: &str,
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
     new_wallet.key_chain.rotate(seed);
 
-    let new_order = create_order(id, base_mint, quote_mint, side, amount)?;
+    let new_order = create_order(id, base_mint, quote_mint, side, amount, worst_case_price)?;
 
     // Modify the wallet
     // We edit the value of the underlying map in-place (as opposed to `pop` and
