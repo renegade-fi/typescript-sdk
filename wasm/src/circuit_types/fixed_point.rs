@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 /// The default fixed point decimal precision in bits
 /// i.e. the number of bits allocated to a fixed point's decimal
-pub const DEFAULT_FP_PRECISION: usize = 32;
+pub const DEFAULT_FP_PRECISION: usize = 63;
 
 lazy_static! {
     /// The shift used to generate a scalar representation from a fixed point
