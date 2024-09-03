@@ -1,7 +1,7 @@
 {
   "name": "@renegade-fi/react",
   "description": "React library for Renegade",
-  "version": "0.0.56",
+  "version": "0.0.57",
   "scripts": {
     "build": "pnpm run clean && pnpm run build:esm+types",
     "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist --declaration --declarationMap --declarationDir ./dist/types",
