@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.1.0
+
+### Minor Changes
+
+- meta: ensure cookie name update
+
 ## 0.0.54
 
 ### Patch Changes

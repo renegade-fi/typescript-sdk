@@ -1,5 +1,16 @@
 # @renegade-fi/node
 
+## 0.1.0
+
+### Minor Changes
+
+- meta: ensure cookie name update
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.1.0
+
 ## 0.0.56
 
 ### Patch Changes
