@@ -49,9 +49,10 @@ export function withdraw(seed: string, wallet_str: string, mint: string, amount:
 * @param {string} quote_mint
 * @param {string} side
 * @param {string} amount
+* @param {string} worst_case_price
 * @returns {any}
 */
-export function new_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string): any;
+export function new_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string): any;
 /**
 * @param {string} seed
 * @param {string} wallet_str
@@ -60,10 +61,11 @@ export function new_order(seed: string, wallet_str: string, id: string, base_min
 * @param {string} quote_mint
 * @param {string} side
 * @param {string} amount
+* @param {string} worst_case_price
 * @param {string} matching_pool
 * @returns {any}
 */
-export function new_order_in_matching_pool(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, matching_pool: string): any;
+export function new_order_in_matching_pool(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, matching_pool: string): any;
 /**
 * @param {string} seed
 * @param {string} wallet_str
@@ -79,9 +81,10 @@ export function cancel_order(seed: string, wallet_str: string, order_id: string)
 * @param {string} quote_mint
 * @param {string} side
 * @param {string} amount
+* @param {string} worst_case_price
 * @returns {any}
 */
-export function update_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string): any;
+export function update_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string): any;
 /**
 * Build authentication headers for a request
 * @param {string} key

@@ -1,7 +1,9 @@
+use crate::types::bigint_to_scalar;
 use crate::types::{biguint_to_scalar, Scalar, ScalarField};
+use bigdecimal::{BigDecimal, FromPrimitive, Num};
 use lazy_static::lazy_static;
 use num_bigint::BigUint;
-use num_traits::Num;
+use num_bigint::ToBigInt;
 use serde::{Deserialize, Serialize};
 
 /// The default fixed point decimal precision in bits
@@ -64,5 +66,23 @@ impl FixedPoint {
     pub fn from_integer(val: u64) -> Self {
         let val_shifted = Scalar::from(val) * Scalar::new(*TWO_TO_M_SCALAR);
         Self { repr: val_shifted }
+    }
+
+    /// Create a new fixed point representation, rounding up to the nearest
+    /// representable float
+    pub fn from_f64_round_down(val: f64) -> Self {
+        // Convert to a bigdecimal to shift
+        let val_big_dec = BigDecimal::from_f64(val).expect("Failed to convert f64 to BigDecimal");
+        let shifted_val_big_dec =
+            val_big_dec * BigDecimal::from(2u64.pow(DEFAULT_FP_PRECISION as u32));
+
+        // Convert to a big integer
+        let val_bigint = shifted_val_big_dec
+            .to_bigint()
+            .expect("Failed to convert BigDecimal to BigInt");
+
+        Self {
+            repr: bigint_to_scalar(&val_bigint),
+        }
     }
 }
