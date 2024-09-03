@@ -1,5 +1,11 @@
 # @renegade-fi/node
 
+## 0.0.56
+
+### Patch Changes
+
+- core, react: reset sk_root in create-wallet and lookup-wallet
+
 ## 0.0.55
 
 ### Patch Changes
