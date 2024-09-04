@@ -52,8 +52,13 @@ pub fn derive_root_signing_key(seed: &str) -> Result<SigningKey, String> {
     let unreduced_val = BigUint::from_bytes_be(&sig_bytes);
     let reduced_val = unreduced_val % &*SECP256K1_SCALAR_MODULUS;
 
-    let key_bytes = reduced_val.to_bytes_be();
-    SigningKey::from_bytes(key_bytes.as_slice().into())
+    // Convert the reduced value to a fixed 32-byte array, padding with zeros if necessary
+    let mut key_bytes = [0u8; 32];
+    let reduced_bytes = reduced_val.to_bytes_be();
+    let start = 32 - reduced_bytes.len();
+    key_bytes[start..].copy_from_slice(&reduced_bytes);
+
+    SigningKey::from_bytes((&key_bytes).into())
         .map_err(|e| format!("failed to derive signing key from signature: {}", e))
 }
 
