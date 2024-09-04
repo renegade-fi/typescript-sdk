@@ -28,10 +28,6 @@ export async function getWalletFromRelayer(
   if (!res.wallet) {
     throw new BaseError('Wallet not found')
   }
-  config.setState((x) => ({
-    ...x,
-    status: 'in relayer',
-  }))
   if (filterDefaults) {
     return {
       ...res.wallet,
