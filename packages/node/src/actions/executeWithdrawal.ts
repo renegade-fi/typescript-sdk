@@ -1,11 +1,11 @@
 import {
   type Config,
+  type WithdrawParameters,
+  type WithdrawReturnType,
   getWalletId,
   payFees,
   waitForTaskCompletionWs,
   withdraw,
-  type WithdrawParameters,
-  type WithdrawReturnType,
 } from '@renegade-fi/core'
 
 export type ExecuteWithdrawalParameters = WithdrawParameters & {

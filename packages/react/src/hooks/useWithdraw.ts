@@ -20,13 +20,13 @@ import { useConfig } from './useConfig.js'
 export type UseWithdrawParameters<context = unknown> = Evaluate<
   ConfigParameter & {
     mutation?:
-    | UseMutationParameters<
-      WithdrawRequestData,
-      WithdrawRequestErrorType,
-      WithdrawRequestVariables,
-      context
-    >
-    | undefined
+      | UseMutationParameters<
+          WithdrawRequestData,
+          WithdrawRequestErrorType,
+          WithdrawRequestVariables,
+          context
+        >
+      | undefined
   }
 >
 

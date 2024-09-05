@@ -1,6 +1,6 @@
 'use client'
 
-import type { Order, Config } from '@renegade-fi/core'
+import type { Config, Order } from '@renegade-fi/core'
 import { useWallet } from './useWallet.js'
 
 export type UseOrdersParameters = {

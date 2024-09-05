@@ -8,7 +8,10 @@ export type GetSkRootParameters = {
 
 export type GetSkRootReturnType = Hex
 
-export function getSkRoot(config: Config, parameters: GetSkRootParameters = { nonce: BigInt(0) }): GetSkRootReturnType {
+export function getSkRoot(
+  config: Config,
+  parameters: GetSkRootParameters = { nonce: BigInt(0) },
+): GetSkRootReturnType {
   const { utils } = config
   const { nonce } = parameters
   const storedSeed = config.state.seed

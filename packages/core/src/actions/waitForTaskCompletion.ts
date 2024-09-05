@@ -4,7 +4,7 @@ import { getTaskStatus } from './getTaskStatus.js'
 import type { Config } from '../createConfig.js'
 import type { OldTask as Task } from '../types/wallet.js'
 
-export type WaitForTaskCompletionParameters = { id: string, timeout?: number }
+export type WaitForTaskCompletionParameters = { id: string; timeout?: number }
 
 export type WaitForTaskCompletionReturnType = Promise<undefined>
 

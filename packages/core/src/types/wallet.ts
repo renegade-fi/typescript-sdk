@@ -27,7 +27,7 @@ export type KeyChain = {
   private_keys: {
     sk_root: Hex
     sk_match: Hex
-  },
+  }
   nonce: bigint
 }
 

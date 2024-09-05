@@ -4,8 +4,8 @@ import { getRelayerWithAuth } from '../utils/http.js'
 
 import { TASK_HISTORY_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import type { Task as TaskHistoryItem } from '../types/task.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
+import type { Task as TaskHistoryItem } from '../types/task.js'
 
 export type GetTaskHistoryReturnType = Map<string, TaskHistoryItem>
 

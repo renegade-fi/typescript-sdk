@@ -1,13 +1,13 @@
-import { zeroAddress, type Address, type WalletClient } from 'viem'
-import { waitForTransactionReceipt, type createConfig } from '@wagmi/core'
 import {
   type Config,
-  deposit,
   type DepositReturnType,
+  deposit,
   getBackOfQueueWallet,
   getPkRootScalars,
   waitForTaskCompletionWs,
 } from '@renegade-fi/core'
+import { type createConfig, waitForTransactionReceipt } from '@wagmi/core'
+import { type Address, type WalletClient, zeroAddress } from 'viem'
 import { readErc20Allowance, writeErc20Approve } from '../generated.js'
 import { signPermit2 } from '../utils/permit2.js'
 

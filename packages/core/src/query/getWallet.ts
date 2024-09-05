@@ -1,13 +1,13 @@
 import type { QueryOptions } from '@tanstack/query-core'
 import {
-  getWalletFromRelayer,
   type GetWalletFromRelayerErrorType,
   type GetWalletFromRelayerParameters,
   type GetWalletFromRelayerReturnType,
+  getWalletFromRelayer,
 } from '../actions/getWalletFromRelayer.js'
 import type { Config } from '../createConfig.js'
 import type { Evaluate } from '../types/utils.js'
-import { filterQueryOptions, type ScopeKeyParameter } from './utils.js'
+import { type ScopeKeyParameter, filterQueryOptions } from './utils.js'
 
 export type GetWalletOptions = Evaluate<
   GetWalletFromRelayerParameters & ScopeKeyParameter

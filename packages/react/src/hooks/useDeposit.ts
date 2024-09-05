@@ -20,13 +20,13 @@ import { useConfig } from './useConfig.js'
 export type UseDepositParameters<context = unknown> = Evaluate<
   ConfigParameter & {
     mutation?:
-    | UseMutationParameters<
-      DepositRequestData,
-      DepositRequestErrorType,
-      DepositRequestVariables,
-      context
-    >
-    | undefined
+      | UseMutationParameters<
+          DepositRequestData,
+          DepositRequestErrorType,
+          DepositRequestVariables,
+          context
+        >
+      | undefined
   }
 >
 

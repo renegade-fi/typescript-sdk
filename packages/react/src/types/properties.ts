@@ -1,6 +1,6 @@
-import { type DefaultError, type QueryKey } from '@tanstack/react-query'
-import { type Config } from '@renegade-fi/core'
-import { type Omit } from '@renegade-fi/core'
+import type { Config } from '@renegade-fi/core'
+import type { Omit } from '@renegade-fi/core'
+import type { DefaultError, QueryKey } from '@tanstack/react-query'
 
 import type {
   UseInfiniteQueryParameters,

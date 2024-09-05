@@ -20,13 +20,13 @@ import { useConfig } from './useConfig.js'
 export type UseCreateOrderParameters<context = unknown> = Evaluate<
   ConfigParameter & {
     mutation?:
-    | UseMutationParameters<
-      CreateOrderRequestData,
-      CreateOrderRequestErrorType,
-      CreateOrderRequestVariables,
-      context
-    >
-    | undefined
+      | UseMutationParameters<
+          CreateOrderRequestData,
+          CreateOrderRequestErrorType,
+          CreateOrderRequestVariables,
+          context
+        >
+      | undefined
   }
 >
 

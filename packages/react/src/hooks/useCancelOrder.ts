@@ -20,13 +20,13 @@ import { useConfig } from './useConfig.js'
 export type UseCancelOrderParameters<context = unknown> = Evaluate<
   ConfigParameter & {
     mutation?:
-    | UseMutationParameters<
-      CancelOrderRequestData,
-      CancelOrderRequestErrorType,
-      CancelOrderRequestVariables,
-      context
-    >
-    | undefined
+      | UseMutationParameters<
+          CancelOrderRequestData,
+          CancelOrderRequestErrorType,
+          CancelOrderRequestVariables,
+          context
+        >
+      | undefined
   }
 >
 

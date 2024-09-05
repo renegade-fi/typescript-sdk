@@ -6,15 +6,15 @@ import type {
   OrderMetadata,
 } from '@renegade-fi/core'
 import {
-  getOrderHistoryQueryOptions,
   type GetOrderHistoryData,
   type GetOrderHistoryOptions,
   type GetOrderHistoryQueryFnData,
   type GetOrderHistoryQueryKey,
+  getOrderHistoryQueryOptions,
 } from '@renegade-fi/core/query'
 import { useQueryClient } from '@tanstack/react-query'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'
-import { useQuery, type UseQueryReturnType } from '../utils/query.js'
+import { type UseQueryReturnType, useQuery } from '../utils/query.js'
 import { useConfig } from './useConfig.js'
 import { useOrderHistoryWebSocket } from './useOrderHistoryWebSocket.js'
 import { useStatus } from './useStatus.js'

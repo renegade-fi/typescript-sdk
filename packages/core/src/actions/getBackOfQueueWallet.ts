@@ -19,7 +19,7 @@ export async function getBackOfQueueWallet(
   parameters: GetBackOfQueueWalletParameters = {},
 ): Promise<GetBackOfQueueWalletReturnType> {
   const { filterDefaults } = parameters
-  const { getRelayerBaseUrl, } = config
+  const { getRelayerBaseUrl } = config
   const walletId = getWalletId(config)
   const res = await getRelayerWithAuth(
     config,

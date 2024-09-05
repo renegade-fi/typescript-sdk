@@ -15,9 +15,7 @@ export async function refreshWallet(config: Config): RefreshWalletReturnType {
       getRelayerBaseUrl(REFRESH_WALLET_ROUTE(walletId)),
     )
     if (res?.task_id) {
-      console.log(
-        `task refresh-wallet(${res.task_id}): ${walletId}`,
-      )
+      console.log(`task refresh-wallet(${res.task_id}): ${walletId}`)
     }
     return { taskId: res.task_id }
   } catch (error) {

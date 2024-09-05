@@ -9,7 +9,11 @@ import { waitForWalletIndexing } from './waitForWalletIndexing.js'
 export type LookupWalletReturnType = ReturnType<typeof waitForWalletIndexing>
 
 export async function lookupWallet(config: Config): LookupWalletReturnType {
-  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  const {
+    getRelayerBaseUrl,
+    utils,
+    state: { seed },
+  } = config
   invariant(seed, 'seed is required')
   const body = utils.find_wallet(seed)
   const res = await postRelayerRaw(getRelayerBaseUrl(FIND_WALLET_ROUTE), body)
@@ -50,7 +54,10 @@ export async function lookupWallet(config: Config): LookupWalletReturnType {
 // Returns true iff the query successfully returns 0 logs
 export async function checkForWalletUpdatesOnChain(config: Config) {
   try {
-    const { utils, state: { seed } } = config
+    const {
+      utils,
+      state: { seed },
+    } = config
     invariant(seed, 'Seed is required')
     const blinderShare = utils.derive_blinder_share(seed)
 

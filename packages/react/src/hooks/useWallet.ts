@@ -2,15 +2,15 @@
 
 import type { Evaluate, GetWalletErrorType } from '@renegade-fi/core'
 import {
-  getWalletQueryOptions,
   type GetWalletData,
   type GetWalletOptions,
   type GetWalletQueryFnData,
   type GetWalletQueryKey,
+  getWalletQueryOptions,
 } from '@renegade-fi/core/query'
 import { useQueryClient } from '@tanstack/react-query'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'
-import { useQuery, type UseQueryReturnType } from '../utils/query.js'
+import { type UseQueryReturnType, useQuery } from '../utils/query.js'
 import { useConfig } from './useConfig.js'
 import { useStatus } from './useStatus.js'
 import { useWalletWebsocket } from './useWalletWebSocket.js'

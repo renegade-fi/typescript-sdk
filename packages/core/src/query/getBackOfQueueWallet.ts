@@ -1,13 +1,13 @@
 import type { QueryOptions } from '@tanstack/query-core'
 import {
-  getBackOfQueueWallet,
   type GetBackOfQueueWalletErrorType,
   type GetBackOfQueueWalletParameters,
   type GetBackOfQueueWalletReturnType,
+  getBackOfQueueWallet,
 } from '../actions/getBackOfQueueWallet.js'
 import type { Config } from '../createConfig.js'
 import type { Evaluate } from '../types/utils.js'
-import { filterQueryOptions, type ScopeKeyParameter } from './utils.js'
+import { type ScopeKeyParameter, filterQueryOptions } from './utils.js'
 
 export type GetBackOfQueueWalletOptions =
   Evaluate<GetBackOfQueueWalletParameters> & ScopeKeyParameter

@@ -6,7 +6,7 @@ import {
   RENEGADE_AUTH_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
   WS_WALLET_ORDERS_ROUTE,
-  getSymmetricKey
+  getSymmetricKey,
 } from '@renegade-fi/core'
 import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
@@ -48,7 +48,7 @@ export function useOrderHistoryWebSocket(
             messageData.event?.order
           )
             onUpdate?.(messageData.event.order)
-        } catch (_) { }
+        } catch (_) {}
       },
       share: true,
       shouldReconnect: () => true,

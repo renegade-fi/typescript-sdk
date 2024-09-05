@@ -2,15 +2,15 @@
 
 import type { Evaluate, GetTaskHistoryErrorType, Task } from '@renegade-fi/core'
 import {
-  getTaskHistoryQueryOptions,
   type GetTaskHistoryData,
   type GetTaskHistoryOptions,
   type GetTaskHistoryQueryFnData,
   type GetTaskHistoryQueryKey,
+  getTaskHistoryQueryOptions,
 } from '@renegade-fi/core/query'
 import { useQueryClient } from '@tanstack/react-query'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'
-import { useQuery, type UseQueryReturnType } from '../utils/query.js'
+import { type UseQueryReturnType, useQuery } from '../utils/query.js'
 import { useConfig } from './useConfig.js'
 import { useStatus } from './useStatus.js'
 import { useTaskHistoryWebSocket } from './useTaskHistoryWebSocket.js'

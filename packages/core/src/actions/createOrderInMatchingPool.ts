@@ -20,7 +20,11 @@ export async function createOrderInMatchingPool(
   parameters: CreateOrderInMatchingPoolParameters,
 ): Promise<CreateOrderReturnType> {
   const { id = '', base, quote, side, amount, matchingPool } = parameters
-  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  const {
+    getRelayerBaseUrl,
+    utils,
+    state: { seed },
+  } = config
   invariant(seed, 'Seed is required')
 
   const walletId = getWalletId(config)
@@ -46,12 +50,9 @@ export async function createOrderInMatchingPool(
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)
     return { taskId: res.task_id }
   } catch (error) {
-    console.error(
-      `${walletId}`,
-      {
-        error,
-      },
-    )
+    console.error(`${walletId}`, {
+      error,
+    })
     throw error
   }
 }

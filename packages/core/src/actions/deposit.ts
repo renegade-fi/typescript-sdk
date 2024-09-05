@@ -28,7 +28,11 @@ export async function deposit(
 ): DepositReturnType {
   const { fromAddr, mint, amount, permitNonce, permitDeadline, permit } =
     parameters
-  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  const {
+    getRelayerBaseUrl,
+    utils,
+    state: { seed },
+  } = config
   invariant(seed, 'Seed is required')
 
   const token = Token.findByAddress(mint)
@@ -37,7 +41,6 @@ export async function deposit(
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
   const walletStr = stringifyForWasm(wallet)
-
 
   const body = utils.deposit(
     seed,
@@ -59,12 +62,9 @@ export async function deposit(
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)
     return { taskId: res.task_id }
   } catch (error) {
-    console.error(
-      `${walletId}`,
-      {
-        error,
-      },
-    )
+    console.error(`${walletId}`, {
+      error,
+    })
     throw error
   }
 }
