@@ -1,5 +1,11 @@
 # @renegade-fi/node
 
+## 0.2.2
+
+### Patch Changes
+
+- wasm: fix keychain padding issue
+
 ## 0.2.1
 
 ### Patch Changes
