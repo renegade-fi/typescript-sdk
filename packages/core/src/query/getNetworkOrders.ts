@@ -1,12 +1,12 @@
 import type { QueryOptions } from '@tanstack/query-core'
 import {
-  getNetworkOrders,
   type GetNetworkOrdersErrorType,
   type GetNetworkOrdersReturnType,
+  getNetworkOrders,
 } from '../actions/getNetworkOrders.js'
 import type { Config } from '../createConfig.js'
 import type { Evaluate } from '../types/utils.js'
-import { filterQueryOptions, type ScopeKeyParameter } from './utils.js'
+import { type ScopeKeyParameter, filterQueryOptions } from './utils.js'
 
 export type GetNetworkOrdersOptions = Evaluate<ScopeKeyParameter>
 

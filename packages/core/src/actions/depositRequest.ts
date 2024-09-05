@@ -11,29 +11,26 @@ export type DepositRequestReturnType = { taskId: string }
 export type DepositRequestErrorType = BaseErrorType
 
 export async function depositRequest(
-    config: Config,
-    parameters: DepositRequestParameters,
+  config: Config,
+  parameters: DepositRequestParameters,
 ): Promise<DepositRequestReturnType> {
-    const { request } = parameters
-    const { getRelayerBaseUrl } = config
+  const { request } = parameters
+  const { getRelayerBaseUrl } = config
 
-    const walletId = getWalletId(config)
+  const walletId = getWalletId(config)
 
-    try {
-        const res = await postRelayerWithAuth(
-            config,
-            getRelayerBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
-            request,
-        )
-        console.log(`task update-wallet(${res.task_id}): ${walletId}`)
-        return { taskId: res.task_id }
-    } catch (error) {
-        console.error(
-            `${walletId}`,
-            {
-                error,
-            },
-        )
-        throw error
-    }
+  try {
+    const res = await postRelayerWithAuth(
+      config,
+      getRelayerBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
+      request,
+    )
+    console.log(`task update-wallet(${res.task_id}): ${walletId}`)
+    return { taskId: res.task_id }
+  } catch (error) {
+    console.error(`${walletId}`, {
+      error,
+    })
+    throw error
+  }
 }

@@ -15,7 +15,7 @@ import type { Config } from '../createConfig.js'
  * The message handler should return undefined *only* if the message is not relevant to the waiter.
  * If the message satisfies the waiter's criteria but no return value is needed, the handler
  * should return null.
- * 
+ *
  * The message handler is also responsible for parsing the message, to give it control over e.g. how
  * bigint values are parsed.
  *

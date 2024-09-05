@@ -1,17 +1,17 @@
 import invariant from 'tiny-invariant'
 import {
-  createPublicClient,
   http,
   type Address,
   type Hex,
   type PublicClient,
+  createPublicClient,
 } from 'viem'
+import { arbitrumSepolia } from 'viem/chains'
 import { persist, subscribeWithSelector } from 'zustand/middleware'
-import { createStore, type Mutate, type StoreApi } from 'zustand/vanilla'
-import { createStorage, noopStorage, type Storage } from './createStorage.js'
+import { type Mutate, type StoreApi, createStore } from 'zustand/vanilla'
+import { type Storage, createStorage, noopStorage } from './createStorage.js'
 import type { Evaluate, ExactPartial } from './types/utils.js'
 import type * as rustUtils from './utils.d.ts'
-import { arbitrumSepolia } from 'viem/chains'
 
 export type CreateConfigParameters = {
   darkPoolAddress: Address

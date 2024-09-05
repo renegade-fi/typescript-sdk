@@ -20,13 +20,13 @@ import { useConfig } from './useConfig.js'
 export type UseConnectParameters<context = unknown> = Evaluate<
   ConfigParameter & {
     mutation?:
-    | UseMutationParameters<
-      ConnectData,
-      ConnectErrorType,
-      ConnectVariables,
-      context
-    >
-    | undefined
+      | UseMutationParameters<
+          ConnectData,
+          ConnectErrorType,
+          ConnectVariables,
+          context
+        >
+      | undefined
   }
 >
 

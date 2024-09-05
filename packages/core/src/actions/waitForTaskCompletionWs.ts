@@ -1,8 +1,8 @@
-import type { Config } from '../createConfig.js'
-import type { WaitForTaskCompletionParameters } from './waitForTaskCompletion.js'
 import { TASK_STATUS_ROUTE } from '../constants.js'
+import type { Config } from '../createConfig.js'
 import { websocketWaiter } from '../utils/websocketWaiter.js'
 import { getTaskHistory } from './getTaskHistory.js'
+import type { WaitForTaskCompletionParameters } from './waitForTaskCompletion.js'
 
 export async function waitForTaskCompletionWs(
   config: Config,
@@ -29,7 +29,10 @@ export async function waitForTaskCompletionWs(
 
   const messageHandler = (message: any) => {
     const parsedMessage = JSON.parse(message)
-    if (parsedMessage.topic === topic && parsedMessage.event.type === 'TaskStatusUpdate') {
+    if (
+      parsedMessage.topic === topic &&
+      parsedMessage.event.type === 'TaskStatusUpdate'
+    ) {
       if (parsedMessage.event.status?.state === 'Completed') {
         return null
       }

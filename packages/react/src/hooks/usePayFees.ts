@@ -20,13 +20,13 @@ import { useConfig } from './useConfig.js'
 export type UsePayFeesParameters<context = unknown> = Evaluate<
   ConfigParameter & {
     mutation?:
-    | UseMutationParameters<
-      PayFeesRequestData,
-      PayFeesErrorType,
-      PayFeesRequestVariables,
-      context
-    >
-    | undefined
+      | UseMutationParameters<
+          PayFeesRequestData,
+          PayFeesErrorType,
+          PayFeesRequestVariables,
+          context
+        >
+      | undefined
   }
 >
 

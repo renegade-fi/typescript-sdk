@@ -1,8 +1,8 @@
-import type { Config } from '../createConfig.js'
-import type { OpenOrder } from '../types/order.js'
 import { ADMIN_OPEN_ORDERS_ROUTE } from '../constants.js'
-import { getRelayerWithAdmin } from '../utils/http.js'
+import type { Config } from '../createConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
+import type { OpenOrder } from '../types/order.js'
+import { getRelayerWithAdmin } from '../utils/http.js'
 
 export type GetOpenOrdersParams = {
   matchingPool?: string

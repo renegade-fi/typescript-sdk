@@ -2,8 +2,8 @@ import { getRelayerRaw } from '../utils/http.js'
 
 import { GET_NETWORK_ORDERS_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import type { NetworkOrder } from '../types/wallet.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
+import type { NetworkOrder } from '../types/wallet.js'
 
 export type GetNetworkOrdersReturnType = Map<string, NetworkOrder>
 

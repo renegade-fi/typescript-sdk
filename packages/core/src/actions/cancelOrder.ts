@@ -20,7 +20,11 @@ export async function cancelOrder(
   parameters: CancelOrderParameters,
 ): Promise<CancelOrderReturnType> {
   const { id } = parameters
-  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  const {
+    getRelayerBaseUrl,
+    utils,
+    state: { seed },
+  } = config
   invariant(seed, 'Seed is required')
 
   const walletId = getWalletId(config)

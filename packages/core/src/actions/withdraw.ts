@@ -20,7 +20,11 @@ export async function withdraw(
   parameters: WithdrawParameters,
 ): WithdrawReturnType {
   const { mint, amount, destinationAddr } = parameters
-  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  const {
+    getRelayerBaseUrl,
+    utils,
+    state: { seed },
+  } = config
   invariant(seed, 'Seed is required')
 
   const walletId = getWalletId(config)
@@ -44,12 +48,9 @@ export async function withdraw(
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)
     return { taskId: res.task_id }
   } catch (error) {
-    console.error(
-      `${walletId}`,
-      {
-        error,
-      },
-    )
+    console.error(`${walletId}`, {
+      error,
+    })
     throw error
   }
 }

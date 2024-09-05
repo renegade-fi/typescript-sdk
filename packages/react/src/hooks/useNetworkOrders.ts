@@ -6,15 +6,15 @@ import type {
   NetworkOrder,
 } from '@renegade-fi/core'
 import {
-  getNetworkOrdersQueryOptions,
   type GetNetworkOrdersData,
   type GetNetworkOrdersOptions,
   type GetNetworkOrdersQueryFnData,
   type GetNetworkOrdersQueryKey,
+  getNetworkOrdersQueryOptions,
 } from '@renegade-fi/core/query'
 import { useQueryClient } from '@tanstack/react-query'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'
-import { useQuery, type UseQueryReturnType } from '../utils/query.js'
+import { type UseQueryReturnType, useQuery } from '../utils/query.js'
 import { useConfig } from './useConfig.js'
 import { useOrderBookWebSocket } from './useOrderBookWebSocket.js'
 

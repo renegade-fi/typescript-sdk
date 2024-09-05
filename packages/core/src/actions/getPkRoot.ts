@@ -8,15 +8,27 @@ export type GetPkRootParameters = {
 
 export type GetPkRootReturnType = Hex
 export type GetPkRootScalarsReturnType = bigint[]
-export function getPkRoot(config: Config, parameters: GetPkRootParameters = { nonce: BigInt(0) }): GetPkRootReturnType {
-  const { utils, state: { seed } } = config
+export function getPkRoot(
+  config: Config,
+  parameters: GetPkRootParameters = { nonce: BigInt(0) },
+): GetPkRootReturnType {
+  const {
+    utils,
+    state: { seed },
+  } = config
   const { nonce } = parameters
   invariant(seed, 'Seed is required')
   return `0x${utils.get_pk_root(seed, nonce)}`
 }
 
-export function getPkRootScalars(config: Config, parameters: GetPkRootParameters = { nonce: BigInt(0) }): GetPkRootScalarsReturnType {
-  const { utils, state: { seed } } = config
+export function getPkRootScalars(
+  config: Config,
+  parameters: GetPkRootParameters = { nonce: BigInt(0) },
+): GetPkRootScalarsReturnType {
+  const {
+    utils,
+    state: { seed },
+  } = config
   const { nonce } = parameters
   invariant(seed, 'Seed is required')
   const scalars = utils.get_pk_root_scalars(seed, nonce)

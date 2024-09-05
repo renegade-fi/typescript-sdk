@@ -11,28 +11,26 @@ export type CreateOrderRequestReturnType = { taskId: string }
 export type CreateOrderRequestErrorType = BaseErrorType
 
 export async function createOrderRequest(
-    config: Config,
-    parameters: CreateOrderRequestParameters,
+  config: Config,
+  parameters: CreateOrderRequestParameters,
 ): Promise<CreateOrderRequestReturnType> {
-    const { request } = parameters
-    const { getRelayerBaseUrl } = config
+  const { request } = parameters
+  const { getRelayerBaseUrl } = config
 
-    const walletId = getWalletId(config)
+  const walletId = getWalletId(config)
 
-    try {
-        const res = await postRelayerWithAuth(
-            config,
-            getRelayerBaseUrl(WALLET_ORDERS_ROUTE(walletId)),
-            request,
-        )
-        console.log(`task update-wallet(${res.task_id}): ${walletId}`)
-        return { taskId: res.task_id }
-    } catch (error) {
-        console.error(
-            `${walletId}`,
-            {
-                error,
-            })
-        throw error
-    }
+  try {
+    const res = await postRelayerWithAuth(
+      config,
+      getRelayerBaseUrl(WALLET_ORDERS_ROUTE(walletId)),
+      request,
+    )
+    console.log(`task update-wallet(${res.task_id}): ${walletId}`)
+    return { taskId: res.task_id }
+  } catch (error) {
+    console.error(`${walletId}`, {
+      error,
+    })
+    throw error
+  }
 }

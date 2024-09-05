@@ -7,7 +7,7 @@ import {
   WALLET_ROUTE,
   type Wallet,
   getSymmetricKey,
-  parseBigJSON
+  parseBigJSON,
 } from '@renegade-fi/core'
 import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
@@ -42,7 +42,7 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
             messageData.event?.wallet
           )
             onUpdate?.(messageData.event.wallet)
-        } catch (_) { }
+        } catch (_) {}
       },
       share: true,
       shouldReconnect: () => true,

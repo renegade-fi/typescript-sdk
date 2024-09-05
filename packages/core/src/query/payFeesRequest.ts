@@ -1,9 +1,9 @@
 import type { MutationOptions } from '@tanstack/query-core'
 
 import {
+  type PayFeesErrorType,
   type PayFeesReturnType,
   payFees,
-  type PayFeesErrorType,
 } from '../actions/payFees.js'
 import type { Config } from '../createConfig.js'
 import type { Evaluate } from '../types/utils.js'

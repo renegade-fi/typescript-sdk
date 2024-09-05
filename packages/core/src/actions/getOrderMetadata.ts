@@ -1,8 +1,8 @@
-import type { Config } from '../createConfig.js'
-import type { OrderMetadata } from '../types/order.js'
 import { ADMIN_ORDER_METADATA_ROUTE } from '../constants.js'
-import { getRelayerWithAdmin } from '../utils/http.js'
+import type { Config } from '../createConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
+import type { OrderMetadata } from '../types/order.js'
+import { getRelayerWithAdmin } from '../utils/http.js'
 
 export type GetOrderMetadataParameters = { id: string }
 

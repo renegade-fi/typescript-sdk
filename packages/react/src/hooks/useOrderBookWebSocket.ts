@@ -1,10 +1,10 @@
 'use client'
 
 import {
-  ORDER_BOOK_ROUTE,
-  parseBigJSON,
   type Config,
   type NetworkOrder,
+  ORDER_BOOK_ROUTE,
+  parseBigJSON,
 } from '@renegade-fi/core'
 import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
@@ -40,7 +40,7 @@ export function useOrderBookWebSocket(
           ) {
             onUpdate?.(messageData.event.order)
           }
-        } catch (_) { }
+        } catch (_) {}
       },
       share: true,
       shouldReconnect: () => true,

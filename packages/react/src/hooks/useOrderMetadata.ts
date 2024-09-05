@@ -1,14 +1,14 @@
+import type { Evaluate } from '@renegade-fi/core'
+import type { GetOrderMetadataErrorType } from '@renegade-fi/core/actions'
 import {
-  getOrderMetadataQueryOptions,
   type GetOrderMetadataData,
   type GetOrderMetadataOptions,
   type GetOrderMetadataQueryFnData,
   type GetOrderMetadataQueryKey,
+  getOrderMetadataQueryOptions,
 } from '@renegade-fi/core/query'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'
-import type { Evaluate } from '@renegade-fi/core'
-import type { GetOrderMetadataErrorType } from '@renegade-fi/core/actions'
-import { useQuery, type UseQueryReturnType } from '../utils/query.js'
+import { type UseQueryReturnType, useQuery } from '../utils/query.js'
 import { useConfig } from './useConfig.js'
 
 export type UseOrderMetadataParameters<selectData = GetOrderMetadataData> =

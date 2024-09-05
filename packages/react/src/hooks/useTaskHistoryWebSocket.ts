@@ -7,7 +7,7 @@ import {
   type Task,
   WS_TASK_HISTORY_ROUTE,
   getSymmetricKey,
-  parseBigJSON
+  parseBigJSON,
 } from '@renegade-fi/core'
 import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
@@ -44,7 +44,7 @@ export function useTaskHistoryWebSocket(
             messageData.event?.task
           )
             onUpdate?.(messageData.event.task)
-        } catch (_) { }
+        } catch (_) {}
       },
       share: true,
       shouldReconnect: () => true,
@@ -58,7 +58,8 @@ export function useTaskHistoryWebSocket(
       !walletId ||
       readyState !== ReadyState.OPEN ||
       status !== 'in relayer'
-    ) return
+    )
+      return
 
     const body = {
       method: 'subscribe',

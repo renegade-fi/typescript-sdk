@@ -22,7 +22,11 @@ export async function updateOrder(
   parameters: UpdateOrderParameters,
 ): UpdateOrderReturnType {
   const { id = '', base, quote, side, amount } = parameters
-  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  const {
+    getRelayerBaseUrl,
+    utils,
+    state: { seed },
+  } = config
   invariant(seed, 'Seed is required')
 
   const walletId = getWalletId(config)
@@ -47,12 +51,9 @@ export async function updateOrder(
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)
     return { taskId: res.task_id }
   } catch (error) {
-    console.error(
-      `${walletId}`,
-      {
-        error,
-      }
-    )
+    console.error(`${walletId}`, {
+      error,
+    })
     throw error
   }
 }

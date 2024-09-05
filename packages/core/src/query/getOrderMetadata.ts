@@ -1,13 +1,13 @@
 import type { QueryOptions } from '@tanstack/query-core'
 import {
-  getOrderMetadata,
   type GetOrderMetadataErrorType,
-  type GetOrderMetadataReturnType,
   type GetOrderMetadataParameters,
+  type GetOrderMetadataReturnType,
+  getOrderMetadata,
 } from '../actions/getOrderMetadata.js'
 import type { Config } from '../createConfig.js'
 import type { Evaluate } from '../types/utils.js'
-import { filterQueryOptions, type ScopeKeyParameter } from './utils.js'
+import { type ScopeKeyParameter, filterQueryOptions } from './utils.js'
 
 export type GetOrderMetadataOptions = Evaluate<
   GetOrderMetadataParameters & ScopeKeyParameter

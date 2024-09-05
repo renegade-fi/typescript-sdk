@@ -8,7 +8,11 @@ import { waitForWalletIndexing } from './waitForWalletIndexing.js'
 export type CreateWalletReturnType = ReturnType<typeof waitForWalletIndexing>
 
 export async function createWallet(config: Config): CreateWalletReturnType {
-  const { getRelayerBaseUrl, utils, state: { seed } } = config
+  const {
+    getRelayerBaseUrl,
+    utils,
+    state: { seed },
+  } = config
   invariant(seed, 'seed is required')
   const body = utils.create_wallet(seed)
   const headers = {
