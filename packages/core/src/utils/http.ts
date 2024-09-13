@@ -58,6 +58,11 @@ export async function getRelayerRaw(url: string, headers = {}) {
               return value
             })
           }
+
+          if (url.includes('/price')) {
+            return JSON.parse(data)
+          }
+
           return parseBigJSON(data)
         } catch (_error) {
           return data
