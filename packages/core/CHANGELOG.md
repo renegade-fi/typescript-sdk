@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.3.0
+
+### Minor Changes
+
+- wasm, core: implement worst case price
+
 ## 0.2.0
 
 ### Minor Changes
