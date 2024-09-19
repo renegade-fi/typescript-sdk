@@ -1,5 +1,16 @@
 # @renegade-fi/react
 
+## 0.3.0
+
+### Minor Changes
+
+- wasm, core: implement worst case price
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.3.0
+
 ## 0.2.2
 
 ### Patch Changes
