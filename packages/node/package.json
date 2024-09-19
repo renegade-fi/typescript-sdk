@@ -1,13 +1,18 @@
 {
   "name": "@renegade-fi/node",
   "description": "Node.js library for Renegade",
+  "version": "0.3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renegade-fi/typescript-sdk.git",
+    "directory": "packages/node"
+  },
   "scripts": {
     "build": "pnpm run clean && pnpm run build:esm+types",
     "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist --declaration --declarationMap --declarationDir ./dist/types",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "typecheck": "tsc --noEmit"
   },
-  "version": "0.3.0",
   "files": [
     "dist/**",
     "!dist/**/*.tsbuildinfo",
@@ -53,5 +58,13 @@
   "peerDependencies": {
     "viem": "2.x"
   },
-  "keywords": []
+  "keywords": [
+    "cryptography",
+    "zero-knowledge",
+    "darkpool",
+    "eth",
+    "ethereum",
+    "dapps",
+    "web3"
+  ]
 }

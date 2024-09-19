@@ -2,6 +2,11 @@
   "name": "@renegade-fi/core",
   "description": "VanillaJS library for Renegade",
   "version": "0.3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renegade-fi/typescript-sdk.git",
+    "directory": "packages/core"
+  },
   "scripts": {
     "build": "pnpm run clean && pnpm run build:esm+types",
     "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
@@ -71,5 +76,13 @@
     "tiny-invariant": "^1.3.3",
     "zustand": "^4.5.2"
   },
-  "keywords": []
+  "keywords": [
+    "cryptography",
+    "zero-knowledge",
+    "darkpool",
+    "eth",
+    "ethereum",
+    "dapps",
+    "web3"
+  ]
 }

@@ -2,6 +2,11 @@
   "name": "@renegade-fi/react",
   "description": "React library for Renegade",
   "version": "0.3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renegade-fi/typescript-sdk.git",
+    "directory": "packages/react"
+  },
   "scripts": {
     "build": "pnpm run clean && pnpm run build:esm+types",
     "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist --declaration --declarationMap --declarationDir ./dist/types",
@@ -70,5 +75,13 @@
     "react": ">=18",
     "react-dom": ">=18"
   },
-  "keywords": []
+  "keywords": [
+    "cryptography",
+    "zero-knowledge",
+    "darkpool",
+    "eth",
+    "ethereum",
+    "dapps",
+    "web3"
+  ]
 }
