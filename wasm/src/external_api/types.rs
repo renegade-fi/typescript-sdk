@@ -168,6 +168,8 @@ pub struct ApiOrder {
     pub worst_case_price: FixedPoint,
     /// The order size
     pub amount: Amount,
+    /// The minimum fill amount
+    pub min_fill_size: Amount,
 }
 
 impl From<(OrderIdentifier, Order)> for ApiOrder {
@@ -180,6 +182,7 @@ impl From<(OrderIdentifier, Order)> for ApiOrder {
             type_: ApiOrderType::Midpoint,
             worst_case_price: order.worst_case_price,
             amount: order.amount,
+            min_fill_size: order.min_fill_size,
         }
     }
 }
@@ -192,6 +195,7 @@ impl From<ApiOrder> for Order {
             side: order.side,
             worst_case_price: order.worst_case_price,
             amount: order.amount,
+            min_fill_size: order.min_fill_size,
         }
     }
 }

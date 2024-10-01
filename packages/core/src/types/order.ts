@@ -6,6 +6,7 @@ export type Order = {
   type: string
   worst_case_price: string
   amount: bigint
+  min_fill_size: bigint
 }
 
 export enum OrderState {

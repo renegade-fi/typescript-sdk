@@ -355,6 +355,7 @@ fn create_order(
     side: &str,
     amount: &str,
     worst_case_price: &str,
+    min_fill_size: &str,
 ) -> Result<ApiOrder, JsError> {
     // Parse the UUID from the string, or generate a new one if the string is empty
     let id = if id.is_empty() {
@@ -371,6 +372,11 @@ fn create_order(
     };
 
     let amount = wrap_eyre!(biguint_from_hex_string(amount))
+        .unwrap()
+        .to_u128()
+        .unwrap();
+
+    let min_fill_size = wrap_eyre!(biguint_from_hex_string(min_fill_size))
         .unwrap()
         .to_u128()
         .unwrap();
@@ -395,6 +401,7 @@ fn create_order(
         amount,
         worst_case_price,
         type_: ApiOrderType::Midpoint,
+        min_fill_size,
     })
 }
 
@@ -407,12 +414,21 @@ pub fn create_order_request(
     side: &str,
     amount: &str,
     worst_case_price: &str,
+    min_fill_size: &str,
 ) -> Result<CreateOrderRequest, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
     new_wallet.key_chain.rotate(seed);
 
-    let order = create_order(id, base_mint, quote_mint, side, amount, worst_case_price)?;
+    let order = create_order(
+        id,
+        base_mint,
+        quote_mint,
+        side,
+        amount,
+        worst_case_price,
+        min_fill_size,
+    )?;
     // Modify the wallet
     wrap_eyre!(new_wallet.add_order(order.id, order.clone().into())).unwrap();
     new_wallet.reblind_wallet();
@@ -441,6 +457,7 @@ pub fn new_order(
     side: &str,
     amount: &str,
     worst_case_price: &str,
+    min_fill_size: &str,
 ) -> Result<JsValue, JsError> {
     let req = create_order_request(
         seed,
@@ -451,6 +468,7 @@ pub fn new_order(
         side,
         amount,
         worst_case_price,
+        min_fill_size,
     )?;
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
@@ -465,6 +483,7 @@ pub fn new_order_in_matching_pool(
     side: &str,
     amount: &str,
     worst_case_price: &str,
+    min_fill_size: &str,
     matching_pool: &str,
 ) -> Result<JsValue, JsError> {
     let create_order_req = create_order_request(
@@ -476,6 +495,7 @@ pub fn new_order_in_matching_pool(
         side,
         amount,
         worst_case_price,
+        min_fill_size,
     )?;
     let req = CreateOrderInMatchingPoolRequest {
         order: create_order_req.order,
@@ -547,12 +567,21 @@ pub fn update_order(
     side: &str,
     amount: &str,
     worst_case_price: &str,
+    min_fill_size: &str,
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
     new_wallet.key_chain.rotate(seed);
 
-    let new_order = create_order(id, base_mint, quote_mint, side, amount, worst_case_price)?;
+    let new_order = create_order(
+        id,
+        base_mint,
+        quote_mint,
+        side,
+        amount,
+        worst_case_price,
+        min_fill_size,
+    )?;
 
     // Modify the wallet
     // We edit the value of the underlying map in-place (as opposed to `pop` and

@@ -289,9 +289,10 @@ module.exports.withdraw = function(seed, wallet_str, mint, amount, destination_a
 * @param {string} side
 * @param {string} amount
 * @param {string} worst_case_price
+* @param {string} min_fill_size
 * @returns {any}
 */
-module.exports.new_order = function(seed, wallet_str, id, base_mint, quote_mint, side, amount, worst_case_price) {
+module.exports.new_order = function(seed, wallet_str, id, base_mint, quote_mint, side, amount, worst_case_price, min_fill_size) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         const ptr0 = passStringToWasm0(seed, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
@@ -310,7 +311,9 @@ module.exports.new_order = function(seed, wallet_str, id, base_mint, quote_mint,
         const len6 = WASM_VECTOR_LEN;
         const ptr7 = passStringToWasm0(worst_case_price, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len7 = WASM_VECTOR_LEN;
-        wasm.new_order(retptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7);
+        const ptr8 = passStringToWasm0(min_fill_size, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len8 = WASM_VECTOR_LEN;
+        wasm.new_order(retptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7, ptr8, len8);
         var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
         var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
         var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
@@ -332,10 +335,11 @@ module.exports.new_order = function(seed, wallet_str, id, base_mint, quote_mint,
 * @param {string} side
 * @param {string} amount
 * @param {string} worst_case_price
+* @param {string} min_fill_size
 * @param {string} matching_pool
 * @returns {any}
 */
-module.exports.new_order_in_matching_pool = function(seed, wallet_str, id, base_mint, quote_mint, side, amount, worst_case_price, matching_pool) {
+module.exports.new_order_in_matching_pool = function(seed, wallet_str, id, base_mint, quote_mint, side, amount, worst_case_price, min_fill_size, matching_pool) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         const ptr0 = passStringToWasm0(seed, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
@@ -354,9 +358,11 @@ module.exports.new_order_in_matching_pool = function(seed, wallet_str, id, base_
         const len6 = WASM_VECTOR_LEN;
         const ptr7 = passStringToWasm0(worst_case_price, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len7 = WASM_VECTOR_LEN;
-        const ptr8 = passStringToWasm0(matching_pool, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const ptr8 = passStringToWasm0(min_fill_size, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len8 = WASM_VECTOR_LEN;
-        wasm.new_order_in_matching_pool(retptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7, ptr8, len8);
+        const ptr9 = passStringToWasm0(matching_pool, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len9 = WASM_VECTOR_LEN;
+        wasm.new_order_in_matching_pool(retptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7, ptr8, len8, ptr9, len9);
         var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
         var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
         var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
@@ -406,9 +412,10 @@ module.exports.cancel_order = function(seed, wallet_str, order_id) {
 * @param {string} side
 * @param {string} amount
 * @param {string} worst_case_price
+* @param {string} min_fill_size
 * @returns {any}
 */
-module.exports.update_order = function(seed, wallet_str, id, base_mint, quote_mint, side, amount, worst_case_price) {
+module.exports.update_order = function(seed, wallet_str, id, base_mint, quote_mint, side, amount, worst_case_price, min_fill_size) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         const ptr0 = passStringToWasm0(seed, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
@@ -427,7 +434,9 @@ module.exports.update_order = function(seed, wallet_str, id, base_mint, quote_mi
         const len6 = WASM_VECTOR_LEN;
         const ptr7 = passStringToWasm0(worst_case_price, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len7 = WASM_VECTOR_LEN;
-        wasm.update_order(retptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7);
+        const ptr8 = passStringToWasm0(min_fill_size, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len8 = WASM_VECTOR_LEN;
+        wasm.update_order(retptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7, ptr8, len8);
         var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
         var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
         var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
