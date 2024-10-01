@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.3.4
+
+### Patch Changes
+
+- core: set default min fill size when creating an order
+- Updated dependencies
+  - @renegade-fi/core@0.3.3
+
 ## 0.3.3
 
 ### Patch Changes
