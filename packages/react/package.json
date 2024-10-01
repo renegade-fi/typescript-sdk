@@ -1,7 +1,7 @@
 {
   "name": "@renegade-fi/react",
   "description": "React library for Renegade",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/renegade-fi/typescript-sdk.git",

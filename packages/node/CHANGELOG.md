@@ -1,5 +1,11 @@
 # @renegade-fi/node
 
+## 0.3.3
+
+### Patch Changes
+
+- wasm: add serde default trait to min_fill_size
+
 ## 0.3.2
 
 ### Patch Changes
