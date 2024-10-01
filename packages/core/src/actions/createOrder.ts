@@ -15,7 +15,7 @@ export type CreateOrderParameters = {
   side: 'buy' | 'sell'
   amount: bigint
   worstCasePrice: string
-  minFillSize: bigint
+  minFillSize?: bigint
 }
 
 export type CreateOrderReturnType = { taskId: string }
@@ -33,7 +33,7 @@ export async function createOrder(
     side,
     amount,
     worstCasePrice,
-    minFillSize,
+    minFillSize = BigInt(0),
   } = parameters
   const {
     getRelayerBaseUrl,
