@@ -169,6 +169,7 @@ pub struct ApiOrder {
     /// The order size
     pub amount: Amount,
     /// The minimum fill amount
+    #[serde(default)]
     pub min_fill_size: Amount,
 }
 
