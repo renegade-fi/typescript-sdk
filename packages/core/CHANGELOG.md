@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.3.2
+
+### Patch Changes
+
+- wasm, core: add min fill amount
+
 ## 0.3.1
 
 ### Patch Changes
