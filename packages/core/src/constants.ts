@@ -68,6 +68,9 @@ export const PAY_FEES_ROUTE = (wallet_id: string) =>
 // Returns the order history of a wallet
 export const ORDER_HISTORY_ROUTE = (wallet_id: string) =>
   `/wallet/${wallet_id}/order-history`
+/// The name of the query parameter specifying the length of the order history
+/// to return
+export const ORDER_HISTORY_LEN_PARAM = 'order_history_len'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Network

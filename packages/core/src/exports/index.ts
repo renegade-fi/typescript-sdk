@@ -78,6 +78,7 @@ export {
 } from '../actions/getOrder.js'
 
 export {
+  type GetOrderHistoryParameters,
   type GetOrderHistoryErrorType,
   type GetOrderHistoryReturnType,
   getOrderHistory,
