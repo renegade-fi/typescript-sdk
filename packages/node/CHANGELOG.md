@@ -1,5 +1,11 @@
 # @renegade-fi/node
 
+## 0.3.5
+
+### Patch Changes
+
+- node: export actions from entry module
+
 ## 0.3.4
 
 ### Patch Changes
