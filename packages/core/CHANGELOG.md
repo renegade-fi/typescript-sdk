@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.3.5
+
+### Patch Changes
+
+- core: set defaults for worst case price and min fill size'
+
 ## 0.3.4
 
 ### Patch Changes
