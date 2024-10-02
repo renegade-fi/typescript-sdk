@@ -25,9 +25,9 @@ export async function createOrderInMatchingPool(
     quote,
     side,
     amount,
-    worstCasePrice,
-    matchingPool,
+    worstCasePrice = '',
     minFillSize = BigInt(0),
+    matchingPool,
   } = parameters
   const {
     getRelayerBaseUrl,

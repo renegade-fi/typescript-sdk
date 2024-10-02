@@ -13,8 +13,8 @@ export type UpdateOrderParameters = {
   quote: Address
   side: 'buy' | 'sell'
   amount: bigint
-  worstCasePrice: string
-  minFillSize: bigint
+  worstCasePrice?: string
+  minFillSize?: bigint
 }
 
 export type UpdateOrderReturnType = Promise<{ taskId: string }>
@@ -29,8 +29,8 @@ export async function updateOrder(
     quote,
     side,
     amount,
-    worstCasePrice,
-    minFillSize,
+    worstCasePrice = '',
+    minFillSize = BigInt(0),
   } = parameters
   const {
     getRelayerBaseUrl,

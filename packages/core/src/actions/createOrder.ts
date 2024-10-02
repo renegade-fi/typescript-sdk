@@ -14,7 +14,7 @@ export type CreateOrderParameters = {
   quote: Address
   side: 'buy' | 'sell'
   amount: bigint
-  worstCasePrice: string
+  worstCasePrice?: string
   minFillSize?: bigint
 }
 
@@ -32,7 +32,7 @@ export async function createOrder(
     quote,
     side,
     amount,
-    worstCasePrice,
+    worstCasePrice = '',
     minFillSize = BigInt(0),
   } = parameters
   const {
