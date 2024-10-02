@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.3.4
+
+### Patch Changes
+
+- core: expose limit parameter for getOrderHistory
+
 ## 0.3.3
 
 ### Patch Changes
