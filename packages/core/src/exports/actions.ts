@@ -86,6 +86,12 @@ export {
 } from '../actions/getOrderHistory.js'
 
 export {
+  type GetOrderMatchingPoolParameters,
+  type GetOrderMatchingPoolReturnType,
+  getOrderMatchingPool,
+} from '../actions/getOrderMatchingPool.js'
+
+export {
   type GetOrderMetadataParameters,
   type GetOrderMetadataReturnType,
   type GetOrderMetadataErrorType,

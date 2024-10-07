@@ -85,6 +85,12 @@ export {
 } from '../actions/getOrderHistory.js'
 
 export {
+  type GetOrderMatchingPoolParameters,
+  type GetOrderMatchingPoolReturnType,
+  getOrderMatchingPool,
+} from '../actions/getOrderMatchingPool.js'
+
+export {
   type GetOrdersReturnType,
   getOrders,
 } from '../actions/getOrders.js'

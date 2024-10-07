@@ -172,6 +172,9 @@ export const ADMIN_ASSIGN_ORDER_ROUTE = (
   order_id: string,
   matching_pool: string,
 ) => `/admin/orders/${order_id}/assign-pool/${matching_pool}`
+// Route to get the matching pool for an order
+export const ADMIN_GET_ORDER_MATCHING_POOL_ROUTE = (order_id: string) =>
+  `/admin/orders/${order_id}/matching-pool`
 
 ////////////////////////////////////////////////////////////////////////////////
 // Price Reporter
