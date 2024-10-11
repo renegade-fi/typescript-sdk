@@ -28,7 +28,7 @@ pub mod external_api;
 pub mod helpers;
 pub mod serde_def_types;
 pub mod types;
-
+pub mod utils;
 // -------------------------
 // | System-Wide Constants |
 // -------------------------
@@ -81,6 +81,7 @@ pub fn get_pk_root_scalars(seed: &str, nonce: u64) -> Vec<JsValue> {
 
 #[wasm_bindgen]
 pub fn get_symmetric_key(seed: &str) -> JsValue {
+    utils::set_panic_hook();
     let sk_root = derive_sk_root_signing_key(&seed, None).unwrap();
     let symmetric_key = derive_symmetric_key(&sk_root);
 
