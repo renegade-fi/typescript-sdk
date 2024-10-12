@@ -1,5 +1,11 @@
 # @renegade-fi/react
 
+## 0.3.7
+
+### Patch Changes
+
+- wasm: init console_error_panic_hook to log panics to dev console
+
 ## 0.3.6
 
 ### Patch Changes
