@@ -252,16 +252,16 @@ export * from '../types/wallet.js'
 export * from '../types/order.js'
 export * from '../types/task.js'
 
-export {
-  type Evaluate,
-  type ExactPartial,
-  type Mutable,
-  type StrictOmit as Omit,
-  type OneOf,
-  type RemoveUndefined,
-  type UnionCompute,
-  type UnionStrictOmit,
-  type UnionExactPartial,
+export type {
+  Evaluate,
+  ExactPartial,
+  Mutable,
+  StrictOmit as Omit,
+  OneOf,
+  RemoveUndefined,
+  UnionCompute,
+  UnionStrictOmit,
+  UnionExactPartial,
 } from '../types/utils.js'
 
 ////////////////////////////////////////////////////////////////////////////////
