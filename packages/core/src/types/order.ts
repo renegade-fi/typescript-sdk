@@ -7,6 +7,7 @@ export type Order = {
   worst_case_price: string
   amount: bigint
   min_fill_size: bigint
+  allow_external_matches: boolean
 }
 
 export enum OrderState {

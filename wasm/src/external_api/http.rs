@@ -490,8 +490,8 @@ pub fn new_order_in_matching_pool(
     amount: &str,
     worst_case_price: &str,
     min_fill_size: &str,
-    matching_pool: &str,
     allow_external_matches: bool,
+    matching_pool: &str,
 ) -> Result<JsValue, JsError> {
     let create_order_req = create_order_request(
         seed,

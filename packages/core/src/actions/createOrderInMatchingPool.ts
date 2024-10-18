@@ -27,6 +27,7 @@ export async function createOrderInMatchingPool(
     amount,
     worstCasePrice = '',
     minFillSize = BigInt(0),
+    allowExternalMatches = false,
     matchingPool,
   } = parameters
   const {
@@ -49,6 +50,7 @@ export async function createOrderInMatchingPool(
     toHex(amount),
     worstCasePrice,
     toHex(minFillSize),
+    allowExternalMatches,
     matchingPool,
   )
 

@@ -15,6 +15,7 @@ export type UpdateOrderParameters = {
   amount: bigint
   worstCasePrice?: string
   minFillSize?: bigint
+  allowExternalMatches?: boolean
 }
 
 export type UpdateOrderReturnType = Promise<{ taskId: string }>
@@ -31,6 +32,7 @@ export async function updateOrder(
     amount,
     worstCasePrice = '',
     minFillSize = BigInt(0),
+    allowExternalMatches = false,
   } = parameters
   const {
     getRelayerBaseUrl,
@@ -52,6 +54,7 @@ export async function updateOrder(
     toHex(amount),
     worstCasePrice,
     toHex(minFillSize),
+    allowExternalMatches,
   )
 
   try {
