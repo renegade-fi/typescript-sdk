@@ -30,3 +30,14 @@ export {
   executeWithdrawal,
   type ExecuteWithdrawalParameters,
 } from '../actions/executeWithdrawal.js'
+
+////////////////////////////////////////////////////////////////////////////////
+// @renegade-fi/core
+////////////////////////////////////////////////////////////////////////////////
+
+export {
+  // WebSocket
+  RelayerWebsocket,
+  type RelayerWebsocketParams,
+  type AuthType,
+} from '@renegade-fi/core'

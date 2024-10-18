@@ -232,5 +232,7 @@ export {
   Token,
   UpdateType,
   // WebSocket
-  WebSocketManager,
+  RelayerWebsocket,
+  type RelayerWebsocketParams,
+  type AuthType,
 } from '@renegade-fi/core'

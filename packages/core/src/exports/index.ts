@@ -280,7 +280,11 @@ export { deepEqual } from '../utils/deepEqual.js'
 
 export { postRelayerRaw } from '../utils/http.js'
 
-export { WebSocketManager } from '../utils/websocket.js'
+export {
+  RelayerWebsocket,
+  type RelayerWebsocketParams,
+  type AuthType,
+} from '../utils/websocket.js'
 
 export { websocketWaiter } from '../utils/websocketWaiter.js'
 

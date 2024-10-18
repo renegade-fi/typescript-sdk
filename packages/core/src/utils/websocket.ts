@@ -1,121 +1,159 @@
-type Callback = (message: unknown) => void
+import { getSymmetricKey } from '../actions/getSymmetricKey.js'
+import {
+  RENEGADE_AUTH_HEADER_NAME,
+  RENEGADE_AUTH_HMAC_HEADER_NAME,
+  RENEGADE_SIG_EXPIRATION_HEADER_NAME,
+} from '../constants.js'
+import type { Config } from '../createConfig.js'
 
-export class WebSocketManager {
-  private url: string
-  private ws: WebSocket | null
-  private subscriptions: Map<string, Callback>
-  private maxRetries: number
-  private retryCount: number
-  private retryDelay: number
-  private isConnected: boolean
+export enum AuthType {
+  None = 'None',
+  Wallet = 'Wallet',
+  Admin = 'Admin',
+}
 
-  constructor(url: string) {
-    this.url = url
-    this.ws = null
-    this.subscriptions = new Map<string, Callback>()
-    this.maxRetries = 5
-    this.retryCount = 0
-    this.retryDelay = 2000 // Initial retry delay in milliseconds
-    this.isConnected = false
+export type RelayerWebsocketParams = {
+  config: Config
+  topic: string
+  authType: AuthType
+  onmessage: (this: WebSocket, ev: MessageEvent) => any
+  onopenCallback?: (this: WebSocket, ev: Event) => any
+  oncloseCallback?: (this: WebSocket, ev: CloseEvent) => any
+  onerrorCallback?: (this: WebSocket, ev: Event) => any
+}
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('focus', this.handleWindowFocus.bind(this))
-    }
+export class RelayerWebsocket {
+  private config: Config
+  private topic: string
+  private authType: AuthType
+  private onmessage: (this: WebSocket, ev: MessageEvent) => any
+  private onopenCallback: ((this: WebSocket, ev: Event) => any) | null
+  private oncloseCallback: ((this: WebSocket, ev: CloseEvent) => any) | null
+  private onerrorCallback: ((this: WebSocket, ev: Event) => any) | null
+
+  private ws: WebSocket | null = null
+
+  constructor(params: RelayerWebsocketParams) {
+    this.config = params.config
+    this.topic = params.topic
+    this.authType = params.authType
+    this.onmessage = params.onmessage
+    this.onopenCallback = params.onopenCallback ?? null
+    this.oncloseCallback = params.oncloseCallback ?? null
+    this.onerrorCallback = params.onerrorCallback ?? null
   }
 
-  connect(): void {
-    if (this.isConnected || this.ws) {
-      console.warn('WebSocket connection attempt aborted: already connected.')
-      return
-    }
-
-    this.ws = new WebSocket(this.url)
-
-    this.ws.addEventListener('open', () => {
-      console.log('[Price Reporter] WebSocket connected.')
-      this.isConnected = true
-      this.retryCount = 0
-      this.resubscribeAll()
-    })
-
-    this.ws.addEventListener('message', (event) => {
-      try {
-        const data = JSON.parse(event.data)
-        if (this.subscriptions.has(data.topic)) {
-          const callback = this.subscriptions.get(data.topic)
-          if (callback) {
-            callback(data.price)
-          }
-        }
-      } catch (error) {
-        console.error('Error parsing WebSocket message:', error)
-      }
-    })
-
-    this.ws.addEventListener('error', (error) => {
-      console.error('WebSocket error:', error)
-    })
-
-    this.ws.addEventListener('close', () => {
-      console.log(
-        '[Price Reporter] WebSocket closed. Attempting to reconnect...',
-      )
-      this.isConnected = false
-      this.ws = null
-      this.reconnect()
-    })
-  }
-
-  private reconnect(): void {
-    if (this.retryCount >= this.maxRetries) {
-      console.error('[Price Reporter] Maximum reconnect attempts reached.')
-      return
-    }
-    const backoffDelay = this.retryDelay * 2 ** this.retryCount
-    const jitter = Math.random() * backoffDelay * 0.3 // Jitter up to 30% of the backoff delay
-    const delayWithJitter = backoffDelay + jitter
-
-    setTimeout(() => {
-      console.log(
-        `[Price Reporter] Reconnecting attempt ${this.retryCount + 1}`,
-      )
-      this.retryCount++
-      this.connect()
-    }, delayWithJitter)
-  }
-
-  private handleWindowFocus(): void {
-    if (!this.isConnected) {
-      console.log(
-        '[Price Reporter] Window refocused. Attempting to reconnect...',
-      )
-      this.retryCount = 0
-      this.reconnect()
-    }
-  }
-
-  subscribe(topic: string, callback: Callback): void {
-    if (!this.subscriptions.has(topic)) {
-      this.subscriptions.set(topic, callback)
-      if (this.isConnected && this.ws) {
-        this.ws.send(JSON.stringify({ method: 'subscribe', topic }))
-      }
-    }
-  }
-
-  private resubscribeAll(): void {
-    this.subscriptions.forEach((_, topic) => {
-      if (this.isConnected && this.ws) {
-        this.ws.send(JSON.stringify({ method: 'subscribe', topic }))
-      }
-    })
-  }
-
-  close(): void {
+  public connect(): void {
     if (this.ws) {
-      this.ws.close()
-      this.isConnected = false
-      this.ws = null
+      throw new Error(
+        'WebSocket connection attempt aborted: already connected.',
+      )
     }
+
+    const instance = this
+    instance.ws = new WebSocket(this.config.getWebsocketBaseUrl())
+
+    instance.ws.onopen = function (this: WebSocket, event: Event) {
+      const message = buildSubscriptionMessage(
+        instance.config,
+        instance.topic,
+        instance.authType,
+      )
+      this.send(JSON.stringify(message))
+
+      return instance.onopenCallback?.call(this, event)
+    }
+
+    instance.ws.onmessage = instance.onmessage
+
+    instance.ws.onclose = function (this: WebSocket, event: CloseEvent) {
+      instance.cleanup()
+      return instance.oncloseCallback?.call(this, event)
+    }
+
+    instance.ws.onerror = function (this: WebSocket, event: Event) {
+      instance.cleanup()
+      return instance.onerrorCallback?.call(this, event)
+    }
+  }
+
+  public close(): void {
+    if (!this.ws) {
+      throw new Error('WebSocket connection not open')
+    }
+
+    this.ws.close()
+  }
+
+  private cleanup(): void {
+    this.ws = null
+  }
+}
+
+// -----------
+// | Helpers |
+// -----------
+
+function buildSubscriptionMessage(
+  config: Config,
+  topic: string,
+  authType: AuthType,
+) {
+  const body = {
+    method: 'subscribe',
+    topic,
+  }
+
+  if (authType === AuthType.None) {
+    return body
+  }
+
+  if (authType === AuthType.Wallet) {
+    const headers = buildWalletAuthHeaders(config, body)
+    return {
+      headers,
+      body,
+    }
+  }
+
+  if (authType === AuthType.Admin) {
+    const headers = buildAdminAuthHeaders(config, body)
+    return {
+      headers,
+      body,
+    }
+  }
+
+  throw new Error(`Unsupported auth type: ${authType}`)
+}
+
+function buildWalletAuthHeaders(config: Config, body: any) {
+  const symmetricKey = getSymmetricKey(config)
+  const [auth, expiration] = config.utils.build_auth_headers_symmetric(
+    symmetricKey,
+    JSON.stringify(body),
+    BigInt(Date.now()),
+  )
+
+  return {
+    [RENEGADE_AUTH_HEADER_NAME]: auth,
+    [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
+  }
+}
+
+function buildAdminAuthHeaders(config: Config, body: any) {
+  if (!config.adminKey) {
+    throw new Error('Admin key is required')
+  }
+
+  const [auth, expiration] = config.utils.build_admin_headers(
+    config.adminKey,
+    JSON.stringify(body),
+    BigInt(Date.now()),
+  )
+
+  return {
+    [RENEGADE_AUTH_HMAC_HEADER_NAME]: auth,
+    [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
   }
 }
