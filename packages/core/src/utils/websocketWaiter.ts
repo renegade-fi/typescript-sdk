@@ -1,9 +1,18 @@
-import { getSymmetricKey } from '../actions/getSymmetricKey.js'
-import {
-  RENEGADE_AUTH_HEADER_NAME,
-  RENEGADE_SIG_EXPIRATION_HEADER_NAME,
-} from '../constants.js'
 import type { Config } from '../createConfig.js'
+import {
+  type AuthType,
+  RelayerWebsocket,
+  type RelayerWebsocketParams,
+} from './websocket.js'
+
+export type WebsocketWaiterParams = {
+  config: Config
+  topic: string
+  authType: AuthType
+  messageHandler: (message: any) => any | undefined
+  prefetch?: () => Promise<any | undefined>
+  timeout?: number
+}
 
 /**
  * A lightweight method which resolves when a short-lived websocket connection is closed.
@@ -28,62 +37,58 @@ import type { Config } from '../createConfig.js'
  * If the connection is closed, the method will throw an error.
  */
 export async function websocketWaiter<T>(
-  config: Config,
-  topic: string,
-  messageHandler: (message: any) => T | undefined,
-  prefetch?: () => Promise<T | undefined>,
-  timeout?: number,
+  params: WebsocketWaiterParams,
 ): Promise<T> {
   return new Promise((resolve, reject) => {
     let promiseSettled = false
 
-    const ws = new WebSocket(config.getWebsocketBaseUrl())
-    ws.onopen = () => {
-      const message = buildSubscriptionMessage(config, topic)
-      ws.send(JSON.stringify(message))
-    }
-
-    ws.onmessage = (event) => {
-      try {
-        const result = messageHandler(event.data)
-        if (result !== undefined) {
+    const wsParams: RelayerWebsocketParams = {
+      config: params.config,
+      topic: params.topic,
+      authType: params.authType,
+      onmessage: function (this: WebSocket, event: MessageEvent) {
+        try {
+          const result = params.messageHandler(event.data)
+          if (result !== undefined) {
+            promiseSettled = true
+            this.close()
+            resolve(result)
+          }
+        } catch (error) {
           promiseSettled = true
-          ws.close()
-          resolve(result)
+          this.close()
+          reject(error)
         }
-      } catch (error) {
-        promiseSettled = true
-        ws.close()
-        reject(error)
-      }
+      },
+      oncloseCallback: () => {
+        if (!promiseSettled) {
+          promiseSettled = true
+          reject(new Error('Websocket connection closed'))
+        }
+      },
+      onerrorCallback: (event: Event) => {
+        if (!promiseSettled) {
+          promiseSettled = true
+          reject(event)
+        }
+      },
     }
 
-    ws.onclose = () => {
-      if (!promiseSettled) {
-        promiseSettled = true
-        reject(new Error('Websocket connection closed'))
-      }
-    }
+    const ws = new RelayerWebsocket(wsParams)
+    ws.connect()
 
-    ws.onerror = (error) => {
-      if (!promiseSettled) {
-        promiseSettled = true
-        reject(error)
-      }
-    }
-
-    if (timeout) {
+    if (params.timeout) {
       setTimeout(() => {
         if (!promiseSettled) {
           promiseSettled = true
           ws.close()
           reject(new Error('Websocket connection timed out'))
         }
-      }, timeout)
+      }, params.timeout)
     }
 
-    if (prefetch) {
-      prefetch().then((result) => {
+    if (params.prefetch) {
+      params.prefetch().then((result) => {
         if (result) {
           promiseSettled = true
           ws.close()
@@ -92,25 +97,4 @@ export async function websocketWaiter<T>(
       })
     }
   })
-}
-
-function buildSubscriptionMessage(config: Config, topic: string) {
-  const body = {
-    method: 'subscribe',
-    topic,
-  }
-  const symmetricKey = getSymmetricKey(config)
-  const [auth, expiration] = config.utils.build_auth_headers_symmetric(
-    symmetricKey,
-    JSON.stringify(body),
-    BigInt(Date.now()),
-  )
-
-  return {
-    headers: {
-      [RENEGADE_AUTH_HEADER_NAME]: auth,
-      [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
-    },
-    body,
-  }
 }

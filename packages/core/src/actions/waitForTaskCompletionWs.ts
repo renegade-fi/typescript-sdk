@@ -1,6 +1,10 @@
 import { TASK_STATUS_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import { websocketWaiter } from '../utils/websocketWaiter.js'
+import { AuthType } from '../utils/websocket.js'
+import {
+  type WebsocketWaiterParams,
+  websocketWaiter,
+} from '../utils/websocketWaiter.js'
 import { getTaskHistory } from './getTaskHistory.js'
 import type { WaitForTaskCompletionParameters } from './waitForTaskCompletion.js'
 
@@ -9,41 +13,45 @@ export async function waitForTaskCompletionWs(
   parameters: WaitForTaskCompletionParameters,
 ): Promise<null | undefined> {
   const { id, timeout } = parameters
-
   const topic = TASK_STATUS_ROUTE(id)
 
-  const prefetch = async () => {
-    const taskHistory = await getTaskHistory(config)
-    const task = taskHistory.get(id)
+  const wsWaiterParams: WebsocketWaiterParams = {
+    config,
+    topic,
+    authType: AuthType.Wallet,
+    messageHandler: (message: any) => {
+      const parsedMessage = JSON.parse(message)
+      if (
+        parsedMessage.topic === topic &&
+        parsedMessage.event.type === 'TaskStatusUpdate'
+      ) {
+        if (parsedMessage.event.status?.state === 'Completed') {
+          return null
+        }
 
-    if (task?.state === 'Completed') {
-      return null
-    }
+        if (parsedMessage.event.status?.state === 'Failed') {
+          throw new Error(`Task ${id} failed`)
+        }
+      }
 
-    if (task?.state === 'Failed') {
-      throw new Error(`Task ${id} failed`)
-    }
+      return undefined
+    },
+    prefetch: async () => {
+      const taskHistory = await getTaskHistory(config)
+      const task = taskHistory.get(id)
 
-    return undefined
-  }
-
-  const messageHandler = (message: any) => {
-    const parsedMessage = JSON.parse(message)
-    if (
-      parsedMessage.topic === topic &&
-      parsedMessage.event.type === 'TaskStatusUpdate'
-    ) {
-      if (parsedMessage.event.status?.state === 'Completed') {
+      if (task?.state === 'Completed') {
         return null
       }
 
-      if (parsedMessage.event.status?.state === 'Failed') {
+      if (task?.state === 'Failed') {
         throw new Error(`Task ${id} failed`)
       }
-    }
 
-    return undefined
+      return undefined
+    },
+    timeout,
   }
 
-  return websocketWaiter(config, topic, messageHandler, prefetch, timeout)
+  return websocketWaiter(wsWaiterParams)
 }
