@@ -22,6 +22,25 @@ export type RelayerWebsocketParams = {
   onerrorCallback?: (this: WebSocket, ev: Event) => any
 }
 
+type SubscriptionMessage = {
+  headers?: Record<string, string>
+  body: SubscriptionBody
+}
+
+type UnsubscriptionMessage = {
+  body: UnsubscriptionBody
+}
+
+type SubscriptionBody = {
+  method: 'subscribe'
+  topic: string
+}
+
+type UnsubscriptionBody = {
+  method: 'unsubscribe'
+  topic: string
+}
+
 export class RelayerWebsocket {
   private config: Config
   private topic: string
@@ -43,6 +62,10 @@ export class RelayerWebsocket {
     this.onerrorCallback = params.onerrorCallback ?? null
   }
 
+  // --------------
+  // | Public API |
+  // --------------
+
   public connect(): void {
     if (this.ws) {
       throw new Error(
@@ -54,11 +77,7 @@ export class RelayerWebsocket {
     instance.ws = new WebSocket(this.config.getWebsocketBaseUrl())
 
     instance.ws.onopen = function (this: WebSocket, event: Event) {
-      const message = buildSubscriptionMessage(
-        instance.config,
-        instance.topic,
-        instance.authType,
-      )
+      const message = instance.buildSubscriptionMessage()
       this.send(JSON.stringify(message))
 
       return instance.onopenCallback?.call(this, event)
@@ -82,78 +101,90 @@ export class RelayerWebsocket {
       throw new Error('WebSocket connection not open')
     }
 
+    const message = this.buildUnsubscriptionMessage()
+    this.ws.send(JSON.stringify(message))
+
     this.ws.close()
+  }
+
+  // ---------------
+  // | Private API |
+  // ---------------
+
+  private buildSubscriptionMessage(): SubscriptionMessage {
+    const body = {
+      method: 'subscribe' as const,
+      topic: this.topic,
+    }
+
+    if (this.authType === AuthType.None) {
+      return { body }
+    }
+
+    if (this.authType === AuthType.Wallet) {
+      const headers = this.buildWalletAuthHeaders(body)
+      return {
+        headers,
+        body,
+      }
+    }
+
+    if (this.authType === AuthType.Admin) {
+      const headers = this.buildAdminAuthHeaders(body)
+      return {
+        headers,
+        body,
+      }
+    }
+
+    throw new Error(`Unsupported auth type: ${this.authType}`)
+  }
+
+  private buildUnsubscriptionMessage(): UnsubscriptionMessage {
+    return {
+      body: {
+        method: 'unsubscribe' as const,
+        topic: this.topic,
+      },
+    }
+  }
+
+  private buildWalletAuthHeaders(
+    body: SubscriptionBody,
+  ): Record<string, string> {
+    const symmetricKey = getSymmetricKey(this.config)
+    const [auth, expiration] = this.config.utils.build_auth_headers_symmetric(
+      symmetricKey,
+      JSON.stringify(body),
+      BigInt(Date.now()),
+    )
+
+    return {
+      [RENEGADE_AUTH_HEADER_NAME]: auth,
+      [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
+    }
+  }
+
+  private buildAdminAuthHeaders(
+    body: SubscriptionBody,
+  ): Record<string, string> {
+    if (!this.config.adminKey) {
+      throw new Error('Admin key is required')
+    }
+
+    const [auth, expiration] = this.config.utils.build_admin_headers(
+      this.config.adminKey,
+      JSON.stringify(body),
+      BigInt(Date.now()),
+    )
+
+    return {
+      [RENEGADE_AUTH_HMAC_HEADER_NAME]: auth,
+      [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
+    }
   }
 
   private cleanup(): void {
     this.ws = null
-  }
-}
-
-// -----------
-// | Helpers |
-// -----------
-
-function buildSubscriptionMessage(
-  config: Config,
-  topic: string,
-  authType: AuthType,
-) {
-  const body = {
-    method: 'subscribe',
-    topic,
-  }
-
-  if (authType === AuthType.None) {
-    return body
-  }
-
-  if (authType === AuthType.Wallet) {
-    const headers = buildWalletAuthHeaders(config, body)
-    return {
-      headers,
-      body,
-    }
-  }
-
-  if (authType === AuthType.Admin) {
-    const headers = buildAdminAuthHeaders(config, body)
-    return {
-      headers,
-      body,
-    }
-  }
-
-  throw new Error(`Unsupported auth type: ${authType}`)
-}
-
-function buildWalletAuthHeaders(config: Config, body: any) {
-  const symmetricKey = getSymmetricKey(config)
-  const [auth, expiration] = config.utils.build_auth_headers_symmetric(
-    symmetricKey,
-    JSON.stringify(body),
-    BigInt(Date.now()),
-  )
-
-  return {
-    [RENEGADE_AUTH_HEADER_NAME]: auth,
-    [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
-  }
-}
-
-function buildAdminAuthHeaders(config: Config, body: any) {
-  if (!config.adminKey) {
-    throw new Error('Admin key is required')
-  }
-
-  const [auth, expiration] = config.utils.build_admin_headers(
-    config.adminKey,
-    JSON.stringify(body),
-    BigInt(Date.now()),
-  )
-
-  return {
-    [RENEGADE_AUTH_HMAC_HEADER_NAME]: auth,
-    [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
   }
 }
