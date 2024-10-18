@@ -356,6 +356,7 @@ fn create_order(
     amount: &str,
     worst_case_price: &str,
     min_fill_size: &str,
+    allow_external_matches: bool,
 ) -> Result<ApiOrder, JsError> {
     // Parse the UUID from the string, or generate a new one if the string is empty
     let id = if id.is_empty() {
@@ -402,6 +403,7 @@ fn create_order(
         worst_case_price,
         type_: ApiOrderType::Midpoint,
         min_fill_size,
+        allow_external_matches,
     })
 }
 
@@ -415,6 +417,7 @@ pub fn create_order_request(
     amount: &str,
     worst_case_price: &str,
     min_fill_size: &str,
+    allow_external_matches: bool,
 ) -> Result<CreateOrderRequest, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
@@ -428,6 +431,7 @@ pub fn create_order_request(
         amount,
         worst_case_price,
         min_fill_size,
+        allow_external_matches,
     )?;
     // Modify the wallet
     wrap_eyre!(new_wallet.add_order(order.id, order.clone().into())).unwrap();
@@ -458,6 +462,7 @@ pub fn new_order(
     amount: &str,
     worst_case_price: &str,
     min_fill_size: &str,
+    allow_external_matches: bool,
 ) -> Result<JsValue, JsError> {
     let req = create_order_request(
         seed,
@@ -469,6 +474,7 @@ pub fn new_order(
         amount,
         worst_case_price,
         min_fill_size,
+        allow_external_matches,
     )?;
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
@@ -485,6 +491,7 @@ pub fn new_order_in_matching_pool(
     worst_case_price: &str,
     min_fill_size: &str,
     matching_pool: &str,
+    allow_external_matches: bool,
 ) -> Result<JsValue, JsError> {
     let create_order_req = create_order_request(
         seed,
@@ -496,6 +503,7 @@ pub fn new_order_in_matching_pool(
         amount,
         worst_case_price,
         min_fill_size,
+        allow_external_matches,
     )?;
     let req = CreateOrderInMatchingPoolRequest {
         order: create_order_req.order,
@@ -568,6 +576,7 @@ pub fn update_order(
     amount: &str,
     worst_case_price: &str,
     min_fill_size: &str,
+    allow_external_matches: bool,
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
@@ -581,6 +590,7 @@ pub fn update_order(
         amount,
         worst_case_price,
         min_fill_size,
+        allow_external_matches,
     )?;
 
     // Modify the wallet

@@ -33,6 +33,9 @@ pub struct Order {
     /// The minimum fill size for the order
     #[serde(default)]
     pub min_fill_size: Amount,
+    /// Whether or not to allow external matches
+    #[serde(default)]
+    pub allow_external_matches: bool,
 }
 
 impl Order {
