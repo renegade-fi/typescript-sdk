@@ -333,11 +333,11 @@ export function new_order(seed, wallet_str, id, base_mint, quote_mint, side, amo
 * @param {string} amount
 * @param {string} worst_case_price
 * @param {string} min_fill_size
-* @param {string} matching_pool
 * @param {boolean} allow_external_matches
+* @param {string} matching_pool
 * @returns {any}
 */
-export function new_order_in_matching_pool(seed, wallet_str, id, base_mint, quote_mint, side, amount, worst_case_price, min_fill_size, matching_pool, allow_external_matches) {
+export function new_order_in_matching_pool(seed, wallet_str, id, base_mint, quote_mint, side, amount, worst_case_price, min_fill_size, allow_external_matches, matching_pool) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         const ptr0 = passStringToWasm0(seed, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
@@ -360,7 +360,7 @@ export function new_order_in_matching_pool(seed, wallet_str, id, base_mint, quot
         const len8 = WASM_VECTOR_LEN;
         const ptr9 = passStringToWasm0(matching_pool, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len9 = WASM_VECTOR_LEN;
-        wasm.new_order_in_matching_pool(retptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7, ptr8, len8, ptr9, len9, allow_external_matches);
+        wasm.new_order_in_matching_pool(retptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7, ptr8, len8, allow_external_matches, ptr9, len9);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
         var r2 = getInt32Memory0()[retptr / 4 + 2];

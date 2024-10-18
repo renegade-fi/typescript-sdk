@@ -16,6 +16,7 @@ export type CreateOrderParameters = {
   amount: bigint
   worstCasePrice?: string
   minFillSize?: bigint
+  allowExternalMatches?: boolean
 }
 
 export type CreateOrderReturnType = { taskId: string }
@@ -34,6 +35,7 @@ export async function createOrder(
     amount,
     worstCasePrice = '',
     minFillSize = BigInt(0),
+    allowExternalMatches = false,
   } = parameters
   const {
     getRelayerBaseUrl,
@@ -55,6 +57,7 @@ export async function createOrder(
     toHex(amount),
     worstCasePrice,
     toHex(minFillSize),
+    allowExternalMatches,
   )
 
   try {

@@ -65,11 +65,11 @@ export function new_order(seed: string, wallet_str: string, id: string, base_min
 * @param {string} amount
 * @param {string} worst_case_price
 * @param {string} min_fill_size
-* @param {string} matching_pool
 * @param {boolean} allow_external_matches
+* @param {string} matching_pool
 * @returns {any}
 */
-export function new_order_in_matching_pool(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, matching_pool: string, allow_external_matches: boolean): any;
+export function new_order_in_matching_pool(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, matching_pool: string): any;
 /**
 * @param {string} seed
 * @param {string} wallet_str
