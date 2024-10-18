@@ -40,7 +40,7 @@ export type TimestampedPrice = {
   timestamp: bigint
 }
 
-export type OpenOrder = {
+export type AdminOrderMetadata = {
   order: OrderMetadata
   wallet_id: string
   fillable?: bigint
