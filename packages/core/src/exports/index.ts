@@ -281,11 +281,14 @@ export { deepEqual } from '../utils/deepEqual.js'
 export { postRelayerRaw } from '../utils/http.js'
 
 export {
+  AuthType,
   RelayerWebsocket,
   type RelayerWebsocketParams,
-  type AuthType,
 } from '../utils/websocket.js'
 
-export { websocketWaiter } from '../utils/websocketWaiter.js'
+export {
+  websocketWaiter,
+  type WebsocketWaiterParams,
+} from '../utils/websocketWaiter.js'
 
 export { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
