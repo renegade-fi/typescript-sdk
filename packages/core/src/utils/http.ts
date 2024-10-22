@@ -51,9 +51,18 @@ export async function getRelayerRaw(url: string, headers = {}) {
             url.includes('/open-orders') ||
             url.includes('/metadata')
           ) {
-            return JSON.parse(data, (key, value) => {
+            // We use ts-ignore here because TypeScript doesn't recognize the
+            // `context` argument in the JSON.parse reviver
+            // @ts-ignore
+            return JSON.parse(data, (key, value, context) => {
               if (typeof value === 'number' && key !== 'price') {
-                return BigInt(value)
+                if (context?.source === undefined) {
+                  console.warn(
+                    `No JSON source for ${key}, converting parsed value to BigInt`,
+                  )
+                  return BigInt(value)
+                }
+                return BigInt(context.source)
               }
               return value
             })
