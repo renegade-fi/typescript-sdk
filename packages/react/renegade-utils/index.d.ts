@@ -92,22 +92,6 @@ export function cancel_order(seed: string, wallet_str: string, order_id: string)
 */
 export function update_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean): any;
 /**
-* Build authentication headers for a request
-* @param {string} key
-* @param {string} req
-* @param {bigint} current_timestamp
-* @returns {any[]}
-*/
-export function build_auth_headers_symmetric(key: string, req: string, current_timestamp: bigint): any[];
-/**
-* Build admin authentication headers
-* @param {string} key
-* @param {string} req
-* @param {bigint} current_timestamp
-* @returns {any[]}
-*/
-export function build_admin_headers(key: string, req: string, current_timestamp: bigint): any[];
-/**
 * @param {string} seed
 * @param {bigint} nonce
 * @returns {any}
@@ -141,6 +125,19 @@ export function sign_message(sk_root: string, message: string): any;
 * @returns {any}
 */
 export function bigint_to_limbs(value: string): any;
+/**
+* @param {string} path
+* @param {any} headers
+* @param {string} body
+* @param {string} key
+* @returns {string}
+*/
+export function create_request_signature(path: string, headers: any, body: string, key: string): string;
+/**
+* @param {string} b64_key
+* @returns {string}
+*/
+export function b64_to_hex_hmac_key(b64_key: string): string;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -156,19 +153,19 @@ export interface InitOutput {
   readonly new_order_in_matching_pool: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number, p: number, q: number, r: number, s: number, t: number, u: number, v: number) => void;
   readonly cancel_order: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
   readonly update_order: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number, p: number, q: number, r: number, s: number, t: number) => void;
-  readonly build_auth_headers_symmetric: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
-  readonly build_admin_headers: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
   readonly derive_sk_root_from_seed: (a: number, b: number, c: number) => number;
   readonly get_pk_root: (a: number, b: number, c: number) => number;
   readonly get_pk_root_scalars: (a: number, b: number, c: number, d: number) => void;
   readonly get_symmetric_key: (a: number, b: number) => number;
   readonly sign_message: (a: number, b: number, c: number, d: number) => number;
   readonly bigint_to_limbs: (a: number, b: number) => number;
-  readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
+  readonly create_request_signature: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => void;
+  readonly b64_to_hex_hmac_key: (a: number, b: number, c: number) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
+  readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
@@ -176,18 +173,18 @@ export type SyncInitInput = BufferSource | WebAssembly.Module;
 * Instantiates the given `module`, which can either be bytes or
 * a precompiled `WebAssembly.Module`.
 *
-* @param {SyncInitInput} module
+* @param {{ module: SyncInitInput }} module - Passing `SyncInitInput` directly is deprecated.
 *
 * @returns {InitOutput}
 */
-export function initSync(module: SyncInitInput): InitOutput;
+export function initSync(module: { module: SyncInitInput } | SyncInitInput): InitOutput;
 
 /**
 * If `module_or_path` is {RequestInfo} or {URL}, makes a request and
 * for everything else, calls `WebAssembly.instantiate` directly.
 *
-* @param {InitInput | Promise<InitInput>} module_or_path
+* @param {{ module_or_path: InitInput | Promise<InitInput> }} module_or_path - Passing `InitInput` directly is deprecated.
 *
 * @returns {Promise<InitOutput>}
 */
-export default function __wbg_init (module_or_path?: InitInput | Promise<InitInput>): Promise<InitOutput>;
+export default function __wbg_init (module_or_path?: { module_or_path: InitInput | Promise<InitInput> } | InitInput | Promise<InitInput>): Promise<InitOutput>;
