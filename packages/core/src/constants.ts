@@ -175,6 +175,13 @@ export const ADMIN_ASSIGN_ORDER_ROUTE = (
 // Route to get the matching pool for an order
 export const ADMIN_GET_ORDER_MATCHING_POOL_ROUTE = (order_id: string) =>
   `/admin/orders/${order_id}/matching-pool`
+// Route to get all the order IDs for a given wallet
+export const ADMIN_WALLET_ORDER_IDS_ROUTE = (wallet_id: string) =>
+  `/admin/wallet/${wallet_id}/order-ids`
+
+// The admin wallet updates topic, streams opaque event indicating
+// updates for all wallets
+export const WS_ADMIN_WALLET_UPDATES_ROUTE = '/v0/admin/wallet-updates'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Price Reporter
