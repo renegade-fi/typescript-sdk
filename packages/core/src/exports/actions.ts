@@ -159,7 +159,7 @@ export {
   type GetWalletOrderIdsParameters as GetWalletOrdersParameters,
   type GetWalletOrderIdsReturnType as GetWalletOrdersReturnType,
   type GetWalletOrderIdsErrorType as GetWalletOrdersErrorType,
-  getWalletOrderIds as getWalletOrders,
+  getWalletOrderIds,
 } from '../actions/getWalletOrderIds.js'
 
 export {
