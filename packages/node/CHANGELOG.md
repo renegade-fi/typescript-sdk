@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.3.10
+
+### Patch Changes
+
+- core: tidy up
+- Updated dependencies
+  - @renegade-fi/core@0.3.7
+
 ## 0.3.9
 
 ### Patch Changes
