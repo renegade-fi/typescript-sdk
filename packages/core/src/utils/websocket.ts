@@ -150,16 +150,7 @@ export class RelayerWebsocket {
     body: SubscriptionBody,
   ): Record<string, string> {
     const symmetricKey = getSymmetricKey(this.config)
-    // const [auth, expiration] = this.config.utils.build_auth_headers_symmetric(
-    //   symmetricKey,
-    //   JSON.stringify(body),
-    //   BigInt(Date.now()),
-    // )
 
-    // return {
-    //   [RENEGADE_AUTH_HEADER_NAME]: auth,
-    //   [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
-    // }
     return addExpiringAuthToHeaders(
       this.config,
       body.topic,
@@ -179,16 +170,6 @@ export class RelayerWebsocket {
     const { adminKey } = this.config
     const symmetricKey = this.config.utils.b64_to_hex_hmac_key(adminKey)
 
-    // const [auth, expiration] = this.config.utils.build_admin_headers(
-    //   this.config.adminKey,
-    //   JSON.stringify(body),
-    //   BigInt(Date.now()),
-    // )
-
-    // return {
-    //   [RENEGADE_AUTH_HEADER_NAME]: auth,
-    //   [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
-    // }
     return addExpiringAuthToHeaders(
       this.config,
       body.topic,
@@ -203,29 +184,3 @@ export class RelayerWebsocket {
     this.ws = null
   }
 }
-
-// /// Add an auth expiration and signature to a set of headers
-// export function addExpiringAuthToHeaders(
-//   config: Config,
-//   headers: Record<string, string>,
-//   body: SubscriptionBody | UnsubscriptionBody,
-//   key: string,
-//   expiration: number,
-// ): Record<string, string> {
-//   // Add a timestamp
-//   const expirationTs = Date.now() + expiration
-//   const headersWithExpiration = {
-//     ...headers,
-//     [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expirationTs.toString(),
-//   }
-
-//   // Add the signature
-//   const auth = config.utils.create_request_signature(
-//     body.topic,
-//     headersWithExpiration,
-//     JSON.stringify(body),
-//     key,
-//   )
-
-//   return { ...headersWithExpiration, [RENEGADE_AUTH_HEADER_NAME]: auth }
-// }
