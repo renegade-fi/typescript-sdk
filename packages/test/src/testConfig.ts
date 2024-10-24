@@ -1,6 +1,6 @@
 import { createConfig } from '@renegade-fi/core'
 
-import * as RustUtils from '../renegade-utils/index.js'
+import * as RustUtils from '../../react/renegade-utils/index.js'
 
 export const config = createConfig({
   darkPoolAddress: '0x000000000000000000000000000000000000000',
