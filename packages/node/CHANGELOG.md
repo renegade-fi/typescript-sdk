@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.3.9
+
+### Patch Changes
+
+- wasm, core, react: update to api auth v2
+- Updated dependencies
+  - @renegade-fi/core@0.3.6
+
 ## 0.3.8
 
 ### Patch Changes
