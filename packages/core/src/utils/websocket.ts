@@ -1,10 +1,7 @@
 import { getSymmetricKey } from '../actions/getSymmetricKey.js'
-import {
-  RENEGADE_AUTH_HEADER_NAME,
-  RENEGADE_AUTH_HMAC_HEADER_NAME,
-  RENEGADE_SIG_EXPIRATION_HEADER_NAME,
-} from '../constants.js'
+import { SIG_EXPIRATION_BUFFER_MS } from '../constants.js'
 import type { Config } from '../createConfig.js'
+import { addExpiringAuthToHeaders } from './http.js'
 
 export enum AuthType {
   None = 'None',
@@ -31,12 +28,12 @@ type UnsubscriptionMessage = {
   body: UnsubscriptionBody
 }
 
-type SubscriptionBody = {
+export type SubscriptionBody = {
   method: 'subscribe'
   topic: string
 }
 
-type UnsubscriptionBody = {
+export type UnsubscriptionBody = {
   method: 'unsubscribe'
   topic: string
 }
@@ -153,16 +150,15 @@ export class RelayerWebsocket {
     body: SubscriptionBody,
   ): Record<string, string> {
     const symmetricKey = getSymmetricKey(this.config)
-    const [auth, expiration] = this.config.utils.build_auth_headers_symmetric(
-      symmetricKey,
-      JSON.stringify(body),
-      BigInt(Date.now()),
-    )
 
-    return {
-      [RENEGADE_AUTH_HEADER_NAME]: auth,
-      [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
-    }
+    return addExpiringAuthToHeaders(
+      this.config,
+      body.topic,
+      {},
+      JSON.stringify(body),
+      symmetricKey,
+      SIG_EXPIRATION_BUFFER_MS,
+    )
   }
 
   private buildAdminAuthHeaders(
@@ -171,17 +167,17 @@ export class RelayerWebsocket {
     if (!this.config.adminKey) {
       throw new Error('Admin key is required')
     }
+    const { adminKey } = this.config
+    const symmetricKey = this.config.utils.b64_to_hex_hmac_key(adminKey)
 
-    const [auth, expiration] = this.config.utils.build_admin_headers(
-      this.config.adminKey,
+    return addExpiringAuthToHeaders(
+      this.config,
+      body.topic,
+      {},
       JSON.stringify(body),
-      BigInt(Date.now()),
+      symmetricKey,
+      SIG_EXPIRATION_BUFFER_MS,
     )
-
-    return {
-      [RENEGADE_AUTH_HMAC_HEADER_NAME]: auth,
-      [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
-    }
   }
 
   private cleanup(): void {

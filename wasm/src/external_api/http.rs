@@ -12,8 +12,7 @@ use crate::{
             derive_blinder_seed, derive_sk_root_scalars, derive_sk_root_signing_key,
             derive_wallet_from_key, derive_wallet_id, wrap_eyre,
         },
-        keychain::HmacKey,
-        types::{SymmetricAuthKey, WalletIdentifier},
+        types::WalletIdentifier,
     },
     helpers::{
         biguint_from_hex_string, deserialize_biguint_from_hex_string, deserialize_wallet,
@@ -21,12 +20,10 @@ use crate::{
     },
     sign_commitment,
 };
-use base64::engine::{general_purpose as b64_general_purpose, Engine};
 use ethers::{
     types::{Bytes, Signature, U256},
     utils::keccak256,
 };
-use hmac::Mac;
 use itertools::Itertools;
 use k256::ecdsa::SigningKey;
 use num_bigint::BigUint;
@@ -35,11 +32,6 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use wasm_bindgen::prelude::*;
 
-/// The HMAC type
-type HmacSha256 = hmac::Hmac<sha2::Sha256>;
-
-/// The amount of buffer time to add to the signature expiration
-const SIG_EXPIRATION_BUFFER_MS: u64 = 10_000; // 5 seconds
 /// Error message displayed when a given order cannot be found
 const ERR_ORDER_NOT_FOUND: &str = "order not found";
 
@@ -622,58 +614,4 @@ pub fn update_order(
         update_auth,
     };
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
-}
-
-#[wasm_bindgen]
-/// Build authentication headers for a request
-pub fn build_auth_headers_symmetric(
-    key: &str,
-    req: &str,
-    current_timestamp: u64,
-) -> Result<Vec<JsValue>, JsError> {
-    let symmetric_key = HmacKey::from_hex_string(key).unwrap();
-    let expiration = current_timestamp + SIG_EXPIRATION_BUFFER_MS;
-
-    // Sign the concatenation of the message and the expiration timestamp
-    let msg_bytes = req.as_bytes();
-    let payload = [msg_bytes, &expiration.to_le_bytes()].concat();
-
-    let mac = symmetric_key.compute_mac(&payload);
-    let encoded_sig = b64_general_purpose::STANDARD_NO_PAD.encode(mac);
-
-    Ok(vec![
-        JsValue::from_str(&encoded_sig),
-        JsValue::from_str(&expiration.to_string()),
-    ])
-}
-
-#[wasm_bindgen]
-/// Build admin authentication headers
-pub fn build_admin_headers(
-    key: &str,
-    req: &str,
-    current_timestamp: u64,
-) -> Result<Vec<JsValue>, JsError> {
-    let expiration = current_timestamp + SIG_EXPIRATION_BUFFER_MS;
-
-    let admin_key: SymmetricAuthKey = b64_general_purpose::STANDARD
-        .decode(key)?
-        .try_into()
-        .unwrap();
-
-    // HMAC the request body with the key
-    let req_bytes = req.as_bytes();
-    let msg_bytes = req_bytes.to_vec();
-    let payload = [msg_bytes, expiration.to_le_bytes().to_vec()].concat();
-
-    let mut hmac = HmacSha256::new_from_slice(&admin_key).unwrap();
-    hmac.update(&payload);
-    let mac_bytes: [u8; 32] = hmac.finalize().into_bytes().to_vec().try_into().unwrap();
-    let encoded_hmac = b64_general_purpose::STANDARD_NO_PAD.encode(mac_bytes);
-
-    // Convert encoded_hmac and expiration into JsValue and return them in an array
-    Ok(vec![
-        JsValue::from_str(&encoded_hmac),
-        JsValue::from_str(&expiration.to_string()),
-    ])
 }

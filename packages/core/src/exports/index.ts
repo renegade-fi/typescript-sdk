@@ -278,12 +278,14 @@ export {
 
 export { deepEqual } from '../utils/deepEqual.js'
 
-export { postRelayerRaw } from '../utils/http.js'
+export { postRelayerRaw, addExpiringAuthToHeaders } from '../utils/http.js'
 
 export {
   AuthType,
   RelayerWebsocket,
   type RelayerWebsocketParams,
+  type SubscriptionBody,
+  type UnsubscriptionBody,
 } from '../utils/websocket.js'
 
 export {

@@ -2,16 +2,17 @@
 
 import {
   type Config,
-  RENEGADE_AUTH_HEADER_NAME,
-  RENEGADE_SIG_EXPIRATION_HEADER_NAME,
+  SIG_EXPIRATION_BUFFER_MS,
   type Task,
   WS_TASK_HISTORY_ROUTE,
+  addExpiringAuthToHeaders,
   getSymmetricKey,
   parseBigJSON,
 } from '@renegade-fi/core'
 import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { useConfig } from './useConfig.js'
+import { useInitialized } from './useInitialized.js'
 import { useStatus } from './useStatus.js'
 import { useWalletId } from './useWalletId.js'
 
@@ -29,6 +30,7 @@ export function useTaskHistoryWebSocket(
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
   const { enabled = true, onUpdate } = parameters
+  const initialized = useInitialized()
 
   const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
@@ -57,7 +59,8 @@ export function useTaskHistoryWebSocket(
       !enabled ||
       !walletId ||
       readyState !== ReadyState.OPEN ||
-      status !== 'in relayer'
+      status !== 'in relayer' ||
+      !initialized
     )
       return
 
@@ -66,18 +69,26 @@ export function useTaskHistoryWebSocket(
       topic: WS_TASK_HISTORY_ROUTE(walletId),
     }
     const symmetricKey = getSymmetricKey(config)
-    const [auth, expiration] = config.utils.build_auth_headers_symmetric(
-      symmetricKey,
+    const headers = addExpiringAuthToHeaders(
+      config,
+      body.topic,
+      {},
       JSON.stringify(body),
-      BigInt(Date.now()),
+      symmetricKey,
+      SIG_EXPIRATION_BUFFER_MS,
     )
     const message = {
-      headers: {
-        [RENEGADE_AUTH_HEADER_NAME]: auth,
-        [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
-      },
+      headers,
       body,
     }
     sendJsonMessage(message)
-  }, [readyState, status, sendJsonMessage, config, walletId, enabled])
+  }, [
+    readyState,
+    status,
+    sendJsonMessage,
+    config,
+    walletId,
+    enabled,
+    initialized,
+  ])
 }

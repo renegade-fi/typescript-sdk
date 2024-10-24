@@ -2,16 +2,17 @@
 
 import {
   type Config,
-  RENEGADE_AUTH_HEADER_NAME,
-  RENEGADE_SIG_EXPIRATION_HEADER_NAME,
+  SIG_EXPIRATION_BUFFER_MS,
   WALLET_ROUTE,
   type Wallet,
+  addExpiringAuthToHeaders,
   getSymmetricKey,
   parseBigJSON,
 } from '@renegade-fi/core'
 import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { useConfig } from './useConfig.js'
+import { useInitialized } from './useInitialized.js'
 import { useStatus } from './useStatus.js'
 import { useWalletId } from './useWalletId.js'
 
@@ -23,6 +24,7 @@ export type UseWalletParameters = {
 
 export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
   const config = useConfig(parameters)
+  const initialized = useInitialized()
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
@@ -56,7 +58,8 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
       !enabled ||
       !walletId ||
       readyState !== ReadyState.OPEN ||
-      status !== 'in relayer'
+      status !== 'in relayer' ||
+      !initialized
     )
       return
 
@@ -65,18 +68,26 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
       topic: WALLET_ROUTE(walletId),
     }
     const symmetricKey = getSymmetricKey(config)
-    const [auth, expiration] = config.utils.build_auth_headers_symmetric(
-      symmetricKey,
+    const headers = addExpiringAuthToHeaders(
+      config,
+      body.topic,
+      {},
       JSON.stringify(body),
-      BigInt(Date.now()),
+      symmetricKey,
+      SIG_EXPIRATION_BUFFER_MS,
     )
     const message = {
-      headers: {
-        [RENEGADE_AUTH_HEADER_NAME]: auth,
-        [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
-      },
+      headers,
       body,
     }
     sendJsonMessage(message)
-  }, [readyState, walletId, status, sendJsonMessage, config, enabled])
+  }, [
+    readyState,
+    walletId,
+    status,
+    sendJsonMessage,
+    config,
+    enabled,
+    initialized,
+  ])
 }

@@ -92,22 +92,6 @@ export function cancel_order(seed: string, wallet_str: string, order_id: string)
 */
 export function update_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean): any;
 /**
-* Build authentication headers for a request
-* @param {string} key
-* @param {string} req
-* @param {bigint} current_timestamp
-* @returns {any[]}
-*/
-export function build_auth_headers_symmetric(key: string, req: string, current_timestamp: bigint): any[];
-/**
-* Build admin authentication headers
-* @param {string} key
-* @param {string} req
-* @param {bigint} current_timestamp
-* @returns {any[]}
-*/
-export function build_admin_headers(key: string, req: string, current_timestamp: bigint): any[];
-/**
 * @param {string} seed
 * @param {bigint} nonce
 * @returns {any}
@@ -141,3 +125,16 @@ export function sign_message(sk_root: string, message: string): any;
 * @returns {any}
 */
 export function bigint_to_limbs(value: string): any;
+/**
+* @param {string} path
+* @param {any} headers
+* @param {string} body
+* @param {string} key
+* @returns {string}
+*/
+export function create_request_signature(path: string, headers: any, body: string, key: string): string;
+/**
+* @param {string} b64_key
+* @returns {string}
+*/
+export function b64_to_hex_hmac_key(b64_key: string): string;

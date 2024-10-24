@@ -1,11 +1,10 @@
 import axios from 'axios'
 import invariant from 'tiny-invariant'
-
 import { getSymmetricKey } from '../actions/getSymmetricKey.js'
 import {
   RENEGADE_AUTH_HEADER_NAME,
-  RENEGADE_AUTH_HMAC_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
+  SIG_EXPIRATION_BUFFER_MS,
 } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
@@ -110,19 +109,19 @@ export async function postRelayerWithAuth(
   const symmetricKey = getSymmetricKey(config)
   invariant(symmetricKey, 'Failed to derive symmetric key')
 
-  const [auth, expiration] = config.utils.build_auth_headers_symmetric(
-    symmetricKey,
-    body ?? '',
-    BigInt(Date.now()),
-  )
-
+  const path = getPathFromUrl(url)
   const headers = {
-    [RENEGADE_AUTH_HEADER_NAME]: auth,
-    [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
     'Content-Type': 'application/json',
   }
-
-  return await postRelayerRaw(url, body, headers)
+  const headersWithAuth = addExpiringAuthToHeaders(
+    config,
+    path,
+    headers,
+    body ?? '',
+    symmetricKey,
+    SIG_EXPIRATION_BUFFER_MS,
+  )
+  return await postRelayerRaw(url, body, headersWithAuth)
 }
 
 export async function postRelayerWithAdmin(
@@ -132,56 +131,96 @@ export async function postRelayerWithAdmin(
 ) {
   const { adminKey } = config
   invariant(adminKey, 'Admin key is required')
+  const symmetricKey = config.utils.b64_to_hex_hmac_key(adminKey)
 
-  const [auth, expiration] = config.utils.build_admin_headers(
-    adminKey,
-    body ?? '',
-    BigInt(Date.now()),
-  )
-
+  const path = getPathFromUrl(url)
   const headers = {
-    [RENEGADE_AUTH_HMAC_HEADER_NAME]: auth,
-    [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
     'Content-Type': 'application/json',
   }
-
-  return await postRelayerRaw(url, body, headers)
+  const headersWithAuth = addExpiringAuthToHeaders(
+    config,
+    path,
+    headers,
+    body ?? '',
+    symmetricKey,
+    SIG_EXPIRATION_BUFFER_MS,
+  )
+  return await postRelayerRaw(url, body, headersWithAuth)
 }
 
 export async function getRelayerWithAuth(config: Config, url: string) {
   const symmetricKey = getSymmetricKey(config)
   invariant(symmetricKey, 'Failed to derive symmetric key')
 
-  const [auth, expiration] = config.utils.build_auth_headers_symmetric(
-    symmetricKey,
-    '',
-    BigInt(Date.now()),
-  )
-
+  const path = getPathFromUrl(url)
   const headers = {
-    [RENEGADE_AUTH_HEADER_NAME]: auth,
-    [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
     'Content-Type': 'application/json',
   }
-
-  return await getRelayerRaw(url, headers)
+  const headersWithAuth = addExpiringAuthToHeaders(
+    config,
+    path,
+    headers,
+    '',
+    symmetricKey,
+    SIG_EXPIRATION_BUFFER_MS,
+  )
+  return await getRelayerRaw(url, headersWithAuth)
 }
 
 export async function getRelayerWithAdmin(config: Config, url: string) {
   const { adminKey } = config
   invariant(adminKey, 'Admin key is required')
+  const symmetricKey = config.utils.b64_to_hex_hmac_key(adminKey)
 
-  const [auth, expiration] = config.utils.build_admin_headers(
-    adminKey,
-    '',
-    BigInt(Date.now()),
-  )
-
+  const path = getPathFromUrl(url)
   const headers = {
-    [RENEGADE_AUTH_HMAC_HEADER_NAME]: auth,
-    [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expiration,
     'Content-Type': 'application/json',
   }
+  const headersWithAuth = addExpiringAuthToHeaders(
+    config,
+    path,
+    headers,
+    '',
+    symmetricKey,
+    SIG_EXPIRATION_BUFFER_MS,
+  )
 
-  return await getRelayerRaw(url, headers)
+  return await getRelayerRaw(url, headersWithAuth)
+}
+
+/// Get the path from a URL
+function getPathFromUrl(url: string): string {
+  try {
+    const parsedUrl = new URL(url)
+    return parsedUrl.pathname || '/'
+  } catch {
+    return url.startsWith('/') ? url : `/${url}`
+  }
+}
+
+/// Add an auth expiration and signature to a set of headers
+export function addExpiringAuthToHeaders(
+  config: Config,
+  path: string,
+  headers: Record<string, string>,
+  body: string,
+  key: string,
+  expiration: number,
+): Record<string, string> {
+  // Add a timestamp
+  const expirationTs = Date.now() + expiration
+  const headersWithExpiration = {
+    ...headers,
+    [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expirationTs.toString(),
+  }
+
+  // Add the signature
+  const auth = config.utils.create_request_signature(
+    path,
+    headersWithExpiration,
+    body,
+    key,
+  )
+
+  return { ...headersWithExpiration, [RENEGADE_AUTH_HEADER_NAME]: auth }
 }
