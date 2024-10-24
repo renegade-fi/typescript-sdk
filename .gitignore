@@ -5,6 +5,7 @@
 cache
 coverage
 dist
+renegade-utils
 node_modules
 tsconfig.tsbuildinfo
 *.vitest-temp.json

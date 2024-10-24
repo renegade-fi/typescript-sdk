@@ -130,14 +130,3 @@ export function get_pk_root_scalars(seed: string, nonce: bigint): any[];
 * @returns {any}
 */
 export function get_symmetric_key(seed: string): any;
-/**
-* @param {string} sk_root
-* @param {string} message
-* @returns {any}
-*/
-export function sign_message(sk_root: string, message: string): any;
-/**
-* @param {string} value
-* @returns {any}
-*/
-export function bigint_to_limbs(value: string): any;

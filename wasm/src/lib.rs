@@ -1,7 +1,6 @@
 #![allow(incomplete_features)]
 #![feature(generic_const_exprs)]
 
-use crate::helpers::hex_to_signing_key;
 use crate::types::Scalar;
 use circuit_types::keychain::NonNativeScalar;
 use common::derivation::{
@@ -14,10 +13,7 @@ use ethers::{
     types::{Signature as EthersSignature, U256},
     utils::keccak256,
 };
-use helpers::{
-    biguint_from_hex_string, nonnative_scalar_to_hex_string, public_sign_key_to_hex_string,
-};
-use k256::ecdsa::{signature::Signer, Signature};
+use helpers::{nonnative_scalar_to_hex_string, public_sign_key_to_hex_string};
 use num_bigint::BigUint;
 use wasm_bindgen::prelude::*;
 
@@ -105,23 +101,4 @@ pub fn sign_commitment(
         s: U256::from_big_endian(&sig.s().to_bytes()),
         v: recovery_id.to_byte() as u64,
     })
-}
-
-// message: string
-// sk_root: Hex
-// return: Hex
-#[wasm_bindgen]
-pub fn sign_message(sk_root: &str, message: &str) -> JsValue {
-    let message_bytes = message.as_bytes();
-    let signing_key = hex_to_signing_key(sk_root).unwrap();
-    let sig: Signature = signing_key.sign(message_bytes);
-    let sig_hex = hex::encode(sig.to_bytes());
-    JsValue::from_str(&sig_hex)
-}
-
-#[wasm_bindgen]
-pub fn bigint_to_limbs(value: &str) -> JsValue {
-    let bigint = biguint_from_hex_string(value).unwrap();
-    let serialized = serde_json::to_string(&bigint).unwrap();
-    JsValue::from_str(&serialized)
 }
