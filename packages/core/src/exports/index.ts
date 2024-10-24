@@ -166,12 +166,6 @@ export {
 } from '../actions/payFees.js'
 
 export {
-  type SignMessageParameters,
-  type SignMessageReturnType,
-  signMessage,
-} from '../actions/signMessage.js'
-
-export {
   type UpdateOrderParameters,
   type UpdateOrderReturnType,
   updateOrder,

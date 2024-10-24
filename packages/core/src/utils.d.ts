@@ -2,40 +2,6 @@
 /* eslint-disable */
 /**
 * @param {string} seed
-* @param {bigint} nonce
-* @returns {any}
-*/
-export function derive_sk_root_from_seed(seed: string, nonce: bigint): any;
-/**
-* @param {string} seed
-* @param {bigint} nonce
-* @returns {any}
-*/
-export function get_pk_root(seed: string, nonce: bigint): any;
-/**
-* @param {string} seed
-* @param {bigint} nonce
-* @returns {any[]}
-*/
-export function get_pk_root_scalars(seed: string, nonce: bigint): any[];
-/**
-* @param {string} seed
-* @returns {any}
-*/
-export function get_symmetric_key(seed: string): any;
-/**
-* @param {string} sk_root
-* @param {string} message
-* @returns {any}
-*/
-export function sign_message(sk_root: string, message: string): any;
-/**
-* @param {string} value
-* @returns {any}
-*/
-export function bigint_to_limbs(value: string): any;
-/**
-* @param {string} seed
 * @returns {any}
 */
 export function create_wallet(seed: string): any;
@@ -138,3 +104,26 @@ export function create_request_signature(path: string, headers: any, body: strin
 * @returns {string}
 */
 export function b64_to_hex_hmac_key(b64_key: string): string;
+/**
+* @param {string} seed
+* @param {bigint} nonce
+* @returns {any}
+*/
+export function derive_sk_root_from_seed(seed: string, nonce: bigint): any;
+/**
+* @param {string} seed
+* @param {bigint} nonce
+* @returns {any}
+*/
+export function get_pk_root(seed: string, nonce: bigint): any;
+/**
+* @param {string} seed
+* @param {bigint} nonce
+* @returns {any[]}
+*/
+export function get_pk_root_scalars(seed: string, nonce: bigint): any[];
+/**
+* @param {string} seed
+* @returns {any}
+*/
+export function get_symmetric_key(seed: string): any;
