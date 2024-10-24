@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.3.7
+
+### Patch Changes
+
+- core: tidy up
+
 ## 0.3.6
 
 ### Patch Changes
