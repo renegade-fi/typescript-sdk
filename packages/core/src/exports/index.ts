@@ -148,11 +148,11 @@ export {
 } from '../actions/getWalletId.js'
 
 export {
-  type GetWalletOrderIdsParameters as GetWalletOrdersParameters,
-  type GetWalletOrderIdsReturnType as GetWalletOrdersReturnType,
-  type GetWalletOrderIdsErrorType as GetWalletOrdersErrorType,
-  getWalletOrderIds,
-} from '../actions/getWalletOrderIds.js'
+  type GetWalletMatchableOrderIdsParameters,
+  type GetWalletMatchableOrderIdsReturnType,
+  type GetWalletMatchableOrderIdsErrorType,
+  getWalletMatchableOrderIds,
+} from '../actions/getWalletMatchableOrderIds.js'
 
 export {
   type LookupWalletReturnType,
