@@ -160,7 +160,7 @@ export async function getRelayerWithAuth(config: Config, url: string) {
     config,
     path,
     headers,
-    '',
+    '', // Body
     symmetricKey,
     SIG_EXPIRATION_BUFFER_MS,
   )
@@ -180,7 +180,7 @@ export async function getRelayerWithAdmin(config: Config, url: string) {
     config,
     path,
     headers,
-    '',
+    '', // Body
     symmetricKey,
     SIG_EXPIRATION_BUFFER_MS,
   )

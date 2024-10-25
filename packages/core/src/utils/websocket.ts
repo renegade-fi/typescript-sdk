@@ -154,7 +154,7 @@ export class RelayerWebsocket {
     return addExpiringAuthToHeaders(
       this.config,
       body.topic,
-      {},
+      {}, // Headers
       JSON.stringify(body),
       symmetricKey,
       SIG_EXPIRATION_BUFFER_MS,
@@ -173,7 +173,7 @@ export class RelayerWebsocket {
     return addExpiringAuthToHeaders(
       this.config,
       body.topic,
-      {},
+      {}, // Headers
       JSON.stringify(body),
       symmetricKey,
       SIG_EXPIRATION_BUFFER_MS,
