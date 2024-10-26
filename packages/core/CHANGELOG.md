@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.3.8
+
+### Patch Changes
+
+- Actions & utils for the new admin APIs
+
 ## 0.3.7
 
 ### Patch Changes

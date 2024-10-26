@@ -2,6 +2,40 @@
 /* eslint-disable */
 /**
 * @param {string} seed
+* @param {bigint} nonce
+* @returns {any}
+*/
+export function derive_sk_root_from_seed(seed: string, nonce: bigint): any;
+/**
+* @param {string} seed
+* @param {bigint} nonce
+* @returns {any}
+*/
+export function get_pk_root(seed: string, nonce: bigint): any;
+/**
+* @param {string} seed
+* @param {bigint} nonce
+* @returns {any[]}
+*/
+export function get_pk_root_scalars(seed: string, nonce: bigint): any[];
+/**
+* @param {string} seed
+* @returns {any}
+*/
+export function get_symmetric_key(seed: string): any;
+/**
+* @param {string} sk_root
+* @param {string} message
+* @returns {any}
+*/
+export function sign_message(sk_root: string, message: string): any;
+/**
+* @param {string} value
+* @returns {any}
+*/
+export function bigint_to_limbs(value: string): any;
+/**
+* @param {string} seed
 * @returns {any}
 */
 export function create_wallet(seed: string): any;
@@ -91,40 +125,6 @@ export function cancel_order(seed: string, wallet_str: string, order_id: string)
 * @returns {any}
 */
 export function update_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean): any;
-/**
-* @param {string} seed
-* @param {bigint} nonce
-* @returns {any}
-*/
-export function derive_sk_root_from_seed(seed: string, nonce: bigint): any;
-/**
-* @param {string} seed
-* @param {bigint} nonce
-* @returns {any}
-*/
-export function get_pk_root(seed: string, nonce: bigint): any;
-/**
-* @param {string} seed
-* @param {bigint} nonce
-* @returns {any[]}
-*/
-export function get_pk_root_scalars(seed: string, nonce: bigint): any[];
-/**
-* @param {string} seed
-* @returns {any}
-*/
-export function get_symmetric_key(seed: string): any;
-/**
-* @param {string} sk_root
-* @param {string} message
-* @returns {any}
-*/
-export function sign_message(sk_root: string, message: string): any;
-/**
-* @param {string} value
-* @returns {any}
-*/
-export function bigint_to_limbs(value: string): any;
 /**
 * @param {string} path
 * @param {any} headers
