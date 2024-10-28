@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.1
+
+### Patch Changes
+
+- react: revert es module interop
+
 ## 0.4.0
 
 ### Minor Changes

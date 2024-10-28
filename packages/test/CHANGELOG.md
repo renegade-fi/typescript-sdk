@@ -1,5 +1,13 @@
 # @renegade-fi/test
 
+## 0.3.1
+
+### Patch Changes
+
+- react: revert es module interop
+- Updated dependencies
+  - @renegade-fi/core@0.4.1
+
 ## 0.3.0
 
 ### Minor Changes
