@@ -3,8 +3,6 @@
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test-d.ts"],
   "compilerOptions": {
-    "sourceMap": true,
-    "moduleResolution": "Bundler",
-    "module": "ESNext"
+    "sourceMap": true
   }
 }

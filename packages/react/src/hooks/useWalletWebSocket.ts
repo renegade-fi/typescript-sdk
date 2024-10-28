@@ -30,7 +30,7 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
   const { getWebsocketBaseUrl } = config
   const { enabled = true, onUpdate } = parameters
 
-  const { readyState, sendJsonMessage } = useWebSocket(
+  const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
     {
       filter: () => false,

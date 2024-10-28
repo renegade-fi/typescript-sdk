@@ -32,7 +32,7 @@ export function useTaskHistoryWebSocket(
   const { enabled = true, onUpdate } = parameters
   const initialized = useInitialized()
 
-  const { readyState, sendJsonMessage } = useWebSocket(
+  const { readyState, sendJsonMessage } = useWebSocket.default(
     getWebsocketBaseUrl(),
     {
       filter: () => false,
