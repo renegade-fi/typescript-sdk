@@ -1,5 +1,16 @@
 # @renegade-fi/react
 
+## 0.4.0
+
+### Minor Changes
+
+- wasm: include public blinder in create-wallet
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.4.0
+
 ## 0.3.10
 
 ### Patch Changes
