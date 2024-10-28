@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.0
+
+### Minor Changes
+
+- wasm: include public blinder in create-wallet
+
 ## 0.3.8
 
 ### Patch Changes
