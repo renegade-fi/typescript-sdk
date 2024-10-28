@@ -31,7 +31,7 @@ export function useOrderHistoryWebSocket(
   const { getWebsocketBaseUrl } = config
   const { enabled = true, onUpdate } = parameters
 
-  const { readyState, sendJsonMessage } = useWebSocket.default(
+  const { readyState, sendJsonMessage } = useWebSocket(
     getWebsocketBaseUrl(),
     {
       filter: () => false,
