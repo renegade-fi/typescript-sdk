@@ -53,14 +53,19 @@ pub struct WalletUpdateAuthorization {
 pub struct CreateWalletRequest {
     /// The wallet info to be created
     pub wallet: ApiWallet,
+    /// The seed for the wallet's blinder CSPRNG
+    pub blinder_seed: BigUint,
 }
 
 #[wasm_bindgen]
 pub fn create_wallet(seed: &str) -> Result<JsValue, JsError> {
     let sk_root = derive_sk_root_signing_key(&seed, None).unwrap();
-    let (mut wallet, _, _) = derive_wallet_from_key(&sk_root).unwrap();
+    let (mut wallet, blinder_seed, _) = derive_wallet_from_key(&sk_root).unwrap();
     wallet.key_chain.private_keys.delete_sk_root();
-    let req = CreateWalletRequest { wallet };
+    let req = CreateWalletRequest {
+        wallet,
+        blinder_seed: blinder_seed.to_biguint(),
+    };
 
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
