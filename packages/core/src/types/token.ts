@@ -1,5 +1,4 @@
-import { type Address, isHex } from 'viem'
-
+import { type Address, isHex, zeroAddress } from 'viem'
 import { tokenMapping } from '../constants.js'
 
 export class Token {
@@ -48,7 +47,7 @@ export class Token {
         tokenData.decimals,
       )
     }
-    throw new Error(`Token not found for ${ticker}`)
+    return DEFAULT_TOKEN
   }
 
   static findByAddress(address: Address): Token {
@@ -63,7 +62,7 @@ export class Token {
         tokenData.decimals,
       )
     }
-    throw new Error(`Token not found for ${address}`)
+    return DEFAULT_TOKEN
   }
 
   static create(
@@ -78,3 +77,5 @@ export class Token {
     return new Token(name, ticker, address, decimals)
   }
 }
+
+const DEFAULT_TOKEN = new Token('UNKNOWN', 'UNKNOWN', zeroAddress, 0)
