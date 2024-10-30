@@ -620,3 +620,67 @@ pub fn update_order(
     };
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
+
+/// The request type for requesting an external match
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ExternalMatchRequest {
+    /// The external order
+    pub external_order: ExternalOrder,
+}
+
+/// An external order
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ExternalOrder {
+    /// The mint (erc20 address) of the quote token
+    #[serde(
+        serialize_with = "serialize_biguint_to_hex_string",
+        deserialize_with = "deserialize_biguint_from_hex_string"
+    )]
+    pub quote_mint: BigUint,
+    /// The mint (erc20 address) of the base token
+    #[serde(
+        serialize_with = "serialize_biguint_to_hex_string",
+        deserialize_with = "deserialize_biguint_from_hex_string"
+    )]
+    pub base_mint: BigUint,
+    /// The side of the market this order is on
+    pub side: OrderSide,
+    /// The amount of the order
+    pub amount: Amount,
+    /// The minimum fill size for the order
+    #[serde(default)]
+    pub min_fill_size: Amount,
+}
+
+#[wasm_bindgen]
+pub fn new_external_order(
+    base_mint: &str,
+    quote_mint: &str,
+    side: &str,
+    amount: &str,
+    min_fill_size: &str,
+) -> Result<JsValue, JsError> {
+    let side = match side.to_lowercase().as_str() {
+        "sell" => OrderSide::Sell,
+        "buy" => OrderSide::Buy,
+        _ => return Err(JsError::new("Invalid order side")),
+    };
+    let amount = wrap_eyre!(biguint_from_hex_string(amount))
+        .unwrap()
+        .to_u128()
+        .unwrap();
+
+    let min_fill_size = wrap_eyre!(biguint_from_hex_string(min_fill_size))
+        .unwrap()
+        .to_u128()
+        .unwrap();
+    let external_order = ExternalOrder {
+        base_mint: biguint_from_hex_string(base_mint).unwrap(),
+        quote_mint: biguint_from_hex_string(quote_mint).unwrap(),
+        side,
+        amount,
+        min_fill_size,
+    };
+    let req = ExternalMatchRequest { external_order };
+    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+}

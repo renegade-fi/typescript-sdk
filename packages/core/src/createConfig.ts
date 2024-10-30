@@ -163,7 +163,11 @@ export function createConfig(parameters: CreateConfigParameters): Config {
   }
 }
 
-export type Config = {
+export type BaseConfig = {
+  utils: typeof rustUtils
+}
+
+export type Config = BaseConfig & {
   readonly storage: Storage | null
   darkPoolAddress: Address
   getPriceReporterBaseUrl: () => string
@@ -185,7 +189,6 @@ export type Config = {
         }
       | undefined,
   ): () => void
-  utils: typeof rustUtils
   viemClient: PublicClient
   adminKey?: string
   /**
