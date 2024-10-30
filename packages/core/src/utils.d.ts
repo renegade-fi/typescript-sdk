@@ -92,6 +92,15 @@ export function cancel_order(seed: string, wallet_str: string, order_id: string)
 */
 export function update_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean): any;
 /**
+* @param {string} base_mint
+* @param {string} quote_mint
+* @param {string} side
+* @param {string} amount
+* @param {string} min_fill_size
+* @returns {any}
+*/
+export function new_external_order(base_mint: string, quote_mint: string, side: string, amount: string, min_fill_size: string): any;
+/**
 * @param {string} path
 * @param {any} headers
 * @param {string} body

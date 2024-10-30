@@ -5,6 +5,8 @@ import type { Address } from 'viem'
 export const RENEGADE_AUTH_HEADER_NAME = 'x-renegade-auth'
 /// Header name for the expiration timestamp of a signature
 export const RENEGADE_SIG_EXPIRATION_HEADER_NAME = 'x-renegade-auth-expiration'
+/// The Renegade API key header
+export const RENEGADE_API_KEY_HEADER = 'x-renegade-api-key'
 /// The message used to derive the wallet's root key
 export const ROOT_KEY_MESSAGE_PREFIX =
   'Unlock your Renegade Wallet on chain ID:'
@@ -199,6 +201,13 @@ export const PRICE_REPORTER_ROUTE = (
   base: Address,
   quote: Address,
 ) => `/price/${PRICE_REPORTER_TOPIC(exchange, base, quote)}`
+
+////////////////////////////////////////////////////////////////////////////////
+// External Match
+////////////////////////////////////////////////////////////////////////////////
+/// The route for requesting an external match
+export const REQUEST_EXTERNAL_MATCH_ROUTE =
+  '/matching-engine/request-external-match'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Token

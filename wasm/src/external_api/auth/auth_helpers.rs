@@ -19,7 +19,6 @@ pub fn create_request_signature(
 
     let headers: HashMap<String, String> = serde_wasm_bindgen::from_value(headers)
         .map_err(|e| JsError::new(&format!("Failed to deserialize headers: {}", e)))?;
-
     let mac = _create_request_signature(path, &headers, body_bytes, &key);
     Ok(b64_general_purpose::STANDARD_NO_PAD.encode(mac))
 }

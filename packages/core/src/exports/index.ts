@@ -54,6 +54,13 @@ export {
 } from '../actions/disconnect.js'
 
 export {
+  type GetExternalMatchBundleParameters,
+  type GetExternalMatchBundleReturnType,
+  type GetExternalMatchBundleErrorType,
+  getExternalMatchBundle,
+} from '../actions/getExternalMatchBundle.js'
+
+export {
   type GetBalancesReturnType,
   getBalances,
 } from '../actions/getBalances.js'
@@ -214,11 +221,18 @@ export * from './constants.js'
 ////////////////////////////////////////////////////////////////////////////////
 
 export {
+  type BaseConfig,
   type Config,
   type CreateConfigParameters,
   type State,
   createConfig,
 } from '../createConfig.js'
+
+export {
+  type AuthConfig,
+  type CreateAuthConfigParameters,
+  createAuthConfig,
+} from '../createAuthConfig.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // createStorage

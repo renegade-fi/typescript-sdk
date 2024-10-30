@@ -6,7 +6,7 @@ import {
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
   SIG_EXPIRATION_BUFFER_MS,
 } from '../constants.js'
-import type { Config } from '../createConfig.js'
+import type { BaseConfig, Config } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { parseBigJSON } from './bigJSON.js'
 
@@ -188,6 +188,32 @@ export async function getRelayerWithAdmin(config: Config, url: string) {
   return await getRelayerRaw(url, headersWithAuth)
 }
 
+export async function postWithSymmetricKey(
+  config: BaseConfig,
+  {
+    body,
+    headers = {},
+    key,
+    url,
+  }: {
+    body?: string
+    headers?: Record<string, string>
+    key: string
+    url: string
+  },
+) {
+  const path = getPathFromUrl(url)
+  const headersWithAuth = addExpiringAuthToHeaders(
+    config,
+    path,
+    headers,
+    body ?? '',
+    key,
+    SIG_EXPIRATION_BUFFER_MS,
+  )
+  return await postRelayerRaw(url, body, headersWithAuth)
+}
+
 /// Get the path from a URL
 function getPathFromUrl(url: string): string {
   try {
@@ -200,7 +226,7 @@ function getPathFromUrl(url: string): string {
 
 /// Add an auth expiration and signature to a set of headers
 export function addExpiringAuthToHeaders(
-  config: Config,
+  config: BaseConfig,
   path: string,
   headers: Record<string, string>,
   body: string,

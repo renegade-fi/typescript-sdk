@@ -50,6 +50,13 @@ export {
 export { type DisconnectReturnType, disconnect } from '../actions/disconnect.js'
 
 export {
+  type GetExternalMatchBundleParameters,
+  type GetExternalMatchBundleReturnType,
+  type GetExternalMatchBundleErrorType,
+  getExternalMatchBundle,
+} from '../actions/getExternalMatchBundle.js'
+
+export {
   type GetBalancesReturnType,
   getBalances,
 } from '../actions/getBalances.js'
