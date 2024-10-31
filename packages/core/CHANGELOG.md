@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.2
+
+### Patch Changes
+
+- wasm, core, react, node: add action to request external match bundles
+
 ## 0.4.1
 
 ### Patch Changes
