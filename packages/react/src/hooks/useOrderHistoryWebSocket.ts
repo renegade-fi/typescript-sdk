@@ -9,7 +9,8 @@ import {
   getSymmetricKey,
 } from '@renegade-fi/core'
 import { useEffect } from 'react'
-import useWebSocket, { ReadyState } from 'react-use-websocket'
+import { ReadyState } from 'react-use-websocket'
+import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket.js'
 import { useConfig } from './useConfig.js'
 import { useInitialized } from './useInitialized.js'
 import { useStatus } from './useStatus.js'
@@ -31,7 +32,7 @@ export function useOrderHistoryWebSocket(
   const { getWebsocketBaseUrl } = config
   const { enabled = true, onUpdate } = parameters
 
-  const { readyState, sendJsonMessage } = useWebSocket.default(
+  const { readyState, sendJsonMessage } = useWebSocket(
     getWebsocketBaseUrl(),
     {
       filter: () => false,
