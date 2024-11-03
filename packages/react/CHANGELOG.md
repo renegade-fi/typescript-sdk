@@ -1,5 +1,11 @@
 # @renegade-fi/react
 
+## 0.4.3
+
+### Patch Changes
+
+- react: fix ws import
+
 ## 0.4.2
 
 ### Patch Changes
