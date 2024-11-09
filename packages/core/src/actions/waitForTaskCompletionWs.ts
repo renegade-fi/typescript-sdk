@@ -5,7 +5,10 @@ import {
   type WebsocketWaiterParams,
   websocketWaiter,
 } from '../utils/websocketWaiter.js'
-import { getTaskHistory } from './getTaskHistory.js'
+import {
+  type GetTaskHistoryReturnType,
+  getTaskHistory,
+} from './getTaskHistory.js'
 import type { WaitForTaskCompletionParameters } from './waitForTaskCompletion.js'
 
 export async function waitForTaskCompletionWs(
@@ -20,7 +23,14 @@ export async function waitForTaskCompletionWs(
     topic,
     authType: AuthType.Wallet,
     messageHandler: (message: any) => {
-      const parsedMessage = JSON.parse(message)
+      let parsedMessage: any
+      try {
+        parsedMessage = JSON.parse(message)
+      } catch (error) {
+        console.error('Error parsing websocket message: ', error, message)
+        throw error
+      }
+
       if (
         parsedMessage.topic === topic &&
         parsedMessage.event.type === 'TaskStatusUpdate'
@@ -37,7 +47,13 @@ export async function waitForTaskCompletionWs(
       return undefined
     },
     prefetch: async () => {
-      const taskHistory = await getTaskHistory(config)
+      let taskHistory: GetTaskHistoryReturnType
+      try {
+        taskHistory = await getTaskHistory(config)
+      } catch (error) {
+        console.error('Error pre-fetching task history: ', error)
+        throw error
+      }
       const task = taskHistory.get(id)
 
       if (task?.state === 'Completed') {
