@@ -1,4 +1,5 @@
 import type { AccessList } from 'viem'
+import type { FeeTake } from './match.js'
 
 export type ExternalMatchResult = {
   quote_mint: `0x${string}`
@@ -20,4 +21,12 @@ export type ExternalSettlementTx = {
 export type ExternalMatchBundle = {
   match_result: ExternalMatchResult
   settlement_tx: ExternalSettlementTx
+  receive: ExternalAssetTransfer
+  send: ExternalAssetTransfer
+  fees: FeeTake
+}
+
+export type ExternalAssetTransfer = {
+  mint: `0x${string}`
+  amount: bigint
 }
