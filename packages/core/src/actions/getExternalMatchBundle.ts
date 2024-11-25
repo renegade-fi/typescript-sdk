@@ -18,6 +18,7 @@ export type GetExternalMatchBundleParameters = {
     quoteAmount?: bigint
     minFillSize?: bigint
   }
+  doGasEstimation?: boolean
 }
 
 export type GetExternalMatchBundleReturnType = ExternalMatchBundle
@@ -37,6 +38,7 @@ export async function getExternalMatchBundle(
       quoteAmount = BigInt(0),
       minFillSize = BigInt(0),
     },
+    doGasEstimation = false,
   } = parameters
   const { apiSecret, apiKey } = config
   invariant(apiSecret, 'API secret not specified in config')
@@ -50,6 +52,7 @@ export async function getExternalMatchBundle(
     toHex(baseAmount),
     toHex(quoteAmount),
     toHex(minFillSize),
+    doGasEstimation,
   )
 
   const res = await postWithSymmetricKey(config, {

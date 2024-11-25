@@ -14,6 +14,7 @@ export type ExternalSettlementTx = {
   to: `0x${string}`
   data: `0x${string}`
   accessList: AccessList
+  gas?: `0x${string}`
 }
 
 export type ExternalMatchBundle = {
