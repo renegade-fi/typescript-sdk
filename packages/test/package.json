@@ -1,6 +1,6 @@
 {
   "name": "@renegade-fi/test",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Testing helpers for Renegade",
   "private": true,
   "files": [
