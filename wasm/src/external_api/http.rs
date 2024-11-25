@@ -645,8 +645,12 @@ pub struct ExternalOrder {
     pub base_mint: BigUint,
     /// The side of the market this order is on
     pub side: OrderSide,
-    /// The amount of the order
-    pub amount: Amount,
+    /// The base amount of the order
+    #[serde(default, alias = "amount")]
+    pub base_amount: Amount,
+    /// The quote amount of the order
+    #[serde(default)]
+    pub quote_amount: Amount,
     /// The minimum fill size for the order
     #[serde(default)]
     pub min_fill_size: Amount,
@@ -657,7 +661,8 @@ pub fn new_external_order(
     base_mint: &str,
     quote_mint: &str,
     side: &str,
-    amount: &str,
+    base_amount: &str,
+    quote_amount: &str,
     min_fill_size: &str,
 ) -> Result<JsValue, JsError> {
     let side = match side.to_lowercase().as_str() {
@@ -665,7 +670,11 @@ pub fn new_external_order(
         "buy" => OrderSide::Buy,
         _ => return Err(JsError::new("Invalid order side")),
     };
-    let amount = wrap_eyre!(biguint_from_hex_string(amount))
+    let base_amount = wrap_eyre!(biguint_from_hex_string(base_amount))
+        .unwrap()
+        .to_u128()
+        .unwrap();
+    let quote_amount = wrap_eyre!(biguint_from_hex_string(quote_amount))
         .unwrap()
         .to_u128()
         .unwrap();
@@ -678,7 +687,8 @@ pub fn new_external_order(
         base_mint: biguint_from_hex_string(base_mint).unwrap(),
         quote_mint: biguint_from_hex_string(quote_mint).unwrap(),
         side,
-        amount,
+        base_amount,
+        quote_amount,
         min_fill_size,
     };
     let req = ExternalMatchRequest { external_order };
