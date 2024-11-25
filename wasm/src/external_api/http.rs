@@ -624,6 +624,9 @@ pub fn update_order(
 /// The request type for requesting an external match
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ExternalMatchRequest {
+    /// Whether or not to include gas estimation in the response
+    #[serde(default)]
+    pub do_gas_estimation: bool,
     /// The external order
     pub external_order: ExternalOrder,
 }
@@ -664,6 +667,7 @@ pub fn new_external_order(
     base_amount: &str,
     quote_amount: &str,
     min_fill_size: &str,
+    do_gas_estimation: bool,
 ) -> Result<JsValue, JsError> {
     let side = match side.to_lowercase().as_str() {
         "sell" => OrderSide::Sell,
@@ -691,6 +695,9 @@ pub fn new_external_order(
         quote_amount,
         min_fill_size,
     };
-    let req = ExternalMatchRequest { external_order };
+    let req = ExternalMatchRequest {
+        do_gas_estimation,
+        external_order,
+    };
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
