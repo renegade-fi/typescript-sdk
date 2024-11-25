@@ -10,11 +10,14 @@ import type { ExternalMatchBundle } from '../types/externalOrder.js'
 import { postWithSymmetricKey } from '../utils/http.js'
 
 export type GetExternalMatchBundleParameters = {
-  base: `0x${string}`
-  quote: `0x${string}`
-  side: 'buy' | 'sell'
-  amount: bigint
-  minFillSize?: bigint
+  order: {
+    base: `0x${string}`
+    quote: `0x${string}`
+    side: 'buy' | 'sell'
+    baseAmount?: bigint
+    quoteAmount?: bigint
+    minFillSize?: bigint
+  }
 }
 
 export type GetExternalMatchBundleReturnType = ExternalMatchBundle
@@ -25,7 +28,16 @@ export async function getExternalMatchBundle(
   config: AuthConfig,
   parameters: GetExternalMatchBundleParameters,
 ): Promise<GetExternalMatchBundleReturnType> {
-  const { base, quote, side, amount, minFillSize = BigInt(0) } = parameters
+  const {
+    order: {
+      base,
+      quote,
+      side,
+      baseAmount = BigInt(0),
+      quoteAmount = BigInt(0),
+      minFillSize = BigInt(0),
+    },
+  } = parameters
   const { apiSecret, apiKey } = config
   invariant(apiSecret, 'API secret not specified in config')
   invariant(apiKey, 'API key not specified in config')
@@ -35,7 +47,8 @@ export async function getExternalMatchBundle(
     base,
     quote,
     side,
-    toHex(amount),
+    toHex(baseAmount),
+    toHex(quoteAmount),
     toHex(minFillSize),
   )
 
