@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.4
+
+### Patch Changes
+
+- core: add fee details to external match bundle response
+
 ## 0.4.3
 
 ### Patch Changes
