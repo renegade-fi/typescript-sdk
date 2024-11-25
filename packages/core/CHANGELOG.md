@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.3
+
+### Patch Changes
+
+- core: allow `quote_amount` in external order, and `do_gas_estimation`
+
 ## 0.4.2
 
 ### Patch Changes
