@@ -57,7 +57,7 @@ pub fn derive_sk_root_from_seed(seed: &str, nonce: u64) -> JsValue {
 
 #[wasm_bindgen]
 pub fn get_pk_root(seed: &str, nonce: u64) -> JsValue {
-    let sk_root = derive_sk_root_signing_key(&seed, Some(&Scalar::from(nonce))).unwrap();
+    let sk_root = derive_sk_root_signing_key(seed, Some(&Scalar::from(nonce))).unwrap();
     let keychain = wrap_eyre!(derive_wallet_keychain(&sk_root)).unwrap();
     let pk_root = public_sign_key_to_hex_string(&keychain.public_keys.pk_root);
     JsValue::from_str(&pk_root)
@@ -65,7 +65,7 @@ pub fn get_pk_root(seed: &str, nonce: u64) -> JsValue {
 
 #[wasm_bindgen]
 pub fn get_pk_root_scalars(seed: &str, nonce: u64) -> Vec<JsValue> {
-    let sk_root = derive_sk_root_signing_key(&seed, Some(&Scalar::from(nonce))).unwrap();
+    let sk_root = derive_sk_root_signing_key(seed, Some(&Scalar::from(nonce))).unwrap();
     let keychain = wrap_eyre!(derive_wallet_keychain(&sk_root)).unwrap();
     keychain
         .public_keys
@@ -78,7 +78,7 @@ pub fn get_pk_root_scalars(seed: &str, nonce: u64) -> Vec<JsValue> {
 #[wasm_bindgen]
 pub fn get_symmetric_key(seed: &str) -> JsValue {
     utils::set_panic_hook();
-    let sk_root = derive_sk_root_signing_key(&seed, None).unwrap();
+    let sk_root = derive_sk_root_signing_key(seed, None).unwrap();
     let symmetric_key = derive_symmetric_key(&sk_root);
 
     JsValue::from_str(&symmetric_key.unwrap().to_hex_string())

@@ -103,6 +103,16 @@ export function update_order(seed: string, wallet_str: string, id: string, base_
 */
 export function new_external_order(base_mint: string, quote_mint: string, side: string, base_amount: string, quote_amount: string, min_fill_size: string, do_gas_estimation: boolean): any;
 /**
+* @param {string} base_mint
+* @param {string} quote_mint
+* @param {string} side
+* @param {string} base_amount
+* @param {string} quote_amount
+* @param {string} min_fill_size
+* @returns {any}
+*/
+export function new_external_quote_request(base_mint: string, quote_mint: string, side: string, base_amount: string, quote_amount: string, min_fill_size: string): any;
+/**
 * @param {string} path
 * @param {any} headers
 * @param {string} body

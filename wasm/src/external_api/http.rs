@@ -1,4 +1,6 @@
-use super::types::{ApiOrder, ApiOrderType, ApiPrivateKeychain, ApiWallet};
+#![allow(clippy::too_many_arguments)]
+
+use super::types::{ApiOrder, ApiOrderType, ApiPrivateKeychain, ApiWallet, SignedExternalQuote};
 use crate::{
     circuit_types::{
         balance::Balance,
@@ -59,7 +61,7 @@ pub struct CreateWalletRequest {
 
 #[wasm_bindgen]
 pub fn create_wallet(seed: &str) -> Result<JsValue, JsError> {
-    let sk_root = derive_sk_root_signing_key(&seed, None).unwrap();
+    let sk_root = derive_sk_root_signing_key(seed, None).unwrap();
     let (mut wallet, blinder_seed, _) = derive_wallet_from_key(&sk_root).unwrap();
     wallet.key_chain.private_keys.delete_sk_root();
     let req = CreateWalletRequest {
@@ -85,7 +87,7 @@ pub struct FindWalletRequest {
 
 #[wasm_bindgen]
 pub fn find_wallet(seed: &str) -> Result<JsValue, JsError> {
-    let sk_root = derive_sk_root_signing_key(&seed, None).unwrap();
+    let sk_root = derive_sk_root_signing_key(seed, None).unwrap();
     let (mut wallet, blinder_seed, share_seed) = derive_wallet_from_key(&sk_root).unwrap();
     wallet.key_chain.private_keys.delete_sk_root();
     let req = FindWalletRequest {
@@ -100,7 +102,7 @@ pub fn find_wallet(seed: &str) -> Result<JsValue, JsError> {
 
 #[wasm_bindgen]
 pub fn derive_blinder_share(seed: &str) -> Result<JsValue, JsError> {
-    let sk_root = derive_sk_root_signing_key(&seed, None).unwrap();
+    let sk_root = derive_sk_root_signing_key(seed, None).unwrap();
     let blinder_seed = wrap_eyre!(derive_blinder_seed(&sk_root)).unwrap();
     let mut blinder_csprng = PoseidonCSPRNG::new(blinder_seed);
     let (blinder, blinder_private) = blinder_csprng.next_tuple().unwrap();
@@ -110,7 +112,7 @@ pub fn derive_blinder_share(seed: &str) -> Result<JsValue, JsError> {
 
 #[wasm_bindgen]
 pub fn wallet_id(seed: &str) -> Result<JsValue, JsError> {
-    let sk_root = derive_sk_root_signing_key(&seed, None).unwrap();
+    let sk_root = derive_sk_root_signing_key(seed, None).unwrap();
     let wallet_id = derive_wallet_id(&sk_root).unwrap();
     Ok(JsValue::from_str(&wallet_id.to_string()))
 }
@@ -669,6 +671,83 @@ pub fn new_external_order(
     min_fill_size: &str,
     do_gas_estimation: bool,
 ) -> Result<JsValue, JsError> {
+    let external_order = build_external_order(
+        base_mint,
+        quote_mint,
+        side,
+        base_amount,
+        quote_amount,
+        min_fill_size,
+    )?;
+
+    let req = ExternalMatchRequest {
+        do_gas_estimation,
+        external_order,
+    };
+    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+}
+
+/// The request type for requesting an external match quote
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ExternalQuoteRequest {
+    /// The external order
+    pub external_order: ExternalOrder,
+}
+
+#[wasm_bindgen]
+pub fn new_external_quote_request(
+    base_mint: &str,
+    quote_mint: &str,
+    side: &str,
+    base_amount: &str,
+    quote_amount: &str,
+    min_fill_size: &str,
+) -> Result<JsValue, JsError> {
+    let external_order = build_external_order(
+        base_mint,
+        quote_mint,
+        side,
+        base_amount,
+        quote_amount,
+        min_fill_size,
+    )?;
+
+    let req = ExternalQuoteRequest { external_order };
+    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+}
+
+/// The request type for assembling an external match
+#[derive(Clone, Serialize, Deserialize)]
+pub struct AssembleExternalMatchRequest {
+    /// The signed external match quote
+    pub signed_quote: SignedExternalQuote,
+    /// Whether or not to include gas estimation in the response
+    #[serde(default)]
+    pub do_gas_estimation: bool,
+}
+
+#[wasm_bindgen]
+pub fn assemble_external_match(
+    do_gas_estimation: bool,
+    signed_quote: &str,
+) -> Result<JsValue, JsError> {
+    let signed_quote: SignedExternalQuote = serde_json::from_str(signed_quote)?;
+    let req = AssembleExternalMatchRequest {
+        signed_quote,
+        do_gas_estimation,
+    };
+
+    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+}
+
+fn build_external_order(
+    base_mint: &str,
+    quote_mint: &str,
+    side: &str,
+    base_amount: &str,
+    quote_amount: &str,
+    min_fill_size: &str,
+) -> Result<ExternalOrder, JsError> {
     let side = match side.to_lowercase().as_str() {
         "sell" => OrderSide::Sell,
         "buy" => OrderSide::Buy,
@@ -687,17 +766,12 @@ pub fn new_external_order(
         .unwrap()
         .to_u128()
         .unwrap();
-    let external_order = ExternalOrder {
+    Ok(ExternalOrder {
         base_mint: biguint_from_hex_string(base_mint).unwrap(),
         quote_mint: biguint_from_hex_string(quote_mint).unwrap(),
         side,
         base_amount,
         quote_amount,
         min_fill_size,
-    };
-    let req = ExternalMatchRequest {
-        do_gas_estimation,
-        external_order,
-    };
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    })
 }

@@ -24,6 +24,8 @@ use crate::{
     types::{biguint_to_scalar, scalar_to_biguint, scalar_to_u64, Scalar},
 };
 
+use super::http::ExternalOrder;
+
 // --------------------
 // | Wallet API Types |
 // --------------------
@@ -309,4 +311,78 @@ impl TryFrom<ApiKeychain> for KeyChain {
             secret_keys: PrivateKeyChain::try_from(keys.private_keys)?,
         })
     }
+}
+
+// ----------------------------
+// | External Match API Types |
+// ----------------------------
+
+/// The fee takes from a match
+#[derive(Copy, Clone, Serialize, Deserialize)]
+pub struct FeeTake {
+    /// The fee the relayer takes
+    pub relayer_fee: Amount,
+    /// The fee the protocol takes
+    pub protocol_fee: Amount,
+}
+/// A signed quote for an external order
+#[derive(Clone, Serialize, Deserialize)]
+pub struct SignedExternalQuote {
+    /// The quote
+    pub quote: ApiExternalQuote,
+    /// The signature
+    pub signature: String,
+}
+
+/// A quote for an external order
+#[derive(Clone, Serialize, Deserialize)]
+pub struct ApiExternalQuote {
+    /// The external order
+    pub order: ExternalOrder,
+    /// The match result
+    pub match_result: ApiExternalMatchResult,
+    /// The estimated fees for the match
+    pub fees: FeeTake,
+    /// The amount sent by the external party
+    pub send: ApiExternalAssetTransfer,
+    /// The amount received by the external party, net of fees
+    pub receive: ApiExternalAssetTransfer,
+    /// The price of the match
+    pub price: ApiTimestampedPrice,
+    /// The timestamp of the quote
+    pub timestamp: u64,
+}
+
+/// An API server external match result
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ApiExternalMatchResult {
+    /// The mint of the quote token in the matched asset pair
+    pub quote_mint: String,
+    /// The mint of the base token in the matched asset pair
+    pub base_mint: String,
+    /// The amount of the quote token exchanged by the match
+    pub quote_amount: Amount,
+    /// The amount of the base token exchanged by the match
+    pub base_amount: Amount,
+    /// The direction of the match
+    pub direction: OrderSide,
+}
+
+/// An asset transfer from an external party
+#[derive(Clone, Serialize, Deserialize)]
+pub struct ApiExternalAssetTransfer {
+    /// The mint of the asset
+    pub mint: String,
+    /// The amount of the asset
+    pub amount: Amount,
+}
+
+/// The price of a quote
+#[derive(Clone, Serialize, Deserialize)]
+pub struct ApiTimestampedPrice {
+    /// The price, serialized as a string to prevent floating point precision
+    /// issues
+    pub price: String,
+    /// The timestamp, in milliseconds since the epoch
+    pub timestamp: u64,
 }
