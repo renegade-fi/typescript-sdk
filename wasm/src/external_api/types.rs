@@ -318,7 +318,7 @@ impl TryFrom<ApiKeychain> for KeyChain {
 // ----------------------------
 
 /// The fee takes from a match
-#[derive(Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct FeeTake {
     /// The fee the relayer takes
     pub relayer_fee: Amount,
@@ -326,7 +326,7 @@ pub struct FeeTake {
     pub protocol_fee: Amount,
 }
 /// A signed quote for an external order
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SignedExternalQuote {
     /// The quote
     pub quote: ApiExternalQuote,
@@ -335,7 +335,7 @@ pub struct SignedExternalQuote {
 }
 
 /// A quote for an external order
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ApiExternalQuote {
     /// The external order
     pub order: ExternalOrder,
@@ -369,7 +369,7 @@ pub struct ApiExternalMatchResult {
 }
 
 /// An asset transfer from an external party
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ApiExternalAssetTransfer {
     /// The mint of the asset
     pub mint: String,
@@ -378,7 +378,7 @@ pub struct ApiExternalAssetTransfer {
 }
 
 /// The price of a quote
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ApiTimestampedPrice {
     /// The price, serialized as a string to prevent floating point precision
     /// issues

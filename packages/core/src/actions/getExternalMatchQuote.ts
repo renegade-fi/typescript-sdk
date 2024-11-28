@@ -56,8 +56,10 @@ export async function getExternalMatchQuote(
             [RENEGADE_API_KEY_HEADER]: apiKey,
         },
     })
-    if (!res.match_bundle) {
-        throw new BaseError('No match bundle found')
+    if (!res.signed_quote) {
+        throw new BaseError('No quote found')
     }
-    return res.match_bundle
+
+    console.log('res', res.signed_quote.quote.match_result)
+    return res.signed_quote
 }
