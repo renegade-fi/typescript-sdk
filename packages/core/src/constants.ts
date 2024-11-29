@@ -210,8 +210,7 @@ export const REQUEST_EXTERNAL_MATCH_ROUTE =
   '/matching-engine/request-external-match'
 
 /// The route for requesting an external match quote
-export const REQUEST_EXTERNAL_MATCH_QUOTE_ROUTE =
-  '/matching-engine/quote'
+export const REQUEST_EXTERNAL_MATCH_QUOTE_ROUTE = '/matching-engine/quote'
 
 /// The route for assembling an external match
 export const ASSEMBLE_EXTERNAL_MATCH_ROUTE =
