@@ -57,6 +57,20 @@ export {
 } from '../actions/getExternalMatchBundle.js'
 
 export {
+  type GetExternalMatchQuoteParameters,
+  type GetExternalMatchQuoteReturnType,
+  type GetExternalMatchQuoteErrorType,
+  getExternalMatchQuote,
+} from '../actions/getExternalMatchQuote.js'
+
+export {
+  type AssembleExternalQuoteParameters,
+  type AssembleExternalQuoteReturnType,
+  type AssembleExternalQuoteErrorType,
+  assembleExternalQuote,
+} from '../actions/assembleExternalQuote.js'
+
+export {
   type GetBalancesReturnType,
   getBalances,
 } from '../actions/getBalances.js'

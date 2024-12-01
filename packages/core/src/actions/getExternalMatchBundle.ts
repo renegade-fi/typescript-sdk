@@ -6,7 +6,7 @@ import {
 } from '../constants.js'
 import type { AuthConfig } from '../createAuthConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
-import type { ExternalMatchBundle } from '../types/externalOrder.js'
+import type { ExternalMatchBundle } from '../types/externalMatch.js'
 import { postWithSymmetricKey } from '../utils/http.js'
 
 export type GetExternalMatchBundleParameters = {

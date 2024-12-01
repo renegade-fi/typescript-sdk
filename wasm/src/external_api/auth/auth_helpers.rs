@@ -1,6 +1,5 @@
 use crate::common::keychain::HmacKey;
 use base64::engine::{general_purpose as b64_general_purpose, Engine};
-use hex;
 use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
 

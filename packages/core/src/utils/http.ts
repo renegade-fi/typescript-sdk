@@ -12,7 +12,10 @@ import { parseBigJSON } from './bigJSON.js'
 
 export async function postRelayerRaw(url: string, body: any, headers = {}) {
   try {
-    const response = await axios.post(url, body, { headers })
+    const response = await axios.post(url, body, {
+      headers,
+      transformResponse: (data) => parseBigJSON(data),
+    })
     // console.log(`POST ${url} with body: `, body, "response: ", response.data)
     // Process the response data as needed
     return response.data // Assuming the function should return the response data
