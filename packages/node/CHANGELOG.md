@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.4.5
+
+### Patch Changes
+
+- Add quote/assemble actions for external match client
+- Updated dependencies
+  - @renegade-fi/core@0.4.5
+
 ## 0.4.4
 
 ### Patch Changes
