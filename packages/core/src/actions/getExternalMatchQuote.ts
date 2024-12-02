@@ -27,12 +27,12 @@ export async function getExternalMatchQuote(
 ): Promise<GetExternalMatchQuoteReturnType> {
   const {
     order: {
-      base_mint,
-      quote_mint,
+      base,
+      quote,
       side,
-      base_amount,
-      quote_amount,
-      min_fill_size,
+      baseAmount = BigInt(0),
+      quoteAmount = BigInt(0),
+      minFillSize = BigInt(0),
     },
     doGasEstimation = false,
   } = parameters
@@ -42,12 +42,12 @@ export async function getExternalMatchQuote(
   const symmetricKey = config.utils.b64_to_hex_hmac_key(apiSecret)
 
   const body = config.utils.new_external_order(
-    base_mint,
-    quote_mint,
+    base,
+    quote,
     side,
-    toHex(base_amount),
-    toHex(quote_amount),
-    toHex(min_fill_size),
+    toHex(baseAmount),
+    toHex(quoteAmount),
+    toHex(minFillSize),
     doGasEstimation,
   )
 

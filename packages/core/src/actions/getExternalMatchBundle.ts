@@ -6,18 +6,14 @@ import {
 } from '../constants.js'
 import type { AuthConfig } from '../createAuthConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
-import type { ExternalMatchBundle } from '../types/externalMatch.js'
+import type {
+  ExternalMatchBundle,
+  ExternalOrder,
+} from '../types/externalMatch.js'
 import { postWithSymmetricKey } from '../utils/http.js'
 
 export type GetExternalMatchBundleParameters = {
-  order: {
-    base: `0x${string}`
-    quote: `0x${string}`
-    side: 'buy' | 'sell'
-    baseAmount?: bigint
-    quoteAmount?: bigint
-    minFillSize?: bigint
-  }
+  order: ExternalOrder
   doGasEstimation?: boolean
 }
 
