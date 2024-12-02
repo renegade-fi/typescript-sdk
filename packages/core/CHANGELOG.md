@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.6
+
+### Patch Changes
+
+- Use consistent naming in `getExternalMatchQuote`
+
 ## 0.4.5
 
 ### Patch Changes
