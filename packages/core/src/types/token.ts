@@ -1,5 +1,44 @@
+import invariant from 'tiny-invariant'
 import { type Address, isHex, zeroAddress } from 'viem'
-import { tokenMapping } from '../constants.js'
+
+////////////////////////////////////////////////////////////////////////////////
+// Token Mapping
+////////////////////////////////////////////////////////////////////////////////
+
+type SupportedExchange = 'Binance' | 'Coinbase' | 'Kraken' | 'Okx'
+
+type TokenMapping = {
+  tokens: Array<{
+    name: string
+    ticker: string
+    address: Address
+    decimals: number
+    supported_exchanges: Record<SupportedExchange, string>
+    chain_addresses: Record<string, string>
+    logo_url: string
+  }>
+}
+
+const tokenMappingUrl =
+  process.env.TOKEN_MAPPING_URL || process.env.NEXT_PUBIC_TOKEN_MAPPING_URL
+
+const tokenMappingStr =
+  process.env.NEXT_PUBLIC_TOKEN_MAPPING || process.env.TOKEN_MAPPING
+
+invariant(
+  tokenMappingUrl || tokenMappingStr,
+  'No token mapping initialization option provided',
+)
+
+export const tokenMapping = JSON.parse(
+  tokenMappingUrl
+    ? await fetch(tokenMappingUrl).then((res) => res.json())
+    : tokenMappingStr!,
+) as TokenMapping
+
+////////////////////////////////////////////////////////////////////////////////
+// Token Class
+////////////////////////////////////////////////////////////////////////////////
 
 export class Token {
   private _name: string

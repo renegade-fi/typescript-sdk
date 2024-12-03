@@ -1,4 +1,3 @@
-import invariant from 'tiny-invariant'
 import type { Address } from 'viem'
 
 /// Header name for the HTTP auth signature
@@ -215,23 +214,3 @@ export const REQUEST_EXTERNAL_MATCH_QUOTE_ROUTE = '/matching-engine/quote'
 /// The route for assembling an external match
 export const ASSEMBLE_EXTERNAL_MATCH_ROUTE =
   '/matching-engine/assemble-external-match'
-
-////////////////////////////////////////////////////////////////////////////////
-// Token
-////////////////////////////////////////////////////////////////////////////////
-
-invariant(
-  process.env.NEXT_PUBLIC_TOKEN_MAPPING || process.env.TOKEN_MAPPING,
-  'TOKEN_MAPPING is not set',
-)
-
-export const tokenMapping = JSON.parse(
-  process.env.NEXT_PUBLIC_TOKEN_MAPPING ?? process.env.TOKEN_MAPPING ?? '{}',
-) as {
-  tokens: Array<{
-    name: string
-    ticker: string
-    address: Address
-    decimals: number
-  }>
-}
