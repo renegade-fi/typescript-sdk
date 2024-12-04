@@ -242,10 +242,12 @@ export {
   // Types
   OrderState,
   TaskType,
-  Token,
   UpdateType,
   // WebSocket
   AuthType,
   RelayerWebsocket,
   type RelayerWebsocketParams,
+  // Token
+  Token,
+  tokenMapping,
 } from '@renegade-fi/core'

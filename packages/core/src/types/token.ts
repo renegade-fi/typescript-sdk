@@ -1,26 +1,27 @@
 import invariant from 'tiny-invariant'
 import { type Address, isHex, zeroAddress } from 'viem'
+import type { Exchange } from './wallet.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Token Mapping
 ////////////////////////////////////////////////////////////////////////////////
 
-type SupportedExchange = 'Binance' | 'Coinbase' | 'Kraken' | 'Okx'
+type TokenMetadata = {
+  name: string
+  ticker: string
+  address: Address
+  decimals: number
+  supported_exchanges: Partial<Record<Exchange, string>>
+  chain_addresses: Record<string, string>
+  logo_url: string
+}
 
 type TokenMapping = {
-  tokens: Array<{
-    name: string
-    ticker: string
-    address: Address
-    decimals: number
-    supported_exchanges: Record<SupportedExchange, string>
-    chain_addresses: Record<string, string>
-    logo_url: string
-  }>
+  tokens: TokenMetadata[]
 }
 
 const tokenMappingUrl =
-  process.env.TOKEN_MAPPING_URL || process.env.NEXT_PUBIC_TOKEN_MAPPING_URL
+  process.env.TOKEN_MAPPING_URL || process.env.NEXT_PUBLIC_TOKEN_MAPPING_URL
 
 const tokenMappingStr =
   process.env.NEXT_PUBLIC_TOKEN_MAPPING || process.env.TOKEN_MAPPING
@@ -30,32 +31,46 @@ invariant(
   'No token mapping initialization option provided',
 )
 
-export const tokenMapping = JSON.parse(
-  tokenMappingUrl
-    ? await fetch(tokenMappingUrl).then((res) => res.json())
-    : tokenMappingStr!,
-) as TokenMapping
+export const tokenMapping: TokenMapping = tokenMappingUrl
+  ? await fetch(tokenMappingUrl)
+      .then((res) => res.json())
+      .then((data) => {
+        for (const t of data.tokens) {
+          t.supported_exchanges = Object.fromEntries(
+            Object.entries(t.supported_exchanges).map(([k, v]) => [
+              // Lowercase all of the exchange names to match the Exchange enum
+              k.toLowerCase(),
+              v,
+            ]),
+          )
+        }
+        return data
+      })
+  : JSON.parse(tokenMappingStr!)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Token Class
 ////////////////////////////////////////////////////////////////////////////////
+
+export const STABLECOINS = ['USDC', 'USDT']
 
 export class Token {
   private _name: string
   private _ticker: string
   private _address: Address
   private _decimals: number
+  private _supported_exchanges: Partial<Record<Exchange, string>>
+  private _chain_addresses: Record<string, string>
+  private _logo_url: string
 
-  constructor(
-    name: string,
-    ticker: string,
-    address: Address,
-    decimals: number,
-  ) {
-    this._name = name
-    this._ticker = ticker
-    this._address = address
-    this._decimals = decimals
+  constructor(tokenMetadata: TokenMetadata) {
+    this._name = tokenMetadata.name
+    this._ticker = tokenMetadata.ticker
+    this._address = tokenMetadata.address
+    this._decimals = tokenMetadata.decimals
+    this._supported_exchanges = tokenMetadata.supported_exchanges
+    this._chain_addresses = tokenMetadata.chain_addresses
+    this._logo_url = tokenMetadata.logo_url
   }
 
   get name(): string {
@@ -74,17 +89,36 @@ export class Token {
     return this._decimals
   }
 
+  get supportedExchanges(): Set<Exchange> {
+    return new Set(Object.keys(this._supported_exchanges)) as Set<Exchange>
+  }
+
+  get rawSupportedExchanges(): Partial<Record<Exchange, string>> {
+    return this._supported_exchanges
+  }
+
+  get chainAddresses(): Record<string, string> {
+    return this._chain_addresses
+  }
+
+  get logoUrl(): string {
+    return this._logo_url
+  }
+
+  getExchangeTicker(exchange: Exchange): string | undefined {
+    return this._supported_exchanges[exchange]
+  }
+
+  isStablecoin(): boolean {
+    return STABLECOINS.includes(this.ticker)
+  }
+
   static findByTicker(ticker: string): Token {
     const tokenData = tokenMapping.tokens.find(
       (token) => token.ticker === ticker,
     )
     if (tokenData) {
-      return new Token(
-        tokenData.name,
-        tokenData.ticker,
-        tokenData.address as Address,
-        tokenData.decimals,
-      )
+      return new Token(tokenData)
     }
     return DEFAULT_TOKEN
   }
@@ -94,12 +128,7 @@ export class Token {
       (token) => token.address.toLowerCase() === address.toLowerCase(),
     )
     if (tokenData) {
-      return new Token(
-        tokenData.name,
-        tokenData.ticker,
-        tokenData.address as Address,
-        tokenData.decimals,
-      )
+      return new Token(tokenData)
     }
     return DEFAULT_TOKEN
   }
@@ -109,12 +138,23 @@ export class Token {
     ticker: string,
     address: Address,
     decimals: number,
+    supported_exchanges: Partial<Record<Exchange, string>> = {},
+    chain_addresses: Record<string, string> = {},
+    logo_url = '',
   ): Token {
     if (!isHex(address)) {
       throw new Error('Invalid address')
     }
-    return new Token(name, ticker, address, decimals)
+    return new Token({
+      name,
+      ticker,
+      address,
+      decimals,
+      supported_exchanges,
+      chain_addresses,
+      logo_url,
+    })
   }
 }
 
-const DEFAULT_TOKEN = new Token('UNKNOWN', 'UNKNOWN', zeroAddress, 0)
+const DEFAULT_TOKEN = Token.create('UNKNOWN', 'UNKNOWN', zeroAddress, 0)
