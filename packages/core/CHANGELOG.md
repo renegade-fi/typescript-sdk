@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.8
+
+### Patch Changes
+
+- export default quote & load token mapping method
+
 ## 0.4.6
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.4.9
+
+### Patch Changes
+
+- export default quote & load token mapping method
+- Updated dependencies
+  - @renegade-fi/core@0.4.8
+
 ## 0.4.7
 
 ### Patch Changes
