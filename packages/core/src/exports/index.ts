@@ -276,7 +276,10 @@ export { BaseError } from '../errors/base.js'
 // Types
 ////////////////////////////////////////////////////////////////////////////////
 
-export { Token } from '../types/token.js'
+export {
+  Token,
+  tokenMapping,
+} from '../types/token.js'
 export * from '../types/wallet.js'
 export * from '../types/order.js'
 export * from '../types/task.js'
