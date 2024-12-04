@@ -1,16 +1,9 @@
 import type { Address } from 'viem'
 import { PRICE_REPORTER_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import { Token } from '../types/token.js'
+import { DEFAULT_QUOTE } from '../types/token.js'
 import type { Exchange } from '../types/wallet.js'
 import { getRelayerRaw } from '../utils/http.js'
-
-export const DEFAULT_QUOTE: Record<Exchange, Address> = {
-  binance: Token.findByTicker('USDT').address,
-  coinbase: Token.findByTicker('USDC').address,
-  kraken: '0x0000000000000000000000000000000000000000' as Address,
-  okx: Token.findByTicker('USDT').address,
-}
 
 export type GetPriceParameters = {
   exchange?: Exchange
@@ -27,7 +20,7 @@ export async function getPriceFromPriceReporter(
   const {
     exchange = 'binance',
     base,
-    quote = DEFAULT_QUOTE[exchange],
+    quote = DEFAULT_QUOTE[exchange].address,
   } = parameters
   const { getPriceReporterHTTPBaseUrl } = config
 

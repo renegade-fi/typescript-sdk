@@ -158,3 +158,16 @@ export class Token {
 }
 
 const DEFAULT_TOKEN = Token.create('UNKNOWN', 'UNKNOWN', zeroAddress, 0)
+
+export const DEFAULT_QUOTE: Record<Exchange, Token> = {
+  binance: Token.findByTicker('USDT'),
+  coinbase: Token.findByTicker('USDC'),
+  kraken: Token.create(
+    'USD Coin',
+    'USDC',
+    '0x0000000000000000000000000000000000000000',
+    6,
+    { kraken: 'USD' },
+  ),
+  okx: Token.findByTicker('USDT'),
+}
