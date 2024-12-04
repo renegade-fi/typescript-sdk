@@ -250,4 +250,5 @@ export {
   // Token
   Token,
   tokenMapping,
+  DEFAULT_QUOTE,
 } from '@renegade-fi/core'

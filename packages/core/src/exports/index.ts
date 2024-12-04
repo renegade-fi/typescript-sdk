@@ -279,6 +279,7 @@ export { BaseError } from '../errors/base.js'
 export {
   Token,
   tokenMapping,
+  DEFAULT_QUOTE,
 } from '../types/token.js'
 export * from '../types/wallet.js'
 export * from '../types/order.js'
