@@ -31,22 +31,36 @@ invariant(
   'No token mapping initialization option provided',
 )
 
-export const tokenMapping: TokenMapping = tokenMappingUrl
-  ? await fetch(tokenMappingUrl)
-      .then((res) => res.json())
-      .then((data) => {
-        for (const t of data.tokens) {
-          t.supported_exchanges = Object.fromEntries(
-            Object.entries(t.supported_exchanges).map(([k, v]) => [
-              // Lowercase all of the exchange names to match the Exchange enum
-              k.toLowerCase(),
-              v,
-            ]),
-          )
-        }
-        return data
-      })
-  : JSON.parse(tokenMappingStr!)
+export const tokenMapping: TokenMapping = {
+  tokens: [],
+}
+
+export async function loadTokenMapping() {
+  if (!tokenMappingUrl) {
+    throw new Error('No token mapping URL provided')
+  }
+
+  const res = await fetch(tokenMappingUrl)
+  const data = await res.json()
+  for (const t of data.tokens) {
+    t.supported_exchanges = Object.fromEntries(
+      Object.entries(t.supported_exchanges).map(([k, v]) => [
+        // Lowercase all of the exchange names to match the Exchange enum
+        k.toLowerCase(),
+        v,
+      ]),
+    )
+  }
+
+  tokenMapping.tokens = data.tokens
+}
+
+if (tokenMappingUrl) {
+  await loadTokenMapping()
+} else {
+  const envTokenMapping = JSON.parse(tokenMappingStr!)
+  tokenMapping.tokens = envTokenMapping.tokens
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Token Class
