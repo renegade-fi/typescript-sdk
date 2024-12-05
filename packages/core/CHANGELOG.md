@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.9
+
+### Patch Changes
+
+- defer token mapping fetch to consumer
+
 ## 0.4.8
 
 ### Patch Changes
