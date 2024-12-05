@@ -55,9 +55,7 @@ export async function loadTokenMapping() {
   tokenMapping.tokens = data.tokens
 }
 
-if (tokenMappingUrl) {
-  await loadTokenMapping()
-} else {
+if (tokenMappingStr) {
   const envTokenMapping = JSON.parse(tokenMappingStr!)
   tokenMapping.tokens = envTokenMapping.tokens
 }
@@ -128,6 +126,10 @@ export class Token {
   }
 
   static findByTicker(ticker: string): Token {
+    if (tokenMapping.tokens.length === 0) {
+      throw new Error('Token mapping not initialized')
+    }
+
     const tokenData = tokenMapping.tokens.find(
       (token) => token.ticker === ticker,
     )
@@ -138,6 +140,10 @@ export class Token {
   }
 
   static findByAddress(address: Address): Token {
+    if (tokenMapping.tokens.length === 0) {
+      throw new Error('Token mapping not initialized')
+    }
+
     const tokenData = tokenMapping.tokens.find(
       (token) => token.address.toLowerCase() === address.toLowerCase(),
     )
