@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.10
+
+### Patch Changes
+
+- format token mapping from env var
+
 ## 0.4.9
 
 ### Patch Changes
