@@ -42,6 +42,12 @@ export async function loadTokenMapping() {
 
   const res = await fetch(tokenMappingUrl)
   const data = await res.json()
+  formatTokenMapping(data)
+
+  tokenMapping.tokens = data.tokens
+}
+
+function formatTokenMapping(data: any) {
   for (const t of data.tokens) {
     t.supported_exchanges = Object.fromEntries(
       Object.entries(t.supported_exchanges).map(([k, v]) => [
@@ -51,12 +57,11 @@ export async function loadTokenMapping() {
       ]),
     )
   }
-
-  tokenMapping.tokens = data.tokens
 }
 
 if (tokenMappingStr) {
   const envTokenMapping = JSON.parse(tokenMappingStr!)
+  formatTokenMapping(envTokenMapping)
   tokenMapping.tokens = envTokenMapping.tokens
 }
 
