@@ -280,7 +280,7 @@ export {
   Token,
   tokenMapping,
   loadTokenMapping,
-  DEFAULT_QUOTE,
+  getDefaultQuoteToken,
 } from '../types/token.js'
 export * from '../types/wallet.js'
 export * from '../types/order.js'

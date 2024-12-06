@@ -251,5 +251,5 @@ export {
   Token,
   tokenMapping,
   loadTokenMapping,
-  DEFAULT_QUOTE,
+  getDefaultQuoteToken,
 } from '@renegade-fi/core'
