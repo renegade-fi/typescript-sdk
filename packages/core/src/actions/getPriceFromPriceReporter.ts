@@ -1,7 +1,7 @@
 import type { Address } from 'viem'
 import { PRICE_REPORTER_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
-import { DEFAULT_QUOTE } from '../types/token.js'
+import { getDefaultQuoteToken } from '../types/token.js'
 import type { Exchange } from '../types/wallet.js'
 import { getRelayerRaw } from '../utils/http.js'
 
@@ -20,7 +20,7 @@ export async function getPriceFromPriceReporter(
   const {
     exchange = 'binance',
     base,
-    quote = DEFAULT_QUOTE[exchange].address,
+    quote = getDefaultQuoteToken(exchange).address,
   } = parameters
   const { getPriceReporterHTTPBaseUrl } = config
 

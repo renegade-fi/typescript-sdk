@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.11
+
+### Patch Changes
+
+- use getDefaultQuoteToken method instead of DEFAULT_QUOTES constant
+
 ## 0.4.10
 
 ### Patch Changes

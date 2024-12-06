@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.4.12
+
+### Patch Changes
+
+- use getDefaultQuoteToken method instead of DEFAULT_QUOTES constant
+- Updated dependencies
+  - @renegade-fi/core@0.4.11
+
 ## 0.4.11
 
 ### Patch Changes
