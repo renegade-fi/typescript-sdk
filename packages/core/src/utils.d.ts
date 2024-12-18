@@ -119,18 +119,15 @@ export function new_external_quote_request(base_mint: string, quote_mint: string
 */
 export function assemble_external_match(do_gas_estimation: boolean, signed_quote: string): any;
 /**
-* @param {string} path
-* @param {any} headers
-* @param {string} body
-* @param {string} key
-* @returns {string}
+* @param {string} wallet_id
+* @param {string} blinder_seed
+* @param {string} share_seed
+* @param {string} symmetric_key
+* @param {string} sk_match
+* @param {string} pk_root
+* @returns {Promise<any>}
 */
-export function create_request_signature(path: string, headers: any, body: string, key: string): string;
-/**
-* @param {string} b64_key
-* @returns {string}
-*/
-export function b64_to_hex_hmac_key(b64_key: string): string;
+export function byok_create_wallet(wallet_id: string, blinder_seed: string, share_seed: string, symmetric_key: string, sk_match: string, pk_root: string): Promise<any>;
 /**
 * @param {string} seed
 * @param {string} wallet_str
@@ -167,3 +164,16 @@ export function get_pk_root_scalars(seed: string, nonce: bigint): any[];
 * @returns {any}
 */
 export function get_symmetric_key(seed: string): any;
+/**
+* @param {string} path
+* @param {any} headers
+* @param {string} body
+* @param {string} key
+* @returns {string}
+*/
+export function create_request_signature(path: string, headers: any, body: string, key: string): string;
+/**
+* @param {string} b64_key
+* @returns {string}
+*/
+export function b64_to_hex_hmac_key(b64_key: string): string;

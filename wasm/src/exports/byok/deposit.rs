@@ -4,12 +4,14 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     circuit_types::balance::Balance,
-    exports::{byok::signature::generate_statement_signature, helpers::deserialize_wallet},
+    exports::{
+        byok::{parse::DepositParameters, signature::generate_statement_signature},
+        error::WasmError,
+        helpers::deserialize_wallet,
+    },
     external_api::wallet::{DepositBalanceRequest, WalletUpdateAuthorization},
     serialize_to_js,
 };
-
-use super::{error::DepositError, parse::DepositParameters};
 
 #[wasm_bindgen]
 pub async fn byok_deposit(
@@ -32,14 +34,14 @@ pub async fn byok_deposit(
         permit_signature,
     )?;
     let amount = params.amount.to_u128().ok_or_else(|| {
-        DepositError::InvalidParameter(format!("Could not convert {} to u128", params.amount))
+        WasmError::InvalidParameter(format!("Could not convert {} to u128", params.amount))
     })?;
 
     let mut wallet = deserialize_wallet(wallet_str)?;
     let balance = Balance::new_from_mint_and_amount(params.mint.clone(), amount);
     wallet
         .add_balance(balance)
-        .map_err(DepositError::WalletMutation)?;
+        .map_err(WasmError::WalletMutation)?;
     wallet.reblind_wallet();
 
     // let signature = generate_signature(&wallet, sign_message).await?;
