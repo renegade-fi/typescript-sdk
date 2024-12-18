@@ -638,12 +638,14 @@ pub struct ExternalMatchRequest {
 pub struct ExternalOrder {
     /// The mint (erc20 address) of the quote token
     #[serde(
+        alias = "quote",
         serialize_with = "serialize_biguint_to_hex_string",
         deserialize_with = "deserialize_biguint_from_hex_string"
     )]
     pub quote_mint: BigUint,
     /// The mint (erc20 address) of the base token
     #[serde(
+        alias = "base",
         serialize_with = "serialize_biguint_to_hex_string",
         deserialize_with = "deserialize_biguint_from_hex_string"
     )]
@@ -651,10 +653,10 @@ pub struct ExternalOrder {
     /// The side of the market this order is on
     pub side: OrderSide,
     /// The base amount of the order
-    #[serde(default, alias = "amount")]
+    #[serde(default, alias = "amount", alias = "baseAmount")]
     pub base_amount: Amount,
     /// The quote amount of the order
-    #[serde(default)]
+    #[serde(default, alias = "quoteAmount")]
     pub quote_amount: Amount,
     /// The minimum fill size for the order
     #[serde(default)]
@@ -724,17 +726,29 @@ pub struct AssembleExternalMatchRequest {
     /// Whether or not to include gas estimation in the response
     #[serde(default)]
     pub do_gas_estimation: bool,
+    /// The updated order
+    #[serde(default)]
+    pub updated_order: Option<ExternalOrder>,
 }
 
 #[wasm_bindgen]
 pub fn assemble_external_match(
     do_gas_estimation: bool,
+    updated_order: &str,
     signed_quote: &str,
 ) -> Result<JsValue, JsError> {
+    // Parse the updated order if it exists
+    let updated_order = if updated_order.is_empty() {
+        None
+    } else {
+        Some(serde_json::from_str(updated_order)?)
+    };
+
     let signed_quote: SignedExternalQuote = serde_json::from_str(signed_quote)?;
     let req = AssembleExternalMatchRequest {
-        signed_quote,
         do_gas_estimation,
+        updated_order,
+        signed_quote,
     };
 
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))

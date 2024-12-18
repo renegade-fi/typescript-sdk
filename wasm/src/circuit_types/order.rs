@@ -83,13 +83,27 @@ impl Order {
 }
 
 /// The side of the market a given order is on
-#[derive(Clone, Copy, Default, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Default, Debug, PartialEq, Eq, Serialize)]
 pub enum OrderSide {
     /// Buy side
     #[default]
     Buy = 0,
     /// Sell side
     Sell,
+}
+
+impl<'de> Deserialize<'de> for OrderSide {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        match s.to_lowercase().as_str() {
+            "buy" => Ok(OrderSide::Buy),
+            "sell" => Ok(OrderSide::Sell),
+            _ => Err(serde::de::Error::custom(format!("Invalid order side: {s}"))),
+        }
+    }
 }
 
 impl OrderSide {

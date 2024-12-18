@@ -114,10 +114,11 @@ export function new_external_order(base_mint: string, quote_mint: string, side: 
 export function new_external_quote_request(base_mint: string, quote_mint: string, side: string, base_amount: string, quote_amount: string, min_fill_size: string): any;
 /**
 * @param {boolean} do_gas_estimation
+* @param {string} updated_order
 * @param {string} signed_quote
 * @returns {any}
 */
-export function assemble_external_match(do_gas_estimation: boolean, signed_quote: string): any;
+export function assemble_external_match(do_gas_estimation: boolean, updated_order: string, signed_quote: string): any;
 /**
 * @param {string} seed
 * @param {bigint} nonce
