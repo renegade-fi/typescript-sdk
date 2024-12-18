@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.12
+
+### Patch Changes
+
+- Added support for order updates between quote and assemble calls
+
 ## 0.4.11
 
 ### Patch Changes
