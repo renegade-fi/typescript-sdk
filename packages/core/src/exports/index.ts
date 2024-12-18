@@ -312,7 +312,7 @@ export {
 
 export { deepEqual } from '../utils/deepEqual.js'
 
-export { postRelayerRaw, addExpiringAuthToHeaders } from '../utils/http.js'
+export { postRelayerRaw, postRelayerWithAuth, addExpiringAuthToHeaders } from '../utils/http.js'
 
 export {
   AuthType,

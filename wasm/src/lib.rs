@@ -20,6 +20,7 @@ use wasm_bindgen::prelude::*;
 pub mod circuit_types;
 pub mod common;
 pub mod errors;
+pub mod exports;
 pub mod external_api;
 pub mod helpers;
 pub mod serde_def_types;

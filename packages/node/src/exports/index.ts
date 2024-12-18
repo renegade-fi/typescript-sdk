@@ -43,6 +43,7 @@ export {
   executeWithdrawal,
   type ExecuteWithdrawalParameters,
 } from '../actions/executeWithdrawal.js'
+export { deposit as byokDeposit } from '../actions/byok/deposit.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade-fi/core
