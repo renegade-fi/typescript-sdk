@@ -46,12 +46,9 @@ export async function deposit(
     signMessage,
     symmetricKey,
     walletId,
-    publicKey
+    publicKey,
   } = parameters
-  const {
-    getRelayerBaseUrl,
-    utils,
-  } = config
+  const { getRelayerBaseUrl, utils } = config
 
   const token = Token.findByAddress(mint)
   invariant(token, 'Token not found')
@@ -74,7 +71,7 @@ export async function deposit(
     toHex(permitDeadline),
     permit,
   )
-  console.log("[JS] Body: ", body)
+  console.log('[JS] Body: ', body)
 
   try {
     const res = await postWithSymmetricKey(config, {

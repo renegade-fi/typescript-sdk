@@ -15,7 +15,7 @@ export async function generateWalletSecrets(
   publicKey: string,
 ): Promise<GeneratedSecrets> {
   const { utils } = config
-  console.log("Generating wallet secrets for public key:", publicKey);
+  console.log('Generating wallet secrets for public key:', publicKey)
   const secrets = await utils.generate_wallet_secrets(signMessage, publicKey)
   const parsedSecrets = JSON.parse(secrets) as GeneratedSecrets
   return parsedSecrets
