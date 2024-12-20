@@ -6,6 +6,9 @@ import {
   createAuthConfig as core_createAuthConfig,
   createConfig as core_createConfig,
 } from '@renegade-fi/core'
+import {
+  createBYOKConfig as core_createBYOKConfig,
+} from '../utils/createBYOKConfig.js'
 
 import * as RustUtils from '../../renegade-utils/index.js'
 
@@ -29,7 +32,17 @@ function createAuthConfig(
   return config
 }
 
-export { createAuthConfig, createConfig }
+function createBYOKConfig(
+  ...args: Parameters<typeof core_createBYOKConfig>
+): ReturnType<typeof core_createBYOKConfig> {
+  const config = core_createBYOKConfig({
+    ...args[0],
+    utils: RustUtils,
+  })
+  return config
+}
+
+export { createAuthConfig, createConfig, createBYOKConfig }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Actions
