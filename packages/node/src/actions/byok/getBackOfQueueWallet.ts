@@ -1,10 +1,10 @@
 import {
   BACK_OF_QUEUE_WALLET_ROUTE,
   BaseError,
-  type Config,
   type Wallet,
   getWithSymmetricKey,
 } from '@renegade-fi/core'
+import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 
 export type GetBackOfQueueWalletParameters = {
   symmetricKey: `0x${string}`
@@ -16,7 +16,7 @@ export type GetBackOfQueueWalletReturnType = Wallet
 export type GetBackOfQueueWalletErrorType = Error
 
 export async function getBackOfQueueWallet(
-  config: Config,
+  config: BYOKConfig,
   parameters: GetBackOfQueueWalletParameters,
 ): Promise<GetBackOfQueueWalletReturnType> {
   const { symmetricKey, walletId } = parameters

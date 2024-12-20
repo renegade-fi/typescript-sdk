@@ -1,17 +1,12 @@
 import {
-  type Config,
   DEPOSIT_BALANCE_ROUTE,
   Token,
   postWithSymmetricKey,
   stringifyForWasm,
 } from '@renegade-fi/core'
 import invariant from 'tiny-invariant'
-import {
-  type Address,
-  type BaseErrorType,
-  type SignMessageReturnType,
-  toHex,
-} from 'viem'
+import { type Address, type BaseErrorType, toHex } from 'viem'
+import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 
 export type DepositParameters = {
@@ -21,10 +16,6 @@ export type DepositParameters = {
   permitNonce: bigint
   permitDeadline: bigint
   permit: `0x${string}`
-  signMessage: (message: string) => Promise<SignMessageReturnType>
-  symmetricKey: `0x${string}`
-  walletId: string
-  publicKey: `0x${string}`
 }
 
 export type DepositReturnType = Promise<{ taskId: string }>
@@ -32,23 +23,19 @@ export type DepositReturnType = Promise<{ taskId: string }>
 export type DepositErrorType = BaseErrorType
 
 export async function deposit(
-  config: Config,
+  config: BYOKConfig,
   parameters: DepositParameters,
 ): DepositReturnType {
+  const { fromAddr, mint, amount, permitNonce, permitDeadline, permit } =
+    parameters
   const {
-    fromAddr,
-    mint,
-    amount,
-    permitNonce,
-    permitDeadline,
-    permit,
-    // TODO: Move to config
     signMessage,
     symmetricKey,
     walletId,
     publicKey,
-  } = parameters
-  const { getRelayerBaseUrl, utils } = config
+    getRelayerBaseUrl,
+    utils,
+  } = config
 
   const token = Token.findByAddress(mint)
   invariant(token, 'Token not found')

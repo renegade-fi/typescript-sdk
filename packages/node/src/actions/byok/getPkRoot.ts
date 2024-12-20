@@ -1,4 +1,4 @@
-import type { Config } from '@renegade-fi/core'
+import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 
 export type GetPkRootParameters = {
   pkRoot: `0x${string}`
@@ -7,7 +7,7 @@ export type GetPkRootParameters = {
 export type GetPkRootScalarsReturnType = bigint[]
 
 export function getPkRootScalars(
-  config: Config,
+  config: BYOKConfig,
   parameters: GetPkRootParameters,
 ): GetPkRootScalarsReturnType {
   const { utils } = config
