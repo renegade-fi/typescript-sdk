@@ -9,5 +9,6 @@ mod key_rotation;
 mod parameters;
 mod signature;
 mod utils;
+mod withdraw;
 
 pub use {deposit::byok_deposit, signature::generate_signature};

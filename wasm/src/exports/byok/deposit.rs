@@ -1,5 +1,4 @@
 use js_sys::Function;
-use num_traits::ToPrimitive;
 use wasm_bindgen::prelude::*;
 
 use crate::{
@@ -36,9 +35,7 @@ pub async fn byok_deposit(
         permit_deadline,
         permit_signature,
     )?;
-    let amount = params.amount.to_u128().ok_or_else(|| {
-        WasmError::InvalidParameter(format!("Could not convert {} to u128", params.amount))
-    })?;
+    let amount = params.amount_as_u128()?;
 
     let mut wallet = deserialize_wallet(wallet_str)?;
     handle_key_rotation(&mut wallet, &params.public_key)?;

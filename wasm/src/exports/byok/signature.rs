@@ -5,10 +5,14 @@ use ethers::{
     utils::keccak256,
 };
 use js_sys::{Function, Promise};
+use num_bigint::BigUint;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 
 use crate::{
+    circuit_types::transfers::{
+        to_contract_external_transfer, ExternalTransfer, ExternalTransferDirection,
+    },
     common::types::Wallet,
     exports::error::WasmError,
     helpers::{bytes_from_hex_string, bytes_to_hex_string},
@@ -37,6 +41,48 @@ pub async fn generate_signature(
         .serialize_to_bytes();
 
     let digest = keccak256(comm_bytes);
+    let digest_hex = bytes_to_hex_string(&digest);
+
+    let this = JsValue::null();
+    let arg = JsValue::from_str(&digest_hex);
+
+    let sig_promise: Promise = sign_message
+        .call1(&this, &arg)
+        .map_err(|_| WasmError::SignMessageInvocationFailed("call1 failed".into()))?
+        .dyn_into()
+        .map_err(|_| WasmError::SignMessageInvocationFailed("dyn_into Promise failed".into()))?;
+
+    let signature = JsFuture::from(sig_promise)
+        .await
+        .map_err(|e| WasmError::PromiseRejected(e.as_string().unwrap_or_default()))?;
+
+    let sig_hex = signature.as_string().ok_or(WasmError::ConversionFailed)?;
+    let bytes = bytes_from_hex_string(&sig_hex).map_err(WasmError::SignatureHexDecodingFailed)?;
+
+    Ok(bytes)
+}
+
+/// Generate a withdrawal payload with proper auth data
+pub async fn authorize_withdrawal(
+    sign_message: &Function,
+    mint: BigUint,
+    amount: u128,
+    account_addr: BigUint,
+) -> Result<Vec<u8>, WasmError> {
+    let transfer = ExternalTransfer {
+        mint,
+        amount,
+        direction: ExternalTransferDirection::Withdrawal,
+        account_addr,
+    };
+
+    let contract_transfer = to_contract_external_transfer(&transfer)
+        .map_err(|_| WasmError::Custom("Failed to convert transfer".into()))?;
+
+    let buf =
+        postcard::to_allocvec(&contract_transfer).map_err(|e| WasmError::Custom(e.to_string()))?;
+
+    let digest = keccak256(&buf);
     let digest_hex = bytes_to_hex_string(&digest);
 
     let this = JsValue::null();

@@ -119,6 +119,11 @@ export function new_external_quote_request(base_mint: string, quote_mint: string
 */
 export function assemble_external_match(do_gas_estimation: boolean, signed_quote: string): any;
 /**
+* @param {string} pk_root
+* @returns {any[]}
+*/
+export function byok_get_pk_root_scalars(pk_root: string): any[];
+/**
 * @param {string} wallet_id
 * @param {string} blinder_seed
 * @param {string} share_seed
@@ -147,18 +152,15 @@ export function byok_deposit(wallet_str: string, sign_message: Function, public_
 */
 export function generate_wallet_secrets(sign_message: Function): Promise<any>;
 /**
-* @param {string} path
-* @param {any} headers
-* @param {string} body
-* @param {string} key
-* @returns {string}
+* @param {string} wallet_str
+* @param {Function} sign_message
+* @param {string} public_key
+* @param {string} mint
+* @param {string} amount
+* @param {string} destination_addr
+* @returns {Promise<any>}
 */
-export function create_request_signature(path: string, headers: any, body: string, key: string): string;
-/**
-* @param {string} b64_key
-* @returns {string}
-*/
-export function b64_to_hex_hmac_key(b64_key: string): string;
+export function byok_withdraw(wallet_str: string, sign_message: Function, public_key: string, mint: string, amount: string, destination_addr: string): Promise<any>;
 /**
 * @param {string} seed
 * @param {bigint} nonce
@@ -183,7 +185,15 @@ export function get_pk_root_scalars(seed: string, nonce: bigint): any[];
 */
 export function get_symmetric_key(seed: string): any;
 /**
-* @param {string} pk_root
-* @returns {any[]}
+* @param {string} path
+* @param {any} headers
+* @param {string} body
+* @param {string} key
+* @returns {string}
 */
-export function byok_get_pk_root_scalars(pk_root: string): any[];
+export function create_request_signature(path: string, headers: any, body: string, key: string): string;
+/**
+* @param {string} b64_key
+* @returns {string}
+*/
+export function b64_to_hex_hmac_key(b64_key: string): string;
