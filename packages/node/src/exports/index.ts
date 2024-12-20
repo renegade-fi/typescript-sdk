@@ -71,6 +71,10 @@ export {
   getBackOfQueueWallet as byokGetBackOfQueueWallet,
   type GetBackOfQueueWalletParameters,
 } from '../actions/byok/getBackOfQueueWallet.js'
+export {
+  withdraw as byokWithdraw,
+  type WithdrawParameters,
+} from '../actions/byok/withdraw.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade-fi/core

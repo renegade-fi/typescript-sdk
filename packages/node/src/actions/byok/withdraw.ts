@@ -1,6 +1,6 @@
 import {
-  DEPOSIT_BALANCE_ROUTE,
   Token,
+  WITHDRAW_BALANCE_ROUTE,
   postWithSymmetricKey,
   stringifyForWasm,
 } from '@renegade-fi/core'
@@ -9,33 +9,22 @@ import { type Address, type BaseErrorType, toHex } from 'viem'
 import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 
-export type DepositParameters = {
-  fromAddr: Address
+export type WithdrawParameters = {
   mint: Address
   amount: bigint
-  permitNonce: bigint
-  permitDeadline: bigint
-  permit: `0x${string}`
+  destinationAddr: Address
   newPublicKey?: `0x${string}`
 }
 
-export type DepositReturnType = Promise<{ taskId: string }>
+export type WithdrawReturnType = Promise<{ taskId: string }>
 
-export type DepositErrorType = BaseErrorType
+export type WithdrawErrorType = BaseErrorType
 
-export async function deposit(
+export async function withdraw(
   config: BYOKConfig,
-  parameters: DepositParameters,
-): DepositReturnType {
-  const {
-    fromAddr,
-    mint,
-    amount,
-    permitNonce,
-    permitDeadline,
-    permit,
-    newPublicKey,
-  } = parameters
+  parameters: WithdrawParameters,
+): WithdrawReturnType {
+  const { mint, amount, destinationAddr, newPublicKey } = parameters
   const {
     signMessage,
     symmetricKey,
@@ -54,23 +43,20 @@ export async function deposit(
   })
   const walletStr = stringifyForWasm(wallet)
 
-  const body = await utils.byok_deposit(
+  const body = await utils.byok_withdraw(
     walletStr,
     signMessage,
     newPublicKey ?? publicKey,
-    fromAddr,
     mint,
     toHex(amount),
-    toHex(permitNonce),
-    toHex(permitDeadline),
-    permit,
+    destinationAddr,
   )
 
   try {
     const res = await postWithSymmetricKey(config, {
       body,
       key: symmetricKey,
-      url: getRelayerBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
+      url: getRelayerBaseUrl(WITHDRAW_BALANCE_ROUTE(walletId, mint)),
     })
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)
     return { taskId: res.task_id }

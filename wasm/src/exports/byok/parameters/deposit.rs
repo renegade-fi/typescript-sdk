@@ -1,5 +1,6 @@
 use crate::{exports::error::WasmError, helpers::biguint_from_hex_string};
 use num_bigint::BigUint;
+use num_traits::ToPrimitive;
 
 pub struct DepositParameters {
     pub public_key: String,
@@ -36,6 +37,12 @@ impl DepositParameters {
             permit_signature: biguint_from_hex_string(permit_signature)
                 .map_err(|e| WasmError::InvalidParameter(format!("permit_signature: {}", e)))?
                 .to_bytes_be(),
+        })
+    }
+
+    pub fn amount_as_u128(&self) -> Result<u128, WasmError> {
+        self.amount.to_u128().ok_or_else(|| {
+            WasmError::InvalidParameter(format!("Could not convert {} to u128", self.amount))
         })
     }
 }
