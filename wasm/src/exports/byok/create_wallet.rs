@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    common::types::Wallet, exports::byok::parse::CreateWalletParameters,
+    common::types::Wallet, exports::byok::parameters::CreateWalletParameters,
     external_api::wallet::CreateWalletRequest, serialize_to_js, types::scalar_to_biguint,
 };
 
@@ -10,17 +10,17 @@ pub async fn byok_create_wallet(
     wallet_id: &str,
     blinder_seed: &str,
     share_seed: &str,
-    symmetric_key: &str,
-    sk_match: &str,
     pk_root: &str,
+    sk_match: &str,
+    symmetric_key: &str,
 ) -> Result<JsValue, JsError> {
-    let params = CreateWalletParameters::parse(
+    let params = CreateWalletParameters::new(
         wallet_id,
         blinder_seed,
         share_seed,
-        symmetric_key,
-        sk_match,
         pk_root,
+        sk_match,
+        symmetric_key,
     )?;
 
     let wallet = Wallet::new_empty_wallet(

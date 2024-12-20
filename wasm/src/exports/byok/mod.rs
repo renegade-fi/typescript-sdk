@@ -3,7 +3,10 @@
 
 mod create_wallet;
 mod deposit;
-mod parse;
+mod generate_wallet_secrets;
+mod get_pk_root_scalars;
+mod parameters;
 mod signature;
+mod utils;
 
 pub use {deposit::byok_deposit, signature::generate_signature};

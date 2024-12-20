@@ -44,6 +44,22 @@ export {
   type ExecuteWithdrawalParameters,
 } from '../actions/executeWithdrawal.js'
 export { deposit as byokDeposit } from '../actions/byok/deposit.js'
+export {
+  createWallet as byokCreateWallet,
+  type CreateWalletParameters,
+} from '../actions/byok/createWallet.js'
+export {
+  generateWalletSecrets,
+  type GeneratedSecrets,
+} from '../actions/byok/generateWalletSecrets.js'
+export {
+  getPkRootScalars as byokGetPkRootScalars,
+  type GetPkRootParameters,
+} from '../actions/byok/getPkRoot.js'
+export {
+  getBackOfQueueWallet as byokGetBackOfQueueWallet,
+  type GetBackOfQueueWalletParameters,
+} from '../actions/byok/getBackOfQueueWallet.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade-fi/core

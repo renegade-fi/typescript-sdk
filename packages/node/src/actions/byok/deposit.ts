@@ -2,9 +2,7 @@ import {
   type Config,
   DEPOSIT_BALANCE_ROUTE,
   Token,
-  getBackOfQueueWallet,
-  getWalletId,
-  postRelayerWithAuth,
+  postWithSymmetricKey,
   stringifyForWasm,
 } from '@renegade-fi/core'
 import invariant from 'tiny-invariant'
@@ -14,6 +12,7 @@ import {
   type SignMessageReturnType,
   toHex,
 } from 'viem'
+import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 
 export type DepositParameters = {
   fromAddr: Address
@@ -23,6 +22,9 @@ export type DepositParameters = {
   permitDeadline: bigint
   permit: `0x${string}`
   signMessage: (message: string) => Promise<SignMessageReturnType>
+  symmetricKey: `0x${string}`
+  walletId: string
+  publicKey: `0x${string}`
 }
 
 export type DepositReturnType = Promise<{ taskId: string }>
@@ -42,25 +44,25 @@ export async function deposit(
     permit,
     // TODO: Move to config
     signMessage,
+    symmetricKey,
+    walletId,
+    publicKey,
   } = parameters
-  const {
-    getRelayerBaseUrl,
-    utils,
-    state: { seed },
-  } = config
-  invariant(seed, 'Seed is required')
+  const { getRelayerBaseUrl, utils } = config
 
   const token = Token.findByAddress(mint)
   invariant(token, 'Token not found')
 
-  const walletId = getWalletId(config)
-  const wallet = await getBackOfQueueWallet(config)
+  const wallet = await getBackOfQueueWallet(config, {
+    symmetricKey,
+    walletId,
+  })
   const walletStr = stringifyForWasm(wallet)
 
   const body = await utils.byok_deposit(
-    seed,
     walletStr,
     signMessage,
+    publicKey,
     fromAddr,
     mint,
     toHex(amount),
@@ -70,11 +72,11 @@ export async function deposit(
   )
 
   try {
-    const res = await postRelayerWithAuth(
-      config,
-      getRelayerBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
+    const res = await postWithSymmetricKey(config, {
       body,
-    )
+      key: symmetricKey,
+      url: getRelayerBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
+    })
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)
     return { taskId: res.task_id }
   } catch (error) {

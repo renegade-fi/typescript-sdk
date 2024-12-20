@@ -119,19 +119,24 @@ export function new_external_quote_request(base_mint: string, quote_mint: string
 */
 export function assemble_external_match(do_gas_estimation: boolean, signed_quote: string): any;
 /**
+* @param {string} pk_root
+* @returns {any[]}
+*/
+export function byok_get_pk_root_scalars(pk_root: string): any[];
+/**
 * @param {string} wallet_id
 * @param {string} blinder_seed
 * @param {string} share_seed
-* @param {string} symmetric_key
-* @param {string} sk_match
 * @param {string} pk_root
+* @param {string} sk_match
+* @param {string} symmetric_key
 * @returns {Promise<any>}
 */
-export function byok_create_wallet(wallet_id: string, blinder_seed: string, share_seed: string, symmetric_key: string, sk_match: string, pk_root: string): Promise<any>;
+export function byok_create_wallet(wallet_id: string, blinder_seed: string, share_seed: string, pk_root: string, sk_match: string, symmetric_key: string): Promise<any>;
 /**
-* @param {string} seed
 * @param {string} wallet_str
 * @param {Function} sign_message
+* @param {string} public_key
 * @param {string} from_addr
 * @param {string} mint
 * @param {string} amount
@@ -140,7 +145,12 @@ export function byok_create_wallet(wallet_id: string, blinder_seed: string, shar
 * @param {string} permit_signature
 * @returns {Promise<any>}
 */
-export function byok_deposit(seed: string, wallet_str: string, sign_message: Function, from_addr: string, mint: string, amount: string, permit_nonce: string, permit_deadline: string, permit_signature: string): Promise<any>;
+export function byok_deposit(wallet_str: string, sign_message: Function, public_key: string, from_addr: string, mint: string, amount: string, permit_nonce: string, permit_deadline: string, permit_signature: string): Promise<any>;
+/**
+* @param {Function} sign_message
+* @returns {Promise<any>}
+*/
+export function generate_wallet_secrets(sign_message: Function): Promise<any>;
 /**
 * @param {string} seed
 * @param {bigint} nonce
