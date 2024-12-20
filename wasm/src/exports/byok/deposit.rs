@@ -5,7 +5,9 @@ use wasm_bindgen::prelude::*;
 use crate::{
     circuit_types::balance::Balance,
     exports::{
-        byok::{generate_signature, parameters::DepositParameters},
+        byok::{
+            generate_signature, key_rotation::handle_key_rotation, parameters::DepositParameters,
+        },
         error::WasmError,
         helpers::deserialize_wallet,
     },
@@ -39,6 +41,8 @@ pub async fn byok_deposit(
     })?;
 
     let mut wallet = deserialize_wallet(wallet_str)?;
+    handle_key_rotation(&mut wallet, &params.public_key)?;
+
     let balance = Balance::new_from_mint_and_amount(params.mint.clone(), amount);
     wallet
         .add_balance(balance)

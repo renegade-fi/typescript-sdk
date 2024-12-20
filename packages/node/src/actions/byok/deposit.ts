@@ -16,6 +16,7 @@ export type DepositParameters = {
   permitNonce: bigint
   permitDeadline: bigint
   permit: `0x${string}`
+  newPublicKey?: `0x${string}`
 }
 
 export type DepositReturnType = Promise<{ taskId: string }>
@@ -26,7 +27,7 @@ export async function deposit(
   config: BYOKConfig,
   parameters: DepositParameters,
 ): DepositReturnType {
-  const { fromAddr, mint, amount, permitNonce, permitDeadline, permit } =
+  const { fromAddr, mint, amount, permitNonce, permitDeadline, permit, newPublicKey } =
     parameters
   const {
     signMessage,
@@ -49,7 +50,7 @@ export async function deposit(
   const body = await utils.byok_deposit(
     walletStr,
     signMessage,
-    publicKey,
+    newPublicKey ?? publicKey,
     fromAddr,
     mint,
     toHex(amount),
