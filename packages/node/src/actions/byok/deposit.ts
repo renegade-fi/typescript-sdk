@@ -60,7 +60,6 @@ export async function deposit(
   const walletStr = stringifyForWasm(wallet)
 
   const body = await utils.byok_deposit(
-    // seed,
     walletStr,
     signMessage,
     publicKey,
@@ -71,7 +70,6 @@ export async function deposit(
     toHex(permitDeadline),
     permit,
   )
-  console.log('[JS] Body: ', body)
 
   try {
     const res = await postWithSymmetricKey(config, {
