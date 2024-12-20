@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 use crate::{
     circuit_types::balance::Balance,
     exports::{
-        byok::{parse::DepositParameters, signature::generate_statement_signature},
+        byok::{generate_signature, parameters::DepositParameters},
         error::WasmError,
         helpers::deserialize_wallet,
     },
@@ -15,9 +15,9 @@ use crate::{
 
 #[wasm_bindgen]
 pub async fn byok_deposit(
-    seed: &str,
     wallet_str: &str,
     sign_message: &Function,
+    public_key: &str,
     from_addr: &str,
     mint: &str,
     amount: &str,
@@ -25,7 +25,8 @@ pub async fn byok_deposit(
     permit_deadline: &str,
     permit_signature: &str,
 ) -> Result<JsValue, JsError> {
-    let params = DepositParameters::parse(
+    let params = DepositParameters::new(
+        public_key,
         from_addr,
         mint,
         amount,
@@ -44,12 +45,11 @@ pub async fn byok_deposit(
         .map_err(WasmError::WalletMutation)?;
     wallet.reblind_wallet();
 
-    // let signature = generate_signature(&wallet, sign_message).await?;
-    let signature = generate_statement_signature(seed, &wallet).await?.to_vec();
+    let sig = generate_signature(&wallet, sign_message).await?;
 
     let update_auth = WalletUpdateAuthorization {
-        statement_sig: signature,
-        new_root_key: None,
+        statement_sig: sig,
+        new_root_key: Some(params.public_key),
     };
 
     let request = DepositBalanceRequest {

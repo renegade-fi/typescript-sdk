@@ -217,8 +217,32 @@ export async function postWithSymmetricKey(
   return await postRelayerRaw(url, body, headersWithAuth)
 }
 
+export async function getWithSymmetricKey(
+  config: BaseConfig,
+  {
+    headers = {},
+    key,
+    url,
+  }: {
+    headers?: Record<string, string>
+    key: string
+    url: string
+  },
+) {
+  const path = getPathFromUrl(url)
+  const headersWithAuth = addExpiringAuthToHeaders(
+    config,
+    path,
+    headers,
+    '',
+    key,
+    SIG_EXPIRATION_BUFFER_MS,
+  )
+  return await getRelayerRaw(url, headersWithAuth)
+}
+
 /// Get the path from a URL
-function getPathFromUrl(url: string): string {
+export function getPathFromUrl(url: string): string {
   try {
     const parsedUrl = new URL(url)
     return parsedUrl.pathname || '/'

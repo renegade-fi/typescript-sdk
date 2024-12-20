@@ -46,4 +46,7 @@ pub enum WasmError {
 
     #[error("{}", wasm_err!("Failed to sign commitment - {0}"))]
     SigningFailed(String),
+
+    #[error("{}", wasm_err!("{0}"))]
+    Custom(String),
 }

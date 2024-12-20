@@ -1,65 +1,35 @@
+use serde::Serialize;
+use uuid::Uuid;
+
 use crate::{
-    circuit_types::keychain::{PublicKeyChain, PublicSigningKey, SecretIdentificationKey},
-    common::keychain::{HmacKey, KeyChain, PrivateKeyChain},
+    circuit_types::{
+        keychain::{PublicKeyChain, PublicSigningKey, SecretIdentificationKey},
+        scalar_to_hex_string,
+    },
+    common::{
+        keychain::{HmacKey, KeyChain, PrivateKeyChain},
+        types::WalletIdentifier,
+    },
     exports::error::WasmError,
     helpers::{biguint_from_hex_string, bytes_from_hex_string},
     types::Scalar,
 };
-use num_bigint::BigUint;
-use uuid::Uuid;
-
-pub struct DepositParameters {
-    pub from_addr: BigUint,
-    pub mint: BigUint,
-    pub amount: BigUint,
-    pub permit_nonce: BigUint,
-    pub permit_deadline: BigUint,
-    pub permit_signature: Vec<u8>,
-}
-
-impl DepositParameters {
-    pub fn parse(
-        from_addr: &str,
-        mint: &str,
-        amount: &str,
-        permit_nonce: &str,
-        permit_deadline: &str,
-        permit_signature: &str,
-    ) -> Result<Self, WasmError> {
-        Ok(Self {
-            from_addr: biguint_from_hex_string(from_addr)
-                .map_err(|e| WasmError::InvalidParameter(format!("from_addr: {}", e)))?,
-            mint: biguint_from_hex_string(mint)
-                .map_err(|e| WasmError::InvalidParameter(format!("mint: {}", e)))?,
-            amount: biguint_from_hex_string(amount)
-                .map_err(|e| WasmError::InvalidParameter(format!("amount: {}", e)))?,
-            permit_nonce: biguint_from_hex_string(permit_nonce)
-                .map_err(|e| WasmError::InvalidParameter(format!("permit_nonce: {}", e)))?,
-            permit_deadline: biguint_from_hex_string(permit_deadline)
-                .map_err(|e| WasmError::InvalidParameter(format!("permit_deadline: {}", e)))?,
-            permit_signature: biguint_from_hex_string(permit_signature)
-                .map_err(|e| WasmError::InvalidParameter(format!("permit_signature: {}", e)))?
-                .to_bytes_be(),
-        })
-    }
-}
 
 pub struct CreateWalletParameters {
     pub wallet_id: Uuid,
     pub blinder_seed: Scalar,
     pub share_seed: Scalar,
-    // Keychain
     pub key_chain: KeyChain,
 }
 
 impl CreateWalletParameters {
-    pub fn parse(
+    pub fn new(
         wallet_id: &str,
         blinder_seed: &str,
         share_seed: &str,
-        symmetric_key: &str,
-        sk_match: &str,
         pk_root: &str,
+        sk_match: &str,
+        symmetric_key: &str,
     ) -> Result<Self, WasmError> {
         // Wallet seed info
         let wallet_id = Uuid::parse_str(wallet_id)
@@ -81,7 +51,7 @@ impl CreateWalletParameters {
             .map_err(|e| WasmError::InvalidParameter(format!("pk_root: {}", e)))?;
         let pk_root = PublicSigningKey::from_bytes(&pk_root_bytes)
             .map_err(|e| WasmError::InvalidParameter(format!("pk_root: {}", e)))?;
-        let symmetric_key = HmacKey::new(symmetric_key)
+        let symmetric_key = HmacKey::from_hex_string(symmetric_key)
             .map_err(|e| WasmError::InvalidParameter(format!("symmetric_key: {}", e)))?;
         let key_chain = KeyChain {
             public_keys: PublicKeyChain::new(pk_root, pk_match),
@@ -98,4 +68,46 @@ impl CreateWalletParameters {
             key_chain,
         })
     }
+}
+
+pub struct GetPkRootParameters {
+    pub pk_root: PublicSigningKey,
+}
+
+impl GetPkRootParameters {
+    pub fn new(pk_root: &str) -> Result<Self, WasmError> {
+        let pk_root_bytes = bytes_from_hex_string(pk_root)
+            .map_err(|e| WasmError::InvalidParameter(format!("pk_root: {}", e)))?;
+        let pk_root = PublicSigningKey::from_bytes(&pk_root_bytes)
+            .map_err(|e| WasmError::InvalidParameter(format!("pk_root: {}", e)))?;
+
+        Ok(Self { pk_root })
+    }
+}
+
+fn serialize_hmac_key<S>(key: &HmacKey, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: serde::Serializer,
+{
+    serializer.serialize_str(&key.to_hex_string())
+}
+
+#[derive(Serialize)]
+pub struct GeneratedSecrets {
+    #[serde(serialize_with = "serialize_wallet_id")]
+    pub wallet_id: WalletIdentifier,
+    #[serde(serialize_with = "scalar_to_hex_string")]
+    pub blinder_seed: Scalar,
+    #[serde(serialize_with = "scalar_to_hex_string")]
+    pub share_seed: Scalar,
+    #[serde(serialize_with = "serialize_hmac_key")]
+    pub symmetric_key: HmacKey,
+    pub sk_match: SecretIdentificationKey,
+}
+
+fn serialize_wallet_id<S>(wallet_id: &WalletIdentifier, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: serde::Serializer,
+{
+    serializer.serialize_str(&wallet_id.to_string())
 }
