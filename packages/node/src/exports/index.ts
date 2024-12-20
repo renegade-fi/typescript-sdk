@@ -6,9 +6,7 @@ import {
   createAuthConfig as core_createAuthConfig,
   createConfig as core_createConfig,
 } from '@renegade-fi/core'
-import {
-  createBYOKConfig as core_createBYOKConfig,
-} from '../utils/createBYOKConfig.js'
+import { createBYOKConfig as core_createBYOKConfig } from '../utils/createBYOKConfig.js'
 
 import * as RustUtils from '../../renegade-utils/index.js'
 

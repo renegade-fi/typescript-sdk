@@ -1,7 +1,7 @@
+import type { BaseConfig } from '@renegade-fi/core'
 import invariant from 'tiny-invariant'
-import type { BaseConfig } from '../../../core/src/createConfig.js'
-import type * as rustUtils from '../../../core/src/utils.js'
 import type { SignMessageReturnType } from 'viem'
+import type * as rustUtils from '../../renegade-utils/index.js'
 
 /**
  * Configuration parameters for Bring Your Own Keychain (BYOK) setup.
@@ -11,9 +11,9 @@ import type { SignMessageReturnType } from 'viem'
 export type CreateBYOKConfigParameters = {
   /** URL of the relayer service */
   relayerUrl: string
-  /** 
+  /**
    * Function to sign messages using the user's own wallet.
-   * 
+   *
    * Important requirements for the signing function:
    * 1. The function receives a pre-hashed message (using keccak256) - do not hash the message again
    * 2. Do not prefix the message - sign it as is
@@ -35,38 +35,46 @@ export type CreateBYOKConfigParameters = {
 
 /**
  * Creates a configuration for users who want to bring their own keychain (BYOK).
- * 
+ *
  * This configuration differs from the standard createConfig by allowing users to maintain
  * custody of their wallet secrets while still enabling interaction with the relayer for
  * wallet operations. Instead of managing keys internally, it accepts user-provided
  * cryptographic materials and signing functions.
- * 
+ *
  * The signing function provided must follow specific requirements for signature generation
  * to ensure compatibility with the underlying cryptographic operations. See the documentation
  * for `signMessage` in CreateBYOKConfigParameters for detailed requirements.
- * 
+ *
  * @param parameters - Configuration parameters including relayer URL, signing function, and keys
  * @returns A configuration object that can be used to interact with the relayer
  */
 export function createBYOKConfig(
   parameters: CreateBYOKConfigParameters,
 ): BYOKConfig {
-  const { relayerUrl, signMessage, symmetricKey, walletId, publicKey } = parameters
+  const { relayerUrl, signMessage, symmetricKey, walletId, publicKey } =
+    parameters
   invariant(
     parameters.utils,
     'Utils must be provided by the package if not supplied by the user.',
   )
   return {
-    utils: parameters.utils,
-    relayerUrl,
+    // BYOK
     signMessage,
     symmetricKey,
     walletId,
     publicKey,
+    // BaseConfig
+    getRelayerBaseUrl: (route = '') => {
+      const formattedRoute = route.startsWith('/') ? route : `/${route}`
+      return `${relayerUrl}/v0${formattedRoute}`
+    },
+    utils: parameters.utils,
+    relayerUrl,
   }
 }
 
 export type BYOKConfig = BaseConfig & {
+  getRelayerBaseUrl: (route?: string) => string
   relayerUrl: string
   signMessage: (message: string) => Promise<SignMessageReturnType>
   symmetricKey: `0x${string}`
