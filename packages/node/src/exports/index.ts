@@ -79,6 +79,10 @@ export {
   createOrder as byokCreateOrder,
   type CreateOrderParameters,
 } from '../actions/byok/createOrder.js'
+export {
+  cancelOrder as byokCancelOrder,
+  type CancelOrderParameters,
+} from '../actions/byok/cancelOrder.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade-fi/core

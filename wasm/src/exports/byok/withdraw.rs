@@ -30,16 +30,14 @@ pub async fn byok_withdraw(
     let mut wallet = deserialize_wallet(wallet_str)?;
     handle_key_rotation(&mut wallet, &public_key)?;
 
-    // Process withdrawal
     wallet
         .withdraw(&params.mint, amount_u128)
         .map_err(Error::wallet_mutation)?;
     wallet.reblind_wallet();
 
-    // Generate signature for the wallet update
     let sig = generate_signature(&wallet, sign_message).await?;
 
-    let withdrawal_sig = authorize_withdrawal(
+    let external_transfer_sig = authorize_withdrawal(
         sign_message,
         params.mint,
         amount_u128,
@@ -55,7 +53,7 @@ pub async fn byok_withdraw(
     let request = WithdrawBalanceRequest {
         amount: params.amount,
         destination_addr: params.destination_addr,
-        external_transfer_sig: withdrawal_sig.to_vec(),
+        external_transfer_sig,
         update_auth,
     };
 
