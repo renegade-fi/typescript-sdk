@@ -7,7 +7,7 @@ use crate::{
         byok::{
             generate_signature, key_rotation::handle_key_rotation, parameters::DepositParameters,
         },
-        error::WasmError,
+        error::Error,
         helpers::deserialize_wallet,
     },
     external_api::wallet::{DepositBalanceRequest, WalletUpdateAuthorization},
@@ -43,7 +43,7 @@ pub async fn byok_deposit(
     let balance = Balance::new_from_mint_and_amount(params.mint.clone(), amount);
     wallet
         .add_balance(balance)
-        .map_err(WasmError::WalletMutation)?;
+        .map_err(Error::wallet_mutation)?;
     wallet.reblind_wallet();
 
     let sig = generate_signature(&wallet, sign_message).await?;
@@ -57,10 +57,10 @@ pub async fn byok_deposit(
         from_addr: params.from_addr,
         mint: params.mint,
         amount: params.amount,
-        update_auth,
         permit_nonce: params.permit_nonce,
         permit_deadline: params.permit_deadline,
         permit_signature: params.permit_signature,
+        update_auth,
     };
 
     serialize_to_js!(request)

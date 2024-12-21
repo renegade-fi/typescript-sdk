@@ -7,7 +7,7 @@ use wasm_bindgen_futures::JsFuture;
 
 use crate::{
     common::{keychain::HmacKey, types::WalletIdentifier},
-    exports::error::WasmError,
+    exports::error::Error,
     helpers::bytes_from_hex_string,
     types::Scalar,
 };
@@ -33,35 +33,35 @@ const WALLET_ID_BYTES: usize = 16;
 /// Construct a wallet ID from the given Ethereum keypair
 ///
 /// This is done to ensure deterministic wallet recovery
-pub async fn derive_wallet_id(sign_message: &Function) -> Result<WalletIdentifier, WasmError> {
+pub async fn derive_wallet_id(sign_message: &Function) -> Result<WalletIdentifier, Error> {
     let bytes = get_extended_sig_bytes(WALLET_ID_MESSAGE, sign_message).await?;
     Ok(WalletIdentifier::from_slice(&bytes[..WALLET_ID_BYTES])
-        .map_err(|_| WasmError::Custom("Failed to create wallet ID".to_string()))?)
+        .map_err(|_| Error::new("Failed to create wallet ID"))?)
 }
 
-pub async fn derive_blinder_seed(sign_message: &Function) -> Result<Scalar, WasmError> {
+pub async fn derive_blinder_seed(sign_message: &Function) -> Result<Scalar, Error> {
     // Sign the blinder seed message and convert to a scalar
     derive_scalar(BLINDER_STREAM_SEED_MESSAGE, sign_message).await
 }
 
 /// Construct the share seed for the wallet
-pub async fn derive_share_seed(sign_message: &Function) -> Result<Scalar, WasmError> {
+pub async fn derive_share_seed(sign_message: &Function) -> Result<Scalar, Error> {
     // Sign the share seed message and convert to a scalar
     derive_scalar(SHARE_STREAM_SEED_MESSAGE, sign_message).await
 }
 
-pub async fn derive_sk_match(sign_message: &Function) -> Result<Scalar, WasmError> {
+pub async fn derive_sk_match(sign_message: &Function) -> Result<Scalar, Error> {
     derive_scalar(MATCH_KEY_MESSAGE, sign_message).await
 }
 
-pub async fn derive_symmetric_key(sign_message: &Function) -> Result<HmacKey, WasmError> {
+pub async fn derive_symmetric_key(sign_message: &Function) -> Result<HmacKey, Error> {
     get_sig_bytes(SYMMETRIC_KEY_MESSAGE, sign_message)
         .await
         .map(HmacKey)
 }
 
 /// Get a `Scalar` from a signature on a message
-async fn derive_scalar(msg: &[u8], sign_message: &Function) -> Result<Scalar, WasmError> {
+async fn derive_scalar(msg: &[u8], sign_message: &Function) -> Result<Scalar, Error> {
     let bytes = get_extended_sig_bytes(msg, sign_message).await?;
     Ok(Scalar::from(BigUint::from_bytes_be(&bytes)))
 }
@@ -71,7 +71,7 @@ async fn derive_scalar(msg: &[u8], sign_message: &Function) -> Result<Scalar, Wa
 async fn get_extended_sig_bytes(
     msg: &[u8],
     sign_message: &Function,
-) -> Result<[u8; EXTENDED_BYTES], WasmError> {
+) -> Result<[u8; EXTENDED_BYTES], Error> {
     let bytes = get_sig_bytes(msg, sign_message).await?;
     Ok(extend_to_64_bytes(&bytes))
 }
@@ -80,7 +80,7 @@ async fn get_extended_sig_bytes(
 async fn get_sig_bytes(
     msg: &[u8],
     sign_message: &Function,
-) -> Result<[u8; KECCAK_HASH_BYTES], WasmError> {
+) -> Result<[u8; KECCAK_HASH_BYTES], Error> {
     let digest = keccak256(msg);
     let digest_hex = format!("0x{}", hex::encode(&digest));
     let this = JsValue::null();
@@ -88,17 +88,29 @@ async fn get_sig_bytes(
 
     let sig_promise: Promise = sign_message
         .call1(&this, &arg)
-        .map_err(|_| WasmError::SignMessageInvocationFailed("call1 failed".into()))?
+        .map_err(|e| {
+            Error::sign_message(format!(
+                "Failed to invoke sign_message: {}",
+                e.as_string().unwrap_or_default()
+            ))
+        })?
         .dyn_into()
-        .map_err(|_| WasmError::SignMessageInvocationFailed("dyn_into Promise failed".into()))?;
+        .map_err(|e| {
+            Error::sign_message(format!(
+                "Failed to convert Promise to Signature: {}",
+                e.as_string().unwrap_or_default()
+            ))
+        })?;
 
     let signature = JsFuture::from(sig_promise)
         .await
-        .map_err(|e| WasmError::PromiseRejected(e.as_string().unwrap_or_default()))?;
+        .map_err(|e| Error::promise_rejected(e.as_string().unwrap_or_default()))?;
 
-    let sig_hex = signature.as_string().ok_or(WasmError::ConversionFailed)?;
+    let sig_hex = signature
+        .as_string()
+        .ok_or_else(|| Error::new("Failed to convert signature to string"))?;
 
-    let bytes = bytes_from_hex_string(&sig_hex).map_err(WasmError::SignatureHexDecodingFailed)?;
+    let bytes = bytes_from_hex_string(&sig_hex).map_err(|e| Error::sign_message(e.to_string()))?;
 
     // Take the keccak hash of the signature to disperse its elements
     Ok(keccak256(bytes))

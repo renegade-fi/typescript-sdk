@@ -14,7 +14,7 @@ use crate::{
         to_contract_external_transfer, ExternalTransfer, ExternalTransferDirection,
     },
     common::types::Wallet,
-    exports::error::WasmError,
+    exports::error::Error,
     helpers::{bytes_from_hex_string, bytes_to_hex_string},
 };
 
@@ -34,7 +34,7 @@ use crate::{
 pub async fn generate_signature(
     wallet: &Wallet,
     sign_message: &Function,
-) -> Result<Vec<u8>, WasmError> {
+) -> Result<Vec<u8>, Error> {
     let comm_bytes = wallet
         .get_wallet_share_commitment()
         .inner()
@@ -48,27 +48,38 @@ pub async fn generate_signature(
 
     let sig_promise: Promise = sign_message
         .call1(&this, &arg)
-        .map_err(|_| WasmError::SignMessageInvocationFailed("call1 failed".into()))?
+        .map_err(|e| {
+            Error::sign_message(format!(
+                "Failed to invoke sign_message: {}",
+                e.as_string().unwrap_or_default()
+            ))
+        })?
         .dyn_into()
-        .map_err(|_| WasmError::SignMessageInvocationFailed("dyn_into Promise failed".into()))?;
+        .map_err(|e| {
+            Error::sign_message(format!(
+                "Failed to convert Promise to Signature: {}",
+                e.as_string().unwrap_or_default()
+            ))
+        })?;
 
     let signature = JsFuture::from(sig_promise)
         .await
-        .map_err(|e| WasmError::PromiseRejected(e.as_string().unwrap_or_default()))?;
+        .map_err(|e| Error::promise_rejected(e.as_string().unwrap_or_default()))?;
 
-    let sig_hex = signature.as_string().ok_or(WasmError::ConversionFailed)?;
-    let bytes = bytes_from_hex_string(&sig_hex).map_err(WasmError::SignatureHexDecodingFailed)?;
+    let sig_hex = signature
+        .as_string()
+        .ok_or_else(|| Error::new("Failed to convert signature to string"))?;
+    let bytes = bytes_from_hex_string(&sig_hex).map_err(|e| Error::sign_message(e.to_string()))?;
 
     Ok(bytes)
 }
 
-/// Generate a withdrawal payload with proper auth data
 pub async fn authorize_withdrawal(
     sign_message: &Function,
     mint: BigUint,
     amount: u128,
     account_addr: BigUint,
-) -> Result<Vec<u8>, WasmError> {
+) -> Result<Vec<u8>, Error> {
     let transfer = ExternalTransfer {
         mint,
         amount,
@@ -77,10 +88,10 @@ pub async fn authorize_withdrawal(
     };
 
     let contract_transfer = to_contract_external_transfer(&transfer)
-        .map_err(|_| WasmError::Custom("Failed to convert transfer".into()))?;
+        .map_err(|_| Error::new("Failed to convert transfer"))?;
 
-    let buf =
-        postcard::to_allocvec(&contract_transfer).map_err(|e| WasmError::Custom(e.to_string()))?;
+    let buf = postcard::to_allocvec(&contract_transfer)
+        .map_err(|e| Error::new(format!("Failed to serialize transfer: {e}")))?;
 
     let digest = keccak256(&buf);
     let digest_hex = bytes_to_hex_string(&digest);
@@ -90,32 +101,38 @@ pub async fn authorize_withdrawal(
 
     let sig_promise: Promise = sign_message
         .call1(&this, &arg)
-        .map_err(|_| WasmError::SignMessageInvocationFailed("call1 failed".into()))?
+        .map_err(|e| {
+            Error::sign_message(format!(
+                "Failed to invoke sign_message: {}",
+                e.as_string().unwrap_or_default()
+            ))
+        })?
         .dyn_into()
-        .map_err(|_| WasmError::SignMessageInvocationFailed("dyn_into Promise failed".into()))?;
+        .map_err(|e| {
+            Error::sign_message(format!(
+                "Failed to convert Promise to Signature: {}",
+                e.as_string().unwrap_or_default()
+            ))
+        })?;
 
     let signature = JsFuture::from(sig_promise)
         .await
-        .map_err(|e| WasmError::PromiseRejected(e.as_string().unwrap_or_default()))?;
+        .map_err(|e| Error::promise_rejected(e.as_string().unwrap_or_default()))?;
 
-    let sig_hex = signature.as_string().ok_or(WasmError::ConversionFailed)?;
-    let bytes = bytes_from_hex_string(&sig_hex).map_err(WasmError::SignatureHexDecodingFailed)?;
+    let sig_hex = signature
+        .as_string()
+        .ok_or_else(|| Error::new("Failed to convert signature to string"))?;
+    let bytes = bytes_from_hex_string(&sig_hex).map_err(|e| Error::sign_message(e.to_string()))?;
 
     Ok(bytes)
 }
 
-// For testing purposes
-// TODO: Remove this
-pub async fn generate_statement_signature(
-    seed: &str,
-    wallet: &Wallet,
-) -> Result<Signature, WasmError> {
+pub async fn generate_statement_signature(seed: &str, wallet: &Wallet) -> Result<Signature, Error> {
     let old_sk_root = crate::common::derivation::derive_sk_root_scalars(
         seed,
         &wallet.key_chain.public_keys.nonce,
     );
-    let signing_key = SigningKey::try_from(&old_sk_root)
-        .map_err(|e| WasmError::SigningKeyCreationFailed(e.to_string()))?;
+    let signing_key = SigningKey::try_from(&old_sk_root).map_err(Error::sign_message)?;
 
     let comm_bytes = wallet
         .get_wallet_share_commitment()
@@ -126,7 +143,7 @@ pub async fn generate_statement_signature(
 
     let (sig, recovery_id) = signing_key
         .sign_prehash_recoverable(&digest)
-        .map_err(|e| WasmError::SigningFailed(e.to_string()))?;
+        .map_err(Error::sign_message)?;
 
     let signature = Signature {
         r: U256::from_big_endian(&sig.r().to_bytes()),
