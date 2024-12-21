@@ -10,7 +10,7 @@ use crate::{
         keychain::{HmacKey, KeyChain, PrivateKeyChain},
         types::WalletIdentifier,
     },
-    exports::error::WasmError,
+    exports::error::Error,
     helpers::{biguint_from_hex_string, bytes_from_hex_string},
     types::Scalar,
 };
@@ -30,29 +30,29 @@ impl CreateWalletParameters {
         pk_root: &str,
         sk_match: &str,
         symmetric_key: &str,
-    ) -> Result<Self, WasmError> {
+    ) -> Result<Self, Error> {
         // Wallet seed info
         let wallet_id = Uuid::parse_str(wallet_id)
-            .map_err(|e| WasmError::InvalidParameter(format!("wallet_id: {}", e)))?;
+            .map_err(|e| Error::invalid_parameter(format!("wallet_id: {}", e)))?;
         let blinder_seed_bigint = biguint_from_hex_string(blinder_seed)
-            .map_err(|e| WasmError::InvalidParameter(format!("blinder_seed: {}", e)))?;
+            .map_err(|e| Error::invalid_parameter(format!("blinder_seed: {}", e)))?;
         let blinder_seed = Scalar::from(blinder_seed_bigint);
         let share_seed_bigint = biguint_from_hex_string(share_seed)
-            .map_err(|e| WasmError::InvalidParameter(format!("share_seed: {}", e)))?;
+            .map_err(|e| Error::invalid_parameter(format!("share_seed: {}", e)))?;
         let share_seed = Scalar::from(share_seed_bigint);
 
         // KeyChain
         let sk_match_bigint = biguint_from_hex_string(sk_match)
-            .map_err(|e| WasmError::InvalidParameter(format!("sk_match: {}", e)))?;
+            .map_err(|e| Error::invalid_parameter(format!("sk_match: {}", e)))?;
         let sk_match_scalar = Scalar::from(sk_match_bigint);
         let sk_match = SecretIdentificationKey::from(sk_match_scalar);
         let pk_match = sk_match.get_public_key();
         let pk_root_bytes = bytes_from_hex_string(pk_root)
-            .map_err(|e| WasmError::InvalidParameter(format!("pk_root: {}", e)))?;
+            .map_err(|e| Error::invalid_parameter(format!("pk_root: {}", e)))?;
         let pk_root = PublicSigningKey::from_bytes(&pk_root_bytes)
-            .map_err(|e| WasmError::InvalidParameter(format!("pk_root: {}", e)))?;
+            .map_err(|e| Error::invalid_parameter(format!("pk_root: {}", e)))?;
         let symmetric_key = HmacKey::from_hex_string(symmetric_key)
-            .map_err(|e| WasmError::InvalidParameter(format!("symmetric_key: {}", e)))?;
+            .map_err(|e| Error::invalid_parameter(format!("symmetric_key: {}", e)))?;
         let key_chain = KeyChain {
             public_keys: PublicKeyChain::new(pk_root, pk_match),
             secret_keys: PrivateKeyChain {
@@ -75,11 +75,11 @@ pub struct GetPkRootParameters {
 }
 
 impl GetPkRootParameters {
-    pub fn new(pk_root: &str) -> Result<Self, WasmError> {
+    pub fn new(pk_root: &str) -> Result<Self, Error> {
         let pk_root_bytes = bytes_from_hex_string(pk_root)
-            .map_err(|e| WasmError::InvalidParameter(format!("pk_root: {}", e)))?;
+            .map_err(|e| Error::invalid_parameter(format!("pk_root: {}", e)))?;
         let pk_root = PublicSigningKey::from_bytes(&pk_root_bytes)
-            .map_err(|e| WasmError::InvalidParameter(format!("pk_root: {}", e)))?;
+            .map_err(|e| Error::invalid_parameter(format!("pk_root: {}", e)))?;
 
         Ok(Self { pk_root })
     }

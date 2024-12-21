@@ -1,4 +1,4 @@
-use crate::{exports::error::WasmError, helpers::biguint_from_hex_string};
+use crate::{exports::error::Error, helpers::biguint_from_hex_string};
 use num_bigint::BigUint;
 use num_traits::ToPrimitive;
 
@@ -21,28 +21,28 @@ impl DepositParameters {
         permit_nonce: &str,
         permit_deadline: &str,
         permit_signature: &str,
-    ) -> Result<Self, WasmError> {
+    ) -> Result<Self, Error> {
         Ok(Self {
             public_key: public_key.to_string(),
             from_addr: biguint_from_hex_string(from_addr)
-                .map_err(|e| WasmError::InvalidParameter(format!("from_addr: {}", e)))?,
+                .map_err(|e| Error::invalid_parameter(format!("from_addr: {}", e)))?,
             mint: biguint_from_hex_string(mint)
-                .map_err(|e| WasmError::InvalidParameter(format!("mint: {}", e)))?,
+                .map_err(|e| Error::invalid_parameter(format!("mint: {}", e)))?,
             amount: biguint_from_hex_string(amount)
-                .map_err(|e| WasmError::InvalidParameter(format!("amount: {}", e)))?,
+                .map_err(|e| Error::invalid_parameter(format!("amount: {}", e)))?,
             permit_nonce: biguint_from_hex_string(permit_nonce)
-                .map_err(|e| WasmError::InvalidParameter(format!("permit_nonce: {}", e)))?,
+                .map_err(|e| Error::invalid_parameter(format!("permit_nonce: {}", e)))?,
             permit_deadline: biguint_from_hex_string(permit_deadline)
-                .map_err(|e| WasmError::InvalidParameter(format!("permit_deadline: {}", e)))?,
+                .map_err(|e| Error::invalid_parameter(format!("permit_deadline: {}", e)))?,
             permit_signature: biguint_from_hex_string(permit_signature)
-                .map_err(|e| WasmError::InvalidParameter(format!("permit_signature: {}", e)))?
+                .map_err(|e| Error::invalid_parameter(format!("permit_signature: {}", e)))?
                 .to_bytes_be(),
         })
     }
 
-    pub fn amount_as_u128(&self) -> Result<u128, WasmError> {
+    pub fn amount_as_u128(&self) -> Result<u128, Error> {
         self.amount.to_u128().ok_or_else(|| {
-            WasmError::InvalidParameter(format!("Could not convert {} to u128", self.amount))
+            Error::invalid_parameter(format!("Could not convert {} to u128", self.amount))
         })
     }
 }

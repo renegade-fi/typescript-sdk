@@ -75,6 +75,10 @@ export {
   withdraw as byokWithdraw,
   type WithdrawParameters,
 } from '../actions/byok/withdraw.js'
+export {
+  createOrder as byokCreateOrder,
+  type CreateOrderParameters,
+} from '../actions/byok/createOrder.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade-fi/core

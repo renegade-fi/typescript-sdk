@@ -7,7 +7,7 @@ use crate::{
             generate_signature, key_rotation::handle_key_rotation, parameters::WithdrawParameters,
             signature::authorize_withdrawal,
         },
-        error::WasmError,
+        error::Error,
         helpers::deserialize_wallet,
     },
     external_api::wallet::{WalletUpdateAuthorization, WithdrawBalanceRequest},
@@ -33,7 +33,7 @@ pub async fn byok_withdraw(
     // Process withdrawal
     wallet
         .withdraw(&params.mint, amount_u128)
-        .map_err(WasmError::WalletMutation)?;
+        .map_err(Error::wallet_mutation)?;
     wallet.reblind_wallet();
 
     // Generate signature for the wallet update

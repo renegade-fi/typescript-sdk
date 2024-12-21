@@ -119,10 +119,20 @@ export function new_external_quote_request(base_mint: string, quote_mint: string
 */
 export function assemble_external_match(do_gas_estimation: boolean, signed_quote: string): any;
 /**
-* @param {string} pk_root
-* @returns {any[]}
+* @param {string} wallet_str
+* @param {Function} sign_message
+* @param {string} public_key
+* @param {string} id
+* @param {string} base_mint
+* @param {string} quote_mint
+* @param {string} side
+* @param {string} amount
+* @param {string} worst_case_price
+* @param {string} min_fill_size
+* @param {boolean} allow_external_matches
+* @returns {Promise<any>}
 */
-export function byok_get_pk_root_scalars(pk_root: string): any[];
+export function byok_create_order(wallet_str: string, sign_message: Function, public_key: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean): Promise<any>;
 /**
 * @param {string} wallet_id
 * @param {string} blinder_seed
@@ -197,3 +207,8 @@ export function create_request_signature(path: string, headers: any, body: strin
 * @returns {string}
 */
 export function b64_to_hex_hmac_key(b64_key: string): string;
+/**
+* @param {string} pk_root
+* @returns {any[]}
+*/
+export function byok_get_pk_root_scalars(pk_root: string): any[];
