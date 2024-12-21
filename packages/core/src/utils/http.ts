@@ -242,7 +242,7 @@ export async function getWithSymmetricKey(
 }
 
 /// Get the path from a URL
-export function getPathFromUrl(url: string): string {
+function getPathFromUrl(url: string): string {
   try {
     const parsedUrl = new URL(url)
     return parsedUrl.pathname || '/'

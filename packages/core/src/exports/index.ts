@@ -320,11 +320,8 @@ export { deepEqual } from '../utils/deepEqual.js'
 
 export {
   addExpiringAuthToHeaders,
-  getPathFromUrl,
-  getRelayerRaw,
   getWithSymmetricKey,
   postRelayerRaw,
-  postRelayerWithAuth,
   postWithSymmetricKey,
 } from '../utils/http.js'
 

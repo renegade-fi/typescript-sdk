@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsValue;
 
 use crate::circuit_types::keychain::SecretIdentificationKey;
-use crate::exports::byok::parameters::wallet::GeneratedSecrets;
+use crate::exports::byok::parameters::GeneratedSecrets;
 use crate::exports::byok::utils::derivation::{
     derive_blinder_seed, derive_share_seed, derive_sk_match, derive_symmetric_key, derive_wallet_id,
 };

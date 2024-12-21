@@ -172,6 +172,14 @@ export function generate_wallet_secrets(sign_message: Function): Promise<any>;
 */
 export function byok_withdraw(wallet_str: string, sign_message: Function, public_key: string, mint: string, amount: string, destination_addr: string): Promise<any>;
 /**
+* @param {string} wallet_str
+* @param {Function} sign_message
+* @param {string} public_key
+* @param {string} id
+* @returns {Promise<any>}
+*/
+export function byok_cancel_order(wallet_str: string, sign_message: Function, public_key: string, id: string): Promise<any>;
+/**
 * @param {string} seed
 * @param {bigint} nonce
 * @returns {any}
@@ -207,8 +215,3 @@ export function create_request_signature(path: string, headers: any, body: strin
 * @returns {string}
 */
 export function b64_to_hex_hmac_key(b64_key: string): string;
-/**
-* @param {string} pk_root
-* @returns {any[]}
-*/
-export function byok_get_pk_root_scalars(pk_root: string): any[];
