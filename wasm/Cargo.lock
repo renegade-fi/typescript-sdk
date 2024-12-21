@@ -2809,6 +2809,7 @@ dependencies = [
  "hmac",
  "indexmap",
  "itertools 0.10.5",
+ "js-sys",
  "k256",
  "lazy_static",
  "num-bigint",
@@ -2821,8 +2822,10 @@ dependencies = [
  "serde_json",
  "serde_with",
  "sha2",
+ "thiserror",
  "uuid 1.10.0",
  "wasm-bindgen",
+ "wasm-bindgen-futures",
  "web-sys",
 ]
 

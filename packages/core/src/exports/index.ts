@@ -201,6 +201,12 @@ export {
 export { waitForTaskCompletionWs } from '../actions/waitForTaskCompletionWs.js'
 
 export {
+  type WaitForWalletIndexParameters,
+  type WaitForWalletIndexReturnType,
+  waitForWalletIndexing,
+} from '../actions/waitForWalletIndexing.js'
+
+export {
   type WatchInitializedReturnType,
   watchInitialized,
 } from '../actions/watchInitialized.js'
@@ -312,7 +318,12 @@ export {
 
 export { deepEqual } from '../utils/deepEqual.js'
 
-export { postRelayerRaw, addExpiringAuthToHeaders } from '../utils/http.js'
+export {
+  addExpiringAuthToHeaders,
+  getWithSymmetricKey,
+  postRelayerRaw,
+  postWithSymmetricKey,
+} from '../utils/http.js'
 
 export {
   AuthType,

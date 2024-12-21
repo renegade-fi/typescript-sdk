@@ -6,6 +6,7 @@ import {
   createAuthConfig as core_createAuthConfig,
   createConfig as core_createConfig,
 } from '@renegade-fi/core'
+import { createBYOKConfig as core_createBYOKConfig } from '../utils/createBYOKConfig.js'
 
 import * as RustUtils from '../../renegade-utils/index.js'
 
@@ -29,7 +30,17 @@ function createAuthConfig(
   return config
 }
 
-export { createAuthConfig, createConfig }
+function createBYOKConfig(
+  ...args: Parameters<typeof core_createBYOKConfig>
+): ReturnType<typeof core_createBYOKConfig> {
+  const config = core_createBYOKConfig({
+    ...args[0],
+    utils: RustUtils,
+  })
+  return config
+}
+
+export { createAuthConfig, createConfig, createBYOKConfig }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Actions
@@ -43,6 +54,35 @@ export {
   executeWithdrawal,
   type ExecuteWithdrawalParameters,
 } from '../actions/executeWithdrawal.js'
+export { deposit as byokDeposit } from '../actions/byok/deposit.js'
+export {
+  createWallet as byokCreateWallet,
+  type CreateWalletParameters,
+} from '../actions/byok/createWallet.js'
+export {
+  generateWalletSecrets,
+  type GeneratedSecrets,
+} from '../actions/byok/generateWalletSecrets.js'
+export {
+  getPkRootScalars as byokGetPkRootScalars,
+  type GetPkRootParameters,
+} from '../actions/byok/getPkRoot.js'
+export {
+  getBackOfQueueWallet as byokGetBackOfQueueWallet,
+  type GetBackOfQueueWalletParameters,
+} from '../actions/byok/getBackOfQueueWallet.js'
+export {
+  withdraw as byokWithdraw,
+  type WithdrawParameters,
+} from '../actions/byok/withdraw.js'
+export {
+  createOrder as byokCreateOrder,
+  type CreateOrderParameters,
+} from '../actions/byok/createOrder.js'
+export {
+  cancelOrder as byokCancelOrder,
+  type CancelOrderParameters,
+} from '../actions/byok/cancelOrder.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade-fi/core
