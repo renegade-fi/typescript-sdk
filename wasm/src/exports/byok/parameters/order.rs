@@ -13,9 +13,9 @@ pub struct CreateOrderParameters {
     pub base_mint: BigUint,
     pub quote_mint: BigUint,
     pub side: OrderSide,
-    pub amount: BigUint,
+    pub amount: u128,
     pub worst_case_price: FixedPoint,
-    pub min_fill_size: BigUint,
+    pub min_fill_size: u128,
     pub allow_external_matches: bool,
 }
 
@@ -50,10 +50,16 @@ impl CreateOrderParameters {
             .map_err(|e| Error::invalid_parameter(format!("Invalid quote mint: {}", e)))?;
 
         let amount = biguint_from_hex_string(amount)
-            .map_err(|e| Error::invalid_parameter(format!("Invalid amount: {}", e)))?;
+            .map_err(|e| Error::invalid_parameter(format!("Invalid amount: {}", e)))?
+            .to_u128()
+            .ok_or_else(|| Error::invalid_parameter(format!("Could not convert amount to u128")))?;
 
         let min_fill_size = biguint_from_hex_string(min_fill_size)
-            .map_err(|e| Error::invalid_parameter(format!("Invalid min fill size: {}", e)))?;
+            .map_err(|e| Error::invalid_parameter(format!("Invalid min fill size: {}", e)))?
+            .to_u128()
+            .ok_or_else(|| {
+                Error::invalid_parameter(format!("Could not convert min fill size to u128"))
+            })?;
 
         let worst_case_price = if worst_case_price.is_empty() {
             match side {
@@ -76,18 +82,6 @@ impl CreateOrderParameters {
             worst_case_price,
             min_fill_size,
             allow_external_matches,
-        })
-    }
-
-    pub fn amount_as_u128(&self) -> Result<u128, Error> {
-        self.amount.to_u128().ok_or_else(|| {
-            Error::invalid_parameter(format!("Could not convert {} to u128", self.amount))
-        })
-    }
-
-    pub fn min_fill_size_as_u128(&self) -> Result<u128, Error> {
-        self.min_fill_size.to_u128().ok_or_else(|| {
-            Error::invalid_parameter(format!("Could not convert {} to u128", self.min_fill_size))
         })
     }
 }

@@ -1,9 +1,5 @@
 use contracts_common::custom_serde::BytesSerializable;
-use ethers::{
-    core::k256::ecdsa::SigningKey,
-    types::{Signature, U256},
-    utils::keccak256,
-};
+use ethers::utils::keccak256;
 use js_sys::{Function, Promise};
 use num_bigint::BigUint;
 use wasm_bindgen::prelude::*;
@@ -125,31 +121,4 @@ pub async fn authorize_withdrawal(
     let bytes = bytes_from_hex_string(&sig_hex).map_err(|e| Error::sign_message(e.to_string()))?;
 
     Ok(bytes)
-}
-
-pub async fn generate_statement_signature(seed: &str, wallet: &Wallet) -> Result<Signature, Error> {
-    let old_sk_root = crate::common::derivation::derive_sk_root_scalars(
-        seed,
-        &wallet.key_chain.public_keys.nonce,
-    );
-    let signing_key = SigningKey::try_from(&old_sk_root).map_err(Error::sign_message)?;
-
-    let comm_bytes = wallet
-        .get_wallet_share_commitment()
-        .inner()
-        .serialize_to_bytes();
-
-    let digest = keccak256(comm_bytes);
-
-    let (sig, recovery_id) = signing_key
-        .sign_prehash_recoverable(&digest)
-        .map_err(Error::sign_message)?;
-
-    let signature = Signature {
-        r: U256::from_big_endian(&sig.r().to_bytes()),
-        s: U256::from_big_endian(&sig.s().to_bytes()),
-        v: recovery_id.to_byte() as u64,
-    };
-
-    Ok(signature)
 }

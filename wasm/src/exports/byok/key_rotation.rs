@@ -18,7 +18,6 @@ pub fn handle_key_rotation(wallet: &mut Wallet, new_public_key: &str) -> Result<
     let current_pk_root = wallet.key_chain.pk_root().to_uncompressed_bytes();
 
     if current_pk_root != new_pk_root {
-        // Key has been rotated
         wallet.key_chain.increment_nonce();
         let new_pk_root = PublicSigningKey::from_bytes(&new_pk_root)
             .map_err(|e| Error::new(format!("Failed to parse public key: {}", e)))?;

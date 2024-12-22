@@ -35,7 +35,7 @@
       "types": "./dist/types/exports/actions.d.ts",
       "default": "./dist/exports/actions.js"
     },
-    "./actions/byok": {
+    "./byok": {
       "types": "./dist/types/exports/byok.d.ts",
       "default": "./dist/exports/byok.js"
     },
@@ -50,7 +50,7 @@
       "actions": [
         "./dist/types/exports/actions.d.ts"
       ],
-      "actions/byok": [
+      "byok": [
         "./dist/types/exports/byok.d.ts"
       ]
     }

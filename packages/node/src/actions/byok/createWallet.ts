@@ -1,8 +1,8 @@
 import {
   CREATE_WALLET_ROUTE,
-  type Config,
   postRelayerRaw,
 } from '@renegade-fi/core'
+import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 
 export type CreateWalletReturnType = { taskId: string }
 
@@ -16,7 +16,7 @@ export type CreateWalletParameters = {
 }
 
 export async function createWallet(
-  config: Config,
+  config: BYOKConfig,
   parameters: CreateWalletParameters,
 ): Promise<CreateWalletReturnType> {
   const { walletId, blinderSeed, shareSeed, pkRoot, skMatch, symmetricKey } =

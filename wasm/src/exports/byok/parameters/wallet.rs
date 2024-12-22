@@ -1,3 +1,4 @@
+use num_bigint::BigUint;
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -73,8 +74,8 @@ impl CreateWalletParameters {
 
 pub struct FindWalletParameters {
     pub wallet_id: Uuid,
-    pub blinder_seed: Scalar,
-    pub share_seed: Scalar,
+    pub blinder_seed: BigUint,
+    pub share_seed: BigUint,
     pub key_chain: ApiKeychain,
 }
 
@@ -90,12 +91,10 @@ impl FindWalletParameters {
         // Wallet seed info
         let wallet_id = Uuid::parse_str(wallet_id)
             .map_err(|e| Error::invalid_parameter(format!("wallet_id: {}", e)))?;
-        let blinder_seed_bigint = biguint_from_hex_string(blinder_seed)
+        let blinder_seed = biguint_from_hex_string(blinder_seed)
             .map_err(|e| Error::invalid_parameter(format!("blinder_seed: {}", e)))?;
-        let blinder_seed = Scalar::from(blinder_seed_bigint);
-        let share_seed_bigint = biguint_from_hex_string(share_seed)
+        let share_seed = biguint_from_hex_string(share_seed)
             .map_err(|e| Error::invalid_parameter(format!("share_seed: {}", e)))?;
-        let share_seed = Scalar::from(share_seed_bigint);
 
         // KeyChain
         let sk_match_bigint = biguint_from_hex_string(sk_match)

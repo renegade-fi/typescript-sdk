@@ -203,6 +203,11 @@ export function create_request_signature(path: string, headers: any, body: strin
 */
 export function b64_to_hex_hmac_key(b64_key: string): string;
 /**
+* @param {string} pk_root
+* @returns {any[]}
+*/
+export function byok_get_pk_root_scalars(pk_root: string): any[];
+/**
 * @param {string} seed
 * @param {bigint} nonce
 * @returns {any}
@@ -225,8 +230,3 @@ export function get_pk_root_scalars(seed: string, nonce: bigint): any[];
 * @returns {any}
 */
 export function get_symmetric_key(seed: string): any;
-/**
-* @param {string} pk_root
-* @returns {any[]}
-*/
-export function byok_get_pk_root_scalars(pk_root: string): any[];

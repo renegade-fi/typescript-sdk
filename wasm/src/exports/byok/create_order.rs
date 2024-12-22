@@ -43,18 +43,15 @@ pub async fn byok_create_order(
     let mut wallet = deserialize_wallet(wallet_str)?;
     handle_key_rotation(&mut wallet, &public_key)?;
 
-    let amount_u128 = params.amount_as_u128()?;
-    let min_fill_size_u128 = params.min_fill_size_as_u128()?;
-
     let order = ApiOrder {
         id: params.id,
         base_mint: params.base_mint,
         quote_mint: params.quote_mint,
         side: params.side,
-        amount: amount_u128,
+        amount: params.amount,
         worst_case_price: params.worst_case_price,
         type_: crate::external_api::types::ApiOrderType::Midpoint,
-        min_fill_size: min_fill_size_u128,
+        min_fill_size: params.min_fill_size,
         allow_external_matches: params.allow_external_matches,
     };
 
