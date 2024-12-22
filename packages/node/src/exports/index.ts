@@ -83,6 +83,10 @@ export {
   cancelOrder as byokCancelOrder,
   type CancelOrderParameters,
 } from '../actions/byok/cancelOrder.js'
+export {
+  lookupWallet as byokLookupWallet,
+  type LookupWalletParameters,
+} from '../actions/byok/lookupWallet.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade-fi/core

@@ -123,6 +123,14 @@ export function assemble_external_match(do_gas_estimation: boolean, signed_quote
 * @param {Function} sign_message
 * @param {string} public_key
 * @param {string} id
+* @returns {Promise<any>}
+*/
+export function byok_cancel_order(wallet_str: string, sign_message: Function, public_key: string, id: string): Promise<any>;
+/**
+* @param {string} wallet_str
+* @param {Function} sign_message
+* @param {string} public_key
+* @param {string} id
 * @param {string} base_mint
 * @param {string} quote_mint
 * @param {string} side
@@ -157,6 +165,16 @@ export function byok_create_wallet(wallet_id: string, blinder_seed: string, shar
 */
 export function byok_deposit(wallet_str: string, sign_message: Function, public_key: string, from_addr: string, mint: string, amount: string, permit_nonce: string, permit_deadline: string, permit_signature: string): Promise<any>;
 /**
+* @param {string} wallet_id
+* @param {string} blinder_seed
+* @param {string} share_seed
+* @param {string} pk_root
+* @param {string} sk_match
+* @param {string} symmetric_key
+* @returns {Promise<any>}
+*/
+export function byok_find_wallet(wallet_id: string, blinder_seed: string, share_seed: string, pk_root: string, sk_match: string, symmetric_key: string): Promise<any>;
+/**
 * @param {Function} sign_message
 * @returns {Promise<any>}
 */
@@ -172,13 +190,18 @@ export function generate_wallet_secrets(sign_message: Function): Promise<any>;
 */
 export function byok_withdraw(wallet_str: string, sign_message: Function, public_key: string, mint: string, amount: string, destination_addr: string): Promise<any>;
 /**
-* @param {string} wallet_str
-* @param {Function} sign_message
-* @param {string} public_key
-* @param {string} id
-* @returns {Promise<any>}
+* @param {string} path
+* @param {any} headers
+* @param {string} body
+* @param {string} key
+* @returns {string}
 */
-export function byok_cancel_order(wallet_str: string, sign_message: Function, public_key: string, id: string): Promise<any>;
+export function create_request_signature(path: string, headers: any, body: string, key: string): string;
+/**
+* @param {string} b64_key
+* @returns {string}
+*/
+export function b64_to_hex_hmac_key(b64_key: string): string;
 /**
 * @param {string} seed
 * @param {bigint} nonce
@@ -203,15 +226,7 @@ export function get_pk_root_scalars(seed: string, nonce: bigint): any[];
 */
 export function get_symmetric_key(seed: string): any;
 /**
-* @param {string} path
-* @param {any} headers
-* @param {string} body
-* @param {string} key
-* @returns {string}
+* @param {string} pk_root
+* @returns {any[]}
 */
-export function create_request_signature(path: string, headers: any, body: string, key: string): string;
-/**
-* @param {string} b64_key
-* @returns {string}
-*/
-export function b64_to_hex_hmac_key(b64_key: string): string;
+export function byok_get_pk_root_scalars(pk_root: string): any[];

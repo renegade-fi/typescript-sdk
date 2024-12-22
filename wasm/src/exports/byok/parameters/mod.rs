@@ -7,5 +7,7 @@ mod withdraw;
 pub use cancel_order::CancelOrderParameters;
 pub use deposit::DepositParameters;
 pub use order::CreateOrderParameters;
-pub use wallet::{CreateWalletParameters, GeneratedSecrets, GetPkRootParameters};
+pub use wallet::{
+    CreateWalletParameters, FindWalletParameters, GeneratedSecrets, GetPkRootParameters,
+};
 pub use withdraw::WithdrawParameters;
