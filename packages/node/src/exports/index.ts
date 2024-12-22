@@ -87,6 +87,7 @@ export {
   lookupWallet as byokLookupWallet,
   type LookupWalletParameters,
 } from '../actions/byok/lookupWallet.js'
+export { payFees as byokPayFees } from '../actions/byok/payFees.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade-fi/core
