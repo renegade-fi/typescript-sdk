@@ -3,7 +3,6 @@ import {
   postWithSymmetricKey,
   stringifyForWasm,
 } from '@renegade-fi/core'
-import type { BaseErrorType } from 'viem'
 import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 
@@ -13,8 +12,6 @@ export type CancelOrderParameters = {
 }
 
 export type CancelOrderReturnType = Promise<{ taskId: string }>
-
-export type CancelOrderErrorType = BaseErrorType
 
 export async function cancelOrder(
   config: BYOKConfig,

@@ -13,8 +13,6 @@ export type GetBackOfQueueWalletParameters = {
 
 export type GetBackOfQueueWalletReturnType = Wallet
 
-export type GetBackOfQueueWalletErrorType = Error
-
 export async function getBackOfQueueWallet(
   config: BYOKConfig,
   parameters: GetBackOfQueueWalletParameters,

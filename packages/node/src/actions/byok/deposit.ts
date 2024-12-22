@@ -5,7 +5,7 @@ import {
   stringifyForWasm,
 } from '@renegade-fi/core'
 import invariant from 'tiny-invariant'
-import { type Address, type BaseErrorType, toHex } from 'viem'
+import { type Address, toHex } from 'viem'
 import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 
@@ -20,8 +20,6 @@ export type DepositParameters = {
 }
 
 export type DepositReturnType = Promise<{ taskId: string }>
-
-export type DepositErrorType = BaseErrorType
 
 export async function deposit(
   config: BYOKConfig,

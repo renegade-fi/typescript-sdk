@@ -3,7 +3,7 @@ import {
   postWithSymmetricKey,
   stringifyForWasm,
 } from '@renegade-fi/core'
-import { type Address, type BaseErrorType, toHex } from 'viem'
+import { type Address, toHex } from 'viem'
 import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 
@@ -20,8 +20,6 @@ export type CreateOrderParameters = {
 }
 
 export type CreateOrderReturnType = Promise<{ taskId: string }>
-
-export type CreateOrderErrorType = BaseErrorType
 
 export async function createOrder(
   config: BYOKConfig,

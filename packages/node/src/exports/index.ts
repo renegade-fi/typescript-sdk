@@ -54,44 +54,6 @@ export {
   executeWithdrawal,
   type ExecuteWithdrawalParameters,
 } from '../actions/executeWithdrawal.js'
-export { deposit as byokDeposit } from '../actions/byok/deposit.js'
-export {
-  createWallet as byokCreateWallet,
-  type CreateWalletParameters,
-} from '../actions/byok/createWallet.js'
-export {
-  generateWalletSecrets,
-  type GeneratedSecrets,
-} from '../actions/byok/generateWalletSecrets.js'
-export {
-  getPkRootScalars as byokGetPkRootScalars,
-  type GetPkRootParameters,
-} from '../actions/byok/getPkRoot.js'
-export {
-  getBackOfQueueWallet as byokGetBackOfQueueWallet,
-  type GetBackOfQueueWalletParameters,
-} from '../actions/byok/getBackOfQueueWallet.js'
-export {
-  withdraw as byokWithdraw,
-  type WithdrawParameters,
-} from '../actions/byok/withdraw.js'
-export {
-  createOrder as byokCreateOrder,
-  type CreateOrderParameters,
-} from '../actions/byok/createOrder.js'
-export {
-  cancelOrder as byokCancelOrder,
-  type CancelOrderParameters,
-} from '../actions/byok/cancelOrder.js'
-export {
-  lookupWallet as byokLookupWallet,
-  type LookupWalletParameters,
-} from '../actions/byok/lookupWallet.js'
-export { payFees as byokPayFees } from '../actions/byok/payFees.js'
-export {
-  getOrderHistory as byokGetOrderHistory,
-  type GetOrderHistoryParameters,
-} from '../actions/byok/getOrderHistory.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade-fi/core

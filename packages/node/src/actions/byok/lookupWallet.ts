@@ -1,5 +1,4 @@
 import { FIND_WALLET_ROUTE, postWithSymmetricKey } from '@renegade-fi/core'
-import type { BaseErrorType } from 'viem'
 import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 
 export type LookupWalletParameters = {
@@ -13,20 +12,12 @@ export type LookupWalletParameters = {
 
 export type LookupWalletReturnType = Promise<{ taskId: string }>
 
-export type LookupWalletErrorType = BaseErrorType
-
 export async function lookupWallet(
   config: BYOKConfig,
   parameters: LookupWalletParameters,
 ): LookupWalletReturnType {
-  const {
-    walletId,
-    blinderSeed,
-    shareSeed,
-    pkRoot,
-    skMatch,
-    symmetricKey,
-  } = parameters
+  const { walletId, blinderSeed, shareSeed, pkRoot, skMatch, symmetricKey } =
+    parameters
   const { getRelayerBaseUrl, utils } = config
 
   const body = await utils.byok_find_wallet(

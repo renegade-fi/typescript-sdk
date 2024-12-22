@@ -1,19 +1,16 @@
-import {
-  ORDER_HISTORY_LEN_PARAM,
-  ORDER_HISTORY_ROUTE,
-  postWithSymmetricKey,
-} from '@renegade-fi/core'
-import type { BaseErrorType } from 'viem'
-import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 import type { OrderMetadata } from '@renegade-fi/core'
+import {
+    ORDER_HISTORY_LEN_PARAM,
+    ORDER_HISTORY_ROUTE,
+    postWithSymmetricKey,
+} from '@renegade-fi/core'
+import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 
 export type GetOrderHistoryParameters = {
   limit?: number
 }
 
 export type GetOrderHistoryReturnType = Promise<Map<string, OrderMetadata>>
-
-export type GetOrderHistoryErrorType = BaseErrorType
 
 export async function getOrderHistory(
   config: BYOKConfig,
@@ -33,7 +30,7 @@ export async function getOrderHistory(
 
   try {
     const res = await postWithSymmetricKey(config, {
-      body: "",
+      body: '',
       key: symmetricKey,
       url,
     })
@@ -48,4 +45,4 @@ export async function getOrderHistory(
     })
     throw error
   }
-} 
+}

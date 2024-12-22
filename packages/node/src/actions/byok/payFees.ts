@@ -1,19 +1,14 @@
 import { PAY_FEES_ROUTE, postWithSymmetricKey } from '@renegade-fi/core'
-import type { BaseErrorType } from 'viem'
 import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 
 export type PayFeesReturnType = Promise<{ taskIds: string[] }>
 
-export type PayFeesErrorType = BaseErrorType
-
-export async function payFees(
-  config: BYOKConfig,
-): PayFeesReturnType {
+export async function payFees(config: BYOKConfig): PayFeesReturnType {
   const { symmetricKey, walletId, getRelayerBaseUrl } = config
 
   try {
     const res = await postWithSymmetricKey(config, {
-      body: "",
+      body: '',
       key: symmetricKey,
       url: getRelayerBaseUrl(PAY_FEES_ROUTE(walletId)),
     })
@@ -29,4 +24,4 @@ export async function payFees(
     })
     throw error
   }
-} 
+}

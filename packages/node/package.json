@@ -35,6 +35,10 @@
       "types": "./dist/types/exports/actions.d.ts",
       "default": "./dist/exports/actions.js"
     },
+    "./actions/byok": {
+      "types": "./dist/types/exports/byok.d.ts",
+      "default": "./dist/exports/byok.js"
+    },
     "./renegade-utils": {
       "types": "./renegade-utils/index.d.ts",
       "default": "./renegade-utils/index.js"
@@ -45,6 +49,9 @@
     "*": {
       "actions": [
         "./dist/types/exports/actions.d.ts"
+      ],
+      "actions/byok": [
+        "./dist/types/exports/byok.d.ts"
       ]
     }
   },
