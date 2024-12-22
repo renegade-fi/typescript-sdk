@@ -33,6 +33,9 @@ export function createAuthConfig(
       const formattedRoute = route.startsWith('/') ? route : `/${route}`
       return `${authServerUrl}/v0${formattedRoute}`
     },
+    getWebsocketBaseUrl: () => {
+      throw new Error('Auth server does not support websockets')
+    },
   }
 }
 

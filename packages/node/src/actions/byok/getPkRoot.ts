@@ -1,4 +1,4 @@
-import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
+import type { BYOKConfig } from '@renegade-fi/core'
 
 export type GetPkRootParameters = {
   pkRoot: `0x${string}`

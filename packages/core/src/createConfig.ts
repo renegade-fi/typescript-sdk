@@ -165,6 +165,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 
 export type BaseConfig = {
   utils: typeof rustUtils
+  getWebsocketBaseUrl: () => string
 }
 
 export type Config = BaseConfig & {
@@ -173,7 +174,6 @@ export type Config = BaseConfig & {
   getPriceReporterBaseUrl: () => string
   getPriceReporterHTTPBaseUrl: (route?: string) => string
   getRelayerBaseUrl: (route?: string) => string
-  getWebsocketBaseUrl: () => string
   pollingInterval: number
   priceReporterUrl: string
   relayerUrl: string

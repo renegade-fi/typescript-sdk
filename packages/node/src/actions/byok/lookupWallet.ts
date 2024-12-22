@@ -1,5 +1,8 @@
-import { FIND_WALLET_ROUTE, postWithSymmetricKey } from '@renegade-fi/core'
-import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
+import {
+  type BYOKConfig,
+  FIND_WALLET_ROUTE,
+  postWithSymmetricKey,
+} from '@renegade-fi/core'
 
 export type LookupWalletParameters = {
   walletId: string

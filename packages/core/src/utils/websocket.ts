@@ -1,16 +1,18 @@
 import { getSymmetricKey } from '../actions/getSymmetricKey.js'
 import { SIG_EXPIRATION_BUFFER_MS } from '../constants.js'
-import type { Config } from '../createConfig.js'
+import type { BYOKConfig } from '../createBYOKConfig.js'
+import type { BaseConfig, Config } from '../createConfig.js'
 import { addExpiringAuthToHeaders } from './http.js'
 
 export enum AuthType {
   None = 'None',
   Wallet = 'Wallet',
   Admin = 'Admin',
+  BYOK = 'BYOK',
 }
 
 export type RelayerWebsocketParams = {
-  config: Config
+  config: BaseConfig
   topic: string
   authType: AuthType
   onmessage: (this: WebSocket, ev: MessageEvent) => any
@@ -39,7 +41,7 @@ export type UnsubscriptionBody = {
 }
 
 export class RelayerWebsocket {
-  private config: Config
+  private config: BaseConfig
   private topic: string
   private authType: AuthType
   private onmessage: (this: WebSocket, ev: MessageEvent) => any
@@ -134,6 +136,14 @@ export class RelayerWebsocket {
       }
     }
 
+    if (this.authType === AuthType.BYOK) {
+      const headers = this.buildBYOKAuthHeaders(body)
+      return {
+        headers,
+        body,
+      }
+    }
+
     throw new Error(`Unsupported auth type: ${this.authType}`)
   }
 
@@ -149,7 +159,7 @@ export class RelayerWebsocket {
   private buildWalletAuthHeaders(
     body: SubscriptionBody,
   ): Record<string, string> {
-    const symmetricKey = getSymmetricKey(this.config)
+    const symmetricKey = getSymmetricKey(this.config as Config)
 
     return addExpiringAuthToHeaders(
       this.config,
@@ -164,12 +174,25 @@ export class RelayerWebsocket {
   private buildAdminAuthHeaders(
     body: SubscriptionBody,
   ): Record<string, string> {
-    if (!this.config.adminKey) {
+    const config = this.config as Config
+    if (!config.adminKey) {
       throw new Error('Admin key is required')
     }
-    const { adminKey } = this.config
-    const symmetricKey = this.config.utils.b64_to_hex_hmac_key(adminKey)
+    const { adminKey } = config
+    const symmetricKey = config.utils.b64_to_hex_hmac_key(adminKey)
 
+    return addExpiringAuthToHeaders(
+      this.config,
+      body.topic,
+      {}, // Headers
+      JSON.stringify(body),
+      symmetricKey,
+      SIG_EXPIRATION_BUFFER_MS,
+    )
+  }
+
+  private buildBYOKAuthHeaders(body: SubscriptionBody): Record<string, string> {
+    const symmetricKey = (this.config as BYOKConfig).symmetricKey
     return addExpiringAuthToHeaders(
       this.config,
       body.topic,

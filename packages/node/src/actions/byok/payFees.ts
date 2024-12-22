@@ -1,5 +1,8 @@
-import { PAY_FEES_ROUTE, postWithSymmetricKey } from '@renegade-fi/core'
-import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
+import {
+  type BYOKConfig,
+  PAY_FEES_ROUTE,
+  postWithSymmetricKey,
+} from '@renegade-fi/core'
 
 export type PayFeesReturnType = Promise<{ taskIds: string[] }>
 

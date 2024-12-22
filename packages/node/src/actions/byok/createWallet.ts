@@ -1,8 +1,8 @@
 import {
+  type BYOKConfig,
   CREATE_WALLET_ROUTE,
   postRelayerRaw,
 } from '@renegade-fi/core'
-import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 
 export type CreateWalletReturnType = { taskId: string }
 

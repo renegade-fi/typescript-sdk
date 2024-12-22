@@ -1,4 +1,4 @@
-import { createBYOKConfig as core_createBYOKConfig } from '../utils/createBYOKConfig.js'
+import { createBYOKConfig as core_createBYOKConfig } from '@renegade-fi/core'
 import * as RustUtils from '../../renegade-utils/index.js'
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -84,3 +84,7 @@ export {
   type GetOrderHistoryParameters,
   type GetOrderHistoryReturnType,
 } from '../actions/byok/getOrderHistory.js'
+
+export {
+  waitForTaskCompletionWs,
+} from '../actions/byok/waitForTaskCompletionWs.js'

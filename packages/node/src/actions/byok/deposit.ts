@@ -1,4 +1,5 @@
 import {
+  type BYOKConfig,
   DEPOSIT_BALANCE_ROUTE,
   Token,
   postWithSymmetricKey,
@@ -6,7 +7,6 @@ import {
 } from '@renegade-fi/core'
 import invariant from 'tiny-invariant'
 import { type Address, toHex } from 'viem'
-import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 
 export type DepositParameters = {

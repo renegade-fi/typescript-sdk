@@ -1,4 +1,5 @@
 import {
+  type BYOKConfig,
   Token,
   WITHDRAW_BALANCE_ROUTE,
   postWithSymmetricKey,
@@ -6,7 +7,6 @@ import {
 } from '@renegade-fi/core'
 import invariant from 'tiny-invariant'
 import { type Address, toHex } from 'viem'
-import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 
 export type WithdrawParameters = {

@@ -1,10 +1,10 @@
 import {
+  type BYOKConfig,
   WALLET_ORDERS_ROUTE,
   postWithSymmetricKey,
   stringifyForWasm,
 } from '@renegade-fi/core'
 import { type Address, toHex } from 'viem'
-import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 
 export type CreateOrderParameters = {

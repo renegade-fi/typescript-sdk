@@ -1,10 +1,10 @@
 import type { OrderMetadata } from '@renegade-fi/core'
 import {
-    ORDER_HISTORY_LEN_PARAM,
-    ORDER_HISTORY_ROUTE,
-    postWithSymmetricKey,
+  type BYOKConfig,
+  ORDER_HISTORY_LEN_PARAM,
+  ORDER_HISTORY_ROUTE,
+  postWithSymmetricKey,
 } from '@renegade-fi/core'
-import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 
 export type GetOrderHistoryParameters = {
   limit?: number

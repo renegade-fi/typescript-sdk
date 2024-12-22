@@ -1,9 +1,9 @@
 import {
+  type BYOKConfig,
   CANCEL_ORDER_ROUTE,
   postWithSymmetricKey,
   stringifyForWasm,
 } from '@renegade-fi/core'
-import type { BYOKConfig } from '../../utils/createBYOKConfig.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 
 export type CancelOrderParameters = {

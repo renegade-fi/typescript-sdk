@@ -1,11 +1,13 @@
-import type { BaseConfig } from '@renegade-fi/core'
 import invariant from 'tiny-invariant'
 import type { SignMessageReturnType } from 'viem'
-import type * as rustUtils from '../../renegade-utils/index.js'
+import type { BaseConfig } from './createConfig.js'
+import type * as rustUtils from './utils.d.ts'
 
 export type CreateBYOKConfigParameters = {
   /** URL of the relayer service */
   relayerUrl: string
+  /** URL of the websocket service */
+  websocketUrl: string
   /**
    * Function to sign messages using the user's own wallet.
    *
@@ -40,8 +42,14 @@ export type CreateBYOKConfigParameters = {
 export function createBYOKConfig(
   parameters: CreateBYOKConfigParameters,
 ): BYOKConfig {
-  const { relayerUrl, signMessage, symmetricKey, walletId, publicKey } =
-    parameters
+  const {
+    relayerUrl,
+    signMessage,
+    symmetricKey,
+    walletId,
+    publicKey,
+    websocketUrl,
+  } = parameters
   invariant(
     parameters.utils,
     'Utils must be provided by the package if not supplied by the user.',
@@ -56,6 +64,9 @@ export function createBYOKConfig(
     getRelayerBaseUrl: (route = '') => {
       const formattedRoute = route.startsWith('/') ? route : `/${route}`
       return `${relayerUrl}/v0${formattedRoute}`
+    },
+    getWebsocketBaseUrl: () => {
+      return websocketUrl.replace(/\/$/, '')
     },
     utils: parameters.utils,
     relayerUrl,

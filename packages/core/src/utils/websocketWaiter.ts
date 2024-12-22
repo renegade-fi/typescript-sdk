@@ -1,4 +1,4 @@
-import type { Config } from '../createConfig.js'
+import type { BaseConfig } from '../createConfig.js'
 import {
   type AuthType,
   RelayerWebsocket,
@@ -6,7 +6,7 @@ import {
 } from './websocket.js'
 
 export type WebsocketWaiterParams = {
-  config: Config
+  config: BaseConfig
   topic: string
   authType: AuthType
   messageHandler: (message: any) => any | undefined
