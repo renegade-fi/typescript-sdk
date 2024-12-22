@@ -35,10 +35,7 @@ export async function withdraw(
   const token = Token.findByAddress(mint)
   invariant(token, 'Token not found')
 
-  const wallet = await getBackOfQueueWallet(config, {
-    symmetricKey,
-    walletId,
-  })
+  const wallet = await getBackOfQueueWallet(config)
   const walletStr = stringifyForWasm(wallet)
 
   const body = await utils.byok_withdraw(

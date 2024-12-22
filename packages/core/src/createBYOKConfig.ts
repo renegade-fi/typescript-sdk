@@ -11,6 +11,7 @@ export type CreateBYOKConfigParameters = {
   /**
    * Function to sign messages using the user's own wallet.
    *
+   * TODO: Move this to docs
    * Important requirements for the signing function:
    * 1. The function receives a pre-hashed message (using keccak256) - do not hash the message again
    * 2. Do not prefix the message - sign it as is
@@ -34,10 +35,6 @@ export type CreateBYOKConfigParameters = {
  * custody of their wallet secrets while still enabling interaction with the relayer for
  * wallet operations. Instead of managing keys internally, it accepts user-provided
  * cryptographic materials and signing functions.
- *
- * The signing function provided must follow specific requirements for signature generation
- * to ensure compatibility with the underlying cryptographic operations. See the documentation
- * for `signMessage` in CreateBYOKConfigParameters for detailed requirements.
  */
 export function createBYOKConfig(
   parameters: CreateBYOKConfigParameters,

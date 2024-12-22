@@ -40,7 +40,6 @@ export {
 
 export {
   getBackOfQueueWallet,
-  type GetBackOfQueueWalletParameters,
   type GetBackOfQueueWalletReturnType,
 } from '../actions/byok/getBackOfQueueWallet.js'
 
@@ -85,6 +84,4 @@ export {
   type GetOrderHistoryReturnType,
 } from '../actions/byok/getOrderHistory.js'
 
-export {
-  waitForTaskCompletionWs,
-} from '../actions/byok/waitForTaskCompletionWs.js'
+export { waitForTaskCompletionWs } from '../actions/byok/waitForTaskCompletionWs.js'

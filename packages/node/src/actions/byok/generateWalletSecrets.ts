@@ -8,7 +8,7 @@ export interface GeneratedSecrets {
   /** Unique identifier for the wallet in UUID format */
   wallet_id: string
 
-  /** Cryptographic seed for the wallet's blinder CSPRNG*/
+  /** Cryptographic seed for the wallet's blinder CSPRNG */
   blinder_seed: `0x${string}`
 
   /** Cryptographic seed for the wallet's share CSPRNG */

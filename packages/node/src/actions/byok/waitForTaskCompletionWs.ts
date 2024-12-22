@@ -1,8 +1,8 @@
-import type { WaitForTaskCompletionParameters } from '@renegade-fi/core'
 import {
   AuthType,
   type BYOKConfig,
   TASK_STATUS_ROUTE,
+  type WaitForTaskCompletionParameters,
   type WebsocketWaiterParams,
   websocketWaiter,
 } from '@renegade-fi/core'

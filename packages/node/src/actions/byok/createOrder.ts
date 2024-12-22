@@ -45,10 +45,7 @@ export async function createOrder(
     utils,
   } = config
 
-  const wallet = await getBackOfQueueWallet(config, {
-    symmetricKey,
-    walletId,
-  })
+  const wallet = await getBackOfQueueWallet(config)
   const walletStr = stringifyForWasm(wallet)
 
   const body = await utils.byok_create_order(

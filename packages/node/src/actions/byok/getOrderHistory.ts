@@ -1,8 +1,8 @@
-import type { OrderMetadata } from '@renegade-fi/core'
 import {
   type BYOKConfig,
   ORDER_HISTORY_LEN_PARAM,
   ORDER_HISTORY_ROUTE,
+  type OrderMetadata,
   postWithSymmetricKey,
 } from '@renegade-fi/core'
 

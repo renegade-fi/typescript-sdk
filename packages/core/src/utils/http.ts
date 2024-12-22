@@ -10,9 +10,6 @@ import type { BaseConfig, Config } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { parseBigJSON } from './bigJSON.js'
 
-// TODO: Migrate to _WithSymmetricKey variants as they are config-agnostic,
-// accepting any configuration that provides the necessary authentication parameters.
-
 export async function postRelayerRaw(url: string, body: any, headers = {}) {
   try {
     const response = await axios.post(url, body, {

@@ -5,12 +5,10 @@ import {
 } from '@renegade-fi/core'
 
 export type LookupWalletParameters = {
-  walletId: string
   blinderSeed: string
   shareSeed: string
-  pkRoot: string
+  publicKey: string
   skMatch: string
-  symmetricKey: string
 }
 
 export type LookupWalletReturnType = Promise<{ taskId: string }>
@@ -19,15 +17,14 @@ export async function lookupWallet(
   config: BYOKConfig,
   parameters: LookupWalletParameters,
 ): LookupWalletReturnType {
-  const { walletId, blinderSeed, shareSeed, pkRoot, skMatch, symmetricKey } =
-    parameters
-  const { getRelayerBaseUrl, utils } = config
+  const { blinderSeed, shareSeed, publicKey, skMatch } = parameters
+  const { getRelayerBaseUrl, utils, walletId, symmetricKey } = config
 
   const body = await utils.byok_find_wallet(
     walletId,
     blinderSeed,
     shareSeed,
-    pkRoot,
+    publicKey,
     skMatch,
     symmetricKey,
   )
