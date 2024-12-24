@@ -20,6 +20,7 @@ use crate::{
         biguint_from_hex_string, deserialize_biguint_from_hex_string, deserialize_wallet,
         public_sign_key_to_hex_string, serialize_biguint_to_hex_string, PoseidonCSPRNG,
     },
+    key_rotation::handle_key_rotation,
     sign_commitment,
 };
 use ethers::{
@@ -157,11 +158,25 @@ pub fn deposit(
     permit_nonce: &str,
     permit_deadline: &str,
     permit_signature: &str,
+    key_type: &str,
+    new_public_key: Option<String>,
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
-
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
-    new_wallet.key_chain.rotate(seed);
+
+    // Handle key rotation based on key type
+    match key_type {
+        "internal" => {
+            new_wallet.key_chain.rotate(seed);
+        }
+        "external" => {
+            if let Some(new_pk) = &new_public_key {
+                // For external key type, check for rotation if new public key is provided
+                handle_key_rotation(&mut new_wallet, new_pk).unwrap();
+            }
+        }
+        _ => return Err(JsError::new("Invalid key type")),
+    }
 
     // Modify the wallet
     let mint = wrap_eyre!(biguint_from_hex_string(mint)).unwrap();
@@ -177,11 +192,18 @@ pub fn deposit(
     let comm = new_wallet.get_wallet_share_commitment();
     let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
 
-    let update_auth = WalletUpdateAuthorization {
-        statement_sig: sig.to_vec(),
-        new_root_key: Some(public_sign_key_to_hex_string(
+    // Determine the new root key based on key type
+    let new_root_key = match key_type {
+        "internal" => Some(public_sign_key_to_hex_string(
             &new_wallet.key_chain.public_keys.pk_root,
         )),
+        "external" => new_public_key,
+        _ => return Err(JsError::new("Invalid key type")),
+    };
+
+    let update_auth = WalletUpdateAuthorization {
+        statement_sig: sig.to_vec(),
+        new_root_key,
     };
 
     let req = DepositBalanceRequest {
@@ -195,9 +217,6 @@ pub fn deposit(
             .unwrap()
             .to_bytes_be(),
     };
-    // web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(
-    //     &serde_json::to_string(&req).unwrap(),
-    // ));
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
 

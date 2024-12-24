@@ -182,7 +182,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 export type BaseConfig = {
   utils: typeof rustUtils
   getWebsocketBaseUrl: () => string
-  renegadeKeyType?: KeyType
+  renegadeKeyType: KeyType
   getBaseUrl: (route?: string) => string
   // TODO: Move admin key to a separate config
   getSymmetricKey: (type?: AuthType) => Hex
@@ -237,6 +237,7 @@ export interface State {
 export const keyTypes = {
   EXTERNAL: 'external',
   INTERNAL: 'internal',
+  NONE: 'none',
 } as const
 
 type KeyType = (typeof keyTypes)[keyof typeof keyTypes]

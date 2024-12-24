@@ -16,6 +16,7 @@ export type DepositParameters = {
   permitNonce: bigint
   permitDeadline: bigint
   permit: `0x${string}`
+  newPublicKey?: string
 }
 
 export type DepositReturnType = Promise<{ taskId: string }>
@@ -26,12 +27,20 @@ export async function deposit(
   config: Config,
   parameters: DepositParameters,
 ): DepositReturnType {
-  const { fromAddr, mint, amount, permitNonce, permitDeadline, permit } =
-    parameters
+  const {
+    fromAddr,
+    mint,
+    amount,
+    permitNonce,
+    permitDeadline,
+    permit,
+    newPublicKey,
+  } = parameters
   const {
     getBaseUrl,
     utils,
     state: { seed },
+    renegadeKeyType,
   } = config
   invariant(seed, 'Seed is required')
 
@@ -51,6 +60,8 @@ export async function deposit(
     toHex(permitNonce),
     toHex(permitDeadline),
     permit,
+    renegadeKeyType,
+    newPublicKey,
   )
 
   try {
