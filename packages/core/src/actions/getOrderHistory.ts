@@ -17,11 +17,11 @@ export async function getOrderHistory(
   config: Config,
   parameters: GetOrderHistoryParameters = {},
 ): Promise<GetOrderHistoryReturnType> {
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   const { limit } = parameters
   const walletId = getWalletId(config)
 
-  let url = getRelayerBaseUrl(ORDER_HISTORY_ROUTE(walletId))
+  let url = getBaseUrl(ORDER_HISTORY_ROUTE(walletId))
 
   if (limit !== undefined) {
     const searchParams = new URLSearchParams({

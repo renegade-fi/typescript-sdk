@@ -12,12 +12,12 @@ export async function assignOrder(
   parameters: AssignOrderParameters,
 ) {
   const { orderId, matchingPool } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
 
   try {
     await postRelayerWithAdmin(
       config,
-      getRelayerBaseUrl(ADMIN_ASSIGN_ORDER_ROUTE(orderId, matchingPool)),
+      getBaseUrl(ADMIN_ASSIGN_ORDER_ROUTE(orderId, matchingPool)),
     )
   } catch (error) {
     console.error(

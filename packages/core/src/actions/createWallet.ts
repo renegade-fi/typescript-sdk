@@ -9,7 +9,7 @@ export type CreateWalletReturnType = ReturnType<typeof waitForWalletIndexing>
 
 export async function createWallet(config: Config): CreateWalletReturnType {
   const {
-    getRelayerBaseUrl,
+    getBaseUrl,
     utils,
     state: { seed },
   } = config
@@ -20,7 +20,7 @@ export async function createWallet(config: Config): CreateWalletReturnType {
   }
 
   const res = await postRelayerRaw(
-    getRelayerBaseUrl(CREATE_WALLET_ROUTE),
+    getBaseUrl(CREATE_WALLET_ROUTE),
     body,
     headers,
   )

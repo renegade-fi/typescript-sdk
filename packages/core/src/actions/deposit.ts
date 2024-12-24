@@ -29,7 +29,7 @@ export async function deposit(
   const { fromAddr, mint, amount, permitNonce, permitDeadline, permit } =
     parameters
   const {
-    getRelayerBaseUrl,
+    getBaseUrl,
     utils,
     state: { seed },
   } = config
@@ -56,7 +56,7 @@ export async function deposit(
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
+      getBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
       body,
     )
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)

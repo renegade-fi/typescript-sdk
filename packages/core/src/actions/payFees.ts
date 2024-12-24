@@ -9,13 +9,13 @@ export type PayFeesReturnType = { taskIds: string[] }
 export type PayFeesErrorType = BaseError
 
 export async function payFees(config: Config): Promise<PayFeesReturnType> {
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   const walletId = getWalletId(config)
 
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(PAY_FEES_ROUTE(walletId)),
+      getBaseUrl(PAY_FEES_ROUTE(walletId)),
     )
     if (res?.task_ids) {
       res.task_ids.map((id: string) => {

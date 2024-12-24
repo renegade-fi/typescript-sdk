@@ -10,13 +10,13 @@ export type LookupWalletReturnType = ReturnType<typeof waitForWalletIndexing>
 
 export async function lookupWallet(config: Config): LookupWalletReturnType {
   const {
-    getRelayerBaseUrl,
+    getBaseUrl,
     utils,
     state: { seed },
   } = config
   invariant(seed, 'seed is required')
   const body = utils.find_wallet(seed)
-  const res = await postRelayerRaw(getRelayerBaseUrl(FIND_WALLET_ROUTE), body)
+  const res = await postRelayerRaw(getBaseUrl(FIND_WALLET_ROUTE), body)
   if (res.task_id) {
     console.log(`task lookup-wallet(${res.task_id}): ${res.wallet_id}`, {
       status: 'looking up',

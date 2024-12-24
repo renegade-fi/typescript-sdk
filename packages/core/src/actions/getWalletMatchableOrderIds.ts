@@ -16,11 +16,11 @@ export async function getWalletMatchableOrderIds(
   parameters: GetWalletMatchableOrderIdsParameters,
 ): Promise<GetWalletMatchableOrderIdsReturnType> {
   const { id } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
 
   const res = await getRelayerWithAdmin(
     config,
-    getRelayerBaseUrl(ADMIN_WALLET_MATCHABLE_ORDER_IDS_ROUTE(id)),
+    getBaseUrl(ADMIN_WALLET_MATCHABLE_ORDER_IDS_ROUTE(id)),
   )
 
   if (!res.order_ids) {

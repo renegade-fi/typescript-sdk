@@ -35,7 +35,7 @@ export async function updateOrder(
     allowExternalMatches = false,
   } = parameters
   const {
-    getRelayerBaseUrl,
+    getBaseUrl,
     utils,
     state: { seed },
   } = config
@@ -60,7 +60,7 @@ export async function updateOrder(
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(UPDATE_ORDER_ROUTE(walletId, id)),
+      getBaseUrl(UPDATE_ORDER_ROUTE(walletId, id)),
       body,
     )
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)

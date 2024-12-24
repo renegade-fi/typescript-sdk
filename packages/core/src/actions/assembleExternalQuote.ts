@@ -42,7 +42,7 @@ export async function assembleExternalQuote(
   )
 
   const res = await postWithSymmetricKey(config, {
-    url: config.getAuthServerUrl(ASSEMBLE_EXTERNAL_MATCH_ROUTE),
+    url: config.getBaseUrl(ASSEMBLE_EXTERNAL_MATCH_ROUTE),
     body,
     key: symmetricKey,
     headers: {

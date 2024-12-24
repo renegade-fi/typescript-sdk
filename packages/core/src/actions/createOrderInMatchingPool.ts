@@ -31,7 +31,7 @@ export async function createOrderInMatchingPool(
     matchingPool,
   } = parameters
   const {
-    getRelayerBaseUrl,
+    getBaseUrl,
     utils,
     state: { seed },
   } = config
@@ -57,7 +57,7 @@ export async function createOrderInMatchingPool(
   try {
     const res = await postRelayerWithAdmin(
       config,
-      getRelayerBaseUrl(ADMIN_CREATE_ORDER_IN_MATCHING_POOL_ROUTE(walletId)),
+      getBaseUrl(ADMIN_CREATE_ORDER_IN_MATCHING_POOL_ROUTE(walletId)),
       body,
     )
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)

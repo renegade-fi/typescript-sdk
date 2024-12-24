@@ -19,11 +19,11 @@ export async function getBackOfQueueWallet(
   parameters: GetBackOfQueueWalletParameters = {},
 ): Promise<GetBackOfQueueWalletReturnType> {
   const { filterDefaults } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   const walletId = getWalletId(config)
   const res = await getRelayerWithAuth(
     config,
-    getRelayerBaseUrl(BACK_OF_QUEUE_WALLET_ROUTE(walletId)),
+    getBaseUrl(BACK_OF_QUEUE_WALLET_ROUTE(walletId)),
   )
   if (!res.wallet) {
     throw new BaseError('Back of queue wallet not found')

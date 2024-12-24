@@ -6,13 +6,13 @@ import { getWalletId } from './getWalletId.js'
 export type RefreshWalletReturnType = Promise<{ taskId: string }>
 
 export async function refreshWallet(config: Config): RefreshWalletReturnType {
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   const walletId = getWalletId(config)
 
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(REFRESH_WALLET_ROUTE(walletId)),
+      getBaseUrl(REFRESH_WALLET_ROUTE(walletId)),
     )
     if (res?.task_id) {
       console.log(`task refresh-wallet(${res.task_id}): ${walletId}`)

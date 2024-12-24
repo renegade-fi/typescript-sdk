@@ -15,14 +15,14 @@ export async function createOrderRequest(
   parameters: CreateOrderRequestParameters,
 ): Promise<CreateOrderRequestReturnType> {
   const { request } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
 
   const walletId = getWalletId(config)
 
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(WALLET_ORDERS_ROUTE(walletId)),
+      getBaseUrl(WALLET_ORDERS_ROUTE(walletId)),
       request,
     )
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)

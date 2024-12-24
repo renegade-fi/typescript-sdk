@@ -29,9 +29,12 @@ export function createAuthConfig(
     utils: parameters.utils,
     apiKey,
     apiSecret,
-    getAuthServerUrl: (route = '') => {
+    getBaseUrl: (route = '') => {
       const formattedRoute = route.startsWith('/') ? route : `/${route}`
       return `${authServerUrl}/v0${formattedRoute}`
+    },
+    getWebsocketBaseUrl: () => {
+      throw new Error('Not implemented')
     },
   }
 }
@@ -39,5 +42,5 @@ export function createAuthConfig(
 export type AuthConfig = BaseConfig & {
   apiSecret: string
   apiKey: string
-  getAuthServerUrl: (route?: string) => string
+  getBaseUrl: (route?: string) => string
 }

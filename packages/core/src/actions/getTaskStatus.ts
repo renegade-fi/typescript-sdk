@@ -13,10 +13,10 @@ export async function getTaskStatus(
   parameters: GetTaskStatusParameters,
 ): GetTaskStatusReturnType {
   const { id } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   const res = await getRelayerWithAuth(
     config,
-    getRelayerBaseUrl(GET_TASK_STATUS_ROUTE(id)),
+    getBaseUrl(GET_TASK_STATUS_ROUTE(id)),
   )
   return res.status
 }

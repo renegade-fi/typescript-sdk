@@ -14,11 +14,11 @@ export type GetTaskHistoryErrorType = BaseErrorType
 export async function getTaskHistory(
   config: Config,
 ): Promise<GetTaskHistoryReturnType> {
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   const walletId = getWalletId(config)
   const res = await getRelayerWithAuth(
     config,
-    getRelayerBaseUrl(TASK_HISTORY_ROUTE(walletId)),
+    getBaseUrl(TASK_HISTORY_ROUTE(walletId)),
   )
   if (!res.tasks) {
     throw new BaseError('No tasks found')

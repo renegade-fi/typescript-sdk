@@ -38,7 +38,7 @@ export async function createOrder(
     allowExternalMatches = false,
   } = parameters
   const {
-    getRelayerBaseUrl,
+    getBaseUrl,
     utils,
     state: { seed },
   } = config
@@ -63,7 +63,7 @@ export async function createOrder(
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(WALLET_ORDERS_ROUTE(walletId)),
+      getBaseUrl(WALLET_ORDERS_ROUTE(walletId)),
       body,
     )
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)

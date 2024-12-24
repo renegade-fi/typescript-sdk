@@ -11,12 +11,12 @@ export async function createMatchingPool(
   parameters: CreateMatchingPoolParameters,
 ) {
   const { matchingPool } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
 
   try {
     await postRelayerWithAdmin(
       config,
-      getRelayerBaseUrl(ADMIN_MATCHING_POOL_CREATE_ROUTE(matchingPool)),
+      getBaseUrl(ADMIN_MATCHING_POOL_CREATE_ROUTE(matchingPool)),
     )
   } catch (error) {
     console.error(`Failed to create matching pool ${matchingPool}`, {
