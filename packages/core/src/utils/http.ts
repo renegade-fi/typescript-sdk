@@ -9,6 +9,7 @@ import {
 import type { BaseConfig, Config } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { parseBigJSON } from './bigJSON.js'
+import type { AuthType } from './websocket.js'
 
 export async function postRelayerRaw(url: string, body: any, headers = {}) {
   try {
@@ -108,8 +109,9 @@ export async function postRelayerWithAuth(
   config: Config,
   url: string,
   body?: string,
+  requestType?: AuthType,
 ) {
-  const symmetricKey = getSymmetricKey(config)
+  const symmetricKey = config.getSymmetricKey(requestType)
   invariant(symmetricKey, 'Failed to derive symmetric key')
 
   const path = getPathFromUrl(url)
