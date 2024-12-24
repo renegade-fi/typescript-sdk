@@ -100,11 +100,10 @@ async fn sign_with_external_key(
     let sign_message = external_signer
         .ok_or_else(|| String::from("sign_message function is required for external key type"))?;
 
-    let digest = keccak256(message);
-    let digest_hex = bytes_to_hex_string(&digest);
+    let message_hex = bytes_to_hex_string(message);
 
     let this = JsValue::null();
-    let arg = JsValue::from_str(&digest_hex);
+    let arg = JsValue::from_str(&message_hex);
 
     let sig_promise: Promise = sign_message
         .call1(&this, &arg)
