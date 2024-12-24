@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import type { Hex } from 'viem'
 import { CANCEL_ORDER_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import type { BaseErrorType } from '../errors/base.js'
@@ -9,6 +10,7 @@ import { getWalletId } from './getWalletId.js'
 
 export type CancelOrderParameters = {
   id: string
+  newPublicKey?: Hex
 }
 
 export type CancelOrderReturnType = { taskId: string }
@@ -19,18 +21,25 @@ export async function cancelOrder(
   config: Config,
   parameters: CancelOrderParameters,
 ): Promise<CancelOrderReturnType> {
-  const { id } = parameters
+  const { id, newPublicKey } = parameters
   const {
     getBaseUrl,
     utils,
     state: { seed },
+    renegadeKeyType,
   } = config
   invariant(seed, 'Seed is required')
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
 
-  const body = utils.cancel_order(seed, stringifyForWasm(wallet), id)
+  const body = utils.cancel_order(
+    seed,
+    stringifyForWasm(wallet),
+    id,
+    renegadeKeyType,
+    newPublicKey,
+  )
 
   try {
     const res = await postRelayerWithAuth(

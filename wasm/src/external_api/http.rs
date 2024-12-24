@@ -589,10 +589,28 @@ pub struct CancelOrderRequest {
 }
 
 #[wasm_bindgen]
-pub fn cancel_order(seed: &str, wallet_str: &str, order_id: &str) -> Result<JsValue, JsError> {
+pub fn cancel_order(
+    seed: &str,
+    wallet_str: &str,
+    order_id: &str,
+    key_type: &str,
+    new_public_key: Option<String>,
+) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
-    new_wallet.key_chain.rotate(seed);
+
+    // Handle key rotation based on key type
+    match key_type {
+        "internal" => {
+            new_wallet.key_chain.rotate(seed);
+        }
+        "external" => {
+            if let Some(new_pk) = &new_public_key {
+                wrap_eyre!(handle_key_rotation(&mut new_wallet, new_pk)).unwrap();
+            }
+        }
+        _ => return Err(JsError::new("Invalid key type")),
+    }
 
     let order_id =
         Uuid::parse_str(order_id).map_err(|e| JsError::new(&format!("Invalid UUID: {}", e)))?;
@@ -601,24 +619,29 @@ pub fn cancel_order(seed: &str, wallet_str: &str, order_id: &str) -> Result<JsVa
     new_wallet
         .orders
         .remove(&order_id)
-        .expect("order not found");
+        .ok_or_else(|| JsError::new(ERR_ORDER_NOT_FOUND))?;
 
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
     let comm = new_wallet.get_wallet_share_commitment();
-    // let sig = wrap_eyre!(new_wallet.sign_commitment(comm)).unwrap();
     let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
+
+    // Determine the new root key based on key type
+    let new_root_key = match key_type {
+        "internal" => Some(public_sign_key_to_hex_string(
+            &new_wallet.key_chain.public_keys.pk_root,
+        )),
+        "external" => new_public_key,
+        _ => return Err(JsError::new("Invalid key type")),
+    };
 
     let update_auth = WalletUpdateAuthorization {
         statement_sig: sig.to_vec(),
-        new_root_key: Some(public_sign_key_to_hex_string(
-            &new_wallet.key_chain.public_keys.pk_root,
-        )),
+        new_root_key,
     };
 
     let req = CancelOrderRequest { update_auth };
-
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
 
