@@ -1,7 +1,6 @@
-import invariant from 'tiny-invariant'
 import { type Address, toHex } from 'viem'
 import { WITHDRAW_BALANCE_ROUTE } from '../constants.js'
-import type { Config } from '../createConfig.js'
+import type { RenegadeConfig } from '../createConfig.js'
 import { stringifyForWasm } from '../utils/bigJSON.js'
 import { postRelayerWithAuth } from '../utils/http.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
@@ -17,30 +16,28 @@ export type WithdrawParameters = {
 export type WithdrawReturnType = Promise<{ taskId: string }>
 
 export async function withdraw(
-  config: Config,
+  config: RenegadeConfig,
   parameters: WithdrawParameters,
 ): WithdrawReturnType {
   const { mint, amount, destinationAddr, newPublicKey } = parameters
-  const {
-    getBaseUrl,
-    utils,
-    state: { seed },
-    renegadeKeyType,
-  } = config
-  invariant(seed, 'Seed is required')
+  const { getBaseUrl, utils, renegadeKeyType } = config
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
 
-  // Withdraw
-  const body = utils.withdraw(
-    seed,
+  const seed = renegadeKeyType === 'internal' ? config.state.seed : undefined
+  const signMessage =
+    renegadeKeyType === 'external' ? config.signMessage : undefined
+
+  const body = await utils.withdraw(
+    seed ?? '',
     stringifyForWasm(wallet),
     mint,
     toHex(amount),
     destinationAddr,
     renegadeKeyType,
     newPublicKey,
+    signMessage,
   )
 
   try {
