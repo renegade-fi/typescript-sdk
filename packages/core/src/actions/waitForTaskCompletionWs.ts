@@ -1,5 +1,5 @@
 import { TASK_STATUS_ROUTE } from '../constants.js'
-import type { Config } from '../createConfig.js'
+import type { RenegadeConfig } from '../createConfig.js'
 import { AuthType } from '../utils/websocket.js'
 import {
   type WebsocketWaiterParams,
@@ -9,7 +9,7 @@ import { getTaskHistory } from './getTaskHistory.js'
 import type { WaitForTaskCompletionParameters } from './waitForTaskCompletion.js'
 
 export async function waitForTaskCompletionWs(
-  config: Config,
+  config: RenegadeConfig,
   parameters: WaitForTaskCompletionParameters,
 ): Promise<null | undefined> {
   const { id, timeout } = parameters

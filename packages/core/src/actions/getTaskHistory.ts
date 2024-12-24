@@ -3,7 +3,7 @@ import { getWalletId } from './getWalletId.js'
 import { getRelayerWithAuth } from '../utils/http.js'
 
 import { TASK_HISTORY_ROUTE } from '../constants.js'
-import type { Config } from '../createConfig.js'
+import type { RenegadeConfig } from '../createConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type { Task as TaskHistoryItem } from '../types/task.js'
 
@@ -12,7 +12,7 @@ export type GetTaskHistoryReturnType = Map<string, TaskHistoryItem>
 export type GetTaskHistoryErrorType = BaseErrorType
 
 export async function getTaskHistory(
-  config: Config,
+  config: RenegadeConfig,
 ): Promise<GetTaskHistoryReturnType> {
   const { getBaseUrl } = config
   const walletId = getWalletId(config)
