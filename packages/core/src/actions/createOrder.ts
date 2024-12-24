@@ -48,7 +48,6 @@ export async function createOrder(
   const signMessage =
     renegadeKeyType === 'external' ? config.signMessage : undefined
 
-  // TODO: Add invariants to other actions
   if (renegadeKeyType === 'external') {
     invariant(
       signMessage !== undefined,
@@ -60,8 +59,7 @@ export async function createOrder(
   }
 
   const body = await utils.new_order(
-    // TODO: Change Rust to accept Option<String>
-    seed ?? '',
+    seed,
     stringifyForWasm(wallet),
     id,
     base,
@@ -71,7 +69,6 @@ export async function createOrder(
     worstCasePrice,
     toHex(minFillSize),
     allowExternalMatches,
-    renegadeKeyType,
     newPublicKey,
     signMessage,
   )

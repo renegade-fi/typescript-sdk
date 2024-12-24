@@ -42,11 +42,9 @@ export async function cancelOrder(
   }
 
   const body = await utils.cancel_order(
-    // TODO: Change Rust to accept Option<String>
-    seed ?? '',
+    seed,
     stringifyForWasm(wallet),
     id,
-    renegadeKeyType,
     newPublicKey,
     signMessage,
   )

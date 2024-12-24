@@ -21,7 +21,7 @@ export function derive_blinder_share(seed: string): any;
 */
 export function wallet_id(seed: string): any;
 /**
-* @param {string} seed
+* @param {string | undefined} seed
 * @param {string} wallet_str
 * @param {string} from_addr
 * @param {string} mint
@@ -29,26 +29,24 @@ export function wallet_id(seed: string): any;
 * @param {string} permit_nonce
 * @param {string} permit_deadline
 * @param {string} permit_signature
-* @param {string} key_type
 * @param {string | undefined} [new_public_key]
 * @param {Function | undefined} [sign_message]
 * @returns {Promise<any>}
 */
-export function deposit(seed: string, wallet_str: string, from_addr: string, mint: string, amount: string, permit_nonce: string, permit_deadline: string, permit_signature: string, key_type: string, new_public_key?: string, sign_message?: Function): Promise<any>;
+export function deposit(seed: string | undefined, wallet_str: string, from_addr: string, mint: string, amount: string, permit_nonce: string, permit_deadline: string, permit_signature: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
-* @param {string} seed
+* @param {string | undefined} seed
 * @param {string} wallet_str
 * @param {string} mint
 * @param {string} amount
 * @param {string} destination_addr
-* @param {string} key_type
 * @param {string | undefined} [new_public_key]
 * @param {Function | undefined} [sign_message]
 * @returns {Promise<any>}
 */
-export function withdraw(seed: string, wallet_str: string, mint: string, amount: string, destination_addr: string, key_type: string, new_public_key?: string, sign_message?: Function): Promise<any>;
+export function withdraw(seed: string | undefined, wallet_str: string, mint: string, amount: string, destination_addr: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
-* @param {string} seed
+* @param {string | undefined} seed
 * @param {string} wallet_str
 * @param {string} id
 * @param {string} base_mint
@@ -58,14 +56,13 @@ export function withdraw(seed: string, wallet_str: string, mint: string, amount:
 * @param {string} worst_case_price
 * @param {string} min_fill_size
 * @param {boolean} allow_external_matches
-* @param {string} key_type
 * @param {string | undefined} [new_public_key]
 * @param {Function | undefined} [sign_message]
 * @returns {Promise<any>}
 */
-export function new_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, key_type: string, new_public_key?: string, sign_message?: Function): Promise<any>;
+export function new_order(seed: string | undefined, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
-* @param {string} seed
+* @param {string | undefined} seed
 * @param {string} wallet_str
 * @param {string} id
 * @param {string} base_mint
@@ -76,22 +73,20 @@ export function new_order(seed: string, wallet_str: string, id: string, base_min
 * @param {string} min_fill_size
 * @param {boolean} allow_external_matches
 * @param {string} matching_pool
-* @param {string} key_type
 * @param {string | undefined} [new_public_key]
 * @param {Function | undefined} [sign_message]
 * @returns {Promise<any>}
 */
-export function new_order_in_matching_pool(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, matching_pool: string, key_type: string, new_public_key?: string, sign_message?: Function): Promise<any>;
+export function new_order_in_matching_pool(seed: string | undefined, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, matching_pool: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
-* @param {string} seed
+* @param {string | undefined} seed
 * @param {string} wallet_str
 * @param {string} order_id
-* @param {string} key_type
 * @param {string | undefined} [new_public_key]
 * @param {Function | undefined} [sign_message]
 * @returns {Promise<any>}
 */
-export function cancel_order(seed: string, wallet_str: string, order_id: string, key_type: string, new_public_key?: string, sign_message?: Function): Promise<any>;
+export function cancel_order(seed: string | undefined, wallet_str: string, order_id: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
 * @param {string} seed
 * @param {string} wallet_str

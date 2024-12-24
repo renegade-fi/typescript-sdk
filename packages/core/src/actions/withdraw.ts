@@ -1,4 +1,5 @@
 import { type Address, toHex } from 'viem'
+import invariant from 'tiny-invariant'
 import { WITHDRAW_BALANCE_ROUTE } from '../constants.js'
 import type { RenegadeConfig } from '../createConfig.js'
 import { stringifyForWasm } from '../utils/bigJSON.js'
@@ -29,13 +30,22 @@ export async function withdraw(
   const signMessage =
     renegadeKeyType === 'external' ? config.signMessage : undefined
 
+  if (renegadeKeyType === 'external') {
+    invariant(
+      signMessage !== undefined,
+      'Sign message function is required for external key type',
+    )
+  }
+  if (renegadeKeyType === 'internal') {
+    invariant(seed !== undefined, 'Seed is required for internal key type')
+  }
+
   const body = await utils.withdraw(
-    seed ?? '',
+    seed,
     stringifyForWasm(wallet),
     mint,
     toHex(amount),
     destinationAddr,
-    renegadeKeyType,
     newPublicKey,
     signMessage,
   )
