@@ -1,4 +1,3 @@
-import { getSymmetricKey } from '../actions/getSymmetricKey.js'
 import { SIG_EXPIRATION_BUFFER_MS } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import { addExpiringAuthToHeaders } from './http.js'
@@ -118,23 +117,11 @@ export class RelayerWebsocket {
       return { body }
     }
 
-    if (this.authType === AuthType.Wallet) {
-      const headers = this.buildWalletAuthHeaders(body)
-      return {
-        headers,
-        body,
-      }
+    const headers = this.buildAuthHeaders(body)
+    return {
+      headers,
+      body,
     }
-
-    if (this.authType === AuthType.Admin) {
-      const headers = this.buildAdminAuthHeaders(body)
-      return {
-        headers,
-        body,
-      }
-    }
-
-    throw new Error(`Unsupported auth type: ${this.authType}`)
   }
 
   private buildUnsubscriptionMessage(): UnsubscriptionMessage {
@@ -146,29 +133,8 @@ export class RelayerWebsocket {
     }
   }
 
-  private buildWalletAuthHeaders(
-    body: SubscriptionBody,
-  ): Record<string, string> {
-    const symmetricKey = getSymmetricKey(this.config)
-
-    return addExpiringAuthToHeaders(
-      this.config,
-      body.topic,
-      {}, // Headers
-      JSON.stringify(body),
-      symmetricKey,
-      SIG_EXPIRATION_BUFFER_MS,
-    )
-  }
-
-  private buildAdminAuthHeaders(
-    body: SubscriptionBody,
-  ): Record<string, string> {
-    if (!this.config.adminKey) {
-      throw new Error('Admin key is required')
-    }
-    const { adminKey } = this.config
-    const symmetricKey = this.config.utils.b64_to_hex_hmac_key(adminKey)
+  private buildAuthHeaders(body: SubscriptionBody): Record<string, string> {
+    const symmetricKey = this.config.getSymmetricKey(this.authType)
 
     return addExpiringAuthToHeaders(
       this.config,
