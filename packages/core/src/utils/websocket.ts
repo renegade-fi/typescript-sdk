@@ -1,5 +1,5 @@
 import { SIG_EXPIRATION_BUFFER_MS } from '../constants.js'
-import type { Config } from '../createConfig.js'
+import type { RenegadeConfig } from '../createConfig.js'
 import { addExpiringAuthToHeaders } from './http.js'
 
 export enum AuthType {
@@ -9,7 +9,7 @@ export enum AuthType {
 }
 
 export type RelayerWebsocketParams = {
-  config: Config
+  config: RenegadeConfig
   topic: string
   authType: AuthType
   onmessage: (this: WebSocket, ev: MessageEvent) => any
@@ -38,7 +38,7 @@ export type UnsubscriptionBody = {
 }
 
 export class RelayerWebsocket {
-  private config: Config
+  private config: RenegadeConfig
   private topic: string
   private authType: AuthType
   private onmessage: (this: WebSocket, ev: MessageEvent) => any
