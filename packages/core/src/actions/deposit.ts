@@ -1,5 +1,5 @@
-import { type Address, toHex } from 'viem'
 import invariant from 'tiny-invariant'
+import { type Address, toHex } from 'viem'
 import { DEPOSIT_BALANCE_ROUTE } from '../constants.js'
 import type { RenegadeConfig } from '../createConfig.js'
 import { stringifyForWasm } from '../utils/bigJSON.js'

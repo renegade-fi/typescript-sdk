@@ -30,7 +30,8 @@ export function getPkRootScalars(
   const { nonce } = parameters
 
   const seed = renegadeKeyType === 'internal' ? config.state.seed : undefined
-  const publicKey = renegadeKeyType === 'external' ? config.publicKey : undefined
+  const publicKey =
+    renegadeKeyType === 'external' ? config.publicKey : undefined
 
   if (renegadeKeyType === 'internal') {
     invariant(seed !== undefined, 'Seed is required for internal key type')
