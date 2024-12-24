@@ -43,9 +43,10 @@ export function deposit(seed: string, wallet_str: string, from_addr: string, min
 * @param {string} destination_addr
 * @param {string} key_type
 * @param {string | undefined} [new_public_key]
-* @returns {any}
+* @param {Function | undefined} [sign_message]
+* @returns {Promise<any>}
 */
-export function withdraw(seed: string, wallet_str: string, mint: string, amount: string, destination_addr: string, key_type: string, new_public_key?: string): any;
+export function withdraw(seed: string, wallet_str: string, mint: string, amount: string, destination_addr: string, key_type: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
 * @param {string} seed
 * @param {string} wallet_str
@@ -59,9 +60,10 @@ export function withdraw(seed: string, wallet_str: string, mint: string, amount:
 * @param {boolean} allow_external_matches
 * @param {string} key_type
 * @param {string | undefined} [new_public_key]
-* @returns {any}
+* @param {Function | undefined} [sign_message]
+* @returns {Promise<any>}
 */
-export function new_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, key_type: string, new_public_key?: string): any;
+export function new_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, key_type: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
 * @param {string} seed
 * @param {string} wallet_str
@@ -76,18 +78,20 @@ export function new_order(seed: string, wallet_str: string, id: string, base_min
 * @param {string} matching_pool
 * @param {string} key_type
 * @param {string | undefined} [new_public_key]
-* @returns {any}
+* @param {Function | undefined} [sign_message]
+* @returns {Promise<any>}
 */
-export function new_order_in_matching_pool(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, matching_pool: string, key_type: string, new_public_key?: string): any;
+export function new_order_in_matching_pool(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, matching_pool: string, key_type: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
 * @param {string} seed
 * @param {string} wallet_str
 * @param {string} order_id
 * @param {string} key_type
 * @param {string | undefined} [new_public_key]
-* @returns {any}
+* @param {Function | undefined} [sign_message]
+* @returns {Promise<any>}
 */
-export function cancel_order(seed: string, wallet_str: string, order_id: string, key_type: string, new_public_key?: string): any;
+export function cancel_order(seed: string, wallet_str: string, order_id: string, key_type: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
 * @param {string} seed
 * @param {string} wallet_str
@@ -131,19 +135,6 @@ export function new_external_quote_request(base_mint: string, quote_mint: string
 */
 export function assemble_external_match(do_gas_estimation: boolean, updated_order: string, signed_quote: string): any;
 /**
-* @param {string} path
-* @param {any} headers
-* @param {string} body
-* @param {string} key
-* @returns {string}
-*/
-export function create_request_signature(path: string, headers: any, body: string, key: string): string;
-/**
-* @param {string} b64_key
-* @returns {string}
-*/
-export function b64_to_hex_hmac_key(b64_key: string): string;
-/**
 * @param {string} seed
 * @param {bigint} nonce
 * @returns {any}
@@ -166,3 +157,16 @@ export function get_pk_root_scalars(seed: string, nonce: bigint): any[];
 * @returns {any}
 */
 export function get_symmetric_key(seed: string): any;
+/**
+* @param {string} path
+* @param {any} headers
+* @param {string} body
+* @param {string} key
+* @returns {string}
+*/
+export function create_request_signature(path: string, headers: any, body: string, key: string): string;
+/**
+* @param {string} b64_key
+* @returns {string}
+*/
+export function b64_to_hex_hmac_key(b64_key: string): string;
