@@ -171,7 +171,6 @@ pub fn deposit(
         }
         "external" => {
             if let Some(new_pk) = &new_public_key {
-                // For external key type, check for rotation if new public key is provided
                 handle_key_rotation(&mut new_wallet, new_pk).unwrap();
             }
         }
@@ -247,10 +246,24 @@ pub fn withdraw(
     mint: &str,
     amount: &str,
     destination_addr: &str,
+    key_type: &str,
+    new_public_key: Option<String>,
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
-    new_wallet.key_chain.rotate(seed);
+
+    // Handle key rotation based on key type
+    match key_type {
+        "internal" => {
+            new_wallet.key_chain.rotate(seed);
+        }
+        "external" => {
+            if let Some(new_pk) = &new_public_key {
+                wrap_eyre!(handle_key_rotation(&mut new_wallet, new_pk)).unwrap();
+            }
+        }
+        _ => return Err(JsError::new("Invalid key type")),
+    }
 
     // Modify the wallet
     let mint = wrap_eyre!(biguint_from_hex_string(mint)).unwrap();
@@ -277,13 +290,24 @@ pub fn withdraw(
 
     wrap_eyre!(new_wallet.withdraw(&mint, amount.to_u128().unwrap())).unwrap();
     new_wallet.reblind_wallet();
-    let wallet: ApiWallet = new_wallet.clone().into();
-    let _wallet = serde_json::to_string(&wallet).unwrap();
 
     // Sign a commitment to the new shares
     let comm = new_wallet.get_wallet_share_commitment();
-    // let sig = wrap_eyre!(new_wallet.sign_commitment(comm)).unwrap();
     let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
+
+    // Determine the new root key based on key type
+    let new_root_key = match key_type {
+        "internal" => Some(public_sign_key_to_hex_string(
+            &new_wallet.key_chain.public_keys.pk_root,
+        )),
+        "external" => new_public_key,
+        _ => return Err(JsError::new("Invalid key type")),
+    };
+
+    let update_auth = WalletUpdateAuthorization {
+        statement_sig: sig.to_vec(),
+        new_root_key,
+    };
 
     let sk_root: SigningKey = SigningKey::try_from(&old_sk_root).unwrap();
     // Authorize the withdrawal then send the request
@@ -293,12 +317,7 @@ pub fn withdraw(
         amount.to_u128().unwrap(),
         destination_addr.clone(),
     )?;
-    let update_auth = WalletUpdateAuthorization {
-        statement_sig: sig.to_vec(),
-        new_root_key: Some(public_sign_key_to_hex_string(
-            &new_wallet.key_chain.public_keys.pk_root,
-        )),
-    };
+
     let req = WithdrawBalanceRequest {
         amount,
         destination_addr,

@@ -40,9 +40,11 @@ export function deposit(seed: string, wallet_str: string, from_addr: string, min
 * @param {string} mint
 * @param {string} amount
 * @param {string} destination_addr
+* @param {string} key_type
+* @param {string | undefined} [new_public_key]
 * @returns {any}
 */
-export function withdraw(seed: string, wallet_str: string, mint: string, amount: string, destination_addr: string): any;
+export function withdraw(seed: string, wallet_str: string, mint: string, amount: string, destination_addr: string, key_type: string, new_public_key?: string): any;
 /**
 * @param {string} seed
 * @param {string} wallet_str
