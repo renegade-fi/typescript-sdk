@@ -88,9 +88,10 @@ export function new_order_in_matching_pool(seed: string, wallet_str: string, id:
 * @param {string} order_id
 * @param {string} key_type
 * @param {string | undefined} [new_public_key]
-* @returns {any}
+* @param {Function | undefined} [sign_message]
+* @returns {Promise<any>}
 */
-export function cancel_order(seed: string, wallet_str: string, order_id: string, key_type: string, new_public_key?: string): any;
+export function cancel_order(seed: string, wallet_str: string, order_id: string, key_type: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
 * @param {string} seed
 * @param {string} wallet_str
