@@ -142,7 +142,7 @@ pub struct DepositBalanceRequest {
 
 #[wasm_bindgen]
 pub async fn deposit(
-    seed: &str,
+    seed: Option<String>,
     wallet_str: &str,
     from_addr: &str,
     mint: &str,
@@ -150,7 +150,6 @@ pub async fn deposit(
     permit_nonce: &str,
     permit_deadline: &str,
     permit_signature: &str,
-    key_type: &str,
     new_public_key: Option<String>,
     sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
@@ -158,8 +157,7 @@ pub async fn deposit(
 
     let next_public_key = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
-        seed,
-        key_type,
+        seed.as_deref(),
         new_public_key
     ))
     .unwrap();
@@ -175,7 +173,7 @@ pub async fn deposit(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let statement_sig = sign_wallet_commitment(&new_wallet, seed, key_type, sign_message.as_ref())
+    let statement_sig = sign_wallet_commitment(&new_wallet, seed.as_deref(), sign_message.as_ref())
         .await
         .map_err(|e| JsError::new(&e.to_string()))?;
 
@@ -220,12 +218,11 @@ pub struct WithdrawBalanceRequest {
 
 #[wasm_bindgen]
 pub async fn withdraw(
-    seed: &str,
+    seed: Option<String>,
     wallet_str: &str,
     mint: &str,
     amount: &str,
     destination_addr: &str,
-    key_type: &str,
     new_public_key: Option<String>,
     sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
@@ -233,8 +230,7 @@ pub async fn withdraw(
 
     let next_public_key = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
-        seed,
-        key_type,
+        seed.as_deref(),
         new_public_key
     ))
     .unwrap();
@@ -266,7 +262,7 @@ pub async fn withdraw(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let statement_sig = sign_wallet_commitment(&new_wallet, seed, key_type, sign_message.as_ref())
+    let statement_sig = sign_wallet_commitment(&new_wallet, seed.as_deref(), sign_message.as_ref())
         .await
         .map_err(|e| JsError::new(&e.to_string()))?;
 
@@ -277,11 +273,10 @@ pub async fn withdraw(
 
     let withdrawal_sig = sign_withdrawal_authorization(
         &new_wallet,
-        seed,
+        seed.as_deref(),
         mint,
         amount.to_u128().unwrap(),
         destination_addr.clone(),
-        key_type,
         sign_message.as_ref(),
     )
     .await
@@ -385,7 +380,7 @@ fn create_order(
 }
 
 pub async fn create_order_request(
-    seed: &str,
+    seed: Option<String>,
     wallet_str: &str,
     id: &str,
     base_mint: &str,
@@ -395,7 +390,6 @@ pub async fn create_order_request(
     worst_case_price: &str,
     min_fill_size: &str,
     allow_external_matches: bool,
-    key_type: &str,
     new_public_key: Option<String>,
     sign_message: Option<Function>,
 ) -> Result<CreateOrderRequest, JsError> {
@@ -403,8 +397,7 @@ pub async fn create_order_request(
 
     let next_public_key = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
-        seed,
-        key_type,
+        seed.as_deref(),
         new_public_key
     ))
     .unwrap();
@@ -425,7 +418,7 @@ pub async fn create_order_request(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let statement_sig = sign_wallet_commitment(&new_wallet, seed, key_type, sign_message.as_ref())
+    let statement_sig = sign_wallet_commitment(&new_wallet, seed.as_deref(), sign_message.as_ref())
         .await
         .map_err(|e| JsError::new(&e.to_string()))?;
 
@@ -439,7 +432,7 @@ pub async fn create_order_request(
 
 #[wasm_bindgen]
 pub async fn new_order(
-    seed: &str,
+    seed: Option<String>,
     wallet_str: &str,
     id: &str,
     base_mint: &str,
@@ -449,7 +442,6 @@ pub async fn new_order(
     worst_case_price: &str,
     min_fill_size: &str,
     allow_external_matches: bool,
-    key_type: &str,
     new_public_key: Option<String>,
     sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
@@ -464,7 +456,6 @@ pub async fn new_order(
         worst_case_price,
         min_fill_size,
         allow_external_matches,
-        key_type,
         new_public_key,
         sign_message,
     )
@@ -474,7 +465,7 @@ pub async fn new_order(
 
 #[wasm_bindgen]
 pub async fn new_order_in_matching_pool(
-    seed: &str,
+    seed: Option<String>,
     wallet_str: &str,
     id: &str,
     base_mint: &str,
@@ -485,7 +476,6 @@ pub async fn new_order_in_matching_pool(
     min_fill_size: &str,
     allow_external_matches: bool,
     matching_pool: &str,
-    key_type: &str,
     new_public_key: Option<String>,
     sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
@@ -500,7 +490,6 @@ pub async fn new_order_in_matching_pool(
         worst_case_price,
         min_fill_size,
         allow_external_matches,
-        key_type,
         new_public_key,
         sign_message,
     )
@@ -523,10 +512,9 @@ pub struct CancelOrderRequest {
 
 #[wasm_bindgen]
 pub async fn cancel_order(
-    seed: &str,
+    seed: Option<String>,
     wallet_str: &str,
     order_id: &str,
-    key_type: &str,
     new_public_key: Option<String>,
     sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
@@ -534,8 +522,7 @@ pub async fn cancel_order(
 
     let next_public_key = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
-        seed,
-        key_type,
+        seed.as_deref(),
         new_public_key
     ))
     .unwrap();
@@ -552,7 +539,7 @@ pub async fn cancel_order(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let statement_sig = sign_wallet_commitment(&new_wallet, seed, key_type, sign_message.as_ref())
+    let statement_sig = sign_wallet_commitment(&new_wallet, seed.as_deref(), sign_message.as_ref())
         .await
         .map_err(|e| JsError::new(&e.to_string()))?;
 

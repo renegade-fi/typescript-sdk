@@ -51,7 +51,6 @@ export async function deposit(
     toHex(permitNonce),
     toHex(permitDeadline),
     permit,
-    renegadeKeyType,
     newPublicKey,
     signMessage,
   )

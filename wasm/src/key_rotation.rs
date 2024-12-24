@@ -4,51 +4,44 @@ use crate::{
     helpers::{bytes_from_hex_string, public_sign_key_to_hex_string},
 };
 
-/// Handles wallet key rotation based on key type.
+/// Handles wallet key rotation based on whether a new external key is provided.
 ///
-/// Internal type always rotates to the next derived key.
-/// External type only rotates if a new key is provided.
-///
-/// # Arguments
-/// * `wallet` - Target wallet
-/// * `seed` - Seed for key derivation
-/// * `key_type` - "internal" or "external"
-/// * `new_public_key` - Optional new key for external type
-///
+/// If no new key is provided (new_public_key is None), rotates to the next derived key using seed.
+/// If a new key is provided, rotates to that key.
+
 /// # Returns
 /// The rotated public key, if any
 pub fn handle_key_rotation(
     wallet: &mut Wallet,
-    seed: &str,
-    key_type: &str,
+    seed: Option<&str>,
     new_public_key: Option<String>,
 ) -> Result<Option<String>, String> {
-    let next_public_key = determine_next_key(wallet, seed, key_type, new_public_key)?;
+    let next_public_key = determine_next_key(wallet, seed, new_public_key)?;
 
     // If we have a new key, perform the rotation
-    if let Some(next_key) = &next_public_key {
+    if let Some(ref next_key) = next_public_key {
         maybe_rotate_to_key(wallet, next_key)?;
     }
 
     Ok(next_public_key)
 }
 
-/// Gets the next public key based on key type.
+/// Gets the next public key based on whether a new external key is provided.
 fn determine_next_key(
     wallet: &Wallet,
-    seed: &str,
-    key_type: &str,
+    seed: Option<&str>,
     new_public_key: Option<String>,
 ) -> Result<Option<String>, String> {
-    match key_type {
-        "internal" => {
-            // For internal type, derive the next key in sequence
-            let next_key = wallet.key_chain.get_next_rotated_public_key(seed)?;
-            Ok(Some(public_sign_key_to_hex_string(&next_key)))
-        }
-        "external" => Ok(new_public_key),
-        _ => Err("Invalid key type".to_string()),
+    if let Some(key) = new_public_key {
+        return Ok(Some(key));
     }
+
+    if let Some(seed) = seed {
+        let next_key = wallet.key_chain.get_next_rotated_public_key(seed)?;
+        return Ok(Some(public_sign_key_to_hex_string(&next_key)));
+    }
+
+    Ok(None)
 }
 
 /// Updates wallet's key if different from current.

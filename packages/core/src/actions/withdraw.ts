@@ -35,7 +35,6 @@ export async function withdraw(
     mint,
     toHex(amount),
     destinationAddr,
-    renegadeKeyType,
     newPublicKey,
     signMessage,
   )

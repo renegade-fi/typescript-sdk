@@ -46,7 +46,6 @@ export async function cancelOrder(
     seed ?? '',
     stringifyForWasm(wallet),
     id,
-    renegadeKeyType,
     newPublicKey,
     signMessage,
   )

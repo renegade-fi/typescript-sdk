@@ -71,7 +71,6 @@ export async function createOrder(
     worstCasePrice,
     toHex(minFillSize),
     allowExternalMatches,
-    renegadeKeyType,
     newPublicKey,
     signMessage,
   )

@@ -20,23 +20,21 @@ use crate::{
 /// Signs a wallet commitment.
 pub async fn sign_wallet_commitment(
     wallet: &Wallet,
-    seed: &str,
-    key_type: &str,
+    seed: Option<&str>,
     external_signer: Option<&Function>,
 ) -> Result<Vec<u8>, String> {
     let comm = wallet.get_wallet_share_commitment();
     let comm_bytes = comm.inner().serialize_to_bytes();
-    sign_message(wallet, seed, &comm_bytes, key_type, external_signer).await
+    sign_message(wallet, seed, &comm_bytes, external_signer).await
 }
 
 /// Signs a withdrawal authorization.
 pub async fn sign_withdrawal_authorization(
     wallet: &Wallet,
-    seed: &str,
+    seed: Option<&str>,
     mint: BigUint,
     amount: u128,
     account_addr: BigUint,
-    key_type: &str,
     external_signer: Option<&Function>,
 ) -> Result<Vec<u8>, String> {
     let transfer = ExternalTransfer {
@@ -52,14 +50,7 @@ pub async fn sign_withdrawal_authorization(
     let contract_transfer_bytes = postcard::to_allocvec(&contract_transfer)
         .map_err(|e| format!("Failed to serialize transfer: {e}"))?;
 
-    sign_message(
-        wallet,
-        seed,
-        &contract_transfer_bytes,
-        key_type,
-        external_signer,
-    )
-    .await
+    sign_message(wallet, seed, &contract_transfer_bytes, external_signer).await
 }
 
 /// Signs a message using either internal or external signing method.
@@ -68,15 +59,16 @@ pub async fn sign_withdrawal_authorization(
 /// For external signing, uses the provided external_signer function.
 pub async fn sign_message(
     wallet: &Wallet,
-    seed: &str,
+    seed: Option<&str>,
     message: &[u8],
-    key_type: &str,
     external_signer: Option<&Function>,
 ) -> Result<Vec<u8>, String> {
-    match key_type {
-        "internal" => sign_with_internal_key(wallet, seed, message),
-        "external" => sign_with_external_key(message, external_signer).await,
-        _ => Err(String::from("Invalid key type")),
+    if let Some(signer) = external_signer {
+        sign_with_external_key(message, Some(signer)).await
+    } else if let Some(seed) = seed {
+        sign_with_internal_key(wallet, seed, message)
+    } else {
+        Err(String::from("Either seed or external signer is required"))
     }
 }
 
