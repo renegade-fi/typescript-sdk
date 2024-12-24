@@ -12,6 +12,7 @@ import { type Mutate, type StoreApi, createStore } from 'zustand/vanilla'
 import { type Storage, createStorage, noopStorage } from './createStorage.js'
 import type { Evaluate, ExactPartial } from './types/utils.js'
 import type * as rustUtils from './utils.d.ts'
+import { AuthType } from './utils/websocket.js'
 
 export type CreateConfigParameters = {
   darkPoolAddress: Address
@@ -129,6 +130,20 @@ export function createConfig(parameters: CreateConfigParameters): Config {
         : `${parameters.relayerUrl}:${websocketPort}`
       return `${protocol}://${baseUrl}`
     },
+    getSymmetricKey(type?: AuthType) {
+      invariant(parameters.utils, 'Utils are required')
+      if (type === AuthType.Admin) {
+        invariant(parameters.adminKey, 'Admin key is required')
+        const symmetricKey = parameters.utils.b64_to_hex_hmac_key(
+          parameters.adminKey,
+        ) as Hex
+        invariant(symmetricKey, 'Admin key is required')
+        return symmetricKey
+      }
+      const seed = store.getState().seed
+      invariant(seed, 'Seed is required')
+      return parameters.utils.get_symmetric_key(seed) as Hex
+    },
     pollingInterval,
     get state() {
       return store.getState()
@@ -169,6 +184,8 @@ export type BaseConfig = {
   getWebsocketBaseUrl: () => string
   renegadeKeyType?: KeyType
   getBaseUrl: (route?: string) => string
+  // TODO: Move admin key to a separate config
+  getSymmetricKey: (type?: AuthType) => Hex
 }
 
 export type Config = BaseConfig & {

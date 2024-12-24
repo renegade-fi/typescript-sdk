@@ -52,6 +52,9 @@ export function createExternalKeyConfig(
     walletId,
     publicKey,
     // BaseConfig
+    utils: parameters.utils,
+    renegadeKeyType: keyTypes.EXTERNAL,
+    relayerUrl,
     getBaseUrl: (route = '') => {
       const formattedRoute = route.startsWith('/') ? route : `/${route}`
       return `${relayerUrl}/v0${formattedRoute}`
@@ -59,9 +62,9 @@ export function createExternalKeyConfig(
     getWebsocketBaseUrl: () => {
       return websocketUrl.replace(/\/$/, '')
     },
-    utils: parameters.utils,
-    renegadeKeyType: keyTypes.EXTERNAL,
-    relayerUrl,
+    getSymmetricKey: () => {
+      return symmetricKey
+    },
   }
 }
 

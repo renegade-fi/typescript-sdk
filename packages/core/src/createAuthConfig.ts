@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import type { BaseConfig } from './createConfig.js'
 import type * as rustUtils from './utils.d.ts'
+import type { Hex } from 'viem'
 
 export type CreateAuthConfigParameters = {
   apiKey: string
@@ -35,6 +36,10 @@ export function createAuthConfig(
     },
     getWebsocketBaseUrl: () => {
       throw new Error('Not implemented')
+    },
+    getSymmetricKey: () => {
+      invariant(parameters.utils, 'Utils are required')
+      return parameters.utils.b64_to_hex_hmac_key(apiSecret) as Hex
     },
   }
 }
