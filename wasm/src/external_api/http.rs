@@ -164,22 +164,13 @@ pub fn deposit(
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
-    // Get the next public key based on key type
-    let next_public_key = match key_type {
-        "internal" => Some(public_sign_key_to_hex_string(
-            &new_wallet
-                .key_chain
-                .get_next_rotated_public_key(seed)
-                .unwrap(),
-        )),
-        "external" => new_public_key,
-        _ => return Err(JsError::new("Invalid key type")),
-    };
-
-    // Handle key rotation if we have a new public key
-    if let Some(next_key) = &next_public_key {
-        wrap_eyre!(handle_key_rotation(&mut new_wallet, next_key)).unwrap();
-    }
+    let next_public_key = wrap_eyre!(handle_key_rotation(
+        &mut new_wallet,
+        seed,
+        key_type,
+        new_public_key
+    ))
+    .unwrap();
 
     // Modify the wallet
     let mint = wrap_eyre!(biguint_from_hex_string(mint)).unwrap();
@@ -247,22 +238,13 @@ pub fn withdraw(
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
-    // Get the next public key based on key type
-    let next_public_key = match key_type {
-        "internal" => Some(public_sign_key_to_hex_string(
-            &new_wallet
-                .key_chain
-                .get_next_rotated_public_key(seed)
-                .unwrap(),
-        )),
-        "external" => new_public_key,
-        _ => return Err(JsError::new("Invalid key type")),
-    };
-
-    // Handle key rotation if we have a new public key
-    if let Some(next_key) = &next_public_key {
-        wrap_eyre!(handle_key_rotation(&mut new_wallet, next_key)).unwrap();
-    }
+    let next_public_key = wrap_eyre!(handle_key_rotation(
+        &mut new_wallet,
+        seed,
+        key_type,
+        new_public_key
+    ))
+    .unwrap();
 
     // Modify the wallet
     let mint = wrap_eyre!(biguint_from_hex_string(mint)).unwrap();
@@ -451,22 +433,13 @@ pub fn create_order_request(
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
-    // Get the next public key based on key type
-    let next_public_key = match key_type {
-        "internal" => Some(public_sign_key_to_hex_string(
-            &new_wallet
-                .key_chain
-                .get_next_rotated_public_key(seed)
-                .unwrap(),
-        )),
-        "external" => new_public_key,
-        _ => return Err(JsError::new("Invalid key type")),
-    };
-
-    // Handle key rotation if we have a new public key
-    if let Some(next_key) = &next_public_key {
-        wrap_eyre!(handle_key_rotation(&mut new_wallet, next_key)).unwrap();
-    }
+    let next_public_key = wrap_eyre!(handle_key_rotation(
+        &mut new_wallet,
+        seed,
+        key_type,
+        new_public_key
+    ))
+    .unwrap();
 
     let order = create_order(
         id,
@@ -584,22 +557,13 @@ pub fn cancel_order(
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
-    // Get the next public key based on key type
-    let next_public_key = match key_type {
-        "internal" => Some(public_sign_key_to_hex_string(
-            &new_wallet
-                .key_chain
-                .get_next_rotated_public_key(seed)
-                .unwrap(),
-        )),
-        "external" => new_public_key,
-        _ => return Err(JsError::new("Invalid key type")),
-    };
-
-    // Handle key rotation if we have a new public key
-    if let Some(next_key) = &next_public_key {
-        wrap_eyre!(handle_key_rotation(&mut new_wallet, next_key)).unwrap();
-    }
+    let next_public_key = wrap_eyre!(handle_key_rotation(
+        &mut new_wallet,
+        seed,
+        key_type,
+        new_public_key
+    ))
+    .unwrap();
 
     let order_id =
         Uuid::parse_str(order_id).map_err(|e| JsError::new(&format!("Invalid UUID: {}", e)))?;
