@@ -34,6 +34,7 @@ export async function createOrderInMatchingPool(
     getBaseUrl,
     utils,
     state: { seed },
+    renegadeKeyType,
   } = config
   invariant(seed, 'Seed is required')
 
@@ -52,6 +53,7 @@ export async function createOrderInMatchingPool(
     toHex(minFillSize),
     allowExternalMatches,
     matchingPool,
+    renegadeKeyType,
   )
 
   try {

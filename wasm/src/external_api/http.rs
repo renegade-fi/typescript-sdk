@@ -455,10 +455,24 @@ pub fn create_order_request(
     worst_case_price: &str,
     min_fill_size: &str,
     allow_external_matches: bool,
+    key_type: &str,
+    new_public_key: Option<String>,
 ) -> Result<CreateOrderRequest, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
-    new_wallet.key_chain.rotate(seed);
+
+    // Handle key rotation based on key type
+    match key_type {
+        "internal" => {
+            new_wallet.key_chain.rotate(seed);
+        }
+        "external" => {
+            if let Some(new_pk) = &new_public_key {
+                wrap_eyre!(handle_key_rotation(&mut new_wallet, new_pk)).unwrap();
+            }
+        }
+        _ => return Err(JsError::new("Invalid key type")),
+    }
 
     let order = create_order(
         id,
@@ -470,19 +484,27 @@ pub fn create_order_request(
         min_fill_size,
         allow_external_matches,
     )?;
+
     // Modify the wallet
     wrap_eyre!(new_wallet.add_order(order.id, order.clone().into())).unwrap();
     new_wallet.reblind_wallet();
+
     // Sign a commitment to the new shares
     let comm = new_wallet.get_wallet_share_commitment();
-    // let sig = wrap_eyre!(new_wallet.sign_commitment(comm)).unwrap();
     let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
+
+    // Determine the new root key based on key type
+    let new_root_key = match key_type {
+        "internal" => Some(public_sign_key_to_hex_string(
+            &new_wallet.key_chain.public_keys.pk_root,
+        )),
+        "external" => new_public_key,
+        _ => return Err(JsError::new("Invalid key type")),
+    };
 
     let update_auth = WalletUpdateAuthorization {
         statement_sig: sig.to_vec(),
-        new_root_key: Some(public_sign_key_to_hex_string(
-            &new_wallet.key_chain.public_keys.pk_root,
-        )),
+        new_root_key,
     };
 
     Ok(CreateOrderRequest { order, update_auth })
@@ -500,6 +522,8 @@ pub fn new_order(
     worst_case_price: &str,
     min_fill_size: &str,
     allow_external_matches: bool,
+    key_type: &str,
+    new_public_key: Option<String>,
 ) -> Result<JsValue, JsError> {
     let req = create_order_request(
         seed,
@@ -512,6 +536,8 @@ pub fn new_order(
         worst_case_price,
         min_fill_size,
         allow_external_matches,
+        key_type,
+        new_public_key,
     )?;
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
@@ -529,6 +555,8 @@ pub fn new_order_in_matching_pool(
     min_fill_size: &str,
     allow_external_matches: bool,
     matching_pool: &str,
+    key_type: &str,
+    new_public_key: Option<String>,
 ) -> Result<JsValue, JsError> {
     let create_order_req = create_order_request(
         seed,
@@ -541,6 +569,8 @@ pub fn new_order_in_matching_pool(
         worst_case_price,
         min_fill_size,
         allow_external_matches,
+        key_type,
+        new_public_key,
     )?;
     let req = CreateOrderInMatchingPoolRequest {
         order: create_order_req.order,

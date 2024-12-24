@@ -56,9 +56,11 @@ export function withdraw(seed: string, wallet_str: string, mint: string, amount:
 * @param {string} worst_case_price
 * @param {string} min_fill_size
 * @param {boolean} allow_external_matches
+* @param {string} key_type
+* @param {string | undefined} [new_public_key]
 * @returns {any}
 */
-export function new_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean): any;
+export function new_order(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, key_type: string, new_public_key?: string): any;
 /**
 * @param {string} seed
 * @param {string} wallet_str
@@ -71,9 +73,11 @@ export function new_order(seed: string, wallet_str: string, id: string, base_min
 * @param {string} min_fill_size
 * @param {boolean} allow_external_matches
 * @param {string} matching_pool
+* @param {string} key_type
+* @param {string | undefined} [new_public_key]
 * @returns {any}
 */
-export function new_order_in_matching_pool(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, matching_pool: string): any;
+export function new_order_in_matching_pool(seed: string, wallet_str: string, id: string, base_mint: string, quote_mint: string, side: string, amount: string, worst_case_price: string, min_fill_size: string, allow_external_matches: boolean, matching_pool: string, key_type: string, new_public_key?: string): any;
 /**
 * @param {string} seed
 * @param {string} wallet_str
