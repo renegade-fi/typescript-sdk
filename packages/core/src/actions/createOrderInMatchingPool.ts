@@ -41,7 +41,7 @@ export async function createOrderInMatchingPool(
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
 
-  const body = utils.new_order_in_matching_pool(
+  const body = await utils.new_order_in_matching_pool(
     seed,
     stringifyForWasm(wallet),
     id,
