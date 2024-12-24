@@ -164,17 +164,21 @@ pub fn deposit(
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
-    // Handle key rotation based on key type
-    match key_type {
-        "internal" => {
-            new_wallet.key_chain.rotate(seed);
-        }
-        "external" => {
-            if let Some(new_pk) = &new_public_key {
-                wrap_eyre!(handle_key_rotation(&mut new_wallet, new_pk)).unwrap();
-            }
-        }
+    // Get the next public key based on key type
+    let next_public_key = match key_type {
+        "internal" => Some(public_sign_key_to_hex_string(
+            &new_wallet
+                .key_chain
+                .get_next_rotated_public_key(seed)
+                .unwrap(),
+        )),
+        "external" => new_public_key,
         _ => return Err(JsError::new("Invalid key type")),
+    };
+
+    // Handle key rotation if we have a new public key
+    if let Some(next_key) = &next_public_key {
+        wrap_eyre!(handle_key_rotation(&mut new_wallet, next_key)).unwrap();
     }
 
     // Modify the wallet
@@ -191,18 +195,9 @@ pub fn deposit(
     let comm = new_wallet.get_wallet_share_commitment();
     let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
 
-    // Determine the new root key based on key type
-    let new_root_key = match key_type {
-        "internal" => Some(public_sign_key_to_hex_string(
-            &new_wallet.key_chain.public_keys.pk_root,
-        )),
-        "external" => new_public_key,
-        _ => return Err(JsError::new("Invalid key type")),
-    };
-
     let update_auth = WalletUpdateAuthorization {
         statement_sig: sig.to_vec(),
-        new_root_key,
+        new_root_key: next_public_key,
     };
 
     let req = DepositBalanceRequest {
@@ -252,17 +247,21 @@ pub fn withdraw(
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
-    // Handle key rotation based on key type
-    match key_type {
-        "internal" => {
-            new_wallet.key_chain.rotate(seed);
-        }
-        "external" => {
-            if let Some(new_pk) = &new_public_key {
-                wrap_eyre!(handle_key_rotation(&mut new_wallet, new_pk)).unwrap();
-            }
-        }
+    // Get the next public key based on key type
+    let next_public_key = match key_type {
+        "internal" => Some(public_sign_key_to_hex_string(
+            &new_wallet
+                .key_chain
+                .get_next_rotated_public_key(seed)
+                .unwrap(),
+        )),
+        "external" => new_public_key,
         _ => return Err(JsError::new("Invalid key type")),
+    };
+
+    // Handle key rotation if we have a new public key
+    if let Some(next_key) = &next_public_key {
+        wrap_eyre!(handle_key_rotation(&mut new_wallet, next_key)).unwrap();
     }
 
     // Modify the wallet
@@ -295,18 +294,9 @@ pub fn withdraw(
     let comm = new_wallet.get_wallet_share_commitment();
     let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
 
-    // Determine the new root key based on key type
-    let new_root_key = match key_type {
-        "internal" => Some(public_sign_key_to_hex_string(
-            &new_wallet.key_chain.public_keys.pk_root,
-        )),
-        "external" => new_public_key,
-        _ => return Err(JsError::new("Invalid key type")),
-    };
-
     let update_auth = WalletUpdateAuthorization {
         statement_sig: sig.to_vec(),
-        new_root_key,
+        new_root_key: next_public_key,
     };
 
     let sk_root: SigningKey = SigningKey::try_from(&old_sk_root).unwrap();
@@ -461,17 +451,21 @@ pub fn create_order_request(
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
-    // Handle key rotation based on key type
-    match key_type {
-        "internal" => {
-            new_wallet.key_chain.rotate(seed);
-        }
-        "external" => {
-            if let Some(new_pk) = &new_public_key {
-                wrap_eyre!(handle_key_rotation(&mut new_wallet, new_pk)).unwrap();
-            }
-        }
+    // Get the next public key based on key type
+    let next_public_key = match key_type {
+        "internal" => Some(public_sign_key_to_hex_string(
+            &new_wallet
+                .key_chain
+                .get_next_rotated_public_key(seed)
+                .unwrap(),
+        )),
+        "external" => new_public_key,
         _ => return Err(JsError::new("Invalid key type")),
+    };
+
+    // Handle key rotation if we have a new public key
+    if let Some(next_key) = &next_public_key {
+        wrap_eyre!(handle_key_rotation(&mut new_wallet, next_key)).unwrap();
     }
 
     let order = create_order(
@@ -493,18 +487,9 @@ pub fn create_order_request(
     let comm = new_wallet.get_wallet_share_commitment();
     let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
 
-    // Determine the new root key based on key type
-    let new_root_key = match key_type {
-        "internal" => Some(public_sign_key_to_hex_string(
-            &new_wallet.key_chain.public_keys.pk_root,
-        )),
-        "external" => new_public_key,
-        _ => return Err(JsError::new("Invalid key type")),
-    };
-
     let update_auth = WalletUpdateAuthorization {
         statement_sig: sig.to_vec(),
-        new_root_key,
+        new_root_key: next_public_key,
     };
 
     Ok(CreateOrderRequest { order, update_auth })
@@ -599,17 +584,21 @@ pub fn cancel_order(
     let mut new_wallet = deserialize_wallet(wallet_str);
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
-    // Handle key rotation based on key type
-    match key_type {
-        "internal" => {
-            new_wallet.key_chain.rotate(seed);
-        }
-        "external" => {
-            if let Some(new_pk) = &new_public_key {
-                wrap_eyre!(handle_key_rotation(&mut new_wallet, new_pk)).unwrap();
-            }
-        }
+    // Get the next public key based on key type
+    let next_public_key = match key_type {
+        "internal" => Some(public_sign_key_to_hex_string(
+            &new_wallet
+                .key_chain
+                .get_next_rotated_public_key(seed)
+                .unwrap(),
+        )),
+        "external" => new_public_key,
         _ => return Err(JsError::new("Invalid key type")),
+    };
+
+    // Handle key rotation if we have a new public key
+    if let Some(next_key) = &next_public_key {
+        wrap_eyre!(handle_key_rotation(&mut new_wallet, next_key)).unwrap();
     }
 
     let order_id =
@@ -627,18 +616,9 @@ pub fn cancel_order(
     let comm = new_wallet.get_wallet_share_commitment();
     let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
 
-    // Determine the new root key based on key type
-    let new_root_key = match key_type {
-        "internal" => Some(public_sign_key_to_hex_string(
-            &new_wallet.key_chain.public_keys.pk_root,
-        )),
-        "external" => new_public_key,
-        _ => return Err(JsError::new("Invalid key type")),
-    };
-
     let update_auth = WalletUpdateAuthorization {
         statement_sig: sig.to_vec(),
-        new_root_key,
+        new_root_key: next_public_key,
     };
 
     let req = CancelOrderRequest { update_auth };
