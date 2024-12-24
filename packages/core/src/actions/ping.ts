@@ -8,9 +8,9 @@ export type GetPingReturnType = boolean
 export type GetPingErrorType = BaseErrorType
 
 export async function getPing(config: Config): Promise<GetPingReturnType> {
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   try {
-    const res = await getRelayerRaw(getRelayerBaseUrl(PING_ROUTE))
+    const res = await getRelayerRaw(getBaseUrl(PING_ROUTE))
     if (res?.timestamp) {
       return true
     }

@@ -12,8 +12,8 @@ export type GetNetworkOrdersErrorType = BaseErrorType
 export async function getNetworkOrders(
   config: Config,
 ): Promise<GetNetworkOrdersReturnType> {
-  const { getRelayerBaseUrl } = config
-  const res = await getRelayerRaw(getRelayerBaseUrl(GET_NETWORK_ORDERS_ROUTE))
+  const { getBaseUrl } = config
+  const res = await getRelayerRaw(getBaseUrl(GET_NETWORK_ORDERS_ROUTE))
   if (!res.orders) {
     throw new BaseError('No orders found')
   }

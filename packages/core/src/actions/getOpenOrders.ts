@@ -15,9 +15,9 @@ export async function getOpenOrders(
   config: Config,
   parameters: GetOpenOrdersParams = {},
 ): Promise<GetOpenOrdersReturnType> {
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
 
-  const url = new URL(getRelayerBaseUrl(ADMIN_OPEN_ORDERS_ROUTE))
+  const url = new URL(getBaseUrl(ADMIN_OPEN_ORDERS_ROUTE))
 
   if (parameters.matchingPool) {
     url.searchParams.set('matching_pool', parameters.matchingPool)

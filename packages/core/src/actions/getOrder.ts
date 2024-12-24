@@ -13,11 +13,11 @@ export async function getOrder(
   parameters: GetOrderParameters,
 ): Promise<GetOrderReturnType> {
   const { id } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   const walletId = getWalletId(config)
   const res = await getRelayerWithAuth(
     config,
-    getRelayerBaseUrl(GET_ORDER_BY_ID_ROUTE(walletId, id)),
+    getBaseUrl(GET_ORDER_BY_ID_ROUTE(walletId, id)),
   )
   return res.order
 }

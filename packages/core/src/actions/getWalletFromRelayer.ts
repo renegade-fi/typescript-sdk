@@ -19,11 +19,11 @@ export async function getWalletFromRelayer(
   parameters: GetWalletFromRelayerParameters = {},
 ): Promise<GetWalletFromRelayerReturnType> {
   const { filterDefaults } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   const walletId = getWalletId(config)
   const res = await getRelayerWithAuth(
     config,
-    getRelayerBaseUrl(GET_WALLET_ROUTE(walletId)),
+    getBaseUrl(GET_WALLET_ROUTE(walletId)),
   )
   if (!res.wallet) {
     throw new BaseError('Wallet not found')

@@ -90,11 +90,12 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 
   return {
     utils: parameters.utils,
+    renegadeKeyType: keyTypes.INTERNAL,
     storage,
     relayerUrl,
     priceReporterUrl,
     darkPoolAddress: parameters.darkPoolAddress,
-    getRelayerBaseUrl: (route = '') => {
+    getBaseUrl: (route = '') => {
       const protocol =
         useInsecureTransport || parameters.relayerUrl.includes('localhost')
           ? 'http'
@@ -165,6 +166,9 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 
 export type BaseConfig = {
   utils: typeof rustUtils
+  getWebsocketBaseUrl: () => string
+  renegadeKeyType?: KeyType
+  getBaseUrl: (route?: string) => string
 }
 
 export type Config = BaseConfig & {
@@ -172,8 +176,6 @@ export type Config = BaseConfig & {
   darkPoolAddress: Address
   getPriceReporterBaseUrl: () => string
   getPriceReporterHTTPBaseUrl: (route?: string) => string
-  getRelayerBaseUrl: (route?: string) => string
-  getWebsocketBaseUrl: () => string
   pollingInterval: number
   priceReporterUrl: string
   relayerUrl: string
@@ -213,6 +215,14 @@ export interface State {
   // Whether the Rust utils have been initialized, used only in React
   initialized?: boolean
 }
+
+// The type of keychain a config is using
+export const keyTypes = {
+  EXTERNAL: 'external',
+  INTERNAL: 'internal',
+} as const
+
+type KeyType = (typeof keyTypes)[keyof typeof keyTypes]
 
 export type PartializedState = Evaluate<
   ExactPartial<Pick<State, 'id' | 'seed' | 'status'>>
