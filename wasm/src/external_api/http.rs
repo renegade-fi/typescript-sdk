@@ -244,6 +244,24 @@ pub async fn withdraw(
     let amount = wrap_eyre!(biguint_from_hex_string(amount)).unwrap();
     let destination_addr = wrap_eyre!(biguint_from_hex_string(destination_addr)).unwrap();
 
+    for (mint, balance) in new_wallet.balances.clone() {
+        if balance.relayer_fee_balance > 0 {
+            new_wallet
+                .get_balance_mut(&mint)
+                .unwrap()
+                .relayer_fee_balance = 0;
+            new_wallet.reblind_wallet();
+        }
+
+        if balance.protocol_fee_balance > 0 {
+            new_wallet
+                .get_balance_mut(&mint)
+                .unwrap()
+                .protocol_fee_balance = 0;
+            new_wallet.reblind_wallet();
+        }
+    }
+
     wrap_eyre!(new_wallet.withdraw(&mint, amount.to_u128().unwrap())).unwrap();
     new_wallet.reblind_wallet();
 
@@ -366,7 +384,7 @@ fn create_order(
     })
 }
 
-pub fn create_order_request(
+pub async fn create_order_request(
     seed: &str,
     wallet_str: &str,
     id: &str,
@@ -379,9 +397,9 @@ pub fn create_order_request(
     allow_external_matches: bool,
     key_type: &str,
     new_public_key: Option<String>,
+    sign_message: Option<Function>,
 ) -> Result<CreateOrderRequest, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
-    let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
     let next_public_key = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
@@ -407,11 +425,12 @@ pub fn create_order_request(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let comm = new_wallet.get_wallet_share_commitment();
-    let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
+    let statement_sig = sign_wallet_commitment(&new_wallet, seed, key_type, sign_message.as_ref())
+        .await
+        .map_err(|e| JsError::new(&e.to_string()))?;
 
     let update_auth = WalletUpdateAuthorization {
-        statement_sig: sig.to_vec(),
+        statement_sig,
         new_root_key: next_public_key,
     };
 
@@ -419,7 +438,7 @@ pub fn create_order_request(
 }
 
 #[wasm_bindgen]
-pub fn new_order(
+pub async fn new_order(
     seed: &str,
     wallet_str: &str,
     id: &str,
@@ -432,6 +451,7 @@ pub fn new_order(
     allow_external_matches: bool,
     key_type: &str,
     new_public_key: Option<String>,
+    sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
     let req = create_order_request(
         seed,
@@ -446,12 +466,14 @@ pub fn new_order(
         allow_external_matches,
         key_type,
         new_public_key,
-    )?;
+        sign_message,
+    )
+    .await?;
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
 
 #[wasm_bindgen]
-pub fn new_order_in_matching_pool(
+pub async fn new_order_in_matching_pool(
     seed: &str,
     wallet_str: &str,
     id: &str,
@@ -465,6 +487,7 @@ pub fn new_order_in_matching_pool(
     matching_pool: &str,
     key_type: &str,
     new_public_key: Option<String>,
+    sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
     let create_order_req = create_order_request(
         seed,
@@ -479,7 +502,9 @@ pub fn new_order_in_matching_pool(
         allow_external_matches,
         key_type,
         new_public_key,
-    )?;
+        sign_message,
+    )
+    .await?;
     let req = CreateOrderInMatchingPoolRequest {
         order: create_order_req.order,
         update_auth: create_order_req.update_auth,
@@ -497,15 +522,15 @@ pub struct CancelOrderRequest {
 }
 
 #[wasm_bindgen]
-pub fn cancel_order(
+pub async fn cancel_order(
     seed: &str,
     wallet_str: &str,
     order_id: &str,
     key_type: &str,
     new_public_key: Option<String>,
+    sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
-    let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
     let next_public_key = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
@@ -527,11 +552,12 @@ pub fn cancel_order(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let comm = new_wallet.get_wallet_share_commitment();
-    let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
+    let statement_sig = sign_wallet_commitment(&new_wallet, seed, key_type, sign_message.as_ref())
+        .await
+        .map_err(|e| JsError::new(&e.to_string()))?;
 
     let update_auth = WalletUpdateAuthorization {
-        statement_sig: sig.to_vec(),
+        statement_sig,
         new_root_key: next_public_key,
     };
 
