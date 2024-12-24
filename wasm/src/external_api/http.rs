@@ -28,6 +28,7 @@ use ethers::{
     utils::keccak256,
 };
 use itertools::Itertools;
+use js_sys::Function;
 use k256::ecdsa::SigningKey;
 use num_bigint::BigUint;
 use num_traits::ToPrimitive;
@@ -160,8 +161,10 @@ pub fn deposit(
     permit_signature: &str,
     key_type: &str,
     new_public_key: Option<String>,
+    sign_message: &Function,
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
+    // Uses seed, which required internal wallet
     let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
     let next_public_key = wrap_eyre!(handle_key_rotation(
@@ -184,6 +187,8 @@ pub fn deposit(
 
     // Sign a commitment to the new shares
     let comm = new_wallet.get_wallet_share_commitment();
+    // If internal: use sign_commitment with old_sk_root
+    // If external: use sign_message
     let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
 
     let update_auth = WalletUpdateAuthorization {
