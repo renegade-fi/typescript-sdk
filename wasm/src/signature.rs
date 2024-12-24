@@ -17,10 +17,77 @@ use crate::{
     helpers::{bytes_from_hex_string, bytes_to_hex_string},
 };
 
-/// Helper function to sign a message with a SigningKey and return an Ethers Signature
-fn sign_with_key(signing_key: &SigningKey, message: &[u8]) -> Result<Vec<u8>, String> {
+/// Signs a wallet commitment.
+pub async fn sign_wallet_commitment(
+    wallet: &Wallet,
+    seed: &str,
+    key_type: &str,
+    external_signer: Option<&Function>,
+) -> Result<Vec<u8>, String> {
+    let comm = wallet.get_wallet_share_commitment();
+    let comm_bytes = comm.inner().serialize_to_bytes();
+    sign_message(wallet, seed, &comm_bytes, key_type, external_signer).await
+}
+
+/// Signs a withdrawal authorization.
+pub async fn sign_withdrawal_authorization(
+    wallet: &Wallet,
+    seed: &str,
+    mint: BigUint,
+    amount: u128,
+    account_addr: BigUint,
+    key_type: &str,
+    external_signer: Option<&Function>,
+) -> Result<Vec<u8>, String> {
+    let transfer = ExternalTransfer {
+        mint,
+        amount,
+        direction: ExternalTransferDirection::Withdrawal,
+        account_addr,
+    };
+
+    let contract_transfer = to_contract_external_transfer(&transfer)
+        .map_err(|_| String::from("Failed to convert transfer"))?;
+
+    let contract_transfer_bytes = postcard::to_allocvec(&contract_transfer)
+        .map_err(|e| format!("Failed to serialize transfer: {e}"))?;
+
+    sign_message(
+        wallet,
+        seed,
+        &contract_transfer_bytes,
+        key_type,
+        external_signer,
+    )
+    .await
+}
+
+/// Signs a message using either internal or external signing method.
+///
+/// For internal signing, uses the seed to derive a signing key.
+/// For external signing, uses the provided external_signer function.
+pub async fn sign_message(
+    wallet: &Wallet,
+    seed: &str,
+    message: &[u8],
+    key_type: &str,
+    external_signer: Option<&Function>,
+) -> Result<Vec<u8>, String> {
+    match key_type {
+        "internal" => sign_with_internal_key(wallet, seed, message),
+        "external" => sign_with_external_key(message, external_signer).await,
+        _ => Err(String::from("Invalid key type")),
+    }
+}
+
+/// Helper function to sign a message with a derived SigningKey and return an Ethers Signature
+fn sign_with_internal_key(wallet: &Wallet, seed: &str, message: &[u8]) -> Result<Vec<u8>, String> {
+    let sk_root_scalars = derive_sk_root_scalars(seed, &wallet.key_chain.public_keys.nonce);
+    let sk_root: SigningKey = SigningKey::try_from(&sk_root_scalars)
+        .map_err(|_| String::from("Failed to create signing key"))?;
+
     let digest = keccak256(message);
-    let (sig, recovery_id) = signing_key
+    let (sig, recovery_id) = sk_root
         .sign_prehash_recoverable(&digest)
         .map_err(|_| String::from("Failed to sign message"))?;
 
@@ -33,41 +100,14 @@ fn sign_with_key(signing_key: &SigningKey, message: &[u8]) -> Result<Vec<u8>, St
     Ok(signature.to_vec())
 }
 
-/// Signs a wallet commitment based on key type.
-///
-/// Internal type uses seed to derive signing key.
-/// External type uses provided sign_message function.
-pub async fn sign_wallet_commitment(
-    wallet: &Wallet,
-    seed: &str,
-    key_type: &str,
-    sign_message: Option<&Function>,
-) -> Result<Vec<u8>, String> {
-    let comm = wallet.get_wallet_share_commitment();
-    let comm_bytes = comm.inner().serialize_to_bytes();
-
-    match key_type {
-        "internal" => {
-            let old_sk_root = derive_sk_root_scalars(seed, &wallet.key_chain.public_keys.nonce);
-            let sk_root: SigningKey = SigningKey::try_from(&old_sk_root)
-                .map_err(|_| String::from("Failed to create signing key"))?;
-            sign_with_key(&sk_root, &comm_bytes)
-        }
-        "external" => {
-            let sign_message = sign_message.ok_or_else(|| {
-                String::from("sign_message function is required for external key type")
-            })?;
-            generate_signature(&comm_bytes, sign_message).await
-        }
-        _ => Err(String::from("Invalid key type")),
-    }
-}
-
 /// Generates a signature by calling the provided sign_message function with a message
-pub async fn generate_signature(
+async fn sign_with_external_key(
     message: &[u8],
-    sign_message: &Function,
+    external_signer: Option<&Function>,
 ) -> Result<Vec<u8>, String> {
+    let sign_message = external_signer
+        .ok_or_else(|| String::from("sign_message function is required for external key type"))?;
+
     let digest = keccak256(message);
     let digest_hex = bytes_to_hex_string(&digest);
 
@@ -104,56 +144,4 @@ pub async fn generate_signature(
         .map_err(|e| format!("Failed to convert signature to bytes: {}", e))?;
 
     Ok(bytes)
-}
-
-/// Creates and serializes an external transfer for withdrawal
-fn create_withdrawal_transfer(
-    mint: BigUint,
-    amount: u128,
-    account_addr: BigUint,
-) -> Result<Vec<u8>, String> {
-    let transfer = ExternalTransfer {
-        mint,
-        amount,
-        direction: ExternalTransferDirection::Withdrawal,
-        account_addr,
-    };
-
-    let contract_transfer = to_contract_external_transfer(&transfer)
-        .map_err(|_| String::from("Failed to convert transfer"))?;
-
-    postcard::to_allocvec(&contract_transfer)
-        .map_err(|e| format!("Failed to serialize transfer: {e}"))
-}
-
-/// Signs a withdrawal authorization based on key type.
-///
-/// Internal type uses seed to derive signing key.
-/// External type uses provided sign_message function.
-pub async fn sign_withdrawal_authorization(
-    wallet: &Wallet,
-    seed: &str,
-    mint: BigUint,
-    amount: u128,
-    account_addr: BigUint,
-    key_type: &str,
-    sign_message: Option<&Function>,
-) -> Result<Vec<u8>, String> {
-    let transfer_bytes = create_withdrawal_transfer(mint, amount, account_addr)?;
-
-    match key_type {
-        "internal" => {
-            let old_sk_root = derive_sk_root_scalars(seed, &wallet.key_chain.public_keys.nonce);
-            let sk_root: SigningKey = SigningKey::try_from(&old_sk_root)
-                .map_err(|_| String::from("Failed to create signing key"))?;
-            sign_with_key(&sk_root, &transfer_bytes)
-        }
-        "external" => {
-            let sign_message = sign_message.ok_or_else(|| {
-                String::from("sign_message function is required for external key type")
-            })?;
-            generate_signature(&transfer_bytes, sign_message).await
-        }
-        _ => Err(format!("Invalid key type: {key_type}")),
-    }
 }
