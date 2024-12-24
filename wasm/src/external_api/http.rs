@@ -22,6 +22,7 @@ use crate::{
     },
     key_rotation::handle_key_rotation,
     sign_commitment,
+    signature::sign_wallet_commitment,
 };
 use ethers::{
     types::{Bytes, Signature, U256},
@@ -150,7 +151,7 @@ pub struct DepositBalanceRequest {
 }
 
 #[wasm_bindgen]
-pub fn deposit(
+pub async fn deposit(
     seed: &str,
     wallet_str: &str,
     from_addr: &str,
@@ -161,11 +162,9 @@ pub fn deposit(
     permit_signature: &str,
     key_type: &str,
     new_public_key: Option<String>,
-    sign_message: &Function,
+    sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
-    // Uses seed, which required internal wallet
-    let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
     let next_public_key = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
@@ -186,13 +185,12 @@ pub fn deposit(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let comm = new_wallet.get_wallet_share_commitment();
-    // If internal: use sign_commitment with old_sk_root
-    // If external: use sign_message
-    let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
+    let statement_sig = sign_wallet_commitment(&new_wallet, seed, key_type, sign_message.as_ref())
+        .await
+        .map_err(|e| JsError::new(&e.to_string()))?;
 
     let update_auth = WalletUpdateAuthorization {
-        statement_sig: sig.to_vec(),
+        statement_sig,
         new_root_key: next_public_key,
     };
 

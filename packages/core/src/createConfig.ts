@@ -9,6 +9,7 @@ import {
 import { arbitrumSepolia } from 'viem/chains'
 import { persist, subscribeWithSelector } from 'zustand/middleware'
 import { type Mutate, type StoreApi, createStore } from 'zustand/vanilla'
+import type { ExternalConfig } from './createExternalKeyConfig.js'
 import { type Storage, createStorage, noopStorage } from './createStorage.js'
 import type { Evaluate, ExactPartial } from './types/utils.js'
 import type * as rustUtils from './utils.d.ts'
@@ -29,7 +30,9 @@ export type CreateConfigParameters = {
   adminKey?: string
 }
 
-export function createConfig(parameters: CreateConfigParameters): Config {
+export function createConfig(
+  parameters: CreateConfigParameters,
+): InternalConfig {
   const {
     relayerUrl,
     priceReporterUrl,
@@ -91,7 +94,7 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 
   return {
     utils: parameters.utils,
-    renegadeKeyType: keyTypes.INTERNAL,
+    renegadeKeyType: 'internal' as const,
     storage,
     relayerUrl,
     priceReporterUrl,
@@ -182,13 +185,12 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 export type BaseConfig = {
   utils: typeof rustUtils
   getWebsocketBaseUrl: () => string
-  renegadeKeyType: KeyType
   getBaseUrl: (route?: string) => string
-  // TODO: Move admin key to a separate config
   getSymmetricKey: (type?: AuthType) => Hex
 }
 
 export type Config = BaseConfig & {
+  renegadeKeyType: 'internal'
   readonly storage: Storage | null
   darkPoolAddress: Address
   getPriceReporterBaseUrl: () => string
@@ -220,6 +222,11 @@ export type Config = BaseConfig & {
   }
 }
 
+// For backwards-compatibility
+export type InternalConfig = Config
+
+export type RenegadeConfig = InternalConfig | ExternalConfig
+
 export interface State {
   seed?: Hex | undefined
   status?:
@@ -239,8 +246,6 @@ export const keyTypes = {
   INTERNAL: 'internal',
   NONE: 'none',
 } as const
-
-type KeyType = (typeof keyTypes)[keyof typeof keyTypes]
 
 export type PartializedState = Evaluate<
   ExactPartial<Pick<State, 'id' | 'seed' | 'status'>>

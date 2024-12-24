@@ -1,9 +1,12 @@
 import invariant from 'tiny-invariant'
-import type { Config } from '../createConfig.js'
+import type { RenegadeConfig } from '../createConfig.js'
 
 export type GetWalletIdReturnType = string
 
-export function getWalletId(config: Config): GetWalletIdReturnType {
+export function getWalletId(config: RenegadeConfig): GetWalletIdReturnType {
+  if (config.renegadeKeyType === 'external') {
+    return config.walletId
+  }
   const {
     utils,
     state: { seed },

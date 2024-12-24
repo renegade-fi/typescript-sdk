@@ -31,9 +31,10 @@ export function wallet_id(seed: string): any;
 * @param {string} permit_signature
 * @param {string} key_type
 * @param {string | undefined} [new_public_key]
-* @returns {any}
+* @param {Function | undefined} [sign_message]
+* @returns {Promise<any>}
 */
-export function deposit(seed: string, wallet_str: string, from_addr: string, mint: string, amount: string, permit_nonce: string, permit_deadline: string, permit_signature: string, key_type: string, new_public_key?: string): any;
+export function deposit(seed: string, wallet_str: string, from_addr: string, mint: string, amount: string, permit_nonce: string, permit_deadline: string, permit_signature: string, key_type: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
 * @param {string} seed
 * @param {string} wallet_str
@@ -130,6 +131,19 @@ export function new_external_quote_request(base_mint: string, quote_mint: string
 */
 export function assemble_external_match(do_gas_estimation: boolean, updated_order: string, signed_quote: string): any;
 /**
+* @param {string} path
+* @param {any} headers
+* @param {string} body
+* @param {string} key
+* @returns {string}
+*/
+export function create_request_signature(path: string, headers: any, body: string, key: string): string;
+/**
+* @param {string} b64_key
+* @returns {string}
+*/
+export function b64_to_hex_hmac_key(b64_key: string): string;
+/**
 * @param {string} seed
 * @param {bigint} nonce
 * @returns {any}
@@ -152,16 +166,3 @@ export function get_pk_root_scalars(seed: string, nonce: bigint): any[];
 * @returns {any}
 */
 export function get_symmetric_key(seed: string): any;
-/**
-* @param {string} path
-* @param {any} headers
-* @param {string} body
-* @param {string} key
-* @returns {string}
-*/
-export function create_request_signature(path: string, headers: any, body: string, key: string): string;
-/**
-* @param {string} b64_key
-* @returns {string}
-*/
-export function b64_to_hex_hmac_key(b64_key: string): string;
