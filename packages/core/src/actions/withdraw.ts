@@ -11,6 +11,7 @@ export type WithdrawParameters = {
   mint: Address
   amount: bigint
   destinationAddr: Address
+  newPublicKey?: string
 }
 
 export type WithdrawReturnType = Promise<{ taskId: string }>
@@ -19,11 +20,12 @@ export async function withdraw(
   config: Config,
   parameters: WithdrawParameters,
 ): WithdrawReturnType {
-  const { mint, amount, destinationAddr } = parameters
+  const { mint, amount, destinationAddr, newPublicKey } = parameters
   const {
     getBaseUrl,
     utils,
     state: { seed },
+    renegadeKeyType,
   } = config
   invariant(seed, 'Seed is required')
 
@@ -37,6 +39,8 @@ export async function withdraw(
     mint,
     toHex(amount),
     destinationAddr,
+    renegadeKeyType,
+    newPublicKey,
   )
 
   try {

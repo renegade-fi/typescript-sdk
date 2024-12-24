@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
-import type { BaseConfig } from './createConfig.js'
-import type * as rustUtils from './utils.d.ts'
 import type { Hex } from 'viem'
+import { type BaseConfig, keyTypes } from './createConfig.js'
+import type * as rustUtils from './utils.d.ts'
 
 export type CreateAuthConfigParameters = {
   apiKey: string
@@ -30,6 +30,7 @@ export function createAuthConfig(
     utils: parameters.utils,
     apiKey,
     apiSecret,
+    renegadeKeyType: keyTypes.NONE,
     getBaseUrl: (route = '') => {
       const formattedRoute = route.startsWith('/') ? route : `/${route}`
       return `${authServerUrl}/v0${formattedRoute}`

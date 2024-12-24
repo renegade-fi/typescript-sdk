@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { type Address, toHex } from 'viem'
+import { type Address, type Hex, toHex } from 'viem'
 import { WALLET_ORDERS_ROUTE } from '../constants.js'
 import type { Config } from '../createConfig.js'
 import type { BaseErrorType } from '../errors/base.js'
@@ -17,6 +17,7 @@ export type CreateOrderParameters = {
   worstCasePrice?: string
   minFillSize?: bigint
   allowExternalMatches?: boolean
+  newPublicKey?: Hex
 }
 
 export type CreateOrderReturnType = { taskId: string }
@@ -36,11 +37,13 @@ export async function createOrder(
     worstCasePrice = '',
     minFillSize = BigInt(0),
     allowExternalMatches = false,
+    newPublicKey,
   } = parameters
   const {
     getBaseUrl,
     utils,
     state: { seed },
+    renegadeKeyType,
   } = config
   invariant(seed, 'Seed is required')
 
@@ -58,6 +61,8 @@ export async function createOrder(
     worstCasePrice,
     toHex(minFillSize),
     allowExternalMatches,
+    renegadeKeyType,
+    newPublicKey,
   )
 
   try {

@@ -22,6 +22,7 @@ pub mod common;
 pub mod errors;
 pub mod external_api;
 pub mod helpers;
+pub mod key_rotation;
 pub mod serde_def_types;
 pub mod types;
 pub mod utils;
