@@ -171,7 +171,7 @@ pub fn deposit(
         }
         "external" => {
             if let Some(new_pk) = &new_public_key {
-                handle_key_rotation(&mut new_wallet, new_pk).unwrap();
+                wrap_eyre!(handle_key_rotation(&mut new_wallet, new_pk)).unwrap();
             }
         }
         _ => return Err(JsError::new("Invalid key type")),

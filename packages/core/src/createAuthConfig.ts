@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
-import { keyTypes, type BaseConfig } from './createConfig.js'
-import type * as rustUtils from './utils.d.ts'
 import type { Hex } from 'viem'
+import { type BaseConfig, keyTypes } from './createConfig.js'
+import type * as rustUtils from './utils.d.ts'
 
 export type CreateAuthConfigParameters = {
   apiKey: string
