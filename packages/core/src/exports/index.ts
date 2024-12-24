@@ -248,6 +248,12 @@ export {
   createAuthConfig,
 } from '../createAuthConfig.js'
 
+export {
+  type CreateExternalKeyConfigParameters,
+  type ExternalConfig,
+  createExternalKeyConfig,
+} from '../createExternalKeyConfig.js'
+
 ////////////////////////////////////////////////////////////////////////////////
 // createStorage
 ////////////////////////////////////////////////////////////////////////////////

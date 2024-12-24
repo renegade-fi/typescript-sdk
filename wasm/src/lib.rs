@@ -2,7 +2,7 @@
 #![feature(generic_const_exprs)]
 
 use crate::types::Scalar;
-use circuit_types::keychain::NonNativeScalar;
+use circuit_types::keychain::{NonNativeScalar, PublicSigningKey};
 use common::derivation::{
     derive_root_signing_key, derive_sk_root, derive_sk_root_signing_key, derive_symmetric_key,
     derive_wallet_keychain, wrap_eyre,
@@ -13,7 +13,9 @@ use ethers::{
     types::{Signature as EthersSignature, U256},
     utils::keccak256,
 };
-use helpers::{nonnative_scalar_to_hex_string, public_sign_key_to_hex_string};
+use helpers::{
+    bytes_from_hex_string, nonnative_scalar_to_hex_string, public_sign_key_to_hex_string,
+};
 use num_bigint::BigUint;
 use wasm_bindgen::prelude::*;
 
@@ -66,15 +68,34 @@ pub fn get_pk_root(seed: &str, nonce: u64) -> JsValue {
 }
 
 #[wasm_bindgen]
-pub fn get_pk_root_scalars(seed: &str, nonce: u64) -> Vec<JsValue> {
-    let sk_root = derive_sk_root_signing_key(seed, Some(&Scalar::from(nonce))).unwrap();
-    let keychain = wrap_eyre!(derive_wallet_keychain(&sk_root)).unwrap();
-    keychain
-        .public_keys
-        .to_scalars()
-        .iter()
-        .map(|scalar| JsValue::from_str(&scalar.to_biguint().to_string()))
-        .collect()
+pub fn get_pk_root_scalars(
+    seed: Option<String>,
+    nonce: Option<u64>,
+    public_key: Option<String>,
+) -> Vec<JsValue> {
+    if let Some(pk_hex) = public_key {
+        let pk_root_bytes = bytes_from_hex_string(&pk_hex).unwrap();
+        let pk_root = PublicSigningKey::from_bytes(&pk_root_bytes).unwrap();
+        vec![
+            JsValue::from_str(&pk_root.x.scalar_words[0].to_biguint().to_string()),
+            JsValue::from_str(&pk_root.x.scalar_words[1].to_biguint().to_string()),
+            JsValue::from_str(&pk_root.y.scalar_words[0].to_biguint().to_string()),
+            JsValue::from_str(&pk_root.y.scalar_words[1].to_biguint().to_string()),
+        ]
+    } else if let Some(seed_str) = seed {
+        let nonce_val = nonce.expect("nonce must be provided when seed is provided");
+        let sk_root =
+            derive_sk_root_signing_key(&seed_str, Some(&Scalar::from(nonce_val))).unwrap();
+        let keychain = wrap_eyre!(derive_wallet_keychain(&sk_root)).unwrap();
+        keychain
+            .public_keys
+            .to_scalars()
+            .iter()
+            .map(|scalar| JsValue::from_str(&scalar.to_biguint().to_string()))
+            .collect()
+    } else {
+        panic!("Either seed or public_key must be provided");
+    }
 }
 
 #[wasm_bindgen]
