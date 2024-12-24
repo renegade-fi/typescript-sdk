@@ -503,15 +503,15 @@ pub struct CancelOrderRequest {
 }
 
 #[wasm_bindgen]
-pub fn cancel_order(
+pub async fn cancel_order(
     seed: &str,
     wallet_str: &str,
     order_id: &str,
     key_type: &str,
     new_public_key: Option<String>,
+    sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
-    let old_sk_root = derive_sk_root_scalars(seed, &new_wallet.key_chain.public_keys.nonce);
 
     let next_public_key = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
@@ -533,11 +533,12 @@ pub fn cancel_order(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let comm = new_wallet.get_wallet_share_commitment();
-    let sig = wrap_eyre!(sign_commitment(&old_sk_root, comm)).unwrap();
+    let statement_sig = sign_wallet_commitment(&new_wallet, seed, key_type, sign_message.as_ref())
+        .await
+        .map_err(|e| JsError::new(&e.to_string()))?;
 
     let update_auth = WalletUpdateAuthorization {
-        statement_sig: sig.to_vec(),
+        statement_sig,
         new_root_key: next_public_key,
     };
 
