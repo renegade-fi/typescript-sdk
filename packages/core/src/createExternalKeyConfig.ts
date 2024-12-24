@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import type { SignMessageReturnType } from 'viem'
-import { type BaseConfig, keyTypes } from './createConfig.js'
+import type { BaseConfig } from './createConfig.js'
 import type * as rustUtils from './utils.d.ts'
 
 export type CreateExternalKeyConfigParameters = {
@@ -32,7 +32,7 @@ export type CreateExternalKeyConfigParameters = {
  */
 export function createExternalKeyConfig(
   parameters: CreateExternalKeyConfigParameters,
-): ExternalKeyConfig {
+): ExternalConfig {
   const {
     relayerUrl,
     signMessage,
@@ -53,7 +53,7 @@ export function createExternalKeyConfig(
     publicKey,
     // BaseConfig
     utils: parameters.utils,
-    renegadeKeyType: keyTypes.EXTERNAL,
+    renegadeKeyType: 'external' as const,
     relayerUrl,
     getBaseUrl: (route = '') => {
       const formattedRoute = route.startsWith('/') ? route : `/${route}`
@@ -68,11 +68,12 @@ export function createExternalKeyConfig(
   }
 }
 
-export type ExternalKeyConfig = BaseConfig & {
+export type ExternalConfig = BaseConfig & {
   relayerUrl: string
   signMessage: (message: string) => Promise<SignMessageReturnType>
   symmetricKey: `0x${string}`
   walletId: string
   publicKey: `0x${string}`
   getBaseUrl: (route?: string) => string
+  renegadeKeyType: 'external'
 }
