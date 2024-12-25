@@ -1,4 +1,4 @@
-import type { Config } from '../createConfig.js'
+import type { RenegadeConfig } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import type { Wallet } from '../types/wallet.js'
 import { getWalletFromRelayer } from './getWalletFromRelayer.js'
@@ -13,11 +13,12 @@ export type WaitForWalletIndexParameters = {
 export type WaitForWalletIndexReturnType = Promise<void>
 
 export async function waitForWalletIndexing(
-  config: Config,
+  config: RenegadeConfig,
   parameters: WaitForWalletIndexParameters,
 ): WaitForWalletIndexReturnType {
-  const { pollingInterval } = config
   const { onComplete, onFailure, timeout = 60000, isLookup } = parameters
+  const pollingInterval =
+    config.renegadeKeyType === 'internal' ? config.pollingInterval : 5000
 
   const startTime = Date.now()
 
