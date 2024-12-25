@@ -23,6 +23,7 @@ pub mod circuit_types;
 pub mod common;
 pub mod errors;
 pub mod external_api;
+pub mod generation;
 pub mod helpers;
 pub mod key_rotation;
 pub mod serde_def_types;

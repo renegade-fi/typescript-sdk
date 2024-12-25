@@ -54,6 +54,7 @@ export {
   executeWithdrawal,
   type ExecuteWithdrawalParameters,
 } from '../actions/executeWithdrawal.js'
+export { generateWalletSecrets } from '../actions/generateWalletSecrets.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade-fi/core
