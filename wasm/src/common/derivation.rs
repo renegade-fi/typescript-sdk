@@ -1,16 +1,20 @@
 use crate::{
     circuit_types::keychain::{NonNativeScalar, PublicKeyChain, SecretIdentificationKey},
     external_api::types::ApiWallet,
-    helpers::{hex_to_signing_key, nonnative_scalar_to_hex_string},
+    helpers::{bytes_from_hex_string, hex_to_signing_key, nonnative_scalar_to_hex_string},
     types::Scalar,
 };
 
 use ethers::utils::keccak256;
 use eyre::Result;
+use js_sys::{Function, Promise};
 use k256::ecdsa::{signature::Signer, Signature, SigningKey};
 use lazy_static::lazy_static;
 use num_bigint::BigUint;
 use num_traits::Num;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsValue;
+use wasm_bindgen_futures::JsFuture;
 
 use super::{
     keychain::{HmacKey, KeyChain, PrivateKeyChain},
@@ -210,6 +214,98 @@ fn extend_to_64_bytes(bytes: &[u8]) -> [u8; EXTENDED_BYTES] {
     extended[KECCAK_HASH_BYTES..].copy_from_slice(&top_bytes);
     extended
 }
+
+/// Construct a wallet ID from the given Ethereum keypair
+///
+/// This is done to ensure deterministic wallet recovery
+pub async fn derive_wallet_id_external(
+    sign_message: &Function,
+) -> Result<WalletIdentifier, String> {
+    let bytes = get_extended_sig_bytes_external(WALLET_ID_MESSAGE, sign_message).await?;
+    Ok(WalletIdentifier::from_slice(&bytes[..WALLET_ID_BYTES])
+        .map_err(|_| format!("Failed to create wallet ID"))?)
+}
+
+pub async fn derive_blinder_seed_external(sign_message: &Function) -> Result<Scalar, String> {
+    // Sign the blinder seed message and convert to a scalar
+    derive_scalar_external(BLINDER_STREAM_SEED_MESSAGE, sign_message).await
+}
+
+/// Construct the share seed for the wallet
+pub async fn derive_share_seed_external(sign_message: &Function) -> Result<Scalar, String> {
+    // Sign the share seed message and convert to a scalar
+    derive_scalar_external(SHARE_STREAM_SEED_MESSAGE, sign_message).await
+}
+
+pub async fn derive_sk_match_external(sign_message: &Function) -> Result<Scalar, String> {
+    derive_scalar_external(MATCH_KEY_MESSAGE, sign_message).await
+}
+
+pub async fn derive_symmetric_key_external(sign_message: &Function) -> Result<HmacKey, String> {
+    get_sig_bytes_external(SYMMETRIC_KEY_MESSAGE, sign_message)
+        .await
+        .map(HmacKey)
+}
+
+/// Get a `Scalar` from a signature on a message
+async fn derive_scalar_external(msg: &[u8], sign_message: &Function) -> Result<Scalar, String> {
+    let bytes = get_extended_sig_bytes_external(msg, sign_message).await?;
+    Ok(Scalar::from(BigUint::from_bytes_be(&bytes)))
+}
+
+/// Sign a message, serialize the signature into bytes, and extend the bytes to
+/// support secure reduction into a field
+async fn get_extended_sig_bytes_external(
+    msg: &[u8],
+    sign_message: &Function,
+) -> Result<[u8; EXTENDED_BYTES], String> {
+    let bytes = get_sig_bytes_external(msg, sign_message).await?;
+    Ok(extend_to_64_bytes(&bytes))
+}
+
+async fn get_sig_bytes_external(
+    msg: &[u8],
+    sign_message: &Function,
+) -> Result<[u8; KECCAK_HASH_BYTES], String> {
+    let digest = keccak256(msg);
+    let digest_hex = format!("0x{}", hex::encode(&digest));
+    let this = JsValue::null();
+    let arg = JsValue::from_str(&digest_hex);
+
+    let sig_promise: Promise = sign_message
+        .call1(&this, &arg)
+        .map_err(|e| {
+            format!(
+                "Failed to invoke sign_message: {}",
+                e.as_string().unwrap_or_default()
+            )
+        })?
+        .dyn_into()
+        .map_err(|e| {
+            format!(
+                "Failed to convert Promise to Signature: {}",
+                e.as_string().unwrap_or_default()
+            )
+        })?;
+
+    let signature = JsFuture::from(sig_promise).await.map_err(|e| {
+        format!(
+            "Failed to get signature: {}",
+            e.as_string().unwrap_or_default()
+        )
+    })?;
+
+    let sig_hex = signature
+        .as_string()
+        .ok_or_else(|| format!("Failed to convert signature to string"))?;
+
+    let bytes = bytes_from_hex_string(&sig_hex)
+        .map_err(|e| format!("Failed to convert signature to bytes: {}", e.to_string()))?;
+
+    // Take the keccak hash of the signature to disperse its elements
+    Ok(keccak256(bytes))
+}
+
 /// Wraps an error in an `eyre::Report`
 macro_rules! wrap_eyre {
     ($x:expr) => {

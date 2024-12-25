@@ -217,6 +217,16 @@ pub fn deserialize_wallet(wallet_str: &str) -> Wallet {
     deserialized_wallet.try_into().unwrap()
 }
 
+/// Macro for serializing Rust types to JavaScript values
+#[macro_export]
+macro_rules! serialize_to_js {
+    ($expr:expr) => {
+        serde_json::to_string(&$expr)
+            .map(|result| JsValue::from_str(&result))
+            .map_err(|e| JsError::new(&e.to_string()))
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
