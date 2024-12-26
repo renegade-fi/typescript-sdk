@@ -1,5 +1,5 @@
 import { GET_WALLET_ROUTE } from '../constants.js'
-import type { Config } from '../createConfig.js'
+import type { RenegadeConfig } from '../createConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type { Order } from '../types/order.js'
 import type { Balance, Wallet } from '../types/wallet.js'
@@ -15,7 +15,7 @@ export type GetWalletFromRelayerReturnType = Wallet
 export type GetWalletFromRelayerErrorType = BaseErrorType
 
 export async function getWalletFromRelayer(
-  config: Config,
+  config: RenegadeConfig,
   parameters: GetWalletFromRelayerParameters = {},
 ): Promise<GetWalletFromRelayerReturnType> {
   const { filterDefaults } = parameters

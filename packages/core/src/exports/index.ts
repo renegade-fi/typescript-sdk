@@ -32,6 +32,7 @@ export {
 
 export {
   type CreateWalletReturnType,
+  type CreateWalletParameters,
   createWallet,
 } from '../actions/createWallet.js'
 
