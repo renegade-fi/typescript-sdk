@@ -38,19 +38,27 @@ export function createExternalKeyConfig(
     signMessage,
     symmetricKey,
     walletId,
-    publicKey,
+    publicKey: initialPublicKey,
     websocketUrl,
   } = parameters
   invariant(
     parameters.utils,
     'Utils must be provided by the package if not supplied by the user.',
   )
+
+  let currentPublicKey = initialPublicKey
+
   return {
     // External keychain
     signMessage,
     symmetricKey,
     walletId,
-    publicKey,
+    get publicKey() {
+      return currentPublicKey
+    },
+    setPublicKey: (newPublicKey: `0x${string}`) => {
+      currentPublicKey = newPublicKey
+    },
     // BaseConfig
     utils: parameters.utils,
     renegadeKeyType: 'external' as const,
@@ -76,4 +84,5 @@ export type ExternalConfig = BaseConfig & {
   publicKey: `0x${string}`
   getBaseUrl: (route?: string) => string
   renegadeKeyType: 'external'
+  setPublicKey: (newPublicKey: `0x${string}`) => void
 }
