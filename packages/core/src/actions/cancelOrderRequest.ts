@@ -15,14 +15,14 @@ export async function cancelOrderRequest(
   parameters: CancelOrderRequestParameters,
 ): Promise<CancelOrderRequestReturnType> {
   const { request, id } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
 
   const walletId = getWalletId(config)
 
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(CANCEL_ORDER_ROUTE(walletId, id)),
+      getBaseUrl(CANCEL_ORDER_ROUTE(walletId, id)),
       request,
     )
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)

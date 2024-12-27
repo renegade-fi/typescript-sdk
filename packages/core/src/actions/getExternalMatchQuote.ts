@@ -52,7 +52,7 @@ export async function getExternalMatchQuote(
   )
 
   const res = await postWithSymmetricKey(config, {
-    url: config.getAuthServerUrl(REQUEST_EXTERNAL_MATCH_QUOTE_ROUTE),
+    url: config.getBaseUrl(REQUEST_EXTERNAL_MATCH_QUOTE_ROUTE),
     body,
     key: symmetricKey,
     headers: {

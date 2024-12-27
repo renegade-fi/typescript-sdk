@@ -1,14 +1,14 @@
 import axios from 'axios'
 import invariant from 'tiny-invariant'
-import { getSymmetricKey } from '../actions/getSymmetricKey.js'
 import {
   RENEGADE_AUTH_HEADER_NAME,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
   SIG_EXPIRATION_BUFFER_MS,
 } from '../constants.js'
-import type { BaseConfig, Config } from '../createConfig.js'
+import type { BaseConfig, Config, RenegadeConfig } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { parseBigJSON } from './bigJSON.js'
+import type { AuthType } from './websocket.js'
 
 export async function postRelayerRaw(url: string, body: any, headers = {}) {
   try {
@@ -105,11 +105,12 @@ export async function getRelayerRaw(url: string, headers = {}) {
 }
 
 export async function postRelayerWithAuth(
-  config: Config,
+  config: RenegadeConfig,
   url: string,
   body?: string,
+  requestType?: AuthType,
 ) {
-  const symmetricKey = getSymmetricKey(config)
+  const symmetricKey = config.getSymmetricKey(requestType)
   invariant(symmetricKey, 'Failed to derive symmetric key')
 
   const path = getPathFromUrl(url)
@@ -151,8 +152,8 @@ export async function postRelayerWithAdmin(
   return await postRelayerRaw(url, body, headersWithAuth)
 }
 
-export async function getRelayerWithAuth(config: Config, url: string) {
-  const symmetricKey = getSymmetricKey(config)
+export async function getRelayerWithAuth(config: RenegadeConfig, url: string) {
+  const symmetricKey = config.getSymmetricKey()
   invariant(symmetricKey, 'Failed to derive symmetric key')
 
   const path = getPathFromUrl(url)

@@ -7,11 +7,11 @@ import { getWalletId } from './getWalletId.js'
 export type GetOrdersReturnType = Order[]
 
 export async function getOrders(config: Config): Promise<GetOrdersReturnType> {
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   const walletId = getWalletId(config)
   const res = await getRelayerWithAuth(
     config,
-    getRelayerBaseUrl(WALLET_ORDERS_ROUTE(walletId)),
+    getBaseUrl(WALLET_ORDERS_ROUTE(walletId)),
   )
   return res.orders
 }

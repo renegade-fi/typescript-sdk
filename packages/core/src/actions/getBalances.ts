@@ -7,11 +7,11 @@ import { getWalletId } from './getWalletId.js'
 export type GetBalancesReturnType = Promise<Balance[]>
 
 export async function getBalances(config: Config): GetBalancesReturnType {
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   const walletId = getWalletId(config)
   const res = await getRelayerWithAuth(
     config,
-    getRelayerBaseUrl(GET_BALANCES_ROUTE(walletId)),
+    getBaseUrl(GET_BALANCES_ROUTE(walletId)),
   )
   return res.balances
 }

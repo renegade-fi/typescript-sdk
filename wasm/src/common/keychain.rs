@@ -153,6 +153,14 @@ impl KeyChain {
         self.secret_keys.symmetric_key
     }
 
+    /// Get the next rotated keychain's public key without modifying the current keychain
+    pub fn get_next_rotated_public_key(&self, seed: &str) -> Result<PublicSigningKey, String> {
+        let next_nonce = self.public_keys.nonce + Scalar::one();
+        let sk_root = derive_sk_root_signing_key(seed, Some(&next_nonce))?;
+        let rotated_keychain = derive_wallet_keychain(&sk_root)?;
+        Ok(rotated_keychain.public_keys.pk_root)
+    }
+
     // Rotate the keychain by incrementing the nonce and re-deriving the keys
     pub fn rotate(&mut self, seed: &str) {
         self.increment_nonce();

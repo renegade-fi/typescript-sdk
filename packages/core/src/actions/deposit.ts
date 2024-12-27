@@ -1,62 +1,75 @@
 import invariant from 'tiny-invariant'
 import { type Address, toHex } from 'viem'
 import { DEPOSIT_BALANCE_ROUTE } from '../constants.js'
-import type { Config } from '../createConfig.js'
-import type { BaseErrorType } from '../errors/base.js'
-import { Token } from '../types/token.js'
+import type { RenegadeConfig } from '../createConfig.js'
 import { stringifyForWasm } from '../utils/bigJSON.js'
 import { postRelayerWithAuth } from '../utils/http.js'
 import { getBackOfQueueWallet } from './getBackOfQueueWallet.js'
 import { getWalletId } from './getWalletId.js'
 
 export type DepositParameters = {
+  amount: bigint
   fromAddr: Address
   mint: Address
-  amount: bigint
-  permitNonce: bigint
+  newPublicKey?: string
+  permit: string
   permitDeadline: bigint
-  permit: `0x${string}`
+  permitNonce: bigint
 }
 
 export type DepositReturnType = Promise<{ taskId: string }>
 
-export type DepositErrorType = BaseErrorType
-
 export async function deposit(
-  config: Config,
+  config: RenegadeConfig,
   parameters: DepositParameters,
 ): DepositReturnType {
-  const { fromAddr, mint, amount, permitNonce, permitDeadline, permit } =
-    parameters
   const {
-    getRelayerBaseUrl,
-    utils,
-    state: { seed },
-  } = config
-  invariant(seed, 'Seed is required')
+    amount,
+    fromAddr,
+    mint,
+    newPublicKey,
+    permit,
+    permitDeadline,
+    permitNonce,
+  } = parameters
 
-  const token = Token.findByAddress(mint)
-  invariant(token, 'Token not found')
+  const { getBaseUrl, utils, renegadeKeyType } = config
 
   const walletId = getWalletId(config)
   const wallet = await getBackOfQueueWallet(config)
-  const walletStr = stringifyForWasm(wallet)
 
-  const body = utils.deposit(
+  const seed = renegadeKeyType === 'internal' ? config.state.seed : undefined
+  const signMessage =
+    renegadeKeyType === 'external' ? config.signMessage : undefined
+
+  if (renegadeKeyType === 'external') {
+    invariant(
+      signMessage !== undefined,
+      'Sign message function is required for external key type',
+    )
+  }
+  if (renegadeKeyType === 'internal') {
+    invariant(seed !== undefined, 'Seed is required for internal key type')
+  }
+
+  const body = await utils.deposit(
+    // TODO: Change Rust to accept Option<String>
     seed,
-    walletStr,
+    stringifyForWasm(wallet),
     fromAddr,
     mint,
     toHex(amount),
     toHex(permitNonce),
     toHex(permitDeadline),
     permit,
+    newPublicKey,
+    signMessage,
   )
 
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
+      getBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
       body,
     )
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)

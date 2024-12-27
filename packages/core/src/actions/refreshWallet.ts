@@ -1,18 +1,22 @@
 import { REFRESH_WALLET_ROUTE } from '../constants.js'
-import type { Config } from '../createConfig.js'
+import type { RenegadeConfig } from '../createConfig.js'
 import { postRelayerWithAuth } from '../utils/http.js'
 import { getWalletId } from './getWalletId.js'
 
-export type RefreshWalletReturnType = Promise<{ taskId: string }>
+export type RefreshWalletReturnType = {
+  taskId: string
+}
 
-export async function refreshWallet(config: Config): RefreshWalletReturnType {
-  const { getRelayerBaseUrl } = config
+export async function refreshWallet(
+  config: RenegadeConfig,
+): Promise<RefreshWalletReturnType> {
+  const { getBaseUrl } = config
   const walletId = getWalletId(config)
 
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(REFRESH_WALLET_ROUTE(walletId)),
+      getBaseUrl(REFRESH_WALLET_ROUTE(walletId)),
     )
     if (res?.task_id) {
       console.log(`task refresh-wallet(${res.task_id}): ${walletId}`)

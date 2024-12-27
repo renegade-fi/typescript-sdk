@@ -15,14 +15,14 @@ export async function depositRequest(
   parameters: DepositRequestParameters,
 ): Promise<DepositRequestReturnType> {
   const { request } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
 
   const walletId = getWalletId(config)
 
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
+      getBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
       request,
     )
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)

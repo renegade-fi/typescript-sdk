@@ -15,14 +15,14 @@ export async function withdrawRequest(
   parameters: WithdrawRequestParameters,
 ): Promise<WithdrawRequestReturnType> {
   const { mint, request } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
 
   const walletId = getWalletId(config)
 
   try {
     const res = await postRelayerWithAuth(
       config,
-      getRelayerBaseUrl(WITHDRAW_BALANCE_ROUTE(walletId, mint)),
+      getBaseUrl(WITHDRAW_BALANCE_ROUTE(walletId, mint)),
       request,
     )
     console.log(`task update-wallet(${res.task_id}): ${walletId}`)

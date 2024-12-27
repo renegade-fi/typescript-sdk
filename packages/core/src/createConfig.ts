@@ -9,9 +9,11 @@ import {
 import { arbitrumSepolia } from 'viem/chains'
 import { persist, subscribeWithSelector } from 'zustand/middleware'
 import { type Mutate, type StoreApi, createStore } from 'zustand/vanilla'
+import type { ExternalConfig } from './createExternalKeyConfig.js'
 import { type Storage, createStorage, noopStorage } from './createStorage.js'
 import type { Evaluate, ExactPartial } from './types/utils.js'
 import type * as rustUtils from './utils.d.ts'
+import { AuthType } from './utils/websocket.js'
 
 export type CreateConfigParameters = {
   darkPoolAddress: Address
@@ -28,7 +30,9 @@ export type CreateConfigParameters = {
   adminKey?: string
 }
 
-export function createConfig(parameters: CreateConfigParameters): Config {
+export function createConfig(
+  parameters: CreateConfigParameters,
+): InternalConfig {
   const {
     relayerUrl,
     priceReporterUrl,
@@ -90,11 +94,12 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 
   return {
     utils: parameters.utils,
+    renegadeKeyType: 'internal' as const,
     storage,
     relayerUrl,
     priceReporterUrl,
     darkPoolAddress: parameters.darkPoolAddress,
-    getRelayerBaseUrl: (route = '') => {
+    getBaseUrl: (route = '') => {
       const protocol =
         useInsecureTransport || parameters.relayerUrl.includes('localhost')
           ? 'http'
@@ -127,6 +132,20 @@ export function createConfig(parameters: CreateConfigParameters): Config {
         ? `127.0.0.1:${websocketPort}`
         : `${parameters.relayerUrl}:${websocketPort}`
       return `${protocol}://${baseUrl}`
+    },
+    getSymmetricKey(type?: AuthType) {
+      invariant(parameters.utils, 'Utils are required')
+      if (type === AuthType.Admin) {
+        invariant(parameters.adminKey, 'Admin key is required')
+        const symmetricKey = parameters.utils.b64_to_hex_hmac_key(
+          parameters.adminKey,
+        ) as Hex
+        invariant(symmetricKey, 'Admin key is required')
+        return symmetricKey
+      }
+      const seed = store.getState().seed
+      invariant(seed, 'Seed is required')
+      return parameters.utils.get_symmetric_key(seed) as Hex
     },
     pollingInterval,
     get state() {
@@ -165,15 +184,17 @@ export function createConfig(parameters: CreateConfigParameters): Config {
 
 export type BaseConfig = {
   utils: typeof rustUtils
+  getWebsocketBaseUrl: () => string
+  getBaseUrl: (route?: string) => string
+  getSymmetricKey: (type?: AuthType) => Hex
 }
 
 export type Config = BaseConfig & {
+  renegadeKeyType: 'internal'
   readonly storage: Storage | null
   darkPoolAddress: Address
   getPriceReporterBaseUrl: () => string
   getPriceReporterHTTPBaseUrl: (route?: string) => string
-  getRelayerBaseUrl: (route?: string) => string
-  getWebsocketBaseUrl: () => string
   pollingInterval: number
   priceReporterUrl: string
   relayerUrl: string
@@ -201,6 +222,11 @@ export type Config = BaseConfig & {
   }
 }
 
+// For backwards-compatibility
+export type InternalConfig = Config
+
+export type RenegadeConfig = InternalConfig | ExternalConfig
+
 export interface State {
   seed?: Hex | undefined
   status?:
@@ -213,6 +239,13 @@ export interface State {
   // Whether the Rust utils have been initialized, used only in React
   initialized?: boolean
 }
+
+// The type of keychain a config is using
+export const keyTypes = {
+  EXTERNAL: 'external',
+  INTERNAL: 'internal',
+  NONE: 'none',
+} as const
 
 export type PartializedState = Evaluate<
   ExactPartial<Pick<State, 'id' | 'seed' | 'status'>>

@@ -5,6 +5,7 @@ export * from '@renegade-fi/core/constants'
 import {
   createAuthConfig as core_createAuthConfig,
   createConfig as core_createConfig,
+  createExternalKeyConfig as core_createExternalKeyConfig,
 } from '@renegade-fi/core'
 
 import * as RustUtils from '../../renegade-utils/index.js'
@@ -29,7 +30,17 @@ function createAuthConfig(
   return config
 }
 
-export { createAuthConfig, createConfig }
+function createExternalKeyConfig(
+  ...args: Parameters<typeof core_createExternalKeyConfig>
+): ReturnType<typeof core_createExternalKeyConfig> {
+  const config = core_createExternalKeyConfig({
+    ...args[0],
+    utils: RustUtils,
+  })
+  return config
+}
+
+export { createAuthConfig, createConfig, createExternalKeyConfig }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Actions
@@ -43,6 +54,10 @@ export {
   executeWithdrawal,
   type ExecuteWithdrawalParameters,
 } from '../actions/executeWithdrawal.js'
+export {
+  generateWalletSecrets,
+  type GeneratedSecrets,
+} from '../actions/generateWalletSecrets.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade-fi/core

@@ -13,12 +13,12 @@ export async function getOrderMatchingPool(
   parameters: GetOrderMatchingPoolParameters,
 ): Promise<GetOrderMatchingPoolReturnType> {
   const { orderId } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
 
   try {
     const res = await getRelayerWithAdmin(
       config,
-      getRelayerBaseUrl(ADMIN_GET_ORDER_MATCHING_POOL_ROUTE(orderId)),
+      getBaseUrl(ADMIN_GET_ORDER_MATCHING_POOL_ROUTE(orderId)),
     )
 
     return res.matching_pool

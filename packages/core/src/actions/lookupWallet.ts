@@ -1,36 +1,65 @@
 import invariant from 'tiny-invariant'
 import { parseAbiItem } from 'viem'
 import { FIND_WALLET_ROUTE } from '../constants.js'
-import type { Config } from '../createConfig.js'
+import type { Config, RenegadeConfig } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { postRelayerRaw } from '../utils/http.js'
 import { waitForWalletIndexing } from './waitForWalletIndexing.js'
 
 export type LookupWalletReturnType = ReturnType<typeof waitForWalletIndexing>
 
-export async function lookupWallet(config: Config): LookupWalletReturnType {
-  const {
-    getRelayerBaseUrl,
-    utils,
-    state: { seed },
-  } = config
-  invariant(seed, 'seed is required')
-  const body = utils.find_wallet(seed)
-  const res = await postRelayerRaw(getRelayerBaseUrl(FIND_WALLET_ROUTE), body)
+export type LookupWalletParameters = {
+  blinderSeed?: string
+  shareSeed?: string
+  skMatch?: string
+}
+
+export async function lookupWallet(
+  config: RenegadeConfig,
+  parameters: LookupWalletParameters = {},
+): LookupWalletReturnType {
+  const { getBaseUrl, utils } = config
+  let body: string
+
+  if (config.renegadeKeyType === 'internal') {
+    const { seed } = config.state
+    invariant(seed, 'seed is required')
+    body = utils.find_wallet(seed)
+  } else {
+    const { blinderSeed, shareSeed, skMatch } = parameters
+    const { walletId, publicKey, symmetricKey } = config
+    invariant(blinderSeed, 'blinderSeed is required')
+    invariant(shareSeed, 'shareSeed is required')
+    invariant(skMatch, 'skMatch is required')
+    body = await utils.find_external_wallet(
+      walletId,
+      blinderSeed,
+      shareSeed,
+      publicKey,
+      skMatch,
+      symmetricKey,
+    )
+  }
+  const res = await postRelayerRaw(getBaseUrl(FIND_WALLET_ROUTE), body)
+
   if (res.task_id) {
     console.log(`task lookup-wallet(${res.task_id}): ${res.wallet_id}`, {
       status: 'looking up',
       walletId: res.wallet_id,
     })
-    config.setState((x) => ({ ...x, status: 'looking up' }))
+    if (config.renegadeKeyType === 'internal') {
+      config.setState((x) => ({ ...x, status: 'looking up' }))
+    }
     return waitForWalletIndexing(config, {
       timeout: 300000,
       isLookup: true,
       onComplete(wallet) {
-        config.setState((x) => ({
-          ...x,
-          status: 'in relayer',
-        }))
+        if (config.renegadeKeyType === 'internal') {
+          config.setState((x) => ({
+            ...x,
+            status: 'in relayer',
+          }))
+        }
         console.log(
           `task lookup-wallet(${res.task_id}) completed: ${wallet.id}`,
           {
@@ -40,11 +69,12 @@ export async function lookupWallet(config: Config): LookupWalletReturnType {
         )
       },
       onFailure() {
-        console.error(`wallet id: ${config.state.id} looking up failed`, {
-          status: 'looking up',
-          walletId: config.state.id,
-        })
-        config.setState({})
+        console.log(
+          `task lookup-wallet(${res.task_id}) failed: ${res.wallet_id}`,
+        )
+        if (config.renegadeKeyType === 'internal') {
+          config.setState({})
+        }
       },
     })
   }

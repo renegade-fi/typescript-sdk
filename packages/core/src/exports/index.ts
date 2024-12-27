@@ -32,6 +32,7 @@ export {
 
 export {
   type CreateWalletReturnType,
+  type CreateWalletParameters,
   createWallet,
 } from '../actions/createWallet.js'
 
@@ -247,6 +248,12 @@ export {
   type CreateAuthConfigParameters,
   createAuthConfig,
 } from '../createAuthConfig.js'
+
+export {
+  type CreateExternalKeyConfigParameters,
+  type ExternalConfig,
+  createExternalKeyConfig,
+} from '../createExternalKeyConfig.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // createStorage

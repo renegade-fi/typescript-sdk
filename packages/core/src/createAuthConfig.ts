@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import type { Hex } from 'viem'
 import type { BaseConfig } from './createConfig.js'
 import type * as rustUtils from './utils.d.ts'
 
@@ -27,11 +28,20 @@ export function createAuthConfig(
   )
   return {
     utils: parameters.utils,
+    // Not used for wallet operations
+    renegadeKeyType: 'none' as const,
     apiKey,
     apiSecret,
-    getAuthServerUrl: (route = '') => {
+    getBaseUrl: (route = '') => {
       const formattedRoute = route.startsWith('/') ? route : `/${route}`
       return `${authServerUrl}/v0${formattedRoute}`
+    },
+    getWebsocketBaseUrl: () => {
+      throw new Error('Not implemented')
+    },
+    getSymmetricKey: () => {
+      invariant(parameters.utils, 'Utils are required')
+      return parameters.utils.b64_to_hex_hmac_key(apiSecret) as Hex
     },
   }
 }
@@ -39,5 +49,6 @@ export function createAuthConfig(
 export type AuthConfig = BaseConfig & {
   apiSecret: string
   apiKey: string
-  getAuthServerUrl: (route?: string) => string
+  getBaseUrl: (route?: string) => string
+  renegadeKeyType: 'none'
 }

@@ -18,9 +18,9 @@ export async function getOrderMetadata(
   parameters: GetOrderMetadataParameters,
 ): Promise<GetOrderMetadataReturnType> {
   const { id } = parameters
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
 
-  const url = new URL(getRelayerBaseUrl(ADMIN_ORDER_METADATA_ROUTE(id)))
+  const url = new URL(getBaseUrl(ADMIN_ORDER_METADATA_ROUTE(id)))
 
   if (parameters.includeFillable) {
     url.searchParams.set('include_fillable', String(true))

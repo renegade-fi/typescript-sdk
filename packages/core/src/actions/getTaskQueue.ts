@@ -9,11 +9,11 @@ import type { OldTask as Task } from '../types/wallet.js'
 export type GetTaskQueueReturnType = Promise<Task[]>
 
 export async function getTaskQueue(config: Config): GetTaskQueueReturnType {
-  const { getRelayerBaseUrl } = config
+  const { getBaseUrl } = config
   const walletId = getWalletId(config)
   const res = await getRelayerWithAuth(
     config,
-    getRelayerBaseUrl(GET_TASK_QUEUE_ROUTE(walletId)),
+    getBaseUrl(GET_TASK_QUEUE_ROUTE(walletId)),
   )
   return res.tasks
 }
