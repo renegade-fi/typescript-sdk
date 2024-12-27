@@ -1,5 +1,13 @@
 # @renegade-fi/test
 
+## 0.3.12
+
+### Patch Changes
+
+- implement external key management
+- Updated dependencies
+  - @renegade-fi/core@0.4.13
+
 ## 0.3.11
 
 ### Patch Changes
