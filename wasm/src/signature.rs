@@ -13,25 +13,24 @@ use crate::{
     circuit_types::transfers::{
         to_contract_external_transfer, ExternalTransfer, ExternalTransferDirection,
     },
-    common::{derivation::derive_sk_root_scalars, types::Wallet},
+    common::types::Wallet,
     helpers::{bytes_from_hex_string, bytes_to_hex_string},
 };
 
 /// Signs a wallet commitment.
 pub async fn sign_wallet_commitment(
     wallet: &Wallet,
-    seed: Option<&str>,
+    signing_key: Option<&SigningKey>,
     external_signer: Option<&Function>,
 ) -> Result<Vec<u8>, String> {
     let comm = wallet.get_wallet_share_commitment();
     let comm_bytes = comm.inner().serialize_to_bytes();
-    sign_message(wallet, seed, &comm_bytes, external_signer).await
+    sign_message(signing_key, &comm_bytes, external_signer).await
 }
 
 /// Signs a withdrawal authorization.
 pub async fn sign_withdrawal_authorization(
-    wallet: &Wallet,
-    seed: Option<&str>,
+    signing_key: Option<&SigningKey>,
     mint: BigUint,
     amount: u128,
     account_addr: BigUint,
@@ -50,36 +49,33 @@ pub async fn sign_withdrawal_authorization(
     let contract_transfer_bytes = postcard::to_allocvec(&contract_transfer)
         .map_err(|e| format!("Failed to serialize transfer: {e}"))?;
 
-    sign_message(wallet, seed, &contract_transfer_bytes, external_signer).await
+    sign_message(signing_key, &contract_transfer_bytes, external_signer).await
 }
 
 /// Signs a message using either internal or external signing method.
 ///
-/// For internal signing, uses the seed to derive a signing key.
+/// For internal signing, uses the provided SigningKey.
 /// For external signing, uses the provided external_signer function.
 pub async fn sign_message(
-    wallet: &Wallet,
-    seed: Option<&str>,
+    signing_key: Option<&SigningKey>,
     message: &[u8],
     external_signer: Option<&Function>,
 ) -> Result<Vec<u8>, String> {
     if let Some(signer) = external_signer {
         sign_with_external_key(message, Some(signer)).await
-    } else if let Some(seed) = seed {
-        sign_with_internal_key(wallet, seed, message)
+    } else if let Some(key) = signing_key {
+        sign_with_internal_key(key, message)
     } else {
-        Err(String::from("Either seed or external signer is required"))
+        Err(String::from(
+            "Either signing key or external signer is required",
+        ))
     }
 }
 
-/// Helper function to sign a message with a derived SigningKey and return an Ethers Signature
-fn sign_with_internal_key(wallet: &Wallet, seed: &str, message: &[u8]) -> Result<Vec<u8>, String> {
-    let sk_root_scalars = derive_sk_root_scalars(seed, &wallet.key_chain.public_keys.nonce);
-    let sk_root: SigningKey = SigningKey::try_from(&sk_root_scalars)
-        .map_err(|_| String::from("Failed to create signing key"))?;
-
+/// Helper function to sign a message with a SigningKey and return an Ethers Signature
+fn sign_with_internal_key(signing_key: &SigningKey, message: &[u8]) -> Result<Vec<u8>, String> {
     let digest = keccak256(message);
-    let (sig, recovery_id) = sk_root
+    let (sig, recovery_id) = signing_key
         .sign_prehash_recoverable(&digest)
         .map_err(|_| String::from("Failed to sign message"))?;
 

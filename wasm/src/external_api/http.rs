@@ -155,7 +155,7 @@ pub async fn deposit(
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
 
-    let next_public_key = wrap_eyre!(handle_key_rotation(
+    let (next_public_key, signing_key) = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
         seed.as_deref(),
         new_public_key
@@ -173,9 +173,10 @@ pub async fn deposit(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let statement_sig = sign_wallet_commitment(&new_wallet, seed.as_deref(), sign_message.as_ref())
-        .await
-        .map_err(|e| JsError::new(&e.to_string()))?;
+    let statement_sig =
+        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref())
+            .await
+            .map_err(|e| JsError::new(&e.to_string()))?;
 
     let update_auth = WalletUpdateAuthorization {
         statement_sig,
@@ -228,7 +229,7 @@ pub async fn withdraw(
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
 
-    let next_public_key = wrap_eyre!(handle_key_rotation(
+    let (next_public_key, signing_key) = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
         seed.as_deref(),
         new_public_key
@@ -262,9 +263,10 @@ pub async fn withdraw(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let statement_sig = sign_wallet_commitment(&new_wallet, seed.as_deref(), sign_message.as_ref())
-        .await
-        .map_err(|e| JsError::new(&e.to_string()))?;
+    let statement_sig =
+        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref())
+            .await
+            .map_err(|e| JsError::new(&e.to_string()))?;
 
     let update_auth = WalletUpdateAuthorization {
         statement_sig,
@@ -272,9 +274,8 @@ pub async fn withdraw(
     };
 
     let withdrawal_sig = sign_withdrawal_authorization(
-        &new_wallet,
-        seed.as_deref(),
-        mint,
+        signing_key.as_ref(),
+        mint.clone(),
         amount.to_u128().unwrap(),
         destination_addr.clone(),
         sign_message.as_ref(),
@@ -285,7 +286,7 @@ pub async fn withdraw(
     let req = WithdrawBalanceRequest {
         amount,
         destination_addr,
-        external_transfer_sig: withdrawal_sig.to_vec(),
+        external_transfer_sig: withdrawal_sig,
         update_auth,
     };
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
@@ -395,7 +396,7 @@ pub async fn create_order_request(
 ) -> Result<CreateOrderRequest, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
 
-    let next_public_key = wrap_eyre!(handle_key_rotation(
+    let (next_public_key, signing_key) = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
         seed.as_deref(),
         new_public_key
@@ -418,9 +419,10 @@ pub async fn create_order_request(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let statement_sig = sign_wallet_commitment(&new_wallet, seed.as_deref(), sign_message.as_ref())
-        .await
-        .map_err(|e| JsError::new(&e.to_string()))?;
+    let statement_sig =
+        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref())
+            .await
+            .map_err(|e| JsError::new(&e.to_string()))?;
 
     let update_auth = WalletUpdateAuthorization {
         statement_sig,
@@ -520,7 +522,7 @@ pub async fn cancel_order(
 ) -> Result<JsValue, JsError> {
     let mut new_wallet = deserialize_wallet(wallet_str);
 
-    let next_public_key = wrap_eyre!(handle_key_rotation(
+    let (next_public_key, signing_key) = wrap_eyre!(handle_key_rotation(
         &mut new_wallet,
         seed.as_deref(),
         new_public_key
@@ -539,9 +541,10 @@ pub async fn cancel_order(
     new_wallet.reblind_wallet();
 
     // Sign a commitment to the new shares
-    let statement_sig = sign_wallet_commitment(&new_wallet, seed.as_deref(), sign_message.as_ref())
-        .await
-        .map_err(|e| JsError::new(&e.to_string()))?;
+    let statement_sig =
+        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref())
+            .await
+            .map_err(|e| JsError::new(&e.to_string()))?;
 
     let update_auth = WalletUpdateAuthorization {
         statement_sig,

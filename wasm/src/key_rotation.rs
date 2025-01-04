@@ -1,21 +1,39 @@
 use crate::{
     circuit_types::keychain::PublicSigningKey,
-    common::types::Wallet,
+    common::{derivation::derive_sk_root_scalars, types::Wallet},
     helpers::{bytes_from_hex_string, public_sign_key_to_hex_string},
 };
+use k256::ecdsa::SigningKey;
 
 /// Handles wallet key rotation based on whether a new external key is provided.
 ///
-/// If no new key is provided (new_public_key is None), rotates to the next derived key using seed.
-/// If a new key is provided, rotates to that key.
-
+/// For internal key rotation, uses the provided seed to derive the next key.
+/// For external key rotation, uses the provided new_public_key.
+///
 /// # Returns
-/// The rotated public key, if any
+/// A tuple containing:
+/// - The new public key as a hex string, if rotation occurred
+/// - The previous signing key, if seed was provided
 pub fn handle_key_rotation(
     wallet: &mut Wallet,
     seed: Option<&str>,
     new_public_key: Option<String>,
-) -> Result<Option<String>, String> {
+) -> Result<(Option<String>, Option<SigningKey>), String> {
+    // Extract the current signing key if seed is provided
+    let old_signing_key = match seed {
+        Some(seed_str) => {
+            let sk_root_scalars =
+                derive_sk_root_scalars(seed_str, &wallet.key_chain.public_keys.nonce);
+
+            Some(
+                SigningKey::try_from(&sk_root_scalars)
+                    .map_err(|_| String::from("Failed to create signing key"))?,
+            )
+        }
+        None => None,
+    };
+
+    // Use existing rotation logic
     let next_public_key = determine_next_key(wallet, seed, new_public_key)?;
 
     // If we have a new key, perform the rotation
@@ -23,7 +41,7 @@ pub fn handle_key_rotation(
         maybe_rotate_to_key(wallet, next_key)?;
     }
 
-    Ok(next_public_key)
+    Ok((next_public_key, old_signing_key))
 }
 
 /// Gets the next public key based on whether a new external key is provided.
