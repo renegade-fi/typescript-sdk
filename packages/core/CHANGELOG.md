@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.14
+
+### Patch Changes
+
+- wasm: sign wallet using correct signing key
+
 ## 0.4.13
 
 ### Patch Changes
