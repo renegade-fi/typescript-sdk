@@ -143,6 +143,7 @@ export {
 export {
   type GetTaskHistoryErrorType,
   type GetTaskHistoryReturnType,
+  type GetTaskHistoryParameters,
   getTaskHistory,
 } from '../actions/getTaskHistory.js'
 

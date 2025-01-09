@@ -115,6 +115,9 @@ export const GET_TASK_QUEUE_ROUTE = (wallet_id: string) =>
 /// The route to fetch task history for a wallet
 export const TASK_HISTORY_ROUTE = (wallet_id: string) =>
   `/wallet/${wallet_id}/task-history`
+/// The name of the query parameter specifying the length of the task history
+/// to return
+export const TASK_HISTORY_LEN_PARAM = 'task_history_len'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Health check

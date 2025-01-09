@@ -1,6 +1,7 @@
 import type { QueryOptions } from '@tanstack/query-core'
 import {
   type GetTaskHistoryErrorType,
+  type GetTaskHistoryParameters,
   type GetTaskHistoryReturnType,
   getTaskHistory,
 } from '../actions/getTaskHistory.js'
@@ -8,7 +9,9 @@ import type { Config } from '../createConfig.js'
 import type { Evaluate } from '../types/utils.js'
 import { type ScopeKeyParameter, filterQueryOptions } from './utils.js'
 
-export type GetTaskHistoryOptions = Evaluate<ScopeKeyParameter>
+export type GetTaskHistoryOptions = Evaluate<
+  GetTaskHistoryParameters & ScopeKeyParameter
+>
 
 export function getTaskHistoryQueryOptions(
   config: Config,
@@ -16,8 +19,8 @@ export function getTaskHistoryQueryOptions(
 ) {
   return {
     async queryFn({ queryKey }) {
-      const { scopeKey: _ } = queryKey[1]
-      const history = await getTaskHistory(config)
+      const { scopeKey: _, ...parameters } = queryKey[1]
+      const history = await getTaskHistory(config, parameters)
       return history ?? null
     },
     queryKey: getTaskHistoryQueryKey({
