@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.4.16
+
+### Patch Changes
+
+- expose history length params & useQuery util
+- Updated dependencies
+  - @renegade-fi/core@0.4.15
+
 ## 0.4.15
 
 ### Patch Changes

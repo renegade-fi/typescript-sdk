@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.15
+
+### Patch Changes
+
+- expose history length params & useQuery util
+
 ## 0.4.14
 
 ### Patch Changes
