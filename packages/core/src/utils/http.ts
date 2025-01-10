@@ -222,7 +222,7 @@ export async function postWithSymmetricKey(
 function getPathFromUrl(url: string): string {
   try {
     const parsedUrl = new URL(url)
-    return parsedUrl.pathname || '/'
+    return parsedUrl.pathname + parsedUrl.search || '/'
   } catch {
     return url.startsWith('/') ? url : `/${url}`
   }
