@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.16
+
+### Patch Changes
+
+- include query string in auth path
+
 ## 0.4.15
 
 ### Patch Changes
