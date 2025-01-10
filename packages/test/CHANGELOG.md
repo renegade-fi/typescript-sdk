@@ -1,5 +1,13 @@
 # @renegade-fi/test
 
+## 0.3.15
+
+### Patch Changes
+
+- include query string in auth path
+- Updated dependencies
+  - @renegade-fi/core@0.4.16
+
 ## 0.3.14
 
 ### Patch Changes
