@@ -14,11 +14,23 @@ export async function postRelayerRaw(url: string, body: any, headers = {}) {
   try {
     const response = await axios.post(url, body, {
       headers,
-      transformResponse: (data) => parseBigJSON(data),
+      validateStatus: null, // Allow any status code to pass through
+      transformResponse: (data) => {
+        try {
+          return parseBigJSON(data)
+        } catch {
+          // If parsing fails, return raw data
+          return data
+        }
+      },
     })
-    // console.log(`POST ${url} with body: `, body, "response: ", response.data)
-    // Process the response data as needed
-    return response.data // Assuming the function should return the response data
+
+    // For non-2xx responses, throw error with raw data
+    if (response.status < 200 || response.status >= 300) {
+      throw new BaseError(response.data)
+    }
+
+    return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response) {
