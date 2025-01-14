@@ -1,5 +1,13 @@
 # @renegade-fi/test
 
+## 0.3.16
+
+### Patch Changes
+
+- Return raw POST data if JSON cannot be parsed
+- Updated dependencies
+  - @renegade-fi/core@0.4.17
+
 ## 0.3.15
 
 ### Patch Changes
