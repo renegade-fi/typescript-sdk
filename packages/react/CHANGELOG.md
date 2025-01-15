@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.4.19
+
+### Patch Changes
+
+- core, node: Accept key config in execute transfer actions
+- Updated dependencies
+  - @renegade-fi/core@0.4.18
+
 ## 0.4.18
 
 ### Patch Changes

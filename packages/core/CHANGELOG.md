@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.18
+
+### Patch Changes
+
+- core, node: Accept key config in execute transfer actions
+
 ## 0.4.17
 
 ### Patch Changes
