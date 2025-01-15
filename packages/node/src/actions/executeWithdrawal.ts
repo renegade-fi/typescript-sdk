@@ -1,5 +1,5 @@
 import {
-  type Config,
+  type RenegadeConfig,
   type WithdrawParameters,
   type WithdrawReturnType,
   getWalletId,
@@ -9,11 +9,11 @@ import {
 } from '@renegade-fi/core'
 
 export type ExecuteWithdrawalParameters = WithdrawParameters & {
-  awaitTask: boolean
+  awaitTask?: boolean
 }
 
 export async function executeWithdrawal(
-  config: Config,
+  config: RenegadeConfig,
   parameters: ExecuteWithdrawalParameters,
 ): WithdrawReturnType {
   const walletId = getWalletId(config)
