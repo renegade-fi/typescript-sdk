@@ -1,12 +1,13 @@
 import {
-  type Config,
   type DepositReturnType,
+  type RenegadeConfig,
   deposit,
   getBackOfQueueWallet,
   getPkRootScalars,
   waitForTaskCompletionWs,
 } from '@renegade-fi/core'
 import { type createConfig, waitForTransactionReceipt } from '@wagmi/core'
+import invariant from 'tiny-invariant'
 import { type Address, type WalletClient, zeroAddress } from 'viem'
 import { readErc20Allowance, writeErc20Approve } from '../generated.js'
 import { signPermit2 } from '../utils/permit2.js'
@@ -17,15 +18,24 @@ export type ExecuteDepositParameters = {
   permit2Address: Address
   walletClient: WalletClient
   viemConfig: ReturnType<typeof createConfig>
-  awaitTask: boolean
+  awaitTask?: boolean
+  newPublicKey?: string
 }
 
 export async function executeDeposit(
-  config: Config,
+  config: RenegadeConfig,
   parameters: ExecuteDepositParameters,
 ): DepositReturnType {
-  const { mint, amount, permit2Address, walletClient, viemConfig, awaitTask } =
-    parameters
+  const {
+    mint,
+    amount,
+    permit2Address,
+    walletClient,
+    viemConfig,
+    awaitTask,
+    newPublicKey,
+  } = parameters
+  invariant(config.viemClient, 'Viem client is required')
   const chainId = config.viemClient.chain?.id
 
   if (mint === zeroAddress || mint === '0x') {
@@ -51,6 +61,7 @@ export async function executeDeposit(
     address: mint,
     account: walletClient.account,
     args: [walletClient.account.address, permit2Address],
+    chainId,
   })
 
   // If not enough allowance, approve max amount
@@ -91,6 +102,7 @@ export async function executeDeposit(
     permitNonce: nonce,
     permitDeadline: deadline,
     permit: signature,
+    newPublicKey,
   })
 
   if (awaitTask) {

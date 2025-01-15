@@ -240,6 +240,7 @@ export {
   type BaseConfig,
   type Config,
   type CreateConfigParameters,
+  type RenegadeConfig,
   type State,
   createConfig,
 } from '../createConfig.js'
