@@ -1,5 +1,11 @@
 # @renegade-fi/node
 
+## 0.4.19
+
+### Patch Changes
+
+- node: Use simulate + write contract pattern for approval tx
+
 ## 0.4.18
 
 ### Patch Changes
