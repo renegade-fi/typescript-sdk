@@ -8,8 +8,7 @@ import {
 } from '@renegade-fi/core'
 import { type createConfig, waitForTransactionReceipt } from '@wagmi/core'
 import invariant from 'tiny-invariant'
-import { type Address, type WalletClient, zeroAddress } from 'viem'
-import { readErc20Allowance, writeErc20Approve } from '../generated.js'
+import { type Address, type WalletClient, erc20Abi, zeroAddress } from 'viem'
 import { signPermit2 } from '../utils/permit2.js'
 
 export type ExecuteDepositParameters = {
@@ -57,11 +56,11 @@ export async function executeDeposit(
   })
 
   // Check Permit2 Allowance
-  const permit2Allowance = await readErc20Allowance(viemConfig, {
+  const permit2Allowance = await config.viemClient.readContract({
     address: mint,
-    account: walletClient.account,
+    abi: erc20Abi,
+    functionName: 'allowance',
     args: [walletClient.account.address, permit2Address],
-    chainId,
   })
 
   // If not enough allowance, approve max amount
@@ -69,17 +68,21 @@ export async function executeDeposit(
     const nonce = await config.viemClient.getTransactionCount({
       address: walletClient.account.address,
     })
-    const hash = await writeErc20Approve(viemConfig, {
-      address: mint,
+    const { request } = await config.viemClient.simulateContract({
       account: walletClient.account,
+      address: mint,
+      abi: erc20Abi,
+      functionName: 'approve',
       args: [permit2Address, amount],
       nonce,
-    }).catch(() => {
-      throw new Error('Error approving permit2 allowance: likely need gas.')
     })
-
+    const hash = await walletClient.writeContract(request)
     await waitForTransactionReceipt(viemConfig, {
       hash,
+      confirmations: 1,
+      timeout: 5_000,
+    }).catch(() => {
+      // Attempt deposit even if receipt not found
     })
   }
 
