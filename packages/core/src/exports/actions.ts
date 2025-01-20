@@ -166,6 +166,11 @@ export {
 } from '../actions/getTaskQueue.js'
 
 export {
+  type GetTaskQueuePausedReturnType,
+  getTaskQueuePaused,
+} from '../actions/getTaskQueuePaused.js'
+
+export {
   type GetWalletFromRelayerParameters,
   type GetWalletFromRelayerReturnType,
   type GetWalletFromRelayerErrorType as GetWalletErrorType,

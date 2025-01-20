@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.4.19
+
+### Patch Changes
+
+- add getTaskQueuePaused action
+
 ## 0.4.18
 
 ### Patch Changes
