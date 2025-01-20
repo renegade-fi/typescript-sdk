@@ -112,6 +112,9 @@ export const GET_TASK_STATUS_ROUTE = (task_id: string) => `/tasks/${task_id}`
 // Get the task queue of a given wallet
 export const GET_TASK_QUEUE_ROUTE = (wallet_id: string) =>
   `/task_queue/${wallet_id}`
+// Get whether the task queue of a given wallet is paused
+export const GET_TASK_QUEUE_PAUSED_ROUTE = (wallet_id: string) =>
+  `/task_queue/${wallet_id}/is_paused`
 /// The route to fetch task history for a wallet
 export const TASK_HISTORY_ROUTE = (wallet_id: string) =>
   `/wallet/${wallet_id}/task-history`
