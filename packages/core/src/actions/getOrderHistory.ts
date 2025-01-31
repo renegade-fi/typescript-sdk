@@ -1,3 +1,4 @@
+import { getHseBaseUrl } from '../chains/defaults.js'
 import { ORDER_HISTORY_LEN_PARAM, ORDER_HISTORY_ROUTE } from '../constants.js'
 import type { RenegadeConfig } from '../createConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
@@ -17,11 +18,11 @@ export async function getOrderHistory(
   config: RenegadeConfig,
   parameters: GetOrderHistoryParameters = {},
 ): Promise<GetOrderHistoryReturnType> {
-  const { getBaseUrl } = config
   const { limit } = parameters
+  const hseBaseUrl = getHseBaseUrl(config.chainId)
   const walletId = getWalletId(config)
 
-  let url = getBaseUrl(ORDER_HISTORY_ROUTE(walletId))
+  let url = `${hseBaseUrl}/v0${ORDER_HISTORY_ROUTE(walletId)}`
 
   if (limit !== undefined) {
     const searchParams = new URLSearchParams({

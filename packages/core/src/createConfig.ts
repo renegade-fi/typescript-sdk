@@ -9,6 +9,7 @@ import {
 import { arbitrumSepolia } from 'viem/chains'
 import { persist, subscribeWithSelector } from 'zustand/middleware'
 import { type Mutate, type StoreApi, createStore } from 'zustand/vanilla'
+import type { SupportedChainId } from './chains/defaults.js'
 import type { ExternalConfig } from './createExternalKeyConfig.js'
 import { type Storage, createStorage, noopStorage } from './createStorage.js'
 import type { Evaluate, ExactPartial } from './types/utils.js'
@@ -16,6 +17,7 @@ import type * as rustUtils from './utils.d.ts'
 import { AuthType } from './utils/websocket.js'
 
 export type CreateConfigParameters = {
+  chainId: SupportedChainId
   darkPoolAddress: Address
   priceReporterUrl: string
   relayerUrl: string
@@ -179,6 +181,7 @@ export function createConfig(
       store,
       ssr: Boolean(ssr),
     },
+    chainId: parameters.chainId,
   }
 }
 
@@ -190,6 +193,7 @@ export type BaseConfig = {
 }
 
 export type Config = BaseConfig & {
+  chainId: SupportedChainId
   renegadeKeyType: 'internal'
   readonly storage: Storage | null
   darkPoolAddress: Address

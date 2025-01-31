@@ -29,7 +29,6 @@ export {
   type CreateOrderRequestReturnType,
   createOrderRequest,
 } from '../actions/createOrderRequest.js'
-
 export {
   type CreateWalletReturnType,
   type CreateWalletParameters,
@@ -337,3 +336,5 @@ export {
 } from '../utils/websocketWaiter.js'
 
 export { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
+
+export { isSupportedChainId } from '../chains/defaults.js'
