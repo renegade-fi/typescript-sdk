@@ -26,6 +26,7 @@ export type ExternalSettlementTx = {
   data: `0x${string}`
   accessList: AccessList
   gas?: `0x${string}`
+  value?: `0x${string}`
 }
 
 export type ExternalMatchQuote = {
