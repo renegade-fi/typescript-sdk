@@ -245,6 +245,7 @@ export {
   deepEqual,
   parseCookie,
   stringifyForWasm,
+  isSupportedChainId,
   // Types
   OrderState,
   TaskType,
