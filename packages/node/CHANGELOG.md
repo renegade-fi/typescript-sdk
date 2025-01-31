@@ -1,5 +1,18 @@
 # @renegade-fi/node
 
+## 0.5.0
+
+### Minor Changes
+
+- node: chore
+
+## 0.4.21
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.5.0
+
 ## 0.4.20
 
 ### Patch Changes

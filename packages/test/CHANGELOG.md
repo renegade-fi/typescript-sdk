@@ -1,5 +1,16 @@
 # @renegade-fi/test
 
+## 0.4.0
+
+### Minor Changes
+
+- core: Use HSE in order history and task history actions
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.5.0
+
 ## 0.3.18
 
 ### Patch Changes
