@@ -1,6 +1,9 @@
 import invariant from 'tiny-invariant'
+import { zeroAddress } from 'viem'
 import {
   ASSEMBLE_EXTERNAL_MATCH_ROUTE,
+  GAS_SPONSORSHIP_PARAM,
+  REFUND_ADDRESS_PARAM,
   RENEGADE_API_KEY_HEADER,
 } from '../constants.js'
 import type { AuthConfig } from '../createAuthConfig.js'
@@ -17,6 +20,8 @@ export type AssembleExternalQuoteParameters = {
   quote: SignedExternalMatchQuote
   updatedOrder?: ExternalOrder
   doGasEstimation?: boolean
+  useGasSponsorship?: boolean
+  refundAddress?: `0x${string}`
 }
 
 export type AssembleExternalQuoteReturnType = ExternalMatchBundle
@@ -27,7 +32,13 @@ export async function assembleExternalQuote(
   config: AuthConfig,
   parameters: AssembleExternalQuoteParameters,
 ): Promise<AssembleExternalQuoteReturnType> {
-  const { quote, updatedOrder, doGasEstimation = false } = parameters
+  const {
+    quote,
+    updatedOrder,
+    doGasEstimation = false,
+    useGasSponsorship = false,
+    refundAddress = zeroAddress,
+  } = parameters
   const { apiSecret, apiKey } = config
   invariant(apiSecret, 'API secret not specified in config')
   invariant(apiKey, 'API key not specified in config')
@@ -41,8 +52,17 @@ export async function assembleExternalQuote(
     stringifiedQuote,
   )
 
+  let url = config.getBaseUrl(ASSEMBLE_EXTERNAL_MATCH_ROUTE)
+  if (useGasSponsorship) {
+    const searchParams = new URLSearchParams({
+      [GAS_SPONSORSHIP_PARAM]: 'true',
+      [REFUND_ADDRESS_PARAM]: refundAddress,
+    })
+    url += `?${searchParams.toString()}`
+  }
+
   const res = await postWithSymmetricKey(config, {
-    url: config.getBaseUrl(ASSEMBLE_EXTERNAL_MATCH_ROUTE),
+    url,
     body,
     key: symmetricKey,
     headers: {
