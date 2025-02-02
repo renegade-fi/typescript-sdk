@@ -52,6 +52,11 @@ export type ExternalMatchBundle = {
   fees: FeeTake
 }
 
+export type ExternalMatchResponse = {
+  match_bundle: ExternalMatchBundle
+  is_sponsored: boolean
+}
+
 export type ExternalAssetTransfer = {
   mint: `0x${string}`
   amount: bigint
