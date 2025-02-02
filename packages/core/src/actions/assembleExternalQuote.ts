@@ -9,7 +9,7 @@ import {
 import type { AuthConfig } from '../createAuthConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type {
-  ExternalMatchBundle,
+  ExternalMatchResponse,
   ExternalOrder,
   SignedExternalMatchQuote,
 } from '../types/externalMatch.js'
@@ -24,7 +24,7 @@ export type AssembleExternalQuoteParameters = {
   refundAddress?: `0x${string}`
 }
 
-export type AssembleExternalQuoteReturnType = ExternalMatchBundle
+export type AssembleExternalQuoteReturnType = ExternalMatchResponse
 
 export type AssembleExternalQuoteErrorType = BaseErrorType
 
@@ -72,5 +72,5 @@ export async function assembleExternalQuote(
   if (!res.match_bundle) {
     throw new BaseError('Failed to assemble external quote')
   }
-  return res.match_bundle
+  return res
 }

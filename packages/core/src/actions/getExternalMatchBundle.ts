@@ -9,7 +9,7 @@ import {
 import type { AuthConfig } from '../createAuthConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type {
-  ExternalMatchBundle,
+  ExternalMatchResponse,
   ExternalOrder,
 } from '../types/externalMatch.js'
 import { postWithSymmetricKey } from '../utils/http.js'
@@ -21,7 +21,7 @@ export type GetExternalMatchBundleParameters = {
   refundAddress?: `0x${string}`
 }
 
-export type GetExternalMatchBundleReturnType = ExternalMatchBundle
+export type GetExternalMatchBundleReturnType = ExternalMatchResponse
 
 export type GetExternalMatchBundleErrorType = BaseErrorType
 
@@ -77,5 +77,5 @@ export async function getExternalMatchBundle(
   if (!res.match_bundle) {
     throw new BaseError('No match bundle found')
   }
-  return res.match_bundle
+  return res
 }
