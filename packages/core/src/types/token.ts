@@ -20,22 +20,26 @@ type TokenMapping = {
   tokens: TokenMetadata[]
 }
 
-const tokenMappingUrl =
-  process.env.TOKEN_MAPPING_URL || process.env.NEXT_PUBLIC_TOKEN_MAPPING_URL
-
-const tokenMappingStr =
-  process.env.NEXT_PUBLIC_TOKEN_MAPPING || process.env.TOKEN_MAPPING
-
-invariant(
-  tokenMappingUrl || tokenMappingStr,
-  'No token mapping initialization option provided',
-)
-
 export const tokenMapping: TokenMapping = {
   tokens: [],
 }
 
-export async function loadTokenMapping() {
+export async function loadTokenMapping(url?: string) {
+  const tokenMappingUrl = url || process.env.TOKEN_MAPPING_URL || process.env.NEXT_PUBLIC_TOKEN_MAPPING_URL
+  const tokenMappingStr = process.env.TOKEN_MAPPING || process.env.NEXT_PUBLIC_TOKEN_MAPPING
+
+  invariant(
+    tokenMappingUrl || tokenMappingStr,
+    'No token mapping initialization option provided',
+  )
+
+  if (tokenMappingStr) {
+    const envTokenMapping = JSON.parse(tokenMappingStr)
+    formatTokenMapping(envTokenMapping)
+    tokenMapping.tokens = envTokenMapping.tokens
+    return
+  }
+
   if (!tokenMappingUrl) {
     throw new Error('No token mapping URL provided')
   }
@@ -43,7 +47,6 @@ export async function loadTokenMapping() {
   const res = await fetch(tokenMappingUrl)
   const data = await res.json()
   formatTokenMapping(data)
-
   tokenMapping.tokens = data.tokens
 }
 
@@ -57,12 +60,6 @@ function formatTokenMapping(data: any) {
       ]),
     )
   }
-}
-
-if (tokenMappingStr) {
-  const envTokenMapping = JSON.parse(tokenMappingStr!)
-  formatTokenMapping(envTokenMapping)
-  tokenMapping.tokens = envTokenMapping.tokens
 }
 
 ////////////////////////////////////////////////////////////////////////////////
