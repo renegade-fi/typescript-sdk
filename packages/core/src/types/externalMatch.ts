@@ -26,6 +26,7 @@ export type ExternalSettlementTx = {
   data: `0x${string}`
   accessList: AccessList
   gas?: `0x${string}`
+  value?: `0x${string}`
 }
 
 export type ExternalMatchQuote = {
@@ -49,6 +50,11 @@ export type ExternalMatchBundle = {
   receive: ExternalAssetTransfer
   send: ExternalAssetTransfer
   fees: FeeTake
+}
+
+export type ExternalMatchResponse = {
+  match_bundle: ExternalMatchBundle
+  is_sponsored: boolean
 }
 
 export type ExternalAssetTransfer = {

@@ -1,13 +1,15 @@
 import invariant from 'tiny-invariant'
-import { toHex } from 'viem'
+import { toHex, zeroAddress } from 'viem'
 import {
+  GAS_SPONSORSHIP_PARAM,
+  REFUND_ADDRESS_PARAM,
   RENEGADE_API_KEY_HEADER,
   REQUEST_EXTERNAL_MATCH_ROUTE,
 } from '../constants.js'
 import type { AuthConfig } from '../createAuthConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type {
-  ExternalMatchBundle,
+  ExternalMatchResponse,
   ExternalOrder,
 } from '../types/externalMatch.js'
 import { postWithSymmetricKey } from '../utils/http.js'
@@ -15,9 +17,11 @@ import { postWithSymmetricKey } from '../utils/http.js'
 export type GetExternalMatchBundleParameters = {
   order: ExternalOrder
   doGasEstimation?: boolean
+  useGasSponsorship?: boolean
+  refundAddress?: `0x${string}`
 }
 
-export type GetExternalMatchBundleReturnType = ExternalMatchBundle
+export type GetExternalMatchBundleReturnType = ExternalMatchResponse
 
 export type GetExternalMatchBundleErrorType = BaseErrorType
 
@@ -35,6 +39,8 @@ export async function getExternalMatchBundle(
       minFillSize = BigInt(0),
     },
     doGasEstimation = false,
+    useGasSponsorship = false,
+    refundAddress = zeroAddress,
   } = parameters
   const { apiSecret, apiKey } = config
   invariant(apiSecret, 'API secret not specified in config')
@@ -51,8 +57,17 @@ export async function getExternalMatchBundle(
     doGasEstimation,
   )
 
+  let url = config.getBaseUrl(REQUEST_EXTERNAL_MATCH_ROUTE)
+  if (useGasSponsorship) {
+    const searchParams = new URLSearchParams({
+      [GAS_SPONSORSHIP_PARAM]: 'true',
+      [REFUND_ADDRESS_PARAM]: refundAddress,
+    })
+    url += `?${searchParams.toString()}`
+  }
+
   const res = await postWithSymmetricKey(config, {
-    url: config.getBaseUrl(REQUEST_EXTERNAL_MATCH_ROUTE),
+    url,
     body,
     key: symmetricKey,
     headers: {
@@ -62,5 +77,5 @@ export async function getExternalMatchBundle(
   if (!res.match_bundle) {
     throw new BaseError('No match bundle found')
   }
-  return res.match_bundle
+  return res
 }

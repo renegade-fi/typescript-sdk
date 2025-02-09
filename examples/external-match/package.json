@@ -1,0 +1,16 @@
+{
+    "name": "renegade-external-match-example",
+    "version": "1.0.0",
+    "description": "Example of fetching and assembling external matches using Renegade SDK",
+    "type": "module",
+    "scripts": {
+        "start": "tsx --require dotenv/config index.ts"
+    },
+    "dependencies": {
+        "@renegade-fi/core": "workspace:*",
+        "@renegade-fi/node": "workspace:*",
+        "dotenv": "^16.4.5",
+        "tsx": "^4.0.0",
+        "viem": "^2.0.0"
+    }
+}
