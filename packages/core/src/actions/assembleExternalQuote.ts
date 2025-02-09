@@ -20,7 +20,7 @@ export type AssembleExternalQuoteParameters = {
   quote: SignedExternalMatchQuote
   updatedOrder?: ExternalOrder
   doGasEstimation?: boolean
-  useGasSponsorship?: boolean
+  requestGasSponsorship?: boolean
   refundAddress?: `0x${string}`
 }
 
@@ -36,7 +36,7 @@ export async function assembleExternalQuote(
     quote,
     updatedOrder,
     doGasEstimation = false,
-    useGasSponsorship = false,
+    requestGasSponsorship = false,
     refundAddress = zeroAddress,
   } = parameters
   const { apiSecret, apiKey } = config
@@ -53,7 +53,7 @@ export async function assembleExternalQuote(
   )
 
   let url = config.getBaseUrl(ASSEMBLE_EXTERNAL_MATCH_ROUTE)
-  if (useGasSponsorship) {
+  if (requestGasSponsorship) {
     const searchParams = new URLSearchParams({
       [GAS_SPONSORSHIP_PARAM]: 'true',
       [REFUND_ADDRESS_PARAM]: refundAddress,
