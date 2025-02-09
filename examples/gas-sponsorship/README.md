@@ -1,6 +1,6 @@
 # Gas Sponsorship Example
 
-This example demonstrates how to use the Renegade gas sponsorship feature. For now, it uses the same flow as the external match example, but will be updated with gas sponsorship specific functionality.
+This example demonstrates how to request gas sponsorship when generating an external match. This allows API users to have their transaction gas costs refunded through a rebate contract.
 
 ## Setup
 
@@ -11,11 +11,9 @@ pnpm install
 
 2. Set up environment variables:
 ```bash
-export GAS_SPONSORSHIP_KEY="your-api-key"
-export GAS_SPONSORSHIP_SECRET="your-api-secret"
-export PKEY="your-private-key"
-export RPC_URL="your-rpc-url" # Optional, defaults to Arbitrum Sepolia public RPC
+cp .env.example .env
 ```
+Then replace the values with your own API key and secret.
 
 3. Run the example:
 ```bash
@@ -24,10 +22,14 @@ pnpm start
 
 ## What's happening?
 
-Currently this example follows the same flow as the external match example:
+This example demonstrates how to execute trades with gas sponsorship enabled. The flow is similar to a regular external match (see [external-match](../external-match/README.md)), but with the key difference that the transaction is routed through a gas sponsorship contract that refunds gas costs to the configured address.
 
-1. Gets a quote for a trade
-2. Assembles the quote into a bundle
-3. Submits the transaction to the chain
+Here's how it works:
 
-This will be updated with gas sponsorship specific functionality in future updates. 
+1. Gets a quote for a match
+2. Assembles the quote into a bundle with `requestGasSponsorship` set to true
+3. The bundle includes routing through the gas sponsorship contract
+4. At the end of the transaction, the gas sponsorship contract will refund the gas costs to the configured address.
+
+### Refund Address
+The refund address is configurable; if not specified, the transaction will refund `tx.origin`.
