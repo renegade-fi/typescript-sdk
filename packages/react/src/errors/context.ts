@@ -7,8 +7,6 @@ export type RenegadeProviderNotFoundErrorType =
 export class RenegadeProviderNotFoundError extends BaseError {
   override name = 'RenegadeProviderNotFoundError'
   constructor() {
-    super('`useConfig` must be used within `RenegadeProvider`.', {
-      docsPath: '/api/RenegadeProvider',
-    })
+    super('`useConfig` must be used within `RenegadeProvider`.')
   }
 }

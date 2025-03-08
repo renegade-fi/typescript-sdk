@@ -1,65 +1,46 @@
 import { getVersion } from '../utils/getVersion.js'
 
-import type { Evaluate, OneOf } from '../types/utils.js'
-
 export type ErrorType<name extends string = 'Error'> = Error & { name: name }
 
-type BaseErrorOptions = Evaluate<
-  OneOf<{ details?: string | undefined } | { cause: BaseError | Error }> & {
-    docsPath?: string | undefined
-    docsSlug?: string | undefined
-    metaMessages?: string[] | undefined
-  }
->
+type BaseErrorParameters = {
+  cause?: BaseError | Error | undefined
+  details?: string | undefined
+  metaMessages?: string[] | undefined
+  name?: string | undefined
+}
 
 export type BaseErrorType = BaseError & { name: 'RenegadeCoreError' }
 export class BaseError extends Error {
   details: string
-  docsPath?: string | undefined
   metaMessages?: string[] | undefined
   shortMessage: string
 
   override name = 'RenegadeCoreError'
-  get docsBaseUrl() {
-    return 'todo: put a docs link here'
-  }
   get version() {
     return getVersion()
   }
 
-  constructor(shortMessage: string, options: BaseErrorOptions = {}) {
+  constructor(shortMessage: string, args: BaseErrorParameters = {}) {
     super()
 
     const details =
-      options.cause instanceof BaseError
-        ? options.cause.details
-        : options.cause?.message
-          ? options.cause.message
-          : options.details!
-    const docsPath =
-      options.cause instanceof BaseError
-        ? options.cause.docsPath || options.docsPath
-        : options.docsPath
+      args.cause instanceof BaseError
+        ? args.cause.details
+        : args.cause?.message
+          ? args.cause.message
+          : args.details!
 
     this.message = [
       shortMessage || 'An error occurred.',
       '',
-      ...(options.metaMessages ? [...options.metaMessages, ''] : []),
-      ...(docsPath
-        ? [
-            `Docs: ${this.docsBaseUrl}${docsPath}.html${
-              options.docsSlug ? `#${options.docsSlug}` : ''
-            }`,
-          ]
-        : []),
+      ...(args.metaMessages ? [...args.metaMessages, ''] : []),
       ...(details ? [`Details: ${details}`] : []),
       `Version: ${this.version}`,
     ].join('\n')
 
-    if (options.cause) this.cause = options.cause
+    if (args.cause) this.cause = args.cause
     this.details = details
-    this.docsPath = docsPath
-    this.metaMessages = options.metaMessages
+    this.metaMessages = args.metaMessages
     this.shortMessage = shortMessage
   }
 

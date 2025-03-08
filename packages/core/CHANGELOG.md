@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.5.1
+
+### Patch Changes
+
+- core: define and handle ws errors
+
 ## 0.5.0
 
 ### Minor Changes

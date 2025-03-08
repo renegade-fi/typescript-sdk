@@ -66,16 +66,16 @@ export async function websocketWaiter<T>(
           reject(new Error('Websocket connection closed'))
         }
       },
-      onerrorCallback: (event: Event) => {
+      onerrorCallback: (error: Event | Error) => {
         if (!promiseSettled) {
           promiseSettled = true
-          reject(event)
+          reject(error)
         }
       },
     }
 
     const ws = new RelayerWebsocket(wsParams)
-    ws.connect()
+    ws.connect().catch((error) => reject(error))
 
     if (params.timeout) {
       setTimeout(() => {
