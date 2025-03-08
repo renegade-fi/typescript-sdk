@@ -1,5 +1,10 @@
 import { SIG_EXPIRATION_BUFFER_MS } from '../constants.js'
 import type { RenegadeConfig } from '../createConfig.js'
+import {
+  SocketClosedError,
+  WebSocketConnectionError,
+  WebSocketRequestError,
+} from '../errors/websocket.js'
 import { addExpiringAuthToHeaders } from './http.js'
 
 export enum AuthType {
@@ -48,6 +53,24 @@ export class RelayerWebsocket {
 
   private ws: WebSocket | null = null
 
+  private handleOpen = (event: Event) => {
+    if (!this.ws) return
+    const message = this.buildSubscriptionMessage()
+    this.request(message)
+
+    return this.onopenCallback?.call(this.ws, event)
+  }
+
+  private handleClose = (event: CloseEvent) => {
+    this.cleanup()
+    return this.oncloseCallback?.call(this.ws!, event)
+  }
+
+  private handleError = async (event: Event) => {
+    this.cleanup()
+    return this.onerrorCallback?.call(this.ws!, event)
+  }
+
   constructor(params: RelayerWebsocketParams) {
     this.config = params.config
     this.topic = params.topic
@@ -62,33 +85,35 @@ export class RelayerWebsocket {
   // | Public API |
   // --------------
 
-  public connect(): void {
+  public async connect(): Promise<void> {
     if (this.ws) {
       throw new Error(
         'WebSocket connection attempt aborted: already connected.',
       )
     }
 
-    const instance = this
-    instance.ws = new WebSocket(this.config.getWebsocketBaseUrl())
+    const WebSocket = await import('isows').then((module) => module.WebSocket)
+    const url = this.config.getWebsocketBaseUrl()
+    this.ws = new WebSocket(url)
 
-    instance.ws.onopen = function (this: WebSocket, event: Event) {
-      const message = instance.buildSubscriptionMessage()
-      this.send(JSON.stringify(message))
+    this.ws.addEventListener('open', this.handleOpen)
+    this.ws.addEventListener('message', this.onmessage)
+    this.ws.addEventListener('close', this.handleClose)
+    this.ws.addEventListener('error', this.handleError)
 
-      return instance.onopenCallback?.call(this, event)
-    }
-
-    instance.ws.onmessage = instance.onmessage
-
-    instance.ws.onclose = function (this: WebSocket, event: CloseEvent) {
-      instance.cleanup()
-      return instance.oncloseCallback?.call(this, event)
-    }
-
-    instance.ws.onerror = function (this: WebSocket, event: Event) {
-      instance.cleanup()
-      return instance.onerrorCallback?.call(this, event)
+    // Wait for the socket to open.
+    if (this.ws?.readyState === WebSocket.CONNECTING) {
+      await new Promise((resolve, reject) => {
+        if (!this.ws) return
+        this.ws.onopen = (event) => resolve(event)
+        this.ws.onerror = (error) =>
+          reject(
+            new WebSocketConnectionError({
+              url,
+              cause: error as unknown as Error,
+            }),
+          )
+      })
     }
   }
 
@@ -98,7 +123,7 @@ export class RelayerWebsocket {
     }
 
     const message = this.buildUnsubscriptionMessage()
-    this.ws.send(JSON.stringify(message))
+    this.request(message)
 
     this.ws.close()
   }
@@ -106,6 +131,21 @@ export class RelayerWebsocket {
   // ---------------
   // | Private API |
   // ---------------
+
+  private request(message: SubscriptionMessage | UnsubscriptionMessage): void {
+    if (
+      this.ws?.readyState === this.ws?.CLOSED ||
+      this.ws?.readyState === this.ws?.CLOSING
+    ) {
+      throw new WebSocketRequestError({
+        body: message,
+        url: this.ws?.url || '',
+        cause: new SocketClosedError({ url: this.ws?.url }),
+      })
+    }
+
+    this.ws?.send(JSON.stringify(message))
+  }
 
   private buildSubscriptionMessage(): SubscriptionMessage {
     const body = {
@@ -147,6 +187,15 @@ export class RelayerWebsocket {
   }
 
   private cleanup(): void {
+    // Remove all event listeners before nullifying the reference
+    if (this.ws) {
+      this.ws.removeEventListener('open', this.handleOpen)
+      this.ws.removeEventListener('message', this.onmessage)
+      this.ws.removeEventListener('close', this.handleClose)
+      this.ws.removeEventListener('error', this.handleError)
+    }
+
+    // Nullify the WebSocket instance
     this.ws = null
   }
 }

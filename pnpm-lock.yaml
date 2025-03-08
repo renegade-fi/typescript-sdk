@@ -81,6 +81,9 @@ importers:
       isomorphic-ws:
         specifier: ^5.0.0
         version: 5.0.0(ws@8.17.1)
+      isows:
+        specifier: ^1.0.6
+        version: 1.0.6(ws@8.17.1)
       json-bigint:
         specifier: ^1.0.0
         version: 1.0.0
@@ -1400,6 +1403,11 @@ packages:
 
   isows@1.0.4:
     resolution: {integrity: sha512-hEzjY+x9u9hPmBom9IIAqdJCwNLax+xrPb51vEPpERoFlIxgmZcHzsT5jKG06nvInKOBGvReAVz80Umed5CczQ==}
+    peerDependencies:
+      ws: '*'
+
+  isows@1.0.6:
+    resolution: {integrity: sha512-lPHCayd40oW98/I0uvgaHKWCSvkzY27LjWLbtzOm64yQ+G3Q5npjjbdppU65iZXkK1Zt+kH9pfegli0AYfwYYw==}
     peerDependencies:
       ws: '*'
 
@@ -3173,6 +3181,10 @@ snapshots:
       ws: 8.17.1
 
   isows@1.0.4(ws@8.17.1):
+    dependencies:
+      ws: 8.17.1
+
+  isows@1.0.6(ws@8.17.1):
     dependencies:
       ws: 8.17.1
 
