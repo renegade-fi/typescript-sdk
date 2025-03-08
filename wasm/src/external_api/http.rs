@@ -630,6 +630,9 @@ pub struct ExternalMatchRequest {
     /// Whether or not to include gas estimation in the response
     #[serde(default)]
     pub do_gas_estimation: bool,
+    /// The receiver address of the match, if not the message sender
+    #[serde(default)]
+    pub receiver_address: Option<String>,
     /// The external order
     pub external_order: ExternalOrder,
 }
@@ -673,6 +676,7 @@ pub fn new_external_order(
     quote_amount: &str,
     min_fill_size: &str,
     do_gas_estimation: bool,
+    receiver_address: &str,
 ) -> Result<JsValue, JsError> {
     let external_order = build_external_order(
         base_mint,
@@ -683,8 +687,15 @@ pub fn new_external_order(
         min_fill_size,
     )?;
 
+    let receiver_address = if receiver_address.is_empty() {
+        None
+    } else {
+        Some(receiver_address.to_string())
+    };
+
     let req = ExternalMatchRequest {
         do_gas_estimation,
+        receiver_address,
         external_order,
     };
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))

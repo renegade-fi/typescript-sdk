@@ -13,7 +13,6 @@ use lazy_static::lazy_static;
 use num_bigint::BigUint;
 use num_traits::Num;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsValue;
 use wasm_bindgen_futures::JsFuture;
 
 use super::{

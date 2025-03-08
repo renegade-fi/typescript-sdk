@@ -4,6 +4,7 @@ import {
   ASSEMBLE_EXTERNAL_MATCH_ROUTE,
   GAS_SPONSORSHIP_PARAM,
   REFUND_ADDRESS_PARAM,
+  REFUND_NATIVE_ETH_PARAM,
   RENEGADE_API_KEY_HEADER,
 } from '../constants.js'
 import type { AuthConfig } from '../createAuthConfig.js'
@@ -22,6 +23,7 @@ export type AssembleExternalQuoteParameters = {
   doGasEstimation?: boolean
   requestGasSponsorship?: boolean
   refundAddress?: `0x${string}`
+  refundNativeEth?: boolean
 }
 
 export type AssembleExternalQuoteReturnType = ExternalMatchResponse
@@ -38,6 +40,7 @@ export async function assembleExternalQuote(
     doGasEstimation = false,
     requestGasSponsorship = false,
     refundAddress = zeroAddress,
+    refundNativeEth = false,
   } = parameters
   const { apiSecret, apiKey } = config
   invariant(apiSecret, 'API secret not specified in config')
@@ -57,6 +60,7 @@ export async function assembleExternalQuote(
     const searchParams = new URLSearchParams({
       [GAS_SPONSORSHIP_PARAM]: 'true',
       [REFUND_ADDRESS_PARAM]: refundAddress,
+      [REFUND_NATIVE_ETH_PARAM]: refundNativeEth.toString(),
     })
     url += `?${searchParams.toString()}`
   }

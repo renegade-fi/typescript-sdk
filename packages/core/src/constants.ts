@@ -225,3 +225,5 @@ export const ASSEMBLE_EXTERNAL_MATCH_ROUTE =
 export const GAS_SPONSORSHIP_PARAM = 'use_gas_sponsorship'
 /// The query parameter for the gas sponsorship refund address
 export const REFUND_ADDRESS_PARAM = 'refund_address'
+/// The query parameter for whether to refund via native ETH
+export const REFUND_NATIVE_ETH_PARAM = 'refund_native_eth'

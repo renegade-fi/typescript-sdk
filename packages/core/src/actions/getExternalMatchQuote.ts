@@ -15,6 +15,7 @@ import { postWithSymmetricKey } from '../utils/http.js'
 export type GetExternalMatchQuoteParameters = {
   order: ExternalOrder
   doGasEstimation?: boolean
+  receiverAddress?: `0x${string}`
 }
 
 export type GetExternalMatchQuoteReturnType = SignedExternalMatchQuote
@@ -35,6 +36,7 @@ export async function getExternalMatchQuote(
       minFillSize = BigInt(0),
     },
     doGasEstimation = false,
+    receiverAddress = '',
   } = parameters
   const { apiSecret, apiKey } = config
   invariant(apiSecret, 'API secret not specified in config')
@@ -49,6 +51,7 @@ export async function getExternalMatchQuote(
     toHex(quoteAmount),
     toHex(minFillSize),
     doGasEstimation,
+    receiverAddress,
   )
 
   const res = await postWithSymmetricKey(config, {

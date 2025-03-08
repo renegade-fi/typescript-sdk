@@ -3,6 +3,7 @@ import { toHex, zeroAddress } from 'viem'
 import {
   GAS_SPONSORSHIP_PARAM,
   REFUND_ADDRESS_PARAM,
+  REFUND_NATIVE_ETH_PARAM,
   RENEGADE_API_KEY_HEADER,
   REQUEST_EXTERNAL_MATCH_ROUTE,
 } from '../constants.js'
@@ -17,8 +18,10 @@ import { postWithSymmetricKey } from '../utils/http.js'
 export type GetExternalMatchBundleParameters = {
   order: ExternalOrder
   doGasEstimation?: boolean
+  receiverAddress?: `0x${string}`
   useGasSponsorship?: boolean
   refundAddress?: `0x${string}`
+  refundNativeEth?: boolean
 }
 
 export type GetExternalMatchBundleReturnType = ExternalMatchResponse
@@ -39,8 +42,10 @@ export async function getExternalMatchBundle(
       minFillSize = BigInt(0),
     },
     doGasEstimation = false,
+    receiverAddress = '',
     useGasSponsorship = false,
     refundAddress = zeroAddress,
+    refundNativeEth = false,
   } = parameters
   const { apiSecret, apiKey } = config
   invariant(apiSecret, 'API secret not specified in config')
@@ -55,6 +60,7 @@ export async function getExternalMatchBundle(
     toHex(quoteAmount),
     toHex(minFillSize),
     doGasEstimation,
+    receiverAddress,
   )
 
   let url = config.getBaseUrl(REQUEST_EXTERNAL_MATCH_ROUTE)
@@ -62,6 +68,7 @@ export async function getExternalMatchBundle(
     const searchParams = new URLSearchParams({
       [GAS_SPONSORSHIP_PARAM]: 'true',
       [REFUND_ADDRESS_PARAM]: refundAddress,
+      [REFUND_NATIVE_ETH_PARAM]: refundNativeEth.toString(),
     })
     url += `?${searchParams.toString()}`
   }
