@@ -127,9 +127,10 @@ export function update_order(seed: string, wallet_str: string, id: string, base_
 * @param {string} quote_amount
 * @param {string} min_fill_size
 * @param {boolean} do_gas_estimation
+* @param {string} receiver_address
 * @returns {any}
 */
-export function new_external_order(base_mint: string, quote_mint: string, side: string, base_amount: string, quote_amount: string, min_fill_size: string, do_gas_estimation: boolean): any;
+export function new_external_order(base_mint: string, quote_mint: string, side: string, base_amount: string, quote_amount: string, min_fill_size: string, do_gas_estimation: boolean, receiver_address: string): any;
 /**
 * @param {string} base_mint
 * @param {string} quote_mint
