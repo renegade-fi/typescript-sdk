@@ -338,3 +338,13 @@ export {
 export { parseBigJSON, stringifyForWasm } from '../utils/bigJSON.js'
 
 export { isSupportedChainId } from '../chains/defaults.js'
+
+////////////////////////////////////////////////////////////////////////////////
+// Clients
+////////////////////////////////////////////////////////////////////////////////
+
+export { PriceReporterClient } from '../clients/price-reporter/client.js'
+export {
+  PriceReporterError,
+  HttpError,
+} from '../clients/price-reporter/error.js'
