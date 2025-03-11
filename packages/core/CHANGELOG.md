@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.5.2
+
+### Patch Changes
+
+- core: define standalone PriceReporterClient
+
 ## 0.5.1
 
 ### Patch Changes
