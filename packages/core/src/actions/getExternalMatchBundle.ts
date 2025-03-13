@@ -43,7 +43,7 @@ export async function getExternalMatchBundle(
     },
     doGasEstimation = false,
     receiverAddress = '',
-    useGasSponsorship = false,
+    useGasSponsorship = true,
     refundAddress = zeroAddress,
     refundNativeEth = false,
   } = parameters
@@ -64,14 +64,12 @@ export async function getExternalMatchBundle(
   )
 
   let url = config.getBaseUrl(REQUEST_EXTERNAL_MATCH_ROUTE)
-  if (useGasSponsorship) {
-    const searchParams = new URLSearchParams({
-      [GAS_SPONSORSHIP_PARAM]: 'true',
-      [REFUND_ADDRESS_PARAM]: refundAddress,
-      [REFUND_NATIVE_ETH_PARAM]: refundNativeEth.toString(),
-    })
-    url += `?${searchParams.toString()}`
-  }
+  const searchParams = new URLSearchParams({
+    [GAS_SPONSORSHIP_PARAM]: useGasSponsorship.toString(),
+    [REFUND_ADDRESS_PARAM]: refundAddress,
+    [REFUND_NATIVE_ETH_PARAM]: refundNativeEth.toString(),
+  })
+  url += `?${searchParams.toString()}`
 
   const res = await postWithSymmetricKey(config, {
     url,

@@ -1,6 +1,9 @@
 #![allow(clippy::too_many_arguments)]
 
-use super::types::{ApiOrder, ApiOrderType, ApiPrivateKeychain, ApiWallet, SignedExternalQuote};
+use super::types::{
+    ApiOrder, ApiOrderType, ApiPrivateKeychain, ApiWallet, SignedExternalQuote,
+    SignedGasSponsorshipInfo, SponsoredQuoteResponse,
+};
 use crate::{
     circuit_types::{balance::Balance, fixed_point::FixedPoint, order::OrderSide, Amount},
     common::{
@@ -730,24 +733,31 @@ pub fn new_external_quote_request(
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
 
-/// The request type for assembling an external match
+/// The request type for assembling an external match, potentially with gas sponsorship
 #[derive(Clone, Serialize, Deserialize)]
-pub struct AssembleExternalMatchRequest {
+pub struct AssembleSponsoredMatchRequest {
     /// The signed external match quote
     pub signed_quote: SignedExternalQuote,
     /// Whether or not to include gas estimation in the response
     #[serde(default)]
     pub do_gas_estimation: bool,
+    /// The receiver address of the match, if not the message sender
+    #[serde(default)]
+    pub receiver_address: Option<String>,
     /// The updated order
     #[serde(default)]
     pub updated_order: Option<ExternalOrder>,
+    /// The signed gas sponsorship info associated with the quote,
+    /// if sponsorship was requested
+    pub gas_sponsorship_info: Option<SignedGasSponsorshipInfo>,
 }
 
 #[wasm_bindgen]
 pub fn assemble_external_match(
     do_gas_estimation: bool,
     updated_order: &str,
-    signed_quote: &str,
+    sponsored_quote_response: &str,
+    receiver_address: &str,
 ) -> Result<JsValue, JsError> {
     // Parse the updated order if it exists
     let updated_order = if updated_order.is_empty() {
@@ -756,11 +766,26 @@ pub fn assemble_external_match(
         Some(serde_json::from_str(updated_order)?)
     };
 
-    let signed_quote: SignedExternalQuote = serde_json::from_str(signed_quote)?;
-    let req = AssembleExternalMatchRequest {
+    let receiver_address = if receiver_address.is_empty() {
+        None
+    } else {
+        Some(receiver_address.to_string())
+    };
+
+    let SponsoredQuoteResponse {
+        quote,
+        signature,
+        gas_sponsorship_info,
+    } = serde_json::from_str(sponsored_quote_response)?;
+
+    let signed_quote = SignedExternalQuote { quote, signature };
+
+    let req = AssembleSponsoredMatchRequest {
         do_gas_estimation,
+        receiver_address,
         updated_order,
         signed_quote,
+        gas_sponsorship_info,
     };
 
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))

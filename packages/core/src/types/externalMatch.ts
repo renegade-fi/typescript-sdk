@@ -44,6 +44,21 @@ export type SignedExternalMatchQuote = {
   signature: `0x${string}`
 }
 
+export type SponsoredQuoteResponse = SignedExternalMatchQuote & {
+  gas_sponsorship_info: SignedGasSponsorshipInfo | null
+}
+
+export type SignedGasSponsorshipInfo = {
+  gas_sponsorship_info: GasSponsorshipInfo
+  signature: `0x${string}`
+}
+
+export type GasSponsorshipInfo = {
+  refund_amount: bigint
+  refund_native_eth: boolean
+  refund_address: `0x${string}` | null
+}
+
 export type ExternalMatchBundle = {
   match_result: ExternalMatchResult
   settlement_tx: ExternalSettlementTx
