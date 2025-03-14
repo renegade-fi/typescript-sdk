@@ -202,11 +202,6 @@ export {
 export { waitForTaskCompletionWs } from '../actions/waitForTaskCompletionWs.js'
 
 export {
-  type WatchInitializedReturnType,
-  watchInitialized,
-} from '../actions/watchInitialized.js'
-
-export {
   type WatchStatusParameters,
   type WatchStatusReturnType,
   watchStatus,

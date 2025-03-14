@@ -26,12 +26,12 @@ export type UseTaskHistoryWebSocketParameters = {
 export function useTaskHistoryWebSocket(
   parameters: UseTaskHistoryWebSocketParameters = {},
 ) {
+  const isWasmInitialized = useWasmInitialized()
   const config = useConfig(parameters)
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
   const { enabled = true, onUpdate } = parameters
-  const isWasmInitialized = useWasmInitialized()
 
   const { readyState, sendJsonMessage } = useWebSocket(
     getWebsocketBaseUrl(),
@@ -85,12 +85,12 @@ export function useTaskHistoryWebSocket(
     }
     sendJsonMessage(message)
   }, [
+    enabled,
+    walletId,
     readyState,
     status,
+    isWasmInitialized,
     sendJsonMessage,
     config,
-    walletId,
-    enabled,
-    isWasmInitialized,
   ])
 }

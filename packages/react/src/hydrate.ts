@@ -20,7 +20,6 @@ export type HydrateProps = {
 export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
   const { children, config, initialState, reconnectOnMount = true } = parameters
   const [isInitialized, setIsInitialized] = useState(false)
-  console.log('🚀 ~ WASM ~ isInitialized:', isInitialized)
 
   const { onMount } = hydrate(config, {
     initialState,
@@ -34,24 +33,22 @@ export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
   const active = useRef(true)
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!active.current) return
-    if (!config._internal.ssr) return
-    onMount()
-    return () => {
-      active.current = false
-    }
-  }, [])
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
     config.utils
       .default()
       .then(() => {
         console.log('🚀 ~ WASM initialized')
         setIsInitialized(true)
+        if (!active.current) return
+        if (!config._internal.ssr) return
+        // Rehydrate after WASM is initialized to prevent race condition
+        onMount()
       })
       .catch((error: unknown) => {
         console.error('❌ Failed to initialize Rust utils', error)
       })
+    return () => {
+      active.current = false
+    }
   }, [])
 
   return createElement(

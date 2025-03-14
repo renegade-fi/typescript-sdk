@@ -240,8 +240,6 @@ export interface State {
     | 'creating wallet'
     | 'connecting'
   id?: string | undefined
-  // Whether the Rust utils have been initialized, used only in React
-  initialized?: boolean
 }
 
 // The type of keychain a config is using
