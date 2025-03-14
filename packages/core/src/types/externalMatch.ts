@@ -69,7 +69,11 @@ export type ExternalMatchBundle = {
 
 export type ExternalMatchResponse = {
   match_bundle: ExternalMatchBundle
+}
+
+export type SponsoredMatchResponse = ExternalMatchResponse & {
   is_sponsored: boolean
+  gas_sponsorship_info: GasSponsorshipInfo | null
 }
 
 export type ExternalAssetTransfer = {

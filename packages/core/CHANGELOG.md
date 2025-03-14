@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.6.0
+
+### Minor Changes
+
+- In-kind gas sponsorship support
+
 ## 0.5.2
 
 ### Patch Changes

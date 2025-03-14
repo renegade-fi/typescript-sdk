@@ -61,6 +61,9 @@ async function getQuote(
   const quoteToken = Token.findByTicker('USDC')
 
   return await getExternalMatchQuote(config, {
+    useGasSponsorship: true, // Note that this is true by default
+    refundAddress: refundAddress,
+    refundNativeEth: true,
     order: {
       base: baseToken.address,
       quote: quoteToken.address,
@@ -86,8 +89,6 @@ async function assembleQuote(
   const quoteToken = Token.findByTicker('USDC')
   return await assembleExternalQuote(config, {
     quote,
-    requestGasSponsorship: true,
-    refundAddress: refundAddress,
     updatedOrder: {
       base: baseToken.address,
       quote: quoteToken.address,
@@ -127,10 +128,13 @@ async function main() {
       throw new Error('No quote received')
     }
 
-    const resp = await assembleQuote(quote, config)
-    if (!resp.is_sponsored) {
+    if (!quote.gas_sponsorship_info) {
       throw new Error('Transaction was not sponsored, abandoning...')
     }
+    const gasSponsorshipInfo = quote.gas_sponsorship_info.gas_sponsorship_info
+    console.log('Refund amount:', gasSponsorshipInfo.refund_amount)
+
+    const resp = await assembleQuote(quote, config)
 
     const tx = resp.match_bundle.settlement_tx
     const txHash = await submitTransaction(tx)

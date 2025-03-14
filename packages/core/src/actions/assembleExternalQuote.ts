@@ -6,8 +6,8 @@ import {
 import type { AuthConfig } from '../createAuthConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type {
-  ExternalMatchResponse,
   ExternalOrder,
+  SponsoredMatchResponse,
   SponsoredQuoteResponse,
 } from '../types/externalMatch.js'
 import { stringifyForWasm } from '../utils/bigJSON.js'
@@ -22,7 +22,7 @@ export type AssembleExternalQuoteParameters = {
   refundAddress?: `0x${string}`
 }
 
-export type AssembleExternalQuoteReturnType = ExternalMatchResponse
+export type AssembleExternalQuoteReturnType = SponsoredMatchResponse
 
 export type AssembleExternalQuoteErrorType = BaseErrorType
 

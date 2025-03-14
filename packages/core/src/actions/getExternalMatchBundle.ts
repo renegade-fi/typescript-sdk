@@ -10,8 +10,8 @@ import {
 import type { AuthConfig } from '../createAuthConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type {
-  ExternalMatchResponse,
   ExternalOrder,
+  SponsoredMatchResponse,
 } from '../types/externalMatch.js'
 import { postWithSymmetricKey } from '../utils/http.js'
 
@@ -24,7 +24,7 @@ export type GetExternalMatchBundleParameters = {
   refundNativeEth?: boolean
 }
 
-export type GetExternalMatchBundleReturnType = ExternalMatchResponse
+export type GetExternalMatchBundleReturnType = SponsoredMatchResponse
 
 export type GetExternalMatchBundleErrorType = BaseErrorType
 
