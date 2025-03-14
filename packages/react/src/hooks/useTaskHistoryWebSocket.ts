@@ -2,16 +2,15 @@
 
 import {
   type Config,
-  SIG_EXPIRATION_BUFFER_MS,
   type Task,
   WS_TASK_HISTORY_ROUTE,
-  addExpiringAuthToHeaders,
   getSymmetricKey,
   parseBigJSON,
 } from '@renegade-fi/core'
 import { useEffect } from 'react'
 import { ReadyState } from 'react-use-websocket'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket.js'
+import { createSignedWebSocketRequest } from '../utils/websocket.js'
 import { useWasmInitialized } from '../wasm.js'
 import { useConfig } from './useConfig.js'
 import { useStatus } from './useStatus.js'
@@ -57,9 +56,12 @@ export function useTaskHistoryWebSocket(
   )
 
   useEffect(() => {
+    // Capture the current (old) wallet id in a local variable
+    const currentWalletId = walletId
+
     if (
       !enabled ||
-      !walletId ||
+      !currentWalletId ||
       readyState !== ReadyState.OPEN ||
       status !== 'in relayer' ||
       !isWasmInitialized
@@ -68,22 +70,35 @@ export function useTaskHistoryWebSocket(
 
     const body = {
       method: 'subscribe',
-      topic: WS_TASK_HISTORY_ROUTE(walletId),
-    }
+      topic: WS_TASK_HISTORY_ROUTE(currentWalletId),
+    } as const
+
     const symmetricKey = getSymmetricKey(config)
-    const headers = addExpiringAuthToHeaders(
+    const subscriptionMessage = createSignedWebSocketRequest(
       config,
-      body.topic,
-      {},
-      JSON.stringify(body),
       symmetricKey,
-      SIG_EXPIRATION_BUFFER_MS,
-    )
-    const message = {
-      headers,
       body,
+    )
+
+    sendJsonMessage(subscriptionMessage)
+
+    // Cleanup: unsubscribe the OLD wallet ID
+    return () => {
+      // Ensure that we have a valid wallet id to unsubscribe
+      if (!currentWalletId || readyState !== ReadyState.OPEN) return
+
+      const unsubscriptionBody = {
+        method: 'unsubscribe',
+        topic: WS_TASK_HISTORY_ROUTE(currentWalletId),
+      } as const
+
+      const unsubscriptionMessage = createSignedWebSocketRequest(
+        config,
+        symmetricKey,
+        unsubscriptionBody,
+      )
+      sendJsonMessage(unsubscriptionMessage)
     }
-    sendJsonMessage(message)
   }, [
     enabled,
     walletId,
