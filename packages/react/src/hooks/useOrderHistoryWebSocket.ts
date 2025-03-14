@@ -11,8 +11,8 @@ import {
 import { useEffect } from 'react'
 import { ReadyState } from 'react-use-websocket'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket.js'
+import { useWasmInitialized } from '../wasm.js'
 import { useConfig } from './useConfig.js'
-import { useInitialized } from './useInitialized.js'
 import { useStatus } from './useStatus.js'
 import { useWalletId } from './useWalletId.js'
 
@@ -25,8 +25,8 @@ export type UseOrderHistoryWebSocketParameters = {
 export function useOrderHistoryWebSocket(
   parameters: UseOrderHistoryWebSocketParameters = {},
 ) {
+  const isWasmInitialized = useWasmInitialized()
   const config = useConfig(parameters)
-  const initialized = useInitialized()
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
@@ -66,7 +66,7 @@ export function useOrderHistoryWebSocket(
       !walletId ||
       readyState !== ReadyState.OPEN ||
       status !== 'in relayer' ||
-      !initialized
+      !isWasmInitialized
     )
       return
 
@@ -90,11 +90,11 @@ export function useOrderHistoryWebSocket(
     sendJsonMessage(message)
   }, [
     enabled,
-    readyState,
     walletId,
+    readyState,
     status,
+    isWasmInitialized,
     sendJsonMessage,
     config,
-    initialized,
   ])
 }

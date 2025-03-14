@@ -105,12 +105,6 @@ export {
 } from '../hooks/useFees.js'
 
 export {
-  useInitialized,
-  type UseInitializedParameters,
-  type UseInitializedReturnType,
-} from '../hooks/useInitialized.js'
-
-export {
   useOpenOrders,
   type UseOpenOrdersParameters,
   type UseOpenOrdersReturnType,
