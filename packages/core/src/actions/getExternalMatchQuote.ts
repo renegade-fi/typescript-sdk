@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import { toHex, zeroAddress } from 'viem'
 import {
-  GAS_SPONSORSHIP_PARAM,
+  DISABLE_GAS_SPONSORSHIP_PARAM,
   REFUND_ADDRESS_PARAM,
   REFUND_NATIVE_ETH_PARAM,
   RENEGADE_API_KEY_HEADER,
@@ -18,7 +18,7 @@ import { postWithSymmetricKey } from '../utils/http.js'
 export type GetExternalMatchQuoteParameters = {
   order: ExternalOrder
   doGasEstimation?: boolean
-  useGasSponsorship?: boolean
+  disableGasSponsorship?: boolean
   refundAddress?: `0x${string}`
   refundNativeEth?: boolean
 }
@@ -41,7 +41,7 @@ export async function getExternalMatchQuote(
       minFillSize = BigInt(0),
     },
     doGasEstimation,
-    useGasSponsorship = true,
+    disableGasSponsorship = false,
     refundAddress = zeroAddress,
     refundNativeEth = false,
   } = parameters
@@ -66,7 +66,7 @@ export async function getExternalMatchQuote(
 
   let url = config.getBaseUrl(REQUEST_EXTERNAL_MATCH_QUOTE_ROUTE)
   const searchParams = new URLSearchParams({
-    [GAS_SPONSORSHIP_PARAM]: useGasSponsorship.toString(),
+    [DISABLE_GAS_SPONSORSHIP_PARAM]: disableGasSponsorship.toString(),
     [REFUND_ADDRESS_PARAM]: refundAddress,
     [REFUND_NATIVE_ETH_PARAM]: refundNativeEth.toString(),
   })

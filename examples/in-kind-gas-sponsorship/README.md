@@ -26,7 +26,7 @@ This example demonstrates how to execute trades with gas sponsorship enabled. Th
 
 Here's how it works:
 
-1. Gets a quote for a match with `useGasSponsorship` set to true, `refundNativeEth` set to false, and the `refundAddress` unset.
+1. Gets a quote for a match with `disableGasSponsorship` set to false, `refundNativeEth` set to false, and the `refundAddress` unset.
 2. Assembles the quote with the `receiverAddress` set.
 3. The bundle includes routing through the gas sponsorship contract
 4. At the end of the transaction, the gas sponsorship contract will refund the gas costs to the receiver of the match. You should see the address receive a transfer of the buy-side token approximately equivalent to the costs of the transaction.

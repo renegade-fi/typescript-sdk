@@ -221,8 +221,8 @@ export const REQUEST_EXTERNAL_MATCH_QUOTE_ROUTE = '/matching-engine/quote'
 export const ASSEMBLE_EXTERNAL_MATCH_ROUTE =
   '/matching-engine/assemble-external-match'
 
-/// The query parameter for using gas sponsorship
-export const GAS_SPONSORSHIP_PARAM = 'use_gas_sponsorship'
+/// The query parameter for disabling gas sponsorship
+export const DISABLE_GAS_SPONSORSHIP_PARAM = 'disable_gas_sponsorship'
 /// The query parameter for the gas sponsorship refund address
 export const REFUND_ADDRESS_PARAM = 'refund_address'
 /// The query parameter for whether to refund via native ETH

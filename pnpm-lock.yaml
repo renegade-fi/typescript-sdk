@@ -51,7 +51,7 @@ importers:
         specifier: ^2.0.0
         version: 2.20.0(typescript@5.5.4)(zod@3.23.8)
 
-  examples/gas-sponsorship:
+  examples/in-kind-gas-sponsorship:
     dependencies:
       '@renegade-fi/core':
         specifier: workspace:*
@@ -73,7 +73,7 @@ importers:
         specifier: ^5.3.3
         version: 5.5.4
 
-  examples/in-kind-gas-sponsorship:
+  examples/native-eth-gas-sponsorship:
     dependencies:
       '@renegade-fi/core':
         specifier: workspace:*
