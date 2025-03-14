@@ -61,7 +61,7 @@ async function getQuote(
   const quoteToken = Token.findByTicker('USDC')
 
   return await getExternalMatchQuote(config, {
-    useGasSponsorship: true, // Note that this is true by default
+    disableGasSponsorship: false, // Note that this is false by default
     refundAddress: refundAddress,
     refundNativeEth: true,
     order: {

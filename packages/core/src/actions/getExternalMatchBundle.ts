@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import { toHex, zeroAddress } from 'viem'
 import {
-  GAS_SPONSORSHIP_PARAM,
+  DISABLE_GAS_SPONSORSHIP_PARAM,
   REFUND_ADDRESS_PARAM,
   REFUND_NATIVE_ETH_PARAM,
   RENEGADE_API_KEY_HEADER,
@@ -19,6 +19,7 @@ export type GetExternalMatchBundleParameters = {
   order: ExternalOrder
   doGasEstimation?: boolean
   receiverAddress?: `0x${string}`
+  // TODO: Replace this with `disableGasSponsorship` to match API parameter name
   useGasSponsorship?: boolean
   refundAddress?: `0x${string}`
   refundNativeEth?: boolean
@@ -65,7 +66,7 @@ export async function getExternalMatchBundle(
 
   let url = config.getBaseUrl(REQUEST_EXTERNAL_MATCH_ROUTE)
   const searchParams = new URLSearchParams({
-    [GAS_SPONSORSHIP_PARAM]: useGasSponsorship.toString(),
+    [DISABLE_GAS_SPONSORSHIP_PARAM]: (!useGasSponsorship).toString(),
     [REFUND_ADDRESS_PARAM]: refundAddress,
     [REFUND_NATIVE_ETH_PARAM]: refundNativeEth.toString(),
   })
