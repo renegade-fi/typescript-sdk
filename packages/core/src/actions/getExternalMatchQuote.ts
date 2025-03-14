@@ -1,6 +1,9 @@
 import invariant from 'tiny-invariant'
-import { toHex } from 'viem'
+import { toHex, zeroAddress } from 'viem'
 import {
+  GAS_SPONSORSHIP_PARAM,
+  REFUND_ADDRESS_PARAM,
+  REFUND_NATIVE_ETH_PARAM,
   RENEGADE_API_KEY_HEADER,
   REQUEST_EXTERNAL_MATCH_QUOTE_ROUTE,
 } from '../constants.js'
@@ -8,16 +11,19 @@ import type { AuthConfig } from '../createAuthConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type {
   ExternalOrder,
-  SignedExternalMatchQuote,
+  SponsoredQuoteResponse,
 } from '../types/externalMatch.js'
 import { postWithSymmetricKey } from '../utils/http.js'
 
 export type GetExternalMatchQuoteParameters = {
   order: ExternalOrder
   doGasEstimation?: boolean
+  useGasSponsorship?: boolean
+  refundAddress?: `0x${string}`
+  refundNativeEth?: boolean
 }
 
-export type GetExternalMatchQuoteReturnType = SignedExternalMatchQuote
+export type GetExternalMatchQuoteReturnType = SponsoredQuoteResponse
 
 export type GetExternalMatchQuoteErrorType = BaseErrorType
 
@@ -34,25 +40,40 @@ export async function getExternalMatchQuote(
       quoteAmount = BigInt(0),
       minFillSize = BigInt(0),
     },
-    doGasEstimation = false,
+    doGasEstimation,
+    useGasSponsorship = true,
+    refundAddress = zeroAddress,
+    refundNativeEth = false,
   } = parameters
+
+  if (doGasEstimation !== undefined) {
+    console.warn('`doGasEstimation` is deprecated.')
+  }
+
   const { apiSecret, apiKey } = config
   invariant(apiSecret, 'API secret not specified in config')
   invariant(apiKey, 'API key not specified in config')
   const symmetricKey = config.utils.b64_to_hex_hmac_key(apiSecret)
 
-  const body = config.utils.new_external_order(
+  const body = config.utils.new_external_quote_request(
     base,
     quote,
     side,
     toHex(baseAmount),
     toHex(quoteAmount),
     toHex(minFillSize),
-    doGasEstimation,
   )
 
+  let url = config.getBaseUrl(REQUEST_EXTERNAL_MATCH_QUOTE_ROUTE)
+  const searchParams = new URLSearchParams({
+    [GAS_SPONSORSHIP_PARAM]: useGasSponsorship.toString(),
+    [REFUND_ADDRESS_PARAM]: refundAddress,
+    [REFUND_NATIVE_ETH_PARAM]: refundNativeEth.toString(),
+  })
+  url += `?${searchParams.toString()}`
+
   const res = await postWithSymmetricKey(config, {
-    url: config.getBaseUrl(REQUEST_EXTERNAL_MATCH_QUOTE_ROUTE),
+    url,
     body,
     key: symmetricKey,
     headers: {
@@ -63,5 +84,8 @@ export async function getExternalMatchQuote(
     throw new BaseError('No quote found')
   }
 
-  return res.signed_quote
+  return {
+    ...res.signed_quote,
+    gas_sponsorship_info: res.gas_sponsorship_info ?? null,
+  }
 }

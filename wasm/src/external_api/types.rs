@@ -325,6 +325,20 @@ pub struct FeeTake {
     /// The fee the protocol takes
     pub protocol_fee: Amount,
 }
+
+/// An external quote response, potentially with gas sponsorship info.
+///
+/// We manually flatten the fields of [`SignedExternalQuote`] since `serde`
+/// doesn't support `u128`s when using `#[serde(flatten)]`
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct SponsoredQuoteResponse {
+    /// The quote
+    pub quote: ApiExternalQuote,
+    /// The signature
+    pub signature: String,
+    /// The signed gas sponsorship info, if sponsorship was requested
+    pub gas_sponsorship_info: Option<SignedGasSponsorshipInfo>,
+}
 /// A signed quote for an external order
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SignedExternalQuote {
@@ -332,6 +346,27 @@ pub struct SignedExternalQuote {
     pub quote: ApiExternalQuote,
     /// The signature
     pub signature: String,
+}
+
+/// Signed metadata regarding gas sponsorship for a quote
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct SignedGasSponsorshipInfo {
+    /// The signed gas sponsorship info
+    pub gas_sponsorship_info: GasSponsorshipInfo,
+    /// The auth server's signature over the sponsorship info
+    pub signature: String,
+}
+
+/// Metadata regarding gas sponsorship for a quote
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct GasSponsorshipInfo {
+    /// The amount to be refunded as a result of gas sponsorship.
+    /// This amount is firm, it will not change when the quote is assembled.
+    pub refund_amount: u128,
+    /// Whether the refund is in terms of native ETH.
+    pub refund_native_eth: bool,
+    /// The address to which the refund will be sent, if set explicitly.
+    pub refund_address: Option<String>,
 }
 
 /// A quote for an external order

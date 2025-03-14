@@ -1,30 +1,28 @@
 import invariant from 'tiny-invariant'
-import { zeroAddress } from 'viem'
 import {
   ASSEMBLE_EXTERNAL_MATCH_ROUTE,
-  GAS_SPONSORSHIP_PARAM,
-  REFUND_ADDRESS_PARAM,
   RENEGADE_API_KEY_HEADER,
 } from '../constants.js'
 import type { AuthConfig } from '../createAuthConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type {
-  ExternalMatchResponse,
   ExternalOrder,
-  SignedExternalMatchQuote,
+  SponsoredMatchResponse,
+  SponsoredQuoteResponse,
 } from '../types/externalMatch.js'
 import { stringifyForWasm } from '../utils/bigJSON.js'
 import { postWithSymmetricKey } from '../utils/http.js'
 
 export type AssembleExternalQuoteParameters = {
-  quote: SignedExternalMatchQuote
+  quote: SponsoredQuoteResponse
   updatedOrder?: ExternalOrder
   doGasEstimation?: boolean
+  receiverAddress?: `0x${string}`
   requestGasSponsorship?: boolean
   refundAddress?: `0x${string}`
 }
 
-export type AssembleExternalQuoteReturnType = ExternalMatchResponse
+export type AssembleExternalQuoteReturnType = SponsoredMatchResponse
 
 export type AssembleExternalQuoteErrorType = BaseErrorType
 
@@ -36,9 +34,17 @@ export async function assembleExternalQuote(
     quote,
     updatedOrder,
     doGasEstimation = false,
-    requestGasSponsorship = false,
-    refundAddress = zeroAddress,
+    receiverAddress = '',
+    requestGasSponsorship,
+    refundAddress,
   } = parameters
+
+  if (requestGasSponsorship !== undefined || refundAddress !== undefined) {
+    console.warn(
+      '`requestGasSponsorship` and `refundAddress` are deprecated. Request gas sponsorship when requesting the quote.',
+    )
+  }
+
   const { apiSecret, apiKey } = config
   invariant(apiSecret, 'API secret not specified in config')
   invariant(apiKey, 'API key not specified in config')
@@ -50,16 +56,10 @@ export async function assembleExternalQuote(
     doGasEstimation,
     stringifiedOrder,
     stringifiedQuote,
+    receiverAddress,
   )
 
-  let url = config.getBaseUrl(ASSEMBLE_EXTERNAL_MATCH_ROUTE)
-  if (requestGasSponsorship) {
-    const searchParams = new URLSearchParams({
-      [GAS_SPONSORSHIP_PARAM]: 'true',
-      [REFUND_ADDRESS_PARAM]: refundAddress,
-    })
-    url += `?${searchParams.toString()}`
-  }
+  const url = config.getBaseUrl(ASSEMBLE_EXTERNAL_MATCH_ROUTE)
 
   const res = await postWithSymmetricKey(config, {
     url,

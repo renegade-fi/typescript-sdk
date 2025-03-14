@@ -1,7 +1,6 @@
 use js_sys::Function;
 use serde::Serialize;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsValue;
 
 use crate::circuit_types::keychain::SecretIdentificationKey;
 use crate::common::derivation::derive_blinder_seed_external;

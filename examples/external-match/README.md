@@ -27,3 +27,5 @@ The flow of this example is as follows:
 1. Get a quote for the order
 2. Assemble the quote into a bundle
 3. Submit the bundle to the chain
+
+_Note: [In-kind gas sponsorship](../in-kind-gas-sponsorship/README.md) is enabled by default. You can see this by inspecting your resulting TX._

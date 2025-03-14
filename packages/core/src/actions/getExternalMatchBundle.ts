@@ -3,25 +3,28 @@ import { toHex, zeroAddress } from 'viem'
 import {
   GAS_SPONSORSHIP_PARAM,
   REFUND_ADDRESS_PARAM,
+  REFUND_NATIVE_ETH_PARAM,
   RENEGADE_API_KEY_HEADER,
   REQUEST_EXTERNAL_MATCH_ROUTE,
 } from '../constants.js'
 import type { AuthConfig } from '../createAuthConfig.js'
 import { BaseError, type BaseErrorType } from '../errors/base.js'
 import type {
-  ExternalMatchResponse,
   ExternalOrder,
+  SponsoredMatchResponse,
 } from '../types/externalMatch.js'
 import { postWithSymmetricKey } from '../utils/http.js'
 
 export type GetExternalMatchBundleParameters = {
   order: ExternalOrder
   doGasEstimation?: boolean
+  receiverAddress?: `0x${string}`
   useGasSponsorship?: boolean
   refundAddress?: `0x${string}`
+  refundNativeEth?: boolean
 }
 
-export type GetExternalMatchBundleReturnType = ExternalMatchResponse
+export type GetExternalMatchBundleReturnType = SponsoredMatchResponse
 
 export type GetExternalMatchBundleErrorType = BaseErrorType
 
@@ -39,8 +42,10 @@ export async function getExternalMatchBundle(
       minFillSize = BigInt(0),
     },
     doGasEstimation = false,
-    useGasSponsorship = false,
+    receiverAddress = '',
+    useGasSponsorship = true,
     refundAddress = zeroAddress,
+    refundNativeEth = false,
   } = parameters
   const { apiSecret, apiKey } = config
   invariant(apiSecret, 'API secret not specified in config')
@@ -55,16 +60,16 @@ export async function getExternalMatchBundle(
     toHex(quoteAmount),
     toHex(minFillSize),
     doGasEstimation,
+    receiverAddress,
   )
 
   let url = config.getBaseUrl(REQUEST_EXTERNAL_MATCH_ROUTE)
-  if (useGasSponsorship) {
-    const searchParams = new URLSearchParams({
-      [GAS_SPONSORSHIP_PARAM]: 'true',
-      [REFUND_ADDRESS_PARAM]: refundAddress,
-    })
-    url += `?${searchParams.toString()}`
-  }
+  const searchParams = new URLSearchParams({
+    [GAS_SPONSORSHIP_PARAM]: useGasSponsorship.toString(),
+    [REFUND_ADDRESS_PARAM]: refundAddress,
+    [REFUND_NATIVE_ETH_PARAM]: refundNativeEth.toString(),
+  })
+  url += `?${searchParams.toString()}`
 
   const res = await postWithSymmetricKey(config, {
     url,

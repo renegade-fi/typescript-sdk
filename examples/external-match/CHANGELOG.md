@@ -1,5 +1,17 @@
 # renegade-external-match-example
 
+## 1.1.0
+
+### Minor Changes
+
+- In-kind gas sponsorship support
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.6.0
+  - @renegade-fi/node@0.5.4
+
 ## 1.0.2
 
 ### Patch Changes
