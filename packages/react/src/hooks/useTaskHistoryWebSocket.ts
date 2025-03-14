@@ -12,8 +12,8 @@ import {
 import { useEffect } from 'react'
 import { ReadyState } from 'react-use-websocket'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket.js'
+import { useWasmInitialized } from '../wasm.js'
 import { useConfig } from './useConfig.js'
-import { useInitialized } from './useInitialized.js'
 import { useStatus } from './useStatus.js'
 import { useWalletId } from './useWalletId.js'
 
@@ -31,7 +31,7 @@ export function useTaskHistoryWebSocket(
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
   const { enabled = true, onUpdate } = parameters
-  const initialized = useInitialized()
+  const isWasmInitialized = useWasmInitialized()
 
   const { readyState, sendJsonMessage } = useWebSocket(
     getWebsocketBaseUrl(),
@@ -50,7 +50,8 @@ export function useTaskHistoryWebSocket(
         } catch (_) {}
       },
       share: true,
-      shouldReconnect: () => true,
+      shouldReconnect: () =>
+        Boolean(enabled && walletId && status === 'in relayer'),
     },
     enabled,
   )
@@ -61,7 +62,7 @@ export function useTaskHistoryWebSocket(
       !walletId ||
       readyState !== ReadyState.OPEN ||
       status !== 'in relayer' ||
-      !initialized
+      !isWasmInitialized
     )
       return
 
@@ -90,6 +91,6 @@ export function useTaskHistoryWebSocket(
     config,
     walletId,
     enabled,
-    initialized,
+    isWasmInitialized,
   ])
 }

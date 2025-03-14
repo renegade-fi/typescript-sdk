@@ -2,7 +2,14 @@
 
 import type { Config } from '@renegade-fi/core'
 import { type State, hydrate } from '@renegade-fi/core'
-import { type ReactElement, useEffect, useRef } from 'react'
+import {
+  type ReactElement,
+  createElement,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { WasmContext } from './wasm.js'
 
 export type HydrateProps = {
   config: Config
@@ -12,6 +19,8 @@ export type HydrateProps = {
 
 export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
   const { children, config, initialState, reconnectOnMount = true } = parameters
+  const [isInitialized, setIsInitialized] = useState(false)
+  console.log('🚀 ~ WASM ~ isInitialized:', isInitialized)
 
   const { onMount } = hydrate(config, {
     initialState,
@@ -23,30 +32,31 @@ export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
 
   // Hydrate for SSR
   const active = useRef(true)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!active.current) return
-
-    // Initialize RustUtils.default() when the component mounts
-    const initRustUtils = async () => {
-      try {
-        await config.utils.default()
-        // Hydration needs to wait for WASM to initialize, causing state flash
-        if (!config._internal.ssr) {
-          config.setState((x) => ({ ...x, initialized: true }))
-        }
-        onMount().then(() =>
-          config.setState((x) => ({ ...x, initialized: true })),
-        )
-      } catch (error) {
-        console.error('❌ Failed to initialize Rust utils', error)
-      }
-    }
-    initRustUtils()
-
+    if (!config._internal.ssr) return
+    onMount()
     return () => {
       active.current = false
     }
-  }, [onMount, config])
+  }, [])
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    config.utils
+      .default()
+      .then(() => {
+        console.log('🚀 ~ WASM initialized')
+        setIsInitialized(true)
+      })
+      .catch((error: unknown) => {
+        console.error('❌ Failed to initialize Rust utils', error)
+      })
+  }, [])
 
-  return children as ReactElement
+  return createElement(
+    WasmContext.Provider,
+    { value: { isInitialized } },
+    children as ReactElement,
+  )
 }
