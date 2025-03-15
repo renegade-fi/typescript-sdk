@@ -81,24 +81,6 @@ export function useTaskHistoryWebSocket(
     )
 
     sendJsonMessage(subscriptionMessage)
-
-    // Cleanup: unsubscribe the OLD wallet ID
-    return () => {
-      // Ensure that we have a valid wallet id to unsubscribe
-      if (!currentWalletId || readyState !== ReadyState.OPEN) return
-
-      const unsubscriptionBody = {
-        method: 'unsubscribe',
-        topic: WS_TASK_HISTORY_ROUTE(currentWalletId),
-      } as const
-
-      const unsubscriptionMessage = createSignedWebSocketRequest(
-        config,
-        symmetricKey,
-        unsubscriptionBody,
-      )
-      sendJsonMessage(unsubscriptionMessage)
-    }
   }, [
     enabled,
     walletId,
