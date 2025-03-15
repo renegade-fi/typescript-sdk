@@ -105,12 +105,6 @@ export {
 } from '../hooks/useFees.js'
 
 export {
-  useInitialized,
-  type UseInitializedParameters,
-  type UseInitializedReturnType,
-} from '../hooks/useInitialized.js'
-
-export {
   useOpenOrders,
   type UseOpenOrdersParameters,
   type UseOpenOrdersReturnType,
@@ -204,6 +198,8 @@ export {
   type UseWithdrawParameters,
   type UseWithdrawReturnType,
 } from '../hooks/useWithdraw.js'
+
+export { useWasmInitialized } from '../wasm.js'
 
 ////////////////////////////////////////////////////////////////////////////////
 // Utils

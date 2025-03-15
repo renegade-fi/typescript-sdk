@@ -2,18 +2,17 @@
 
 import {
   type Config,
-  SIG_EXPIRATION_BUFFER_MS,
   type Task,
   WS_TASK_HISTORY_ROUTE,
-  addExpiringAuthToHeaders,
   getSymmetricKey,
   parseBigJSON,
 } from '@renegade-fi/core'
 import { useEffect } from 'react'
 import { ReadyState } from 'react-use-websocket'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket.js'
+import { createSignedWebSocketRequest } from '../utils/websocket.js'
+import { useWasmInitialized } from '../wasm.js'
 import { useConfig } from './useConfig.js'
-import { useInitialized } from './useInitialized.js'
 import { useStatus } from './useStatus.js'
 import { useWalletId } from './useWalletId.js'
 
@@ -26,12 +25,12 @@ export type UseTaskHistoryWebSocketParameters = {
 export function useTaskHistoryWebSocket(
   parameters: UseTaskHistoryWebSocketParameters = {},
 ) {
+  const isWasmInitialized = useWasmInitialized()
   const config = useConfig(parameters)
   const status = useStatus(parameters)
   const walletId = useWalletId()
   const { getWebsocketBaseUrl } = config
   const { enabled = true, onUpdate } = parameters
-  const initialized = useInitialized()
 
   const { readyState, sendJsonMessage } = useWebSocket(
     getWebsocketBaseUrl(),
@@ -50,46 +49,63 @@ export function useTaskHistoryWebSocket(
         } catch (_) {}
       },
       share: true,
-      shouldReconnect: () => true,
+      shouldReconnect: () =>
+        Boolean(enabled && walletId && status === 'in relayer'),
     },
     enabled,
   )
 
   useEffect(() => {
+    // Capture the current (old) wallet id in a local variable
+    const currentWalletId = walletId
+
     if (
       !enabled ||
-      !walletId ||
+      !currentWalletId ||
       readyState !== ReadyState.OPEN ||
       status !== 'in relayer' ||
-      !initialized
+      !isWasmInitialized
     )
       return
 
     const body = {
       method: 'subscribe',
-      topic: WS_TASK_HISTORY_ROUTE(walletId),
-    }
+      topic: WS_TASK_HISTORY_ROUTE(currentWalletId),
+    } as const
+
     const symmetricKey = getSymmetricKey(config)
-    const headers = addExpiringAuthToHeaders(
+    const subscriptionMessage = createSignedWebSocketRequest(
       config,
-      body.topic,
-      {},
-      JSON.stringify(body),
       symmetricKey,
-      SIG_EXPIRATION_BUFFER_MS,
-    )
-    const message = {
-      headers,
       body,
+    )
+
+    sendJsonMessage(subscriptionMessage)
+
+    // Cleanup: unsubscribe the OLD wallet ID
+    return () => {
+      // Ensure that we have a valid wallet id to unsubscribe
+      if (!currentWalletId || readyState !== ReadyState.OPEN) return
+
+      const unsubscriptionBody = {
+        method: 'unsubscribe',
+        topic: WS_TASK_HISTORY_ROUTE(currentWalletId),
+      } as const
+
+      const unsubscriptionMessage = createSignedWebSocketRequest(
+        config,
+        symmetricKey,
+        unsubscriptionBody,
+      )
+      sendJsonMessage(unsubscriptionMessage)
     }
-    sendJsonMessage(message)
   }, [
+    enabled,
+    walletId,
     readyState,
     status,
+    isWasmInitialized,
     sendJsonMessage,
     config,
-    walletId,
-    enabled,
-    initialized,
   ])
 }
