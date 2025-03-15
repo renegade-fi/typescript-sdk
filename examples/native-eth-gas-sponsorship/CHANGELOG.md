@@ -1,5 +1,14 @@
 # @renegade-fi/gas-sponsorship-example
 
+## 0.0.4
+
+### Patch Changes
+
+- Use disable_gas_sponsorship request parameter
+- Updated dependencies
+  - @renegade-fi/core@0.6.1
+  - @renegade-fi/node@0.5.5
+
 ## 0.0.3
 
 ### Patch Changes

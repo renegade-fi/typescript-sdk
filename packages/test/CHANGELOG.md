@@ -1,5 +1,13 @@
 # @renegade-fi/test
 
+## 0.4.4
+
+### Patch Changes
+
+- Use disable_gas_sponsorship request parameter
+- Updated dependencies
+  - @renegade-fi/core@0.6.1
+
 ## 0.4.3
 
 ### Patch Changes

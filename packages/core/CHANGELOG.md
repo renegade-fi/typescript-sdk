@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.6.1
+
+### Patch Changes
+
+- Use disable_gas_sponsorship request parameter
+
 ## 0.6.0
 
 ### Minor Changes

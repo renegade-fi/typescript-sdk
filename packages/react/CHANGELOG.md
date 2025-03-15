@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.5.4
+
+### Patch Changes
+
+- Use disable_gas_sponsorship request parameter
+- Updated dependencies
+  - @renegade-fi/core@0.6.1
+
 ## 0.5.3
 
 ### Patch Changes
