@@ -1,5 +1,14 @@
 # @renegade-fi/gas-sponsorship-example
 
+## 0.0.6
+
+### Patch Changes
+
+- react: temp disable unsubscribing ws topics
+- Updated dependencies
+  - @renegade-fi/core@0.6.3
+  - @renegade-fi/node@0.5.7
+
 ## 0.0.5
 
 ### Patch Changes

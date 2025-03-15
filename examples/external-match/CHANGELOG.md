@@ -1,5 +1,14 @@
 # renegade-external-match-example
 
+## 1.1.3
+
+### Patch Changes
+
+- react: temp disable unsubscribing ws topics
+- Updated dependencies
+  - @renegade-fi/core@0.6.3
+  - @renegade-fi/node@0.5.7
+
 ## 1.1.2
 
 ### Patch Changes

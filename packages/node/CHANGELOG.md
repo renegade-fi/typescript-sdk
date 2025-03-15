@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.5.7
+
+### Patch Changes
+
+- react: temp disable unsubscribing ws topics
+- Updated dependencies
+  - @renegade-fi/core@0.6.3
+
 ## 0.5.6
 
 ### Patch Changes
