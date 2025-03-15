@@ -81,21 +81,6 @@ export function useOrderHistoryWebSocket(
     const symmetricKey = getSymmetricKey(config)
     const message = createSignedWebSocketRequest(config, symmetricKey, body)
     sendJsonMessage(message)
-
-    // Cleanup: unsubscribe the OLD wallet ID
-    return () => {
-      // Ensure that we have a valid wallet id to unsubscribe
-      if (!currentWalletId || readyState !== ReadyState.OPEN) return
-
-      // Unsubscribe from wallet's order updates
-      const body = {
-        method: 'unsubscribe' as const,
-        topic: WS_WALLET_ORDERS_ROUTE(currentWalletId),
-      } as const
-
-      const message = createSignedWebSocketRequest(config, symmetricKey, body)
-      sendJsonMessage(message)
-    }
   }, [
     enabled,
     walletId,
