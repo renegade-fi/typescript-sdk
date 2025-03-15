@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.5.5
+
+### Patch Changes
+
+- core, react: fix WASM initialization status flag
+- Updated dependencies
+  - @renegade-fi/core@0.6.2
+
 ## 0.5.4
 
 ### Patch Changes
