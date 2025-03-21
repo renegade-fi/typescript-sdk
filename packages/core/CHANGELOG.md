@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.6.4
+
+### Patch Changes
+
+- core: token: add convert to decimal helper
+
 ## 0.6.3
 
 ### Patch Changes

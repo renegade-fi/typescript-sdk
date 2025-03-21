@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { type Address, isHex, zeroAddress } from 'viem'
+import { type Address, formatUnits, isHex, zeroAddress } from 'viem'
 import type { Exchange } from './wallet.js'
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,6 +128,12 @@ export class Token {
 
   isStablecoin(): boolean {
     return STABLECOINS.includes(this.ticker)
+  }
+
+  /// Converts the amount of the token, accounting for the
+  /// associated number of decimals.
+  convertToDecimal(amount: bigint): number {
+    return Number(formatUnits(amount, this.decimals))
   }
 
   static findByTicker(ticker: string): Token {
