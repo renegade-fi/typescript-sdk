@@ -4,6 +4,8 @@ import type { Address } from 'viem'
 export const RENEGADE_AUTH_HEADER_NAME = 'x-renegade-auth'
 /// Header name for the expiration timestamp of a signature
 export const RENEGADE_SIG_EXPIRATION_HEADER_NAME = 'x-renegade-auth-expiration'
+/// Header name for the Renegade SDK version
+export const RENEGADE_SDK_VERSION_HEADER = 'x-renegade-sdk-version'
 /// The Renegade API key header
 export const RENEGADE_API_KEY_HEADER = 'x-renegade-api-key'
 /// The message used to derive the wallet's root key
