@@ -9,8 +9,8 @@ import {
 import type { BaseConfig, Config, RenegadeConfig } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { parseBigJSON } from './bigJSON.js'
-import type { AuthType } from './websocket.js'
 import { getVersionNumber } from './getVersion.js'
+import type { AuthType } from './websocket.js'
 
 export async function postRelayerRaw(url: string, body: any, headers = {}) {
   try {
