@@ -28,7 +28,6 @@
 
         // Language and environment
         "moduleResolution": "NodeNext",
-        "resolveJsonModule": true,
         "module": "NodeNext",
         "target": "ES2021", // Setting this to `ES2021` enables native support for `Node v16+`: https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping.
         "lib": [
