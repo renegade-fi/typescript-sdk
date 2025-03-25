@@ -2,6 +2,7 @@ import axios from 'axios'
 import invariant from 'tiny-invariant'
 import {
   RENEGADE_AUTH_HEADER_NAME,
+  RENEGADE_SDK_VERSION_HEADER,
   RENEGADE_SIG_EXPIRATION_HEADER_NAME,
   SIG_EXPIRATION_BUFFER_MS,
 } from '../constants.js'
@@ -9,6 +10,9 @@ import type { BaseConfig, Config, RenegadeConfig } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { parseBigJSON } from './bigJSON.js'
 import type { AuthType } from './websocket.js'
+
+import pkg from '../../package.json' assert { type: 'json' }
+const { version: sdkVersion } = pkg
 
 export async function postRelayerRaw(url: string, body: any, headers = {}) {
   try {
@@ -251,9 +255,11 @@ export function addExpiringAuthToHeaders(
 ): Record<string, string> {
   // Add a timestamp
   const expirationTs = Date.now() + expiration
+  const versionString = `typescript-v${sdkVersion}`
   const headersWithExpiration = {
     ...headers,
     [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expirationTs.toString(),
+    [RENEGADE_SDK_VERSION_HEADER]: versionString,
   }
 
   // Add the signature
