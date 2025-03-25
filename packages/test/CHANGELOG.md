@@ -1,5 +1,12 @@
 # @renegade-fi/test
 
+## 0.4.8
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.6.5
+
 ## 0.4.7
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.6.5
+
+### Patch Changes
+
+- Add SDK version as header in all requests
+
 ## 0.6.4
 
 ### Patch Changes

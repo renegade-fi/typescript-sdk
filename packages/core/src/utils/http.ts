@@ -9,10 +9,8 @@ import {
 import type { BaseConfig, Config, RenegadeConfig } from '../createConfig.js'
 import { BaseError } from '../errors/base.js'
 import { parseBigJSON } from './bigJSON.js'
+import { getVersionNumber } from './getVersion.js'
 import type { AuthType } from './websocket.js'
-
-import pkg from '../../package.json' assert { type: 'json' }
-const { version: sdkVersion } = pkg
 
 export async function postRelayerRaw(url: string, body: any, headers = {}) {
   try {
@@ -255,7 +253,7 @@ export function addExpiringAuthToHeaders(
 ): Record<string, string> {
   // Add a timestamp
   const expirationTs = Date.now() + expiration
-  const versionString = `typescript-v${sdkVersion}`
+  const versionString = `typescript-v${getVersionNumber()}`
   const headersWithExpiration = {
     ...headers,
     [RENEGADE_SIG_EXPIRATION_HEADER_NAME]: expirationTs.toString(),
