@@ -354,6 +354,7 @@ pub struct SignedGasSponsorshipInfo {
     /// The signed gas sponsorship info
     pub gas_sponsorship_info: GasSponsorshipInfo,
     /// The auth server's signature over the sponsorship info
+    #[deprecated(since = "0.0.2", note = "Gas sponsorship info is no longer signed")]
     pub signature: String,
 }
 

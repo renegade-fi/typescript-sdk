@@ -140,21 +140,6 @@ export function assemble_external_match(do_gas_estimation: boolean, updated_orde
 * @param {string} symmetric_key
 * @returns {Promise<any>}
 */
-export function create_external_wallet(wallet_id: string, blinder_seed: string, share_seed: string, pk_root: string, sk_match: string, symmetric_key: string): Promise<any>;
-/**
-* @param {Function} sign_message
-* @returns {Promise<any>}
-*/
-export function generate_wallet_secrets(sign_message: Function): Promise<any>;
-/**
-* @param {string} wallet_id
-* @param {string} blinder_seed
-* @param {string} share_seed
-* @param {string} pk_root
-* @param {string} sk_match
-* @param {string} symmetric_key
-* @returns {Promise<any>}
-*/
 export function find_external_wallet(wallet_id: string, blinder_seed: string, share_seed: string, pk_root: string, sk_match: string, symmetric_key: string): Promise<any>;
 /**
 * @param {string} seed
@@ -180,6 +165,21 @@ export function get_pk_root_scalars(seed?: string, nonce?: bigint, public_key?: 
 * @returns {any}
 */
 export function get_symmetric_key(seed: string): any;
+/**
+* @param {string} wallet_id
+* @param {string} blinder_seed
+* @param {string} share_seed
+* @param {string} pk_root
+* @param {string} sk_match
+* @param {string} symmetric_key
+* @returns {Promise<any>}
+*/
+export function create_external_wallet(wallet_id: string, blinder_seed: string, share_seed: string, pk_root: string, sk_match: string, symmetric_key: string): Promise<any>;
+/**
+* @param {Function} sign_message
+* @returns {Promise<any>}
+*/
+export function generate_wallet_secrets(sign_message: Function): Promise<any>;
 /**
 * @param {string} path
 * @param {any} headers

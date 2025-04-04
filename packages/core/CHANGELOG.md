@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.6.6
+
+### Patch Changes
+
+- remove gas sponsorship info from assembly request
+
 ## 0.6.5
 
 ### Patch Changes
