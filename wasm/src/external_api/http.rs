@@ -2,7 +2,7 @@
 
 use super::types::{
     ApiOrder, ApiOrderType, ApiPrivateKeychain, ApiWallet, SignedExternalQuote,
-    SignedGasSponsorshipInfo, SponsoredQuoteResponse,
+    SponsoredQuoteResponse,
 };
 use crate::{
     circuit_types::{balance::Balance, fixed_point::FixedPoint, order::OrderSide, Amount},
@@ -735,7 +735,7 @@ pub fn new_external_quote_request(
 
 /// The request type for assembling an external match, potentially with gas sponsorship
 #[derive(Clone, Serialize, Deserialize)]
-pub struct AssembleSponsoredMatchRequest {
+pub struct AssembleExternalMatchRequest {
     /// The signed external match quote
     pub signed_quote: SignedExternalQuote,
     /// Whether or not to include gas estimation in the response
@@ -747,9 +747,6 @@ pub struct AssembleSponsoredMatchRequest {
     /// The updated order
     #[serde(default)]
     pub updated_order: Option<ExternalOrder>,
-    /// The signed gas sponsorship info associated with the quote,
-    /// if sponsorship was requested
-    pub gas_sponsorship_info: Option<SignedGasSponsorshipInfo>,
 }
 
 #[wasm_bindgen]
@@ -773,19 +770,16 @@ pub fn assemble_external_match(
     };
 
     let SponsoredQuoteResponse {
-        quote,
-        signature,
-        gas_sponsorship_info,
+        quote, signature, ..
     } = serde_json::from_str(sponsored_quote_response)?;
 
     let signed_quote = SignedExternalQuote { quote, signature };
 
-    let req = AssembleSponsoredMatchRequest {
+    let req = AssembleExternalMatchRequest {
         do_gas_estimation,
         receiver_address,
         updated_order,
         signed_quote,
-        gas_sponsorship_info,
     };
 
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
