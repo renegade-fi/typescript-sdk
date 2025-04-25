@@ -88,13 +88,22 @@ export async function websocketWaiter<T>(
     }
 
     if (params.prefetch) {
-      params.prefetch().then((result) => {
-        if (result) {
-          promiseSettled = true
-          ws.close()
-          resolve(result)
-        }
-      })
+      params
+        .prefetch()
+        .then((result) => {
+          if (result) {
+            promiseSettled = true
+            ws.close()
+            resolve(result)
+          }
+        })
+        .catch((error) => {
+          if (!promiseSettled) {
+            promiseSettled = true
+            ws.close()
+            reject(error)
+          }
+        })
     }
   })
 }
