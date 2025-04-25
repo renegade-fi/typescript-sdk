@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.6.7
+
+### Patch Changes
+
+- catch errors in websocket waiter prefetch
+
 ## 0.6.6
 
 ### Patch Changes
