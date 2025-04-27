@@ -1,10 +1,10 @@
 {
-  "extends": "./tsconfig.build.json",
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts",
-    "renegade-utils/**/*.ts",
-    "renegade-utils-node/**/*.ts"
-  ],
-  "exclude": []
+    "extends": "./tsconfig.build.json",
+    "include": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "renegade-utils/**/*.ts",
+        "renegade-utils-node/**/*.ts"
+    ],
+    "exclude": []
 }

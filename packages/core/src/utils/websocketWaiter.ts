@@ -1,18 +1,14 @@
-import type { RenegadeConfig } from '../createConfig.js'
-import {
-  type AuthType,
-  RelayerWebsocket,
-  type RelayerWebsocketParams,
-} from './websocket.js'
+import type { RenegadeConfig } from "../createConfig.js";
+import { type AuthType, RelayerWebsocket, type RelayerWebsocketParams } from "./websocket.js";
 
 export type WebsocketWaiterParams = {
-  config: RenegadeConfig
-  topic: string
-  authType: AuthType
-  messageHandler: (message: any) => any | undefined
-  prefetch?: () => Promise<any | undefined>
-  timeout?: number
-}
+    config: RenegadeConfig;
+    topic: string;
+    authType: AuthType;
+    messageHandler: (message: any) => any | undefined;
+    prefetch?: () => Promise<any | undefined>;
+    timeout?: number;
+};
 
 /**
  * A lightweight method which resolves when a short-lived websocket connection is closed.
@@ -36,74 +32,72 @@ export type WebsocketWaiterParams = {
  * Because this method is intended for short-lived websocket connections, it does not support reconnecting to the server.
  * If the connection is closed, the method will throw an error.
  */
-export async function websocketWaiter<T>(
-  params: WebsocketWaiterParams,
-): Promise<T> {
-  return new Promise((resolve, reject) => {
-    let promiseSettled = false
+export async function websocketWaiter<T>(params: WebsocketWaiterParams): Promise<T> {
+    return new Promise((resolve, reject) => {
+        let promiseSettled = false;
 
-    const wsParams: RelayerWebsocketParams = {
-      config: params.config,
-      topic: params.topic,
-      authType: params.authType,
-      onmessage: function (this: WebSocket, event: MessageEvent) {
-        try {
-          const result = params.messageHandler(event.data)
-          if (result !== undefined) {
-            promiseSettled = true
-            this.close()
-            resolve(result)
-          }
-        } catch (error) {
-          promiseSettled = true
-          this.close()
-          reject(error)
-        }
-      },
-      oncloseCallback: () => {
-        if (!promiseSettled) {
-          promiseSettled = true
-          reject(new Error('Websocket connection closed'))
-        }
-      },
-      onerrorCallback: (error: Event | Error) => {
-        if (!promiseSettled) {
-          promiseSettled = true
-          reject(error)
-        }
-      },
-    }
+        const wsParams: RelayerWebsocketParams = {
+            config: params.config,
+            topic: params.topic,
+            authType: params.authType,
+            onmessage: function (this: WebSocket, event: MessageEvent) {
+                try {
+                    const result = params.messageHandler(event.data);
+                    if (result !== undefined) {
+                        promiseSettled = true;
+                        this.close();
+                        resolve(result);
+                    }
+                } catch (error) {
+                    promiseSettled = true;
+                    this.close();
+                    reject(error);
+                }
+            },
+            oncloseCallback: () => {
+                if (!promiseSettled) {
+                    promiseSettled = true;
+                    reject(new Error("Websocket connection closed"));
+                }
+            },
+            onerrorCallback: (error: Event | Error) => {
+                if (!promiseSettled) {
+                    promiseSettled = true;
+                    reject(error);
+                }
+            },
+        };
 
-    const ws = new RelayerWebsocket(wsParams)
-    ws.connect().catch((error) => reject(error))
+        const ws = new RelayerWebsocket(wsParams);
+        ws.connect().catch((error) => reject(error));
 
-    if (params.timeout) {
-      setTimeout(() => {
-        if (!promiseSettled) {
-          promiseSettled = true
-          ws.close()
-          reject(new Error('Websocket connection timed out'))
+        if (params.timeout) {
+            setTimeout(() => {
+                if (!promiseSettled) {
+                    promiseSettled = true;
+                    ws.close();
+                    reject(new Error("Websocket connection timed out"));
+                }
+            }, params.timeout);
         }
-      }, params.timeout)
-    }
 
-    if (params.prefetch) {
-      params
-        .prefetch()
-        .then((result) => {
-          if (result) {
-            promiseSettled = true
-            ws.close()
-            resolve(result)
-          }
-        })
-        .catch((error) => {
-          if (!promiseSettled) {
-            promiseSettled = true
-            ws.close()
-            reject(error)
-          }
-        })
-    }
-  })
+        if (params.prefetch) {
+            params
+                .prefetch()
+                .then((result) => {
+                    if (result) {
+                        promiseSettled = true;
+                        ws.close();
+                        resolve(result);
+                    }
+                })
+                .catch((error) => {
+                    if (!promiseSettled) {
+                        promiseSettled = true;
+                        ws.close();
+                        reject(error);
+                    }
+                });
+        }
+    });
 }

@@ -1,44 +1,40 @@
-import type { QueryOptions } from '@tanstack/query-core'
+import type { QueryOptions } from "@tanstack/query-core";
 import {
-  type GetNetworkOrdersErrorType,
-  type GetNetworkOrdersReturnType,
-  getNetworkOrders,
-} from '../actions/getNetworkOrders.js'
-import type { Config } from '../createConfig.js'
-import type { Evaluate } from '../types/utils.js'
-import { type ScopeKeyParameter, filterQueryOptions } from './utils.js'
+    type GetNetworkOrdersErrorType,
+    type GetNetworkOrdersReturnType,
+    getNetworkOrders,
+} from "../actions/getNetworkOrders.js";
+import type { Config } from "../createConfig.js";
+import type { Evaluate } from "../types/utils.js";
+import { type ScopeKeyParameter, filterQueryOptions } from "./utils.js";
 
-export type GetNetworkOrdersOptions = Evaluate<ScopeKeyParameter>
+export type GetNetworkOrdersOptions = Evaluate<ScopeKeyParameter>;
 
 export function getNetworkOrdersQueryOptions(
-  config: Config,
-  options: GetNetworkOrdersOptions = {},
+    config: Config,
+    options: GetNetworkOrdersOptions = {},
 ) {
-  return {
-    async queryFn({ queryKey }) {
-      const { scopeKey: _ } = queryKey[1]
-      const history = await getNetworkOrders(config)
-      return history ?? null
-    },
-    queryKey: getNetworkOrdersQueryKey(options),
-  } as const satisfies QueryOptions<
-    GetNetworkOrdersQueryFnData,
-    GetNetworkOrdersErrorType,
-    GetNetworkOrdersData,
-    GetNetworkOrdersQueryKey
-  >
+    return {
+        async queryFn({ queryKey }) {
+            const { scopeKey: _ } = queryKey[1];
+            const history = await getNetworkOrders(config);
+            return history ?? null;
+        },
+        queryKey: getNetworkOrdersQueryKey(options),
+    } as const satisfies QueryOptions<
+        GetNetworkOrdersQueryFnData,
+        GetNetworkOrdersErrorType,
+        GetNetworkOrdersData,
+        GetNetworkOrdersQueryKey
+    >;
 }
 
-export type GetNetworkOrdersQueryFnData = Evaluate<GetNetworkOrdersReturnType>
+export type GetNetworkOrdersQueryFnData = Evaluate<GetNetworkOrdersReturnType>;
 
-export type GetNetworkOrdersData = GetNetworkOrdersQueryFnData
+export type GetNetworkOrdersData = GetNetworkOrdersQueryFnData;
 
-export function getNetworkOrdersQueryKey(
-  options: GetNetworkOrdersOptions = {},
-) {
-  return ['network-orders', filterQueryOptions(options)] as const
+export function getNetworkOrdersQueryKey(options: GetNetworkOrdersOptions = {}) {
+    return ["network-orders", filterQueryOptions(options)] as const;
 }
 
-export type GetNetworkOrdersQueryKey = ReturnType<
-  typeof getNetworkOrdersQueryKey
->
+export type GetNetworkOrdersQueryKey = ReturnType<typeof getNetworkOrdersQueryKey>;

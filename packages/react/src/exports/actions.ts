@@ -2,4 +2,4 @@
 // @renegade-fi/core/actions
 ////////////////////////////////////////////////////////////////////////////////
 
-export * from '@renegade-fi/core/actions'
+export * from "@renegade-fi/core/actions";

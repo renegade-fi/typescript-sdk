@@ -1,43 +1,38 @@
-import type { QueryOptions } from '@tanstack/query-core'
+import type { QueryOptions } from "@tanstack/query-core";
 import {
-  type GetOpenOrdersErrorType,
-  type GetOpenOrdersParams,
-  type GetOpenOrdersReturnType,
-  getOpenOrders,
-} from '../actions/getOpenOrders.js'
-import type { Config } from '../createConfig.js'
-import type { Evaluate } from '../types/utils.js'
-import { type ScopeKeyParameter, filterQueryOptions } from './utils.js'
+    type GetOpenOrdersErrorType,
+    type GetOpenOrdersParams,
+    type GetOpenOrdersReturnType,
+    getOpenOrders,
+} from "../actions/getOpenOrders.js";
+import type { Config } from "../createConfig.js";
+import type { Evaluate } from "../types/utils.js";
+import { type ScopeKeyParameter, filterQueryOptions } from "./utils.js";
 
-export type GetOpenOrdersOptions = Evaluate<
-  GetOpenOrdersParams & ScopeKeyParameter
->
+export type GetOpenOrdersOptions = Evaluate<GetOpenOrdersParams & ScopeKeyParameter>;
 
-export function getOpenOrdersQueryOptions(
-  config: Config,
-  options: GetOpenOrdersOptions = {},
-) {
-  return {
-    async queryFn({ queryKey }) {
-      const { scopeKey: _, ...parameters } = queryKey[1]
-      const orders = await getOpenOrders(config, parameters)
-      return orders ?? null
-    },
-    queryKey: getOpenOrdersQueryKey(options),
-  } as const satisfies QueryOptions<
-    GetOpenOrdersQueryFnData,
-    GetOpenOrdersErrorType,
-    GetOpenOrdersData,
-    GetOpenOrdersQueryKey
-  >
+export function getOpenOrdersQueryOptions(config: Config, options: GetOpenOrdersOptions = {}) {
+    return {
+        async queryFn({ queryKey }) {
+            const { scopeKey: _, ...parameters } = queryKey[1];
+            const orders = await getOpenOrders(config, parameters);
+            return orders ?? null;
+        },
+        queryKey: getOpenOrdersQueryKey(options),
+    } as const satisfies QueryOptions<
+        GetOpenOrdersQueryFnData,
+        GetOpenOrdersErrorType,
+        GetOpenOrdersData,
+        GetOpenOrdersQueryKey
+    >;
 }
 
-export type GetOpenOrdersQueryFnData = Evaluate<GetOpenOrdersReturnType>
+export type GetOpenOrdersQueryFnData = Evaluate<GetOpenOrdersReturnType>;
 
-export type GetOpenOrdersData = GetOpenOrdersQueryFnData
+export type GetOpenOrdersData = GetOpenOrdersQueryFnData;
 
 export function getOpenOrdersQueryKey(options: GetOpenOrdersOptions = {}) {
-  return ['open-orders', filterQueryOptions(options)] as const
+    return ["open-orders", filterQueryOptions(options)] as const;
 }
 
-export type GetOpenOrdersQueryKey = ReturnType<typeof getOpenOrdersQueryKey>
+export type GetOpenOrdersQueryKey = ReturnType<typeof getOpenOrdersQueryKey>;

@@ -1,81 +1,81 @@
 import {
-  AuthType,
-  type OrderMetadata,
-  RelayerWebsocket,
-  type RenegadeConfig,
-  WS_WALLET_ORDERS_ROUTE,
-  getWalletId,
-} from '@renegade-fi/core'
+    AuthType,
+    type OrderMetadata,
+    RelayerWebsocket,
+    type RenegadeConfig,
+    WS_WALLET_ORDERS_ROUTE,
+    getWalletId,
+} from "@renegade-fi/core";
 
 interface OrderWebSocketOptions {
-  config: RenegadeConfig
-  onUpdate: (order: OrderMetadata) => void
+    config: RenegadeConfig;
+    onUpdate: (order: OrderMetadata) => void;
 }
 
 export function createOrderWebSocket(options: OrderWebSocketOptions) {
-  return new OrderWebSocketImpl(options)
+    return new OrderWebSocketImpl(options);
 }
 
 class OrderWebSocketImpl {
-  private config: RenegadeConfig
-  private ws: RelayerWebsocket | null = null
-  private callback: (order: OrderMetadata) => void
-  private walletId: string
+    private config: RenegadeConfig;
+    private ws: RelayerWebsocket | null = null;
+    private callback: (order: OrderMetadata) => void;
+    private walletId: string;
 
-  constructor(options: OrderWebSocketOptions) {
-    this.config = options.config
-    this.callback = options.onUpdate
-    this.walletId = getWalletId(this.config)
-  }
-
-  connect() {
-    if (this.ws) return
-
-    this.ws = new RelayerWebsocket({
-      config: this.config,
-      topic: WS_WALLET_ORDERS_ROUTE(this.walletId),
-      authType: AuthType.Wallet,
-      onmessage: (event) => this.handleMessage(event),
-      oncloseCallback: () => this.handleClose(),
-      onerrorCallback: () => this.handleError(),
-    })
-
-    this.ws.connect()
-  }
-
-  disconnect() {
-    this.ws?.close()
-    this.ws = null
-  }
-
-  private handleMessage(event: MessageEvent) {
-    try {
-      const message = JSON.parse(event.data, (key, value) => {
-        if (typeof value === 'number' && key !== 'price') {
-          return BigInt(value)
-        }
-        return value
-      })
-
-      if (
-        message.topic === WS_WALLET_ORDERS_ROUTE(this.walletId) &&
-        message.event?.type === 'OrderMetadataUpdated' &&
-        message.event?.order
-      ) {
-        this.callback(message.event.order)
-      }
-    } catch (error) {
-      console.error('Error processing WebSocket message:', error)
+    constructor(options: OrderWebSocketOptions) {
+        this.config = options.config;
+        this.callback = options.onUpdate;
+        this.walletId = getWalletId(this.config);
     }
-  }
 
-  private handleClose() {
-    console.log('WebSocket connection closed')
-    this.ws = null
-  }
+    connect() {
+        if (this.ws) return;
 
-  private handleError() {
-    console.error('WebSocket connection error')
-    this.ws = null
-  }
+        this.ws = new RelayerWebsocket({
+            config: this.config,
+            topic: WS_WALLET_ORDERS_ROUTE(this.walletId),
+            authType: AuthType.Wallet,
+            onmessage: (event) => this.handleMessage(event),
+            oncloseCallback: () => this.handleClose(),
+            onerrorCallback: () => this.handleError(),
+        });
+
+        this.ws.connect();
+    }
+
+    disconnect() {
+        this.ws?.close();
+        this.ws = null;
+    }
+
+    private handleMessage(event: MessageEvent) {
+        try {
+            const message = JSON.parse(event.data, (key, value) => {
+                if (typeof value === "number" && key !== "price") {
+                    return BigInt(value);
+                }
+                return value;
+            });
+
+            if (
+                message.topic === WS_WALLET_ORDERS_ROUTE(this.walletId) &&
+                message.event?.type === "OrderMetadataUpdated" &&
+                message.event?.order
+            ) {
+                this.callback(message.event.order);
+            }
+        } catch (error) {
+            console.error("Error processing WebSocket message:", error);
+        }
+    }
+
+    private handleClose() {
+        console.log("WebSocket connection closed");
+        this.ws = null;
+    }
+
+    private handleError() {
+        console.error("WebSocket connection error");
+        this.ws = null;
+    }
 }

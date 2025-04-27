@@ -1,23 +1,19 @@
-'use client'
+"use client";
 
-import { createContext, useContext } from 'react'
+import { createContext, useContext } from "react";
 
 type WasmContextValue = {
-  isInitialized: boolean
-}
+    isInitialized: boolean;
+};
 
-export const WasmContext = createContext<WasmContextValue | undefined>(
-  undefined,
-)
+export const WasmContext = createContext<WasmContextValue | undefined>(undefined);
 
 export function useWasmInitialized() {
-  const context = useContext(WasmContext)
+    const context = useContext(WasmContext);
 
-  if (!context) {
-    throw new Error(
-      'useWasmInitialized must be used within a <RenegadeProvider />',
-    )
-  }
+    if (!context) {
+        throw new Error("useWasmInitialized must be used within a <RenegadeProvider />");
+    }
 
-  return context.isInitialized
+    return context.isInitialized;
 }

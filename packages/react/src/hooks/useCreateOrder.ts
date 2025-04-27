@@ -1,63 +1,60 @@
-'use client'
+"use client";
 
-import type { CreateOrderRequestErrorType } from '@renegade-fi/core'
-import type { Evaluate } from '@renegade-fi/core'
+import type { CreateOrderRequestErrorType } from "@renegade-fi/core";
+import type { Evaluate } from "@renegade-fi/core";
 import {
-  type CreateOrderRequestData,
-  type CreateOrderRequestMutate,
-  type CreateOrderRequestMutateAsync,
-  type CreateOrderRequestVariables,
-  createOrderRequestMutationOptions,
-} from '@renegade-fi/core/query'
-import { useMutation } from '@tanstack/react-query'
-import type { ConfigParameter } from '../types/properties.js'
-import type {
-  UseMutationParameters,
-  UseMutationReturnType,
-} from '../utils/query.js'
-import { useConfig } from './useConfig.js'
+    type CreateOrderRequestData,
+    type CreateOrderRequestMutate,
+    type CreateOrderRequestMutateAsync,
+    type CreateOrderRequestVariables,
+    createOrderRequestMutationOptions,
+} from "@renegade-fi/core/query";
+import { useMutation } from "@tanstack/react-query";
+import type { ConfigParameter } from "../types/properties.js";
+import type { UseMutationParameters, UseMutationReturnType } from "../utils/query.js";
+import { useConfig } from "./useConfig.js";
 
 export type UseCreateOrderParameters<context = unknown> = Evaluate<
-  ConfigParameter & {
-    mutation?:
-      | UseMutationParameters<
-          CreateOrderRequestData,
-          CreateOrderRequestErrorType,
-          CreateOrderRequestVariables,
-          context
-        >
-      | undefined
-  }
->
+    ConfigParameter & {
+        mutation?:
+            | UseMutationParameters<
+                  CreateOrderRequestData,
+                  CreateOrderRequestErrorType,
+                  CreateOrderRequestVariables,
+                  context
+              >
+            | undefined;
+    }
+>;
 
 export type UseCreateOrderReturnType<context = unknown> = Evaluate<
-  UseMutationReturnType<
-    CreateOrderRequestData,
-    CreateOrderRequestErrorType,
-    CreateOrderRequestVariables,
-    context
-  > & {
-    createOrder: CreateOrderRequestMutate<context>
-    createOrderAsync: CreateOrderRequestMutateAsync<context>
-  }
->
+    UseMutationReturnType<
+        CreateOrderRequestData,
+        CreateOrderRequestErrorType,
+        CreateOrderRequestVariables,
+        context
+    > & {
+        createOrder: CreateOrderRequestMutate<context>;
+        createOrderAsync: CreateOrderRequestMutateAsync<context>;
+    }
+>;
 
 export function useCreateOrder<context = unknown>(
-  parameters: UseCreateOrderParameters<context> = {},
+    parameters: UseCreateOrderParameters<context> = {},
 ): UseCreateOrderReturnType<context> {
-  const { mutation } = parameters
+    const { mutation } = parameters;
 
-  const config = useConfig(parameters)
+    const config = useConfig(parameters);
 
-  const mutationOptions = createOrderRequestMutationOptions(config)
-  const { mutate, mutateAsync, ...result } = useMutation({
-    ...mutation,
-    ...mutationOptions,
-  })
+    const mutationOptions = createOrderRequestMutationOptions(config);
+    const { mutate, mutateAsync, ...result } = useMutation({
+        ...mutation,
+        ...mutationOptions,
+    });
 
-  return {
-    ...result,
-    createOrder: mutate,
-    createOrderAsync: mutateAsync,
-  }
+    return {
+        ...result,
+        createOrder: mutate,
+        createOrderAsync: mutateAsync,
+    };
 }

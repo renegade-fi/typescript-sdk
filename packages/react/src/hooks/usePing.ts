@@ -1,42 +1,37 @@
-'use client'
+"use client";
 
-import type { Evaluate } from '@renegade-fi/core'
-import type { GetPingErrorType } from '@renegade-fi/core/actions'
+import type { Evaluate } from "@renegade-fi/core";
+import type { GetPingErrorType } from "@renegade-fi/core/actions";
 import {
-  type GetPingData,
-  type GetPingOptions,
-  type GetPingQueryFnData,
-  type GetPingQueryKey,
-  getPingQueryOptions,
-} from '@renegade-fi/core/query'
-import type { ConfigParameter, QueryParameter } from '../types/properties.js'
-import { type UseQueryReturnType, useQuery } from '../utils/query.js'
-import { useConfig } from './useConfig.js'
+    type GetPingData,
+    type GetPingOptions,
+    type GetPingQueryFnData,
+    type GetPingQueryKey,
+    getPingQueryOptions,
+} from "@renegade-fi/core/query";
+import type { ConfigParameter, QueryParameter } from "../types/properties.js";
+import { type UseQueryReturnType, useQuery } from "../utils/query.js";
+import { useConfig } from "./useConfig.js";
 
 export type UsePingParameters<selectData = GetPingData> = Evaluate<
-  GetPingOptions &
-    ConfigParameter &
-    QueryParameter<
-      GetPingQueryFnData,
-      GetPingErrorType,
-      selectData,
-      GetPingQueryKey
-    >
->
+    GetPingOptions &
+        ConfigParameter &
+        QueryParameter<GetPingQueryFnData, GetPingErrorType, selectData, GetPingQueryKey>
+>;
 
 export type UsePingReturnType<selectData = GetPingData> = UseQueryReturnType<
-  selectData,
-  GetPingErrorType
->
+    selectData,
+    GetPingErrorType
+>;
 
 export function usePing<selectData = GetPingData>(
-  parameters: UsePingParameters<selectData> = {},
+    parameters: UsePingParameters<selectData> = {},
 ): UsePingReturnType<selectData> {
-  const { query = {} } = parameters
+    const { query = {} } = parameters;
 
-  const config = useConfig(parameters)
-  const options = getPingQueryOptions(config)
-  const enabled = Boolean(query.enabled ?? true)
+    const config = useConfig(parameters);
+    const options = getPingQueryOptions(config);
+    const enabled = Boolean(query.enabled ?? true);
 
-  return useQuery({ ...query, ...options, enabled })
+    return useQuery({ ...query, ...options, enabled });
 }
