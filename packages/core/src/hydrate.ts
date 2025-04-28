@@ -1,29 +1,29 @@
-import { reconnect } from './actions/reconnect.js'
-import type { Config, State } from './createConfig.js'
+import { reconnect } from "./actions/reconnect.js";
+import type { Config, State } from "./createConfig.js";
 
 type HydrateParameters = {
-  initialState?: State | undefined
-  reconnectOnMount?: boolean | undefined
-}
+    initialState?: State | undefined;
+    reconnectOnMount?: boolean | undefined;
+};
 
 export function hydrate(config: Config, parameters: HydrateParameters) {
-  const { initialState, reconnectOnMount } = parameters
+    const { initialState, reconnectOnMount } = parameters;
 
-  if (initialState && !config._internal.store.persist.hasHydrated())
-    config.setState({
-      ...initialState,
-      status: reconnectOnMount ? initialState.status : 'disconnected',
-    })
+    if (initialState && !config._internal.store.persist.hasHydrated())
+        config.setState({
+            ...initialState,
+            status: reconnectOnMount ? initialState.status : "disconnected",
+        });
 
-  return {
-    async onMount() {
-      if (config._internal.ssr) {
-        await config._internal.store.persist.rehydrate()
-      }
+    return {
+        async onMount() {
+            if (config._internal.ssr) {
+                await config._internal.store.persist.rehydrate();
+            }
 
-      if (reconnectOnMount) {
-        reconnect(config)
-      }
-    },
-  }
+            if (reconnectOnMount) {
+                reconnect(config);
+            }
+        },
+    };
 }

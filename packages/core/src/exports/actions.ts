@@ -3,226 +3,226 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 export {
-  type AssignOrderParameters,
-  assignOrder,
-} from '../actions/assignOrder.js'
+    type AssignOrderParameters,
+    assignOrder,
+} from "../actions/assignOrder.js";
 
 export {
-  type CancelOrderParameters,
-  type CancelOrderReturnType,
-  cancelOrder,
-} from '../actions/cancelOrder.js'
+    type CancelOrderParameters,
+    type CancelOrderReturnType,
+    cancelOrder,
+} from "../actions/cancelOrder.js";
 
-export { type ConnectReturnType, connect } from '../actions/connect.js'
-
-export {
-  type CreateMatchingPoolParameters,
-  createMatchingPool,
-} from '../actions/createMatchingPool.js'
+export { type ConnectReturnType, connect } from "../actions/connect.js";
 
 export {
-  type CreateOrderParameters,
-  type CreateOrderReturnType,
-  createOrder,
-} from '../actions/createOrder.js'
+    type CreateMatchingPoolParameters,
+    createMatchingPool,
+} from "../actions/createMatchingPool.js";
 
 export {
-  type CreateOrderInMatchingPoolParameters,
-  createOrderInMatchingPool,
-} from '../actions/createOrderInMatchingPool.js'
+    type CreateOrderParameters,
+    type CreateOrderReturnType,
+    createOrder,
+} from "../actions/createOrder.js";
 
 export {
-  type CreateWalletReturnType,
-  createWallet,
-} from '../actions/createWallet.js'
+    type CreateOrderInMatchingPoolParameters,
+    createOrderInMatchingPool,
+} from "../actions/createOrderInMatchingPool.js";
 
 export {
-  type DepositParameters,
-  type DepositReturnType,
-  deposit,
-} from '../actions/deposit.js'
+    type CreateWalletReturnType,
+    createWallet,
+} from "../actions/createWallet.js";
 
 export {
-  type DestroyMatchingPoolParameters,
-  destroyMatchingPool,
-} from '../actions/destroyMatchingPool.js'
-
-export { type DisconnectReturnType, disconnect } from '../actions/disconnect.js'
-
-export {
-  type GetExternalMatchBundleParameters,
-  type GetExternalMatchBundleReturnType,
-  type GetExternalMatchBundleErrorType,
-  getExternalMatchBundle,
-} from '../actions/getExternalMatchBundle.js'
+    type DepositParameters,
+    type DepositReturnType,
+    deposit,
+} from "../actions/deposit.js";
 
 export {
-  type GetExternalMatchQuoteParameters,
-  type GetExternalMatchQuoteReturnType,
-  type GetExternalMatchQuoteErrorType,
-  getExternalMatchQuote,
-} from '../actions/getExternalMatchQuote.js'
+    type DestroyMatchingPoolParameters,
+    destroyMatchingPool,
+} from "../actions/destroyMatchingPool.js";
+
+export { type DisconnectReturnType, disconnect } from "../actions/disconnect.js";
 
 export {
-  type AssembleExternalQuoteParameters,
-  type AssembleExternalQuoteReturnType,
-  type AssembleExternalQuoteErrorType,
-  assembleExternalQuote,
-} from '../actions/assembleExternalQuote.js'
+    type GetExternalMatchBundleParameters,
+    type GetExternalMatchBundleReturnType,
+    type GetExternalMatchBundleErrorType,
+    getExternalMatchBundle,
+} from "../actions/getExternalMatchBundle.js";
 
 export {
-  type GetBalancesReturnType,
-  getBalances,
-} from '../actions/getBalances.js'
+    type GetExternalMatchQuoteParameters,
+    type GetExternalMatchQuoteReturnType,
+    type GetExternalMatchQuoteErrorType,
+    getExternalMatchQuote,
+} from "../actions/getExternalMatchQuote.js";
 
 export {
-  type GetBackOfQueueWalletParameters,
-  type GetBackOfQueueWalletReturnType,
-  getBackOfQueueWallet,
-} from '../actions/getBackOfQueueWallet.js'
+    type AssembleExternalQuoteParameters,
+    type AssembleExternalQuoteReturnType,
+    type AssembleExternalQuoteErrorType,
+    assembleExternalQuote,
+} from "../actions/assembleExternalQuote.js";
 
 export {
-  type GetNetworkOrdersReturnType,
-  type GetNetworkOrdersErrorType,
-  getNetworkOrders,
-} from '../actions/getNetworkOrders.js'
+    type GetBalancesReturnType,
+    getBalances,
+} from "../actions/getBalances.js";
 
 export {
-  type GetOpenOrdersParams,
-  type GetOpenOrdersReturnType,
-  type GetOpenOrdersErrorType,
-  getOpenOrders,
-} from '../actions/getOpenOrders.js'
+    type GetBackOfQueueWalletParameters,
+    type GetBackOfQueueWalletReturnType,
+    getBackOfQueueWallet,
+} from "../actions/getBackOfQueueWallet.js";
 
 export {
-  type GetOrderParameters,
-  type GetOrderReturnType,
-  getOrder,
-} from '../actions/getOrder.js'
+    type GetNetworkOrdersReturnType,
+    type GetNetworkOrdersErrorType,
+    getNetworkOrders,
+} from "../actions/getNetworkOrders.js";
 
 export {
-  type GetOrderHistoryErrorType,
-  type GetOrderHistoryReturnType,
-  getOrderHistory,
-} from '../actions/getOrderHistory.js'
+    type GetOpenOrdersParams,
+    type GetOpenOrdersReturnType,
+    type GetOpenOrdersErrorType,
+    getOpenOrders,
+} from "../actions/getOpenOrders.js";
 
 export {
-  type GetOrderMatchingPoolParameters,
-  type GetOrderMatchingPoolReturnType,
-  getOrderMatchingPool,
-} from '../actions/getOrderMatchingPool.js'
+    type GetOrderParameters,
+    type GetOrderReturnType,
+    getOrder,
+} from "../actions/getOrder.js";
 
 export {
-  type GetOrderMetadataParameters,
-  type GetOrderMetadataReturnType,
-  type GetOrderMetadataErrorType,
-  getOrderMetadata,
-} from '../actions/getOrderMetadata.js'
-
-export { type GetOrdersReturnType, getOrders } from '../actions/getOrders.js'
+    type GetOrderHistoryErrorType,
+    type GetOrderHistoryReturnType,
+    getOrderHistory,
+} from "../actions/getOrderHistory.js";
 
 export {
-  type GetPkRootReturnType,
-  getPkRoot,
-  type GetPkRootScalarsReturnType,
-  getPkRootScalars,
-} from '../actions/getPkRoot.js'
+    type GetOrderMatchingPoolParameters,
+    type GetOrderMatchingPoolReturnType,
+    getOrderMatchingPool,
+} from "../actions/getOrderMatchingPool.js";
 
 export {
-  type GetPingErrorType,
-  type GetPingReturnType,
-  getPing,
-} from '../actions/ping.js'
+    type GetOrderMetadataParameters,
+    type GetOrderMetadataReturnType,
+    type GetOrderMetadataErrorType,
+    getOrderMetadata,
+} from "../actions/getOrderMetadata.js";
+
+export { type GetOrdersReturnType, getOrders } from "../actions/getOrders.js";
 
 export {
-  type GetPriceParameters,
-  type GetPriceReturnType,
-  getPriceFromPriceReporter,
-} from '../actions/getPriceFromPriceReporter.js'
-
-export { type GetSkRootReturnType, getSkRoot } from '../actions/getSkRoot.js'
-
-export {
-  type GetSymmetricKeyReturnType,
-  getSymmetricKey,
-} from '../actions/getSymmetricKey.js'
+    type GetPkRootReturnType,
+    getPkRoot,
+    type GetPkRootScalarsReturnType,
+    getPkRootScalars,
+} from "../actions/getPkRoot.js";
 
 export {
-  type GetTaskHistoryErrorType,
-  type GetTaskHistoryReturnType,
-  type GetTaskHistoryParameters,
-  getTaskHistory,
-} from '../actions/getTaskHistory.js'
+    type GetPingErrorType,
+    type GetPingReturnType,
+    getPing,
+} from "../actions/ping.js";
 
 export {
-  type GetTaskStatusParameters,
-  type GetTaskStatusReturnType,
-  getTaskStatus,
-} from '../actions/getTaskStatus.js'
+    type GetPriceParameters,
+    type GetPriceReturnType,
+    getPriceFromPriceReporter,
+} from "../actions/getPriceFromPriceReporter.js";
+
+export { type GetSkRootReturnType, getSkRoot } from "../actions/getSkRoot.js";
 
 export {
-  type GetTaskQueueReturnType,
-  getTaskQueue,
-} from '../actions/getTaskQueue.js'
+    type GetSymmetricKeyReturnType,
+    getSymmetricKey,
+} from "../actions/getSymmetricKey.js";
 
 export {
-  type GetTaskQueuePausedReturnType,
-  getTaskQueuePaused,
-} from '../actions/getTaskQueuePaused.js'
+    type GetTaskHistoryErrorType,
+    type GetTaskHistoryReturnType,
+    type GetTaskHistoryParameters,
+    getTaskHistory,
+} from "../actions/getTaskHistory.js";
 
 export {
-  type GetWalletFromRelayerParameters,
-  type GetWalletFromRelayerReturnType,
-  type GetWalletFromRelayerErrorType as GetWalletErrorType,
-  getWalletFromRelayer,
-} from '../actions/getWalletFromRelayer.js'
+    type GetTaskStatusParameters,
+    type GetTaskStatusReturnType,
+    getTaskStatus,
+} from "../actions/getTaskStatus.js";
 
 export {
-  type GetWalletIdReturnType,
-  getWalletId,
-} from '../actions/getWalletId.js'
+    type GetTaskQueueReturnType,
+    getTaskQueue,
+} from "../actions/getTaskQueue.js";
 
 export {
-  type GetWalletMatchableOrderIdsParameters,
-  type GetWalletMatchableOrderIdsReturnType,
-  type GetWalletMatchableOrderIdsErrorType,
-  getWalletMatchableOrderIds,
-} from '../actions/getWalletMatchableOrderIds.js'
+    type GetTaskQueuePausedReturnType,
+    getTaskQueuePaused,
+} from "../actions/getTaskQueuePaused.js";
 
 export {
-  type LookupWalletReturnType,
-  lookupWallet,
-} from '../actions/lookupWallet.js'
-
-export { type PayFeesReturnType, payFees } from '../actions/payFees.js'
-
-export {
-  type RefreshWalletReturnType,
-  refreshWallet,
-} from '../actions/refreshWallet.js'
+    type GetWalletFromRelayerParameters,
+    type GetWalletFromRelayerReturnType,
+    type GetWalletFromRelayerErrorType as GetWalletErrorType,
+    getWalletFromRelayer,
+} from "../actions/getWalletFromRelayer.js";
 
 export {
-  type UpdateOrderParameters,
-  type UpdateOrderReturnType,
-  updateOrder,
-} from '../actions/updateOrder.js'
+    type GetWalletIdReturnType,
+    getWalletId,
+} from "../actions/getWalletId.js";
 
 export {
-  type WaitForTaskCompletionParameters,
-  type WaitForTaskCompletionReturnType,
-  waitForTaskCompletion,
-} from '../actions/waitForTaskCompletion.js'
-
-export { waitForTaskCompletionWs } from '../actions/waitForTaskCompletionWs.js'
-
-export {
-  type WatchStatusParameters,
-  type WatchStatusReturnType,
-  watchStatus,
-} from '../actions/watchStatus.js'
+    type GetWalletMatchableOrderIdsParameters,
+    type GetWalletMatchableOrderIdsReturnType,
+    type GetWalletMatchableOrderIdsErrorType,
+    getWalletMatchableOrderIds,
+} from "../actions/getWalletMatchableOrderIds.js";
 
 export {
-  type WithdrawParameters,
-  type WithdrawReturnType,
-  withdraw,
-} from '../actions/withdraw.js'
+    type LookupWalletReturnType,
+    lookupWallet,
+} from "../actions/lookupWallet.js";
+
+export { type PayFeesReturnType, payFees } from "../actions/payFees.js";
+
+export {
+    type RefreshWalletReturnType,
+    refreshWallet,
+} from "../actions/refreshWallet.js";
+
+export {
+    type UpdateOrderParameters,
+    type UpdateOrderReturnType,
+    updateOrder,
+} from "../actions/updateOrder.js";
+
+export {
+    type WaitForTaskCompletionParameters,
+    type WaitForTaskCompletionReturnType,
+    waitForTaskCompletion,
+} from "../actions/waitForTaskCompletion.js";
+
+export { waitForTaskCompletionWs } from "../actions/waitForTaskCompletionWs.js";
+
+export {
+    type WatchStatusParameters,
+    type WatchStatusReturnType,
+    watchStatus,
+} from "../actions/watchStatus.js";
+
+export {
+    type WithdrawParameters,
+    type WithdrawReturnType,
+    withdraw,
+} from "../actions/withdraw.js";

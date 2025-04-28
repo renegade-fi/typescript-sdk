@@ -1,46 +1,41 @@
-import type { QueryOptions } from '@tanstack/query-core'
+import type { QueryOptions } from "@tanstack/query-core";
 import {
-  type GetTaskHistoryErrorType,
-  type GetTaskHistoryParameters,
-  type GetTaskHistoryReturnType,
-  getTaskHistory,
-} from '../actions/getTaskHistory.js'
-import type { Config } from '../createConfig.js'
-import type { Evaluate } from '../types/utils.js'
-import { type ScopeKeyParameter, filterQueryOptions } from './utils.js'
+    type GetTaskHistoryErrorType,
+    type GetTaskHistoryParameters,
+    type GetTaskHistoryReturnType,
+    getTaskHistory,
+} from "../actions/getTaskHistory.js";
+import type { Config } from "../createConfig.js";
+import type { Evaluate } from "../types/utils.js";
+import { type ScopeKeyParameter, filterQueryOptions } from "./utils.js";
 
-export type GetTaskHistoryOptions = Evaluate<
-  GetTaskHistoryParameters & ScopeKeyParameter
->
+export type GetTaskHistoryOptions = Evaluate<GetTaskHistoryParameters & ScopeKeyParameter>;
 
-export function getTaskHistoryQueryOptions(
-  config: Config,
-  options: GetTaskHistoryOptions = {},
-) {
-  return {
-    async queryFn({ queryKey }) {
-      const { scopeKey: _, ...parameters } = queryKey[1]
-      const history = await getTaskHistory(config, parameters)
-      return history ?? null
-    },
-    queryKey: getTaskHistoryQueryKey({
-      scopeKey: config.state.id,
-      ...options,
-    }),
-  } as const satisfies QueryOptions<
-    GetTaskHistoryQueryFnData,
-    GetTaskHistoryErrorType,
-    GetTaskHistoryData,
-    GetTaskHistoryQueryKey
-  >
+export function getTaskHistoryQueryOptions(config: Config, options: GetTaskHistoryOptions = {}) {
+    return {
+        async queryFn({ queryKey }) {
+            const { scopeKey: _, ...parameters } = queryKey[1];
+            const history = await getTaskHistory(config, parameters);
+            return history ?? null;
+        },
+        queryKey: getTaskHistoryQueryKey({
+            scopeKey: config.state.id,
+            ...options,
+        }),
+    } as const satisfies QueryOptions<
+        GetTaskHistoryQueryFnData,
+        GetTaskHistoryErrorType,
+        GetTaskHistoryData,
+        GetTaskHistoryQueryKey
+    >;
 }
 
-export type GetTaskHistoryQueryFnData = Evaluate<GetTaskHistoryReturnType>
+export type GetTaskHistoryQueryFnData = Evaluate<GetTaskHistoryReturnType>;
 
-export type GetTaskHistoryData = GetTaskHistoryQueryFnData
+export type GetTaskHistoryData = GetTaskHistoryQueryFnData;
 
 export function getTaskHistoryQueryKey(options: GetTaskHistoryOptions = {}) {
-  return ['task-history', filterQueryOptions(options)] as const
+    return ["task-history", filterQueryOptions(options)] as const;
 }
 
-export type GetTaskHistoryQueryKey = ReturnType<typeof getTaskHistoryQueryKey>
+export type GetTaskHistoryQueryKey = ReturnType<typeof getTaskHistoryQueryKey>;

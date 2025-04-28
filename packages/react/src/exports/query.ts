@@ -2,4 +2,4 @@
 // @renegade-fi/core/query
 ////////////////////////////////////////////////////////////////////////////////
 
-export * from '@renegade-fi/core/query'
+export * from "@renegade-fi/core/query";

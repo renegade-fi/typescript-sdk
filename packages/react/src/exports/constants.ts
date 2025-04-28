@@ -2,4 +2,4 @@
 // @renegade-fi/core/constants
 ////////////////////////////////////////////////////////////////////////////////
 
-export * from '@renegade-fi/core/constants'
+export * from "@renegade-fi/core/constants";

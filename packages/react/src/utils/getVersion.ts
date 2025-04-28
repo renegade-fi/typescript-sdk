@@ -1,3 +1,3 @@
-import { version } from '../version.js'
+import { version } from "../version.js";
 
-export const getVersion = () => `renegade-fi@${version}`
+export const getVersion = () => `renegade-fi@${version}`;
