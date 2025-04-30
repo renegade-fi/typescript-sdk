@@ -68,34 +68,6 @@ export class MalleableExternalMatchResponse {
     }
 
     /**
-     * Set the calldata to use a given base amount
-     */
-    public setBaseAmountCalldata(baseAmount: bigint) {
-        const calldataBytes = hexToBytes(this.match_bundle.settlement_tx.data as `0x${string}`);
-
-        // Padded to 32 bytes
-        const baseAmountBytes = numberToBytes(baseAmount, { size: BASE_AMOUNT_LENGTH });
-
-        const prefix = calldataBytes.slice(0, BASE_AMOUNT_OFFSET);
-        const suffix = calldataBytes.slice(
-            BASE_AMOUNT_OFFSET + BASE_AMOUNT_LENGTH,
-            calldataBytes.length,
-        );
-
-        const newCalldataBytes = concatBytes([prefix, baseAmountBytes, suffix]);
-        const newCalladata = bytesToHex(newCalldataBytes);
-        const newMatchBundle = {
-            ...this.match_bundle,
-            settlement_tx: {
-                ...this.match_bundle.settlement_tx,
-                data: newCalladata,
-            },
-        };
-
-        this.match_bundle = newMatchBundle;
-    }
-
-    /**
      * Get the bounds on the base amount
      *
      * Returns an array [min, max] inclusive
@@ -133,6 +105,34 @@ export class MalleableExternalMatchResponse {
      */
     public sendAmountAtBase(baseAmount: bigint) {
         return this.computeSendAmount(baseAmount);
+    }
+
+    /**
+     * Set the calldata to use a given base amount
+     */
+    private setBaseAmountCalldata(baseAmount: bigint) {
+        const calldataBytes = hexToBytes(this.match_bundle.settlement_tx.data as `0x${string}`);
+
+        // Padded to 32 bytes
+        const baseAmountBytes = numberToBytes(baseAmount, { size: BASE_AMOUNT_LENGTH });
+
+        const prefix = calldataBytes.slice(0, BASE_AMOUNT_OFFSET);
+        const suffix = calldataBytes.slice(
+            BASE_AMOUNT_OFFSET + BASE_AMOUNT_LENGTH,
+            calldataBytes.length,
+        );
+
+        const newCalldataBytes = concatBytes([prefix, baseAmountBytes, suffix]);
+        const newCalladata = bytesToHex(newCalldataBytes);
+        const newMatchBundle = {
+            ...this.match_bundle,
+            settlement_tx: {
+                ...this.match_bundle.settlement_tx,
+                data: newCalladata,
+            },
+        };
+
+        this.match_bundle = newMatchBundle;
     }
 
     /**
