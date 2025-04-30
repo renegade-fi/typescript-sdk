@@ -73,6 +73,25 @@ importers:
         specifier: ^5.3.3
         version: 5.5.4
 
+  examples/malleable-external-match:
+    dependencies:
+      '@renegade-fi/node':
+        specifier: workspace:*
+        version: link:../../packages/node
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
+      viem:
+        specifier: ^2.7.8
+        version: 2.20.0(typescript@5.5.4)(zod@3.23.8)
+    devDependencies:
+      tsx:
+        specifier: ^4.7.0
+        version: 4.19.2
+      typescript:
+        specifier: ^5.3.3
+        version: 5.5.4
+
   examples/native-eth-gas-sponsorship:
     dependencies:
       '@renegade-fi/core':

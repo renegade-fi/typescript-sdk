@@ -3,9 +3,9 @@ import { ASSEMBLE_MALLEABLE_EXTERNAL_MATCH_ROUTE, RENEGADE_API_KEY_HEADER } from
 import type { AuthConfig } from "../createAuthConfig.js";
 import { BaseError, type BaseErrorType } from "../errors/base.js";
 import type { ExternalOrder, SponsoredQuoteResponse } from "../types/externalMatch.js";
+import { MalleableExternalMatchResponse } from "../types/malleableMatch.js";
 import { stringifyForWasm } from "../utils/bigJSON.js";
 import { postWithSymmetricKey } from "../utils/http.js";
-import { MalleableExternalMatchResponse } from "../types/malleableMatch.js";
 
 export type AssembleMalleableQuoteParameters = {
     quote: SponsoredQuoteResponse;

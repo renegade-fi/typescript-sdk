@@ -199,7 +199,7 @@ export const ASSEMBLE_EXTERNAL_MATCH_ROUTE = "/matching-engine/assemble-external
  * The route used to assemble an external match into a malleable bundle
  */
 export const ASSEMBLE_MALLEABLE_EXTERNAL_MATCH_ROUTE =
-    "/v0/matching-engine/assemble-malleable-external-match";
+    "/matching-engine/assemble-malleable-external-match";
 
 /// The query parameter for disabling gas sponsorship
 export const DISABLE_GAS_SPONSORSHIP_PARAM = "disable_gas_sponsorship";

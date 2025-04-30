@@ -1,12 +1,12 @@
 import { bytesToHex, concatBytes, hexToBytes, numberToBytes } from "viem/utils";
-import { FixedPoint } from "./fixedPoint.js";
 import type {
     ExternalAssetTransfer,
     ExternalSettlementTx,
     GasSponsorshipInfo,
 } from "./externalMatch.js";
-import { OrderSide, type OrderSideType } from "./order.js";
+import { FixedPoint } from "./fixedPoint.js";
 import type { FeeTakeRate } from "./match.js";
+import { OrderSide, type OrderSideType } from "./order.js";
 
 /** The offset of the base amount in the calldata */
 const BASE_AMOUNT_OFFSET = 4;

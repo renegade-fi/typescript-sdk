@@ -1,0 +1,18 @@
+{
+    "name": "@renegade-fi/malleable-external-match-example",
+    "private": true,
+    "version": "0.0.1",
+    "type": "module",
+    "scripts": {
+        "start": "tsx --require dotenv/config index.ts"
+    },
+    "dependencies": {
+        "@renegade-fi/node": "workspace:*",
+        "dotenv": "^16.4.5",
+        "viem": "^2.7.8"
+    },
+    "devDependencies": {
+        "tsx": "^4.7.0",
+        "typescript": "^5.3.3"
+    }
+}

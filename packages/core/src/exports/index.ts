@@ -294,7 +294,7 @@ export {
 export * from "../types/wallet.js";
 export * from "../types/order.js";
 export * from "../types/task.js";
-
+export * from "../types/malleableMatch.js";
 export type {
     Evaluate,
     ExactPartial,
