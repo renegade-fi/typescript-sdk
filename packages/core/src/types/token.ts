@@ -1,4 +1,3 @@
-import invariant from "tiny-invariant";
 import { type Address, formatUnits, isHex, zeroAddress } from "viem";
 import type { Exchange } from "./wallet.js";
 
@@ -23,8 +22,6 @@ type TokenMapping = {
 const tokenMappingUrl = process.env.TOKEN_MAPPING_URL || process.env.NEXT_PUBLIC_TOKEN_MAPPING_URL;
 
 const tokenMappingStr = process.env.NEXT_PUBLIC_TOKEN_MAPPING || process.env.TOKEN_MAPPING;
-
-invariant(tokenMappingUrl || tokenMappingStr, "No token mapping initialization option provided");
 
 export const tokenMapping: TokenMapping = {
     tokens: [],

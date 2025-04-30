@@ -1,11 +1,11 @@
 import invariant from "tiny-invariant";
 import type { Address, PublicClient, SignMessageReturnType } from "viem";
-import type { SupportedChainId } from "./chains/defaults.js";
+import type { ChainId } from "./constants.js";
 import type { BaseConfig } from "./createConfig.js";
 import type * as rustUtils from "./utils.d.ts";
 
 export type CreateExternalKeyConfigParameters = {
-    chainId: SupportedChainId;
+    chainId: ChainId;
     /** URL of the relayer service */
     relayerUrl: string;
     /** URL of the websocket service */
@@ -89,7 +89,7 @@ export function createExternalKeyConfig(
 }
 
 export type ExternalConfig = BaseConfig & {
-    chainId: SupportedChainId;
+    chainId: ChainId;
     relayerUrl: string;
     signMessage: (message: string) => Promise<SignMessageReturnType>;
     symmetricKey: `0x${string}`;
