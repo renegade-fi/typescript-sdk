@@ -1,54 +1,55 @@
-export const ChainIds = {
-    ArbitrumMainnet: 42161,
-    ArbitrumSepolia: 421614,
-} as const;
-export type ChainId = (typeof ChainIds)[keyof typeof ChainIds];
+import {
+    CHAIN_IDS,
+    type ChainId,
+    DARKPOOL_ADDRESS_ARBITRUM_MAINNET,
+    DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
+    HSE_BASE_URL_ARBITRUM_MAINNET,
+    HSE_BASE_URL_ARBITRUM_SEPOLIA,
+    PRICE_REPORTER_URL_ARBITRUM_MAINNET,
+    PRICE_REPORTER_URL_ARBITRUM_SEPOLIA,
+    RELAYER_URL_ARBITRUM_MAINNET,
+    RELAYER_URL_ARBITRUM_SEPOLIA,
+} from "../constants.js";
 
-export interface ChainConfig {
+export interface SDKConfig {
     readonly id: ChainId;
-    readonly name: string;
     readonly hseBaseUrl: string;
     readonly darkpoolAddress: `0x${string}`;
-    readonly permit2Address: `0x${string}`;
     readonly priceReporterUrl: string;
     readonly relayerUrl: string;
 }
 
-export const CHAIN_CONFIGS: Record<ChainId, ChainConfig> = {
-    [ChainIds.ArbitrumMainnet]: {
-        id: ChainIds.ArbitrumMainnet,
-        name: "Arbitrum Mainnet",
-        hseBaseUrl: "https://mainnet.historical-state.renegade.fi:3000",
-        darkpoolAddress: "0x30bD8eAb29181F790D7e495786d4B96d7AfDC518",
-        permit2Address: "0x000000000022D473030F116dDEE9F6B43aC78BA3",
-        relayerUrl: "https://mainnet.cluster0.renegade.fi:3000",
-        priceReporterUrl: "https://mainnet.price-reporter.renegade.fi:3000",
+export const CONFIGS: Record<ChainId, SDKConfig> = {
+    [CHAIN_IDS.ArbitrumMainnet]: {
+        id: CHAIN_IDS.ArbitrumMainnet,
+        hseBaseUrl: HSE_BASE_URL_ARBITRUM_MAINNET,
+        darkpoolAddress: DARKPOOL_ADDRESS_ARBITRUM_MAINNET,
+        relayerUrl: RELAYER_URL_ARBITRUM_MAINNET,
+        priceReporterUrl: PRICE_REPORTER_URL_ARBITRUM_MAINNET,
     },
-    [ChainIds.ArbitrumSepolia]: {
-        id: ChainIds.ArbitrumSepolia,
-        name: "Arbitrum Sepolia",
-        hseBaseUrl: "https://testnet.historical-state.renegade.fi:3000",
-        darkpoolAddress: "0x9af58f1ff20ab22e819e40b57ffd784d115a9ef5",
-        permit2Address: "0x9458198bcc289c42e460cb8ca143e5854f734442",
-        relayerUrl: "https://testnet.cluster0.renegade.fi:3000",
-        priceReporterUrl: "https://testnet.price-reporter.renegade.fi:3000",
+    [CHAIN_IDS.ArbitrumSepolia]: {
+        id: CHAIN_IDS.ArbitrumSepolia,
+        hseBaseUrl: HSE_BASE_URL_ARBITRUM_SEPOLIA,
+        darkpoolAddress: DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
+        relayerUrl: RELAYER_URL_ARBITRUM_SEPOLIA,
+        priceReporterUrl: PRICE_REPORTER_URL_ARBITRUM_SEPOLIA,
     },
 };
 
 /** Returns true if the chain ID is supported */
 export function isSupportedChainId(chainId: number): chainId is ChainId {
-    return chainId in CHAIN_CONFIGS;
+    return chainId in CONFIGS;
 }
 
 /** Get full config or throw if unsupported */
-export function getChainConfig(chainId: number): ChainConfig {
+export function getSDKConfig(chainId: number): SDKConfig {
     if (!isSupportedChainId(chainId)) {
         throw new Error(`Unsupported chain ID: ${chainId}`);
     }
-    return CHAIN_CONFIGS[chainId];
+    return CONFIGS[chainId];
 }
 
 /** Quick HSE URL lookup */
 export function getHseBaseUrl(chainId: number): string {
-    return getChainConfig(chainId).hseBaseUrl;
+    return getSDKConfig(chainId).hseBaseUrl;
 }

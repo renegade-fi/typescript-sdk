@@ -332,7 +332,11 @@ export {
 
 export { parseBigJSON, stringifyForWasm } from "../utils/bigJSON.js";
 
-export { isSupportedChainId } from "../chains/defaults.js";
+export {
+    getSDKConfig,
+    isSupportedChainId,
+    type SDKConfig,
+} from "../chains/defaults.js";
 
 ////////////////////////////////////////////////////////////////////////////////
 // Clients
@@ -343,4 +347,3 @@ export {
     PriceReporterError,
     HttpError,
 } from "../clients/price-reporter/error.js";
-export { RenegadeClient } from "../clients/renegade/client.js";

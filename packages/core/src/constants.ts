@@ -14,6 +14,37 @@ export const ROOT_KEY_MESSAGE_PREFIX = "Unlock your Renegade Wallet on chain ID:
 export const SIG_EXPIRATION_BUFFER_MS = 10_000; // 10 seconds
 
 ////////////////////////////////////////////////////////////////////////////////
+// Chain IDs
+////////////////////////////////////////////////////////////////////////////////
+
+export const CHAIN_IDS = {
+    ArbitrumMainnet: 42161,
+    ArbitrumSepolia: 421614,
+} as const;
+
+export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
+
+////////////////////////////////////////////////////////////////////////////////
+// Base URLs
+////////////////////////////////////////////////////////////////////////////////
+
+export const RELAYER_URL_ARBITRUM_MAINNET = "mainnet.cluster0.renegade.fi";
+export const RELAYER_URL_ARBITRUM_SEPOLIA = "testnet.cluster0.renegade.fi";
+
+export const PRICE_REPORTER_URL_ARBITRUM_MAINNET = "mainnet.price-reporter.renegade.fi";
+export const PRICE_REPORTER_URL_ARBITRUM_SEPOLIA = "testnet.price-reporter.renegade.fi";
+
+export const HSE_BASE_URL_ARBITRUM_MAINNET = "https://mainnet.historical-state.renegade.fi:3000";
+export const HSE_BASE_URL_ARBITRUM_SEPOLIA = "https://testnet.historical-state.renegade.fi:3000";
+
+////////////////////////////////////////////////////////////////////////////////
+// Deployed Contracts
+////////////////////////////////////////////////////////////////////////////////
+
+export const DARKPOOL_ADDRESS_ARBITRUM_MAINNET = "0x30bD8eAb29181F790D7e495786d4B96d7AfDC518";
+export const DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA = "0x9af58f1ff20ab22e819e40b57ffd784d115a9ef5";
+
+////////////////////////////////////////////////////////////////////////////////
 // System-Wide Constants
 ////////////////////////////////////////////////////////////////////////////////
 

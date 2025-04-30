@@ -1,6 +1,6 @@
 import invariant from "tiny-invariant";
 import type { Address, PublicClient, SignMessageReturnType } from "viem";
-import type { ChainId } from "./chains/defaults.js";
+import type { ChainId } from "./constants.js";
 import type { BaseConfig } from "./createConfig.js";
 import type * as rustUtils from "./utils.d.ts";
 
