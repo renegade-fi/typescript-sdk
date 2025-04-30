@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.5.11
+
+### Patch Changes
+
+- core: add malleable matches
+- Updated dependencies
+  - @renegade-fi/core@0.6.8
+
 ## 0.5.10
 
 ### Patch Changes

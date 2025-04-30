@@ -1,7 +1,7 @@
 {
     "name": "@renegade-fi/react",
     "description": "React library for Renegade",
-    "version": "0.5.10",
+    "version": "0.5.11",
     "repository": {
         "type": "git",
         "url": "https://github.com/renegade-fi/typescript-sdk.git",
@@ -46,9 +46,15 @@
     },
     "typesVersions": {
         "*": {
-            "actions": ["./dist/types/exports/actions.d.ts"],
-            "constants": ["./dist/types/exports/constants.d.ts"],
-            "query": ["./dist/types/exports/query.d.ts"]
+            "actions": [
+                "./dist/types/exports/actions.d.ts"
+            ],
+            "constants": [
+                "./dist/types/exports/constants.d.ts"
+            ],
+            "query": [
+                "./dist/types/exports/query.d.ts"
+            ]
         }
     },
     "peerDependencies": {
@@ -69,5 +75,13 @@
         "react": ">=18",
         "react-dom": ">=18"
     },
-    "keywords": ["cryptography", "zero-knowledge", "darkpool", "eth", "ethereum", "dapps", "web3"]
+    "keywords": [
+        "cryptography",
+        "zero-knowledge",
+        "darkpool",
+        "eth",
+        "ethereum",
+        "dapps",
+        "web3"
+    ]
 }

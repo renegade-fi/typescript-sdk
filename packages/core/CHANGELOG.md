@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.6.8
+
+### Patch Changes
+
+- core: add malleable matches
+
 ## 0.6.7
 
 ### Patch Changes

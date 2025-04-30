@@ -1,5 +1,14 @@
 # @renegade-fi/gas-sponsorship-example
 
+## 0.0.11
+
+### Patch Changes
+
+- core: add malleable matches
+- Updated dependencies
+  - @renegade-fi/core@0.6.8
+  - @renegade-fi/node@0.5.12
+
 ## 0.0.10
 
 ### Patch Changes

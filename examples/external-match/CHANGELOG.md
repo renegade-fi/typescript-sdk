@@ -1,5 +1,14 @@
 # renegade-external-match-example
 
+## 1.1.8
+
+### Patch Changes
+
+- core: add malleable matches
+- Updated dependencies
+  - @renegade-fi/core@0.6.8
+  - @renegade-fi/node@0.5.12
+
 ## 1.1.7
 
 ### Patch Changes
