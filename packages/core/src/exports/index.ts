@@ -343,3 +343,4 @@ export {
     PriceReporterError,
     HttpError,
 } from "../clients/price-reporter/error.js";
+export { RenegadeClient } from "../clients/renegade/client.js";
