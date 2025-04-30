@@ -75,6 +75,12 @@ export {
 } from "../actions/assembleExternalQuote.js";
 
 export {
+    type AssembleMalleableQuoteParameters,
+    type AssembleMalleableQuoteReturnType,
+    type AssembleMalleableQuoteErrorType,
+    assembleMalleableQuote,
+} from "../actions/assembleMalleableQuote.js";
+export {
     type GetBalancesReturnType,
     getBalances,
 } from "../actions/getBalances.js";
@@ -288,7 +294,7 @@ export {
 export * from "../types/wallet.js";
 export * from "../types/order.js";
 export * from "../types/task.js";
-
+export * from "../types/malleableMatch.js";
 export type {
     Evaluate,
     ExactPartial,

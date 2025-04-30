@@ -1,3 +1,12 @@
+/**
+ * The side of the market an order is on
+ */
+export const OrderSide = {
+    BUY: "buy",
+    SELL: "sell",
+} as const;
+export type OrderSideType = (typeof OrderSide)[keyof typeof OrderSide];
+
 export type Order = {
     id: string;
     quote_mint: `0x${string}`;

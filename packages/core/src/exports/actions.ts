@@ -71,6 +71,13 @@ export {
 } from "../actions/assembleExternalQuote.js";
 
 export {
+    type AssembleMalleableQuoteParameters,
+    type AssembleMalleableQuoteReturnType,
+    type AssembleMalleableQuoteErrorType,
+    assembleMalleableQuote,
+} from "../actions/assembleMalleableQuote.js";
+
+export {
     type GetBalancesReturnType,
     getBalances,
 } from "../actions/getBalances.js";
