@@ -141,12 +141,6 @@ export {
     getPing,
 } from "../actions/ping.js";
 
-export {
-    type GetPriceParameters,
-    type GetPriceReturnType,
-    getPriceFromPriceReporter,
-} from "../actions/getPriceFromPriceReporter.js";
-
 export { type GetSkRootReturnType, getSkRoot } from "../actions/getSkRoot.js";
 
 export {

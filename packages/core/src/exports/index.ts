@@ -137,12 +137,6 @@ export {
 } from "../actions/getPkRoot.js";
 
 export {
-    type GetPriceParameters,
-    type GetPriceReturnType,
-    getPriceFromPriceReporter,
-} from "../actions/getPriceFromPriceReporter.js";
-
-export {
     type GetSkRootReturnType,
     getSkRoot,
 } from "../actions/getSkRoot.js";
@@ -292,12 +286,6 @@ export { BaseError } from "../errors/base.js";
 // Types
 ////////////////////////////////////////////////////////////////////////////////
 
-export {
-    Token,
-    tokenMapping,
-    loadTokenMapping,
-    getDefaultQuoteToken,
-} from "../types/token.js";
 export * from "../types/wallet.js";
 export * from "../types/order.js";
 export * from "../types/task.js";
@@ -317,8 +305,6 @@ export type {
 ////////////////////////////////////////////////////////////////////////////////
 // Utils
 ////////////////////////////////////////////////////////////////////////////////
-
-export { formatAmount, parseAmount } from "../utils/format.js";
 
 export {
     cookieStorage,
@@ -350,13 +336,3 @@ export {
     isSupportedChainId,
     type SDKConfig,
 } from "../chains/defaults.js";
-
-////////////////////////////////////////////////////////////////////////////////
-// Clients
-////////////////////////////////////////////////////////////////////////////////
-
-export { PriceReporterClient } from "../clients/price-reporter/client.js";
-export {
-    PriceReporterError,
-    HttpError,
-} from "../clients/price-reporter/error.js";
