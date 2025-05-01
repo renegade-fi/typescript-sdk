@@ -6,7 +6,6 @@ import {
     getPkRootScalars,
     waitForTaskCompletionWs,
 } from "@renegade-fi/core";
-import { type createConfig, waitForTransactionReceipt } from "@wagmi/core";
 import invariant from "tiny-invariant";
 import { type Address, type WalletClient, erc20Abi, zeroAddress } from "viem";
 import { signPermit2 } from "../utils/permit2.js";
@@ -16,7 +15,6 @@ export type ExecuteDepositParameters = {
     amount: bigint;
     permit2Address: Address;
     walletClient: WalletClient;
-    viemConfig: ReturnType<typeof createConfig>;
     awaitTask?: boolean;
     newPublicKey?: string;
 };
@@ -25,8 +23,7 @@ export async function executeDeposit(
     config: RenegadeConfig,
     parameters: ExecuteDepositParameters,
 ): DepositReturnType {
-    const { mint, amount, permit2Address, walletClient, viemConfig, awaitTask, newPublicKey } =
-        parameters;
+    const { mint, amount, permit2Address, walletClient, awaitTask, newPublicKey } = parameters;
     invariant(config.viemClient, "Viem client is required");
     const chainId = config.viemClient.chain?.id;
 
@@ -70,13 +67,15 @@ export async function executeDeposit(
             nonce,
         });
         const hash = await walletClient.writeContract(request);
-        await waitForTransactionReceipt(viemConfig, {
-            hash,
-            confirmations: 1,
-            timeout: 5_000,
-        }).catch(() => {
-            // Attempt deposit even if receipt not found
-        });
+        await config.viemClient
+            .waitForTransactionReceipt({
+                hash,
+                confirmations: 1,
+                timeout: 5_000,
+            })
+            .catch(() => {
+                // Attempt deposit even if receipt not found
+            });
     }
 
     // Sign Permit2

@@ -3,6 +3,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 export {
+    type CancelOrderParameters,
+    type CancelOrderReturnType,
+    type CancelOrderErrorType,
+    cancelOrder,
+} from "../actions/cancelOrder.js";
+
+export {
     type CancelOrderRequestErrorType,
     type CancelOrderRequestParameters,
     type CancelOrderRequestReturnType,

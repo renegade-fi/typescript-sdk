@@ -44,6 +44,9 @@ export const HSE_BASE_URL_ARBITRUM_SEPOLIA = "https://testnet.historical-state.r
 export const DARKPOOL_ADDRESS_ARBITRUM_MAINNET = "0x30bD8eAb29181F790D7e495786d4B96d7AfDC518";
 export const DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA = "0x9af58f1ff20ab22e819e40b57ffd784d115a9ef5";
 
+export const PERMIT2_ADDRESS_ARBITRUM_MAINNET = "0x000000000022D473030F116dDEE9F6B43aC78BA3";
+export const PERMIT2_ADDRESS_ARBITRUM_SEPOLIA = "0x9458198bcc289c42e460cb8ca143e5854f734442";
+
 ////////////////////////////////////////////////////////////////////////////////
 // System-Wide Constants
 ////////////////////////////////////////////////////////////////////////////////
