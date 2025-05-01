@@ -1,7 +1,7 @@
 {
-    "name": "@renegade-fi/token",
+    "name": "@renegade-fi/price-reporter",
     "version": "0.0.1",
-    "description": "Token remapping for Renegade",
+    "description": "A TypeScript client for interacting with the Price Reporter",
     "private": true,
     "files": [
         "dist/**",
@@ -31,6 +31,9 @@
     "keywords": [],
     "author": "",
     "dependencies": {
-        "@renegade-fi/core": "workspace:^"
+        "axios": "^1.6.8",
+        "@renegade-fi/core": "workspace:^",
+        "@renegade-fi/token": "workspace:^",
+        "neverthrow": "^8.2.0"
     }
 }

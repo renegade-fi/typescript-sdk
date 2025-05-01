@@ -234,8 +234,6 @@ export {
     createStorage,
     noopStorage,
     // Utils
-    formatAmount,
-    parseAmount,
     cookieStorage,
     cookieToInitialState,
     deepEqual,
@@ -250,9 +248,4 @@ export {
     AuthType,
     RelayerWebsocket,
     type RelayerWebsocketParams,
-    // Token
-    Token,
-    tokenMapping,
-    loadTokenMapping,
-    getDefaultQuoteToken,
 } from "@renegade-fi/core";

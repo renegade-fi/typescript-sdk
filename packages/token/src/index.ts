@@ -31,7 +31,7 @@ export class Token {
 
     /** Fetch a remap from the repo */
     static async fetchRemapFromRepo(chain: number) {
-        const name = getSDKConfig(chain).name;
+        const name = getSDKConfig(chain).environment;
         const url = new URL(`${REMAP_BASE_URL}${name}.json`);
         const res = await fetch(url);
         const data = (await res.json()) as TokenMapping;
@@ -55,6 +55,13 @@ export class Token {
                 ({
                     ...token,
                     address: token.address.toLowerCase() as Address,
+                    supported_exchanges: Object.fromEntries(
+                        Object.entries(token.supported_exchanges).map(([k, v]) => [
+                            // Lowercase all of the exchange names to match the Exchange enum
+                            k.toLowerCase(),
+                            v,
+                        ]),
+                    ),
                 }) as const satisfies TokenMetadata,
         );
 
@@ -124,7 +131,7 @@ export class Token {
     /// Converts the amount of the token, accounting for the
     /// associated number of decimals.
     convertToDecimal(amount: bigint): number {
-        return Number(formatUnits(amount, this.decimals));
+        return formatUnits(amount, this.decimals);
     }
 
     static fromTicker(ticker: string): Token {
@@ -181,6 +188,14 @@ export class Token {
             chain_addresses,
             logo_url,
         });
+    }
+
+    /** Returns a read-only view of the loaded token mapping */
+    static getMapping(): Readonly<TokenMapping> {
+        if (Token.tokenMapping.tokens.length === 0) {
+            throw new Error("Token not initialized. Call fetchRemapFromRepo first.");
+        }
+        return Token.tokenMapping;
     }
 }
 
