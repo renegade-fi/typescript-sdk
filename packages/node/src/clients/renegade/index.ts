@@ -1,19 +1,33 @@
-import type { ChainId, RenegadeConfig } from "@renegade-fi/core";
+import type {
+    CancelOrderParameters,
+    ChainId,
+    CreateOrderParameters,
+    DepositParameters,
+    RenegadeConfig,
+    SDKConfig,
+    WithdrawParameters,
+} from "@renegade-fi/core";
+import { createConfig, getSDKConfig } from "@renegade-fi/core";
 import {
-    CHAIN_IDS,
-    DARKPOOL_ADDRESS_ARBITRUM_MAINNET,
-    DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
-    PRICE_REPORTER_URL_ARBITRUM_MAINNET,
-    PRICE_REPORTER_URL_ARBITRUM_SEPOLIA,
-    RELAYER_URL_ARBITRUM_MAINNET,
-    RELAYER_URL_ARBITRUM_SEPOLIA,
-    createConfig,
+    cancelOrder,
+    createOrder,
+    createWallet,
+    deposit,
     getBackOfQueueWallet,
-    getSDKConfig,
     getWalletFromRelayer,
     lookupWallet,
-} from "@renegade-fi/core";
+    payFees,
+    refreshWallet,
+    withdraw,
+} from "@renegade-fi/core/actions";
+import { CHAIN_IDS } from "@renegade-fi/core/constants";
+import type { PublicClient, WalletClient } from "viem";
 import * as rustUtils from "../../../renegade-utils/index.js";
+import { type ExecuteDepositParameters, executeDeposit } from "../../actions/executeDeposit.js";
+import {
+    type ExecuteWithdrawalParameters,
+    executeWithdrawal,
+} from "../../actions/executeWithdrawal.js";
 
 type RustUtilsInterface = typeof rustUtils;
 
@@ -24,59 +38,37 @@ type RustUtilsInterface = typeof rustUtils;
  * TODO: Provide docs on seed.
  */
 export class RenegadeClient {
+    // TODO: Delete once we migrate to v2
     readonly config: RenegadeConfig;
+    readonly configv2: SDKConfig;
+    readonly seed: `0x${string}`;
 
-    constructor(
-        baseUrl: string,
-        rustUtils: RustUtilsInterface,
-        seed: `0x${string}`,
-        // TODO: In a future PR, refactor to remove below fields
-        darkPoolAddress: `0x${string}`,
-        priceReporterUrl: string,
-        chainId: ChainId,
-    ) {
+    constructor(rustUtils: RustUtilsInterface, seed: `0x${string}`, configv2: SDKConfig) {
+        this.seed = seed;
         this.config = createConfig({
-            darkPoolAddress: darkPoolAddress,
-            priceReporterUrl: priceReporterUrl,
-            relayerUrl: baseUrl,
-            chainId: chainId,
+            darkPoolAddress: configv2.darkpoolAddress,
+            priceReporterUrl: configv2.priceReporterUrl,
+            relayerUrl: configv2.relayerUrl,
+            chainId: configv2.id,
             utils: rustUtils,
         });
         this.config.setState((s) => ({ ...s, seed }));
+        this.configv2 = configv2;
     }
 
     static new(chainId: ChainId, seed: `0x${string}`) {
         const config = getSDKConfig(chainId);
-        return new RenegadeClient(
-            config.relayerUrl,
-            rustUtils,
-            seed,
-            config.darkpoolAddress,
-            config.priceReporterUrl,
-            chainId,
-        );
+        return new RenegadeClient(rustUtils, seed, config);
     }
 
     static newArbitrumMainnetClient(seed: `0x${string}`) {
-        return new RenegadeClient(
-            RELAYER_URL_ARBITRUM_MAINNET,
-            rustUtils,
-            seed,
-            DARKPOOL_ADDRESS_ARBITRUM_MAINNET,
-            PRICE_REPORTER_URL_ARBITRUM_MAINNET,
-            CHAIN_IDS.ArbitrumMainnet,
-        );
+        const config = getSDKConfig(CHAIN_IDS.ArbitrumMainnet);
+        return new RenegadeClient(rustUtils, seed, config);
     }
 
     static newArbitrumSepoliaClient(seed: `0x${string}`) {
-        return new RenegadeClient(
-            RELAYER_URL_ARBITRUM_SEPOLIA,
-            rustUtils,
-            seed,
-            DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
-            PRICE_REPORTER_URL_ARBITRUM_SEPOLIA,
-            CHAIN_IDS.ArbitrumSepolia,
-        );
+        const config = getSDKConfig(CHAIN_IDS.ArbitrumSepolia);
+        return new RenegadeClient(rustUtils, seed, config);
     }
 
     // -- Wallet Operations --
@@ -94,11 +86,61 @@ export class RenegadeClient {
         return lookupWallet(this.getConfig());
     }
 
+    async refreshWallet() {
+        return refreshWallet(this.getConfig());
+    }
+
+    async createWallet() {
+        return createWallet(this.getConfig());
+    }
+
     // -- Balance Operations --
-    // TODO: Implement
+    async deposit(parameters: DepositParameters) {
+        return deposit(this.getConfig(), parameters);
+    }
+
+    async executeDeposit(
+        publicClient: PublicClient,
+        walletClient: WalletClient,
+        parameters: Omit<ExecuteDepositParameters, "permit2Address" | "walletClient">,
+    ) {
+        const config = getSDKConfig(this.getConfig().chainId);
+        const configWithPublicClient = createConfig({
+            darkPoolAddress: config.darkpoolAddress,
+            priceReporterUrl: config.priceReporterUrl,
+            relayerUrl: config.relayerUrl,
+            chainId: this.getConfig().chainId,
+            utils: rustUtils,
+            viemClient: publicClient,
+        });
+        configWithPublicClient.setState((s) => ({ ...s, seed: this.seed }));
+        return executeDeposit(configWithPublicClient, {
+            ...parameters,
+            permit2Address: this.configv2.permit2Address,
+            walletClient,
+        });
+    }
+
+    async withdraw(parameters: WithdrawParameters) {
+        return withdraw(this.getConfig(), parameters);
+    }
+
+    async executeWithdraw(parameters: ExecuteWithdrawalParameters) {
+        return executeWithdrawal(this.getConfig(), parameters);
+    }
+
+    async payFees() {
+        return payFees(this.getConfig());
+    }
 
     // -- Order Operations --
-    // TODO: Implement
+    async placeOrder(parameters: CreateOrderParameters) {
+        return createOrder(this.getConfig(), parameters);
+    }
+
+    async cancelOrder(parameters: CancelOrderParameters) {
+        return cancelOrder(this.getConfig(), parameters);
+    }
 
     // -- Private --
     private getConfig() {
