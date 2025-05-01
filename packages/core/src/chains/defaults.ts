@@ -15,6 +15,7 @@ import {
 
 export interface SDKConfig {
     readonly id: ChainId;
+    readonly name: string;
     readonly hseBaseUrl: string;
     readonly darkpoolAddress: `0x${string}`;
     readonly priceReporterUrl: string;
@@ -25,6 +26,7 @@ export interface SDKConfig {
 export const CONFIGS: Record<ChainId, SDKConfig> = {
     [CHAIN_IDS.ArbitrumMainnet]: {
         id: CHAIN_IDS.ArbitrumMainnet,
+        name: "mainnet",
         hseBaseUrl: HSE_BASE_URL_ARBITRUM_MAINNET,
         darkpoolAddress: DARKPOOL_ADDRESS_ARBITRUM_MAINNET,
         relayerUrl: RELAYER_URL_ARBITRUM_MAINNET,
@@ -33,6 +35,7 @@ export const CONFIGS: Record<ChainId, SDKConfig> = {
     },
     [CHAIN_IDS.ArbitrumSepolia]: {
         id: CHAIN_IDS.ArbitrumSepolia,
+        name: "testnet",
         hseBaseUrl: HSE_BASE_URL_ARBITRUM_SEPOLIA,
         darkpoolAddress: DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
         relayerUrl: RELAYER_URL_ARBITRUM_SEPOLIA,

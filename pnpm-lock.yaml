@@ -197,6 +197,12 @@ importers:
         specifier: workspace:^
         version: link:../core
 
+  packages/token:
+    dependencies:
+      '@renegade-fi/core':
+        specifier: workspace:^
+        version: link:../core
+
 packages:
 
   '@adraffy/ens-normalize@1.10.0':

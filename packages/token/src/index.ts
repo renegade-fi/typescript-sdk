@@ -1,9 +1,6 @@
-import { type Address, formatUnits, isHex, zeroAddress } from "viem";
-import type { Exchange } from "./wallet.js";
+import { type Exchange, getSDKConfig } from "@renegade-fi/core";
 
-////////////////////////////////////////////////////////////////////////////////
-// Token Mapping
-////////////////////////////////////////////////////////////////////////////////
+type Address = `0x${string}`;
 
 type TokenMetadata = {
     name: string;
@@ -19,51 +16,53 @@ type TokenMapping = {
     tokens: TokenMetadata[];
 };
 
-const tokenMappingUrl = process.env.TOKEN_MAPPING_URL || process.env.NEXT_PUBLIC_TOKEN_MAPPING_URL;
+/** The zero address */
+const zeroAddress = "0x0000000000000000000000000000000000000000";
 
-const tokenMappingStr = process.env.NEXT_PUBLIC_TOKEN_MAPPING || process.env.TOKEN_MAPPING;
+/* The base URL for raw token remap files */
+const REMAP_BASE_URL = "https://raw.githubusercontent.com/renegade-fi/token-mappings/main/";
 
-export const tokenMapping: TokenMapping = {
-    tokens: [],
-};
-
-export async function loadTokenMapping() {
-    if (!tokenMappingUrl) {
-        throw new Error("No token mapping URL provided");
-    }
-
-    const res = await fetch(tokenMappingUrl);
-    const data = await res.json();
-    formatTokenMapping(data);
-
-    tokenMapping.tokens = data.tokens;
-}
-
-function formatTokenMapping(data: any) {
-    for (const t of data.tokens) {
-        t.supported_exchanges = Object.fromEntries(
-            Object.entries(t.supported_exchanges).map(([k, v]) => [
-                // Lowercase all of the exchange names to match the Exchange enum
-                k.toLowerCase(),
-                v,
-            ]),
-        );
-    }
-}
-
-if (tokenMappingStr) {
-    const envTokenMapping = JSON.parse(tokenMappingStr!);
-    formatTokenMapping(envTokenMapping);
-    tokenMapping.tokens = envTokenMapping.tokens;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Token Class
-////////////////////////////////////////////////////////////////////////////////
-
+/** The list of stablecoins */
 export const STABLECOINS = ["USDC", "USDT"];
 
+/** The token class */
 export class Token {
+    private static tokenMapping: TokenMapping;
+
+    /** Fetch a remap from the repo */
+    static async fetchRemapFromRepo(chain: number) {
+        const name = getSDKConfig(chain).name;
+        const url = new URL(`${REMAP_BASE_URL}${name}.json`);
+        const res = await fetch(url);
+        const data = (await res.json()) as TokenMapping;
+        Token.processRemap(data.tokens);
+    }
+
+    /** Parse a remap from a stringified JSON object */
+    static async parseRemapFromString(remap: string) {
+        const data = JSON.parse(remap) as TokenMapping;
+        Token.processRemap(data.tokens);
+    }
+
+    private static processRemap(tokens: TokenMetadata[]) {
+        Token.tokenMapping = {
+            tokens: [],
+        };
+
+        // Lowercase all addresses in the remap
+        const lowercaseTokens = tokens.map(
+            (token) =>
+                ({
+                    ...token,
+                    address: token.address.toLowerCase() as Address,
+                }) as const satisfies TokenMetadata,
+        );
+
+        Token.tokenMapping = {
+            tokens: lowercaseTokens,
+        };
+    }
+
     private _name: string;
     private _ticker: string;
     private _address: Address;
@@ -128,30 +127,40 @@ export class Token {
         return Number(formatUnits(amount, this.decimals));
     }
 
-    static findByTicker(ticker: string): Token {
-        if (tokenMapping.tokens.length === 0) {
-            throw new Error("Token mapping not initialized");
+    static fromTicker(ticker: string): Token {
+        if (Token.tokenMapping.tokens.length === 0) {
+            throw new Error("Token not initialized. Call fetchRemapFromRepo first.");
         }
 
-        const tokenData = tokenMapping.tokens.find((token) => token.ticker === ticker);
-        if (tokenData) {
-            return new Token(tokenData);
+        const tokenData = Token.tokenMapping.tokens.find((token) => token.ticker === ticker);
+        if (!tokenData) {
+            return DEFAULT_TOKEN;
         }
-        return DEFAULT_TOKEN;
+        return new Token(tokenData);
     }
 
-    static findByAddress(address: Address): Token {
-        if (tokenMapping.tokens.length === 0) {
-            throw new Error("Token mapping not initialized");
+    /** @deprecated Use `Token.fromTicker` instead */
+    static findByTicker(ticker: string): Token {
+        return Token.fromTicker(ticker);
+    }
+
+    static fromAddress(address: Address): Token {
+        if (Token.tokenMapping.tokens.length === 0) {
+            throw new Error("Token not initialized. Call fetchRemapFromRepo first.");
         }
 
-        const tokenData = tokenMapping.tokens.find(
+        const tokenData = Token.tokenMapping.tokens.find(
             (token) => token.address.toLowerCase() === address.toLowerCase(),
         );
-        if (tokenData) {
-            return new Token(tokenData);
+        if (!tokenData) {
+            return DEFAULT_TOKEN;
         }
-        return DEFAULT_TOKEN;
+        return new Token(tokenData);
+    }
+
+    /** @deprecated Use `Token.fromAddress` instead */
+    static findByAddress(address: Address): Token {
+        return Token.fromAddress(address);
     }
 
     static create(
@@ -163,9 +172,6 @@ export class Token {
         chain_addresses: Record<string, string> = {},
         logo_url = "",
     ): Token {
-        if (!isHex(address)) {
-            throw new Error("Invalid address");
-        }
         return new Token({
             name,
             ticker,
@@ -197,4 +203,27 @@ export function getDefaultQuoteToken(exchange: Exchange): Token {
         case "okx":
             return Token.findByTicker("USDT");
     }
+}
+
+/**
+ * Formats a bigint value as a string with the specified number of decimals.
+ *
+ * From https://github.com/wevm/viem/blob/main/src/utils/unit/formatUnits.ts
+ */
+export function formatUnits(value: bigint, decimals: number) {
+    let display = value.toString();
+
+    const negative = display.startsWith("-");
+    if (negative) display = display.slice(1);
+
+    display = display.padStart(decimals, "0");
+
+    let [integer, fraction] = [
+        display.slice(0, display.length - decimals),
+        display.slice(display.length - decimals),
+    ];
+    fraction = fraction.replace(/(0+)$/, "");
+    return Number.parseFloat(
+        `${negative ? "-" : ""}${integer || "0"}${fraction ? `.${fraction}` : ""}`,
+    );
 }
