@@ -2,9 +2,9 @@ import { CHAIN_IDS, type ChainId, getSDKConfig } from "@renegade-fi/core";
 import { getDefaultQuoteToken } from "@renegade-fi/token";
 import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
-import { ResultAsync, okAsync } from "neverthrow";
-import { PRICE_REPORTER_ROUTE } from "./constants.js";
-import { HttpError, type PriceReporterError } from "./error.js";
+import { ResultAsync, errAsync, fromThrowable } from "neverthrow";
+import { ERR_INVALID_URL, ERR_NO_PRICE_REPORTER_URL, PRICE_REPORTER_ROUTE } from "./constants.js";
+import { HttpError, PriceReporterError } from "./error.js";
 
 export class PriceReporterClient {
     constructor(private readonly baseUrl: string) {}
@@ -34,18 +34,37 @@ export class PriceReporterClient {
     ): ResultAsync<number, PriceReporterError> {
         const route = PRICE_REPORTER_ROUTE(exchange, address, quote);
         return this.get<string>(route).andThen((textPrice) => {
-            const price = Number(textPrice);
-            return okAsync(price);
+            return fromThrowable(
+                () => Number.parseFloat(textPrice),
+                () => new PriceReporterError(`Failed to parse float from ${textPrice}`),
+            )();
         });
     }
 
     /**
      * Get the price of a token from Binance
      */
-    public getBinancePrice(address: `0x${string}`): ResultAsync<number, PriceReporterError> {
+    public getMidpointPrice(address: `0x${string}`): ResultAsync<number, PriceReporterError> {
         const exchange = "binance";
         const quote = getDefaultQuoteToken(exchange).address;
         return this.getPrice(exchange, address, quote);
+    }
+
+    static getBinancePrice(address: `0x${string}`): ResultAsync<number, PriceReporterError> {
+        if (!process.env.PRICE_REPORTER_URL) {
+            return errAsync(new PriceReporterError(ERR_NO_PRICE_REPORTER_URL));
+        }
+        let client: PriceReporterClient;
+        try {
+            client = new PriceReporterClient(`https://${process.env.PRICE_REPORTER_URL}:3000`);
+        } catch {
+            return errAsync(new PriceReporterError(ERR_INVALID_URL));
+        }
+
+        const exchange = "binance";
+        const quote = getDefaultQuoteToken(exchange).address;
+
+        return client.getPrice(exchange, address, quote);
     }
 
     private get<T>(route: string): ResultAsync<T, PriceReporterError> {
