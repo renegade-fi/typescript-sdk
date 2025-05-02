@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.7.0
+
+### Minor Changes
+
+- workspace: move `Token`, `PriceReporterClient` into packages
+
 ## 0.6.8
 
 ### Patch Changes
