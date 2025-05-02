@@ -1,5 +1,11 @@
 # @renegade-fi/token
 
+## 0.0.3
+
+### Patch Changes
+
+- node, token, price-reporter: misc adjustments
+
 ## 0.0.2
 
 ### Patch Changes
