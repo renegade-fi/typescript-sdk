@@ -2,7 +2,6 @@
     "name": "@renegade-fi/token",
     "version": "0.0.2",
     "description": "Token remapping for Renegade",
-    "private": true,
     "files": [
         "dist/**",
         "!dist/**/*.tsbuildinfo",
