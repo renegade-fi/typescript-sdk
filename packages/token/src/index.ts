@@ -190,12 +190,8 @@ export class Token {
         });
     }
 
-    /** Returns a read-only view of the loaded token mapping */
-    static getMapping(): Readonly<TokenMapping> {
-        if (Token.tokenMapping.tokens.length === 0) {
-            throw new Error("Token not initialized. Call fetchRemapFromRepo first.");
-        }
-        return Token.tokenMapping;
+    static getAllTokens(): Token[] {
+        return Token.tokenMapping.tokens.map((token) => new Token(token));
     }
 }
 
@@ -204,9 +200,9 @@ const DEFAULT_TOKEN = Token.create("UNKNOWN", "UNKNOWN", zeroAddress, 0);
 export function getDefaultQuoteToken(exchange: Exchange): Token {
     switch (exchange) {
         case "binance":
-            return Token.findByTicker("USDT");
+            return Token.fromTicker("USDT");
         case "coinbase":
-            return Token.findByTicker("USDC");
+            return Token.fromTicker("USDC");
         case "kraken":
             return Token.create(
                 "USD Coin",

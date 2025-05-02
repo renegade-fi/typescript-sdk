@@ -1,6 +1,5 @@
 import type {
     CancelOrderParameters,
-    ChainId,
     CreateOrderParameters,
     DepositParameters,
     RenegadeConfig,
@@ -56,7 +55,7 @@ export class RenegadeClient {
         this.configv2 = configv2;
     }
 
-    static new(chainId: ChainId, seed: `0x${string}`) {
+    static new(chainId: number, seed: `0x${string}`) {
         const config = getSDKConfig(chainId);
         return new RenegadeClient(rustUtils, seed, config);
     }
