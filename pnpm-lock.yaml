@@ -157,6 +157,21 @@ importers:
         specifier: 2.x
         version: 2.20.0(typescript@5.5.4)(zod@3.23.8)
 
+  packages/price-reporter:
+    dependencies:
+      '@renegade-fi/core':
+        specifier: workspace:^
+        version: link:../core
+      '@renegade-fi/token':
+        specifier: workspace:^
+        version: link:../token
+      axios:
+        specifier: ^1.6.8
+        version: 1.7.5
+      neverthrow:
+        specifier: ^8.2.0
+        version: 8.2.0
+
   packages/react:
     dependencies:
       '@renegade-fi/core':
@@ -192,6 +207,12 @@ importers:
         version: 18.3.1(react@18.3.1)
 
   packages/test:
+    dependencies:
+      '@renegade-fi/core':
+        specifier: workspace:^
+        version: link:../core
+
+  packages/token:
     dependencies:
       '@renegade-fi/core':
         specifier: workspace:^

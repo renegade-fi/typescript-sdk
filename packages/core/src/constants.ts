@@ -1,5 +1,3 @@
-import type { Address } from "viem";
-
 /// Header name for the HTTP auth signature
 export const RENEGADE_AUTH_HEADER_NAME = "x-renegade-auth";
 /// Header name for the expiration timestamp of a signature
@@ -206,17 +204,6 @@ export const ADMIN_WALLET_MATCHABLE_ORDER_IDS_ROUTE = (wallet_id: string) =>
 // The admin wallet updates topic, streams opaque event indicating
 // updates for all wallets
 export const WS_ADMIN_WALLET_UPDATES_ROUTE = "/v0/admin/wallet-updates";
-
-////////////////////////////////////////////////////////////////////////////////
-// Price Reporter
-////////////////////////////////////////////////////////////////////////////////
-
-export const PRICE_REPORTER_TOPIC = (exchange: string, base: Address, quote: Address) =>
-    `${exchange}-${base.toLowerCase()}-${quote.toLowerCase()}`;
-
-// HTTP GET route to fetch price from price reporter
-export const PRICE_REPORTER_ROUTE = (exchange: string, base: Address, quote: Address) =>
-    `/price/${PRICE_REPORTER_TOPIC(exchange, base, quote)}`;
 
 ////////////////////////////////////////////////////////////////////////////////
 // External Match

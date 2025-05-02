@@ -1,12 +1,10 @@
 {
-    "name": "@renegade-fi/test",
-    "version": "0.4.12",
-    "description": "Testing helpers for Renegade",
-    "private": true,
+    "name": "@renegade-fi/token",
+    "version": "0.0.2",
+    "description": "Token remapping for Renegade",
     "files": [
         "dist/**",
         "!dist/**/*.tsbuildinfo",
-        "renegade-utils/*",
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.test-d.ts"

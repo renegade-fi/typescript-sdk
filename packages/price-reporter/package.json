@@ -1,12 +1,10 @@
 {
-    "name": "@renegade-fi/test",
-    "version": "0.4.12",
-    "description": "Testing helpers for Renegade",
-    "private": true,
+    "name": "@renegade-fi/price-reporter",
+    "version": "0.0.2",
+    "description": "A TypeScript client for interacting with the Price Reporter",
     "files": [
         "dist/**",
         "!dist/**/*.tsbuildinfo",
-        "renegade-utils/*",
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.test-d.ts"
@@ -32,6 +30,9 @@
     "keywords": [],
     "author": "",
     "dependencies": {
-        "@renegade-fi/core": "workspace:^"
+        "axios": "^1.6.8",
+        "@renegade-fi/core": "workspace:^",
+        "@renegade-fi/token": "workspace:^",
+        "neverthrow": "^8.2.0"
     }
 }
