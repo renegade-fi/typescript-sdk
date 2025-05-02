@@ -1,4 +1,4 @@
-import { CHAIN_IDS, type ChainId, getSDKConfig } from "@renegade-fi/core";
+import { CHAIN_IDS, getSDKConfig } from "@renegade-fi/core";
 import { getDefaultQuoteToken } from "@renegade-fi/token";
 import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
@@ -6,10 +6,13 @@ import { ResultAsync, errAsync, fromThrowable } from "neverthrow";
 import { ERR_INVALID_URL, ERR_NO_PRICE_REPORTER_URL, PRICE_REPORTER_ROUTE } from "./constants.js";
 import { HttpError, PriceReporterError } from "./error.js";
 
+/**
+ * A client for the price reporter
+ */
 export class PriceReporterClient {
     constructor(private readonly baseUrl: string) {}
 
-    static new(chainId: ChainId) {
+    static new(chainId: number) {
         const config = getSDKConfig(chainId);
         return new PriceReporterClient(`https://${config.priceReporterUrl}:3000`);
     }
@@ -25,9 +28,45 @@ export class PriceReporterClient {
     }
 
     /**
+     * Get the current Renegade execution price for a specific token
+     */
+    public getPrice(mint: `0x${string}`): Promise<number> {
+        const exchange = "binance";
+        const quote = getDefaultQuoteToken(exchange).address;
+        return this.getPriceByTopic(exchange, mint, quote);
+    }
+
+    /**
+     * Get the current Renegade execution price for a specific token
+     *
+     * @returns the price or an error
+     */
+    public getPriceResult(mint: `0x${string}`): ResultAsync<number, PriceReporterError> {
+        const exchange = "binance";
+        const quote = getDefaultQuoteToken(exchange).address;
+        return this.getPriceByTopicResult(exchange, mint, quote);
+    }
+
+    /**
      * Get the price of a token from a given exchange
      */
-    public getPrice(
+    public getPriceByTopic(
+        exchange: string,
+        address: `0x${string}`,
+        quote: `0x${string}`,
+    ): Promise<number> {
+        return this.getPriceByTopicResult(exchange, address, quote).match(
+            (price) => price,
+            (error) => {
+                throw error;
+            },
+        );
+    }
+
+    /**
+     * Get the price of a token from a given exchange
+     */
+    public getPriceByTopicResult(
         exchange: string,
         address: `0x${string}`,
         quote: `0x${string}`,
@@ -42,16 +81,7 @@ export class PriceReporterClient {
     }
 
     /**
-     * Get the price of a token from Binance
-     */
-    public getMidpointPrice(address: `0x${string}`): ResultAsync<number, PriceReporterError> {
-        const exchange = "binance";
-        const quote = getDefaultQuoteToken(exchange).address;
-        return this.getPrice(exchange, address, quote);
-    }
-
-    /**
-     * @deprecated Use `getMidpointPrice` instead
+     * @deprecated Use `getPrice` instead
      */
     static getBinancePrice(address: `0x${string}`): ResultAsync<number, PriceReporterError> {
         if (!process.env.PRICE_REPORTER_URL) {
@@ -67,8 +97,10 @@ export class PriceReporterClient {
         const exchange = "binance";
         const quote = getDefaultQuoteToken(exchange).address;
 
-        return client.getPrice(exchange, address, quote);
+        return client.getPriceByTopicResult(exchange, address, quote);
     }
+
+    // --- Private methods ---
 
     private get<T>(route: string): ResultAsync<T, PriceReporterError> {
         const url = new URL(route, this.baseUrl);
