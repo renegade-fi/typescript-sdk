@@ -1,5 +1,14 @@
 # @renegade-fi/price-reporter
 
+## 0.0.4
+
+### Patch Changes
+
+- Add triggerRelayerSnapshot action
+- Updated dependencies
+  - @renegade-fi/token@0.0.4
+  - @renegade-fi/core@0.7.1
+
 ## 0.0.3
 
 ### Patch Changes

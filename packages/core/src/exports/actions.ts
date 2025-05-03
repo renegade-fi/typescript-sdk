@@ -202,6 +202,8 @@ export {
     refreshWallet,
 } from "../actions/refreshWallet.js";
 
+export { triggerRelayerSnapshot } from "../actions/triggerRelayerSnapshot.js";
+
 export {
     type UpdateOrderParameters,
     type UpdateOrderReturnType,

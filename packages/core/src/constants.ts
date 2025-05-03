@@ -200,6 +200,8 @@ export const ADMIN_GET_ORDER_MATCHING_POOL_ROUTE = (order_id: string) =>
 // Route to get all the matchable order IDs for a given wallet
 export const ADMIN_WALLET_MATCHABLE_ORDER_IDS_ROUTE = (wallet_id: string) =>
     `/admin/wallet/${wallet_id}/matchable-order-ids`;
+// Route to trigger a snapshot of the relayer
+export const ADMIN_TRIGGER_SNAPSHOT_ROUTE = "/admin/trigger-snapshot";
 
 // The admin wallet updates topic, streams opaque event indicating
 // updates for all wallets

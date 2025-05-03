@@ -194,6 +194,8 @@ export {
     payFees,
 } from "../actions/payFees.js";
 
+export { triggerRelayerSnapshot } from "../actions/triggerRelayerSnapshot.js";
+
 export {
     type UpdateOrderParameters,
     type UpdateOrderReturnType,
