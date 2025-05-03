@@ -3,7 +3,7 @@ import type { Config } from "../createConfig.js";
 import { BaseError, type BaseErrorType } from "../errors/base.js";
 import { getRelayerWithAdmin } from "../utils/http.js";
 
-export type GetOpenOrdersParams = {
+export type GetOpenOrdersParameters = {
     matchingPool?: string;
 };
 
@@ -13,7 +13,7 @@ export type GetOpenOrdersErrorType = BaseErrorType;
 
 export async function getOpenOrders(
     config: Config,
-    parameters: GetOpenOrdersParams = {},
+    parameters: GetOpenOrdersParameters = {},
 ): Promise<GetOpenOrdersReturnType> {
     const { getBaseUrl } = config;
 
