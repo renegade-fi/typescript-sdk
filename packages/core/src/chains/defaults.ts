@@ -1,4 +1,6 @@
 import {
+    AUTH_SERVER_URL_ARBITRUM_MAINNET,
+    AUTH_SERVER_URL_ARBITRUM_SEPOLIA,
     CHAIN_IDS,
     type ChainId,
     DARKPOOL_ADDRESS_ARBITRUM_MAINNET,
@@ -11,6 +13,8 @@ import {
     PRICE_REPORTER_URL_ARBITRUM_SEPOLIA,
     RELAYER_URL_ARBITRUM_MAINNET,
     RELAYER_URL_ARBITRUM_SEPOLIA,
+    RELAYER_WS_URL_ARBITRUM_MAINNET,
+    RELAYER_WS_URL_ARBITRUM_SEPOLIA,
 } from "../constants.js";
 
 export interface SDKConfig {
@@ -20,7 +24,9 @@ export interface SDKConfig {
     readonly darkpoolAddress: `0x${string}`;
     readonly priceReporterUrl: string;
     readonly relayerUrl: string;
+    readonly websocketUrl: string;
     readonly permit2Address: `0x${string}`;
+    readonly authServerUrl: string;
 }
 
 export const CONFIGS: Record<ChainId, SDKConfig> = {
@@ -30,8 +36,10 @@ export const CONFIGS: Record<ChainId, SDKConfig> = {
         hseBaseUrl: HSE_BASE_URL_ARBITRUM_MAINNET,
         darkpoolAddress: DARKPOOL_ADDRESS_ARBITRUM_MAINNET,
         relayerUrl: RELAYER_URL_ARBITRUM_MAINNET,
+        websocketUrl: RELAYER_WS_URL_ARBITRUM_MAINNET,
         priceReporterUrl: PRICE_REPORTER_URL_ARBITRUM_MAINNET,
         permit2Address: PERMIT2_ADDRESS_ARBITRUM_MAINNET,
+        authServerUrl: AUTH_SERVER_URL_ARBITRUM_MAINNET,
     },
     [CHAIN_IDS.ArbitrumSepolia]: {
         id: CHAIN_IDS.ArbitrumSepolia,
@@ -39,8 +47,10 @@ export const CONFIGS: Record<ChainId, SDKConfig> = {
         hseBaseUrl: HSE_BASE_URL_ARBITRUM_SEPOLIA,
         darkpoolAddress: DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
         relayerUrl: RELAYER_URL_ARBITRUM_SEPOLIA,
+        websocketUrl: RELAYER_WS_URL_ARBITRUM_SEPOLIA,
         priceReporterUrl: PRICE_REPORTER_URL_ARBITRUM_SEPOLIA,
         permit2Address: PERMIT2_ADDRESS_ARBITRUM_SEPOLIA,
+        authServerUrl: AUTH_SERVER_URL_ARBITRUM_SEPOLIA,
     },
 };
 

@@ -29,6 +29,12 @@ export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
 export const RELAYER_URL_ARBITRUM_MAINNET = "mainnet.cluster0.renegade.fi";
 export const RELAYER_URL_ARBITRUM_SEPOLIA = "testnet.cluster0.renegade.fi";
 
+export const RELAYER_WS_URL_ARBITRUM_MAINNET = "wss://mainnet.cluster0.renegade.fi";
+export const RELAYER_WS_URL_ARBITRUM_SEPOLIA = "wss://testnet.cluster0.renegade.fi";
+
+export const AUTH_SERVER_URL_ARBITRUM_MAINNET = "https://mainnet.auth-server.renegade.fi:3000";
+export const AUTH_SERVER_URL_ARBITRUM_SEPOLIA = "https://testnet.auth-server.renegade.fi:3000";
+
 export const PRICE_REPORTER_URL_ARBITRUM_MAINNET = "mainnet.price-reporter.renegade.fi";
 export const PRICE_REPORTER_URL_ARBITRUM_SEPOLIA = "testnet.price-reporter.renegade.fi";
 

@@ -9,7 +9,8 @@
             "wasm/**",
             "dist/**",
             "renegade-utils/**",
-            "*.d.ts"
+            "*.d.ts",
+            "version.ts"
         ]
     },
     "formatter": {
