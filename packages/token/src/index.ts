@@ -39,7 +39,7 @@ export class Token {
     }
 
     /** Parse a remap from a stringified JSON object */
-    static async parseRemapFromString(remap: string) {
+    static parseRemapFromString(remap: string) {
         const data = JSON.parse(remap) as TokenMapping;
         Token.processRemap(data.tokens);
     }

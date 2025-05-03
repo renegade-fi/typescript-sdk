@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.7.1
+
+### Patch Changes
+
+- Add triggerRelayerSnapshot action
+
 ## 0.7.0
 
 ### Minor Changes

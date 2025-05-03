@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.5.15
+
+### Patch Changes
+
+- Add triggerRelayerSnapshot action
+- Updated dependencies
+  - @renegade-fi/core@0.7.1
+
 ## 0.5.14
 
 ### Patch Changes
