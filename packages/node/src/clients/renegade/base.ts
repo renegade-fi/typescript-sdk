@@ -6,7 +6,12 @@ import type {
     SDKConfig,
     WithdrawParameters,
 } from "@renegade-fi/core";
-import { createConfig, createExternalKeyConfig, getSDKConfig } from "@renegade-fi/core";
+import {
+    createConfig,
+    createExternalKeyConfig,
+    getSDKConfig,
+    getTaskQueue,
+} from "@renegade-fi/core";
 import {
     cancelOrder,
     createOrder,
@@ -294,6 +299,12 @@ export class RenegadeClient {
 
     async cancelOrder(parameters: CancelOrderParameters) {
         return cancelOrder(this.getConfig(), parameters);
+    }
+
+    // -- Task Operations -- //
+
+    async getTaskQueue() {
+        return getTaskQueue(this.getConfig());
     }
 
     // --- Keychain Generation --- //
