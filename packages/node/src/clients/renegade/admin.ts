@@ -7,6 +7,9 @@ import * as rustUtils from "../../../renegade-utils/index.js";
 import { RenegadeClient } from "./base.js";
 import type { ConstructorParams } from "./types.js";
 
+/**
+ * The client for interacting with the Renegade relayer's admin API, with a keychain.
+ */
 export class AdminRenegadeClient extends RenegadeClient {
     private readonly apiKey: string;
 

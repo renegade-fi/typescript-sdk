@@ -4,6 +4,7 @@ import type {
     DepositParameters,
     RenegadeConfig,
     SDKConfig,
+    UpdateOrderParameters,
     WithdrawParameters,
 } from "@renegade-fi/core";
 import {
@@ -11,6 +12,8 @@ import {
     createExternalKeyConfig,
     getSDKConfig,
     getTaskQueue,
+    getWalletId,
+    updateOrder,
 } from "@renegade-fi/core";
 import {
     cancelOrder,
@@ -18,6 +21,7 @@ import {
     createWallet,
     deposit,
     getBackOfQueueWallet,
+    getTaskQueuePaused,
     getWalletFromRelayer,
     lookupWallet,
     payFees,
@@ -38,6 +42,9 @@ import {
 } from "../../actions/generateWalletSecrets.js";
 import type { ConstructorParams } from "./types.js";
 
+/**
+ * The client for interacting with the Renegade relayer with a keychain.
+ */
 export class RenegadeClient {
     readonly config: RenegadeConfig;
     readonly configv2: SDKConfig;
@@ -237,6 +244,10 @@ export class RenegadeClient {
         return createWallet(this.getConfig());
     }
 
+    getWalletId() {
+        return getWalletId(this.getConfig());
+    }
+
     // -- Balance Operations -- //
 
     async deposit(parameters: DepositParameters) {
@@ -297,6 +308,10 @@ export class RenegadeClient {
         return createOrder(this.getConfig(), parameters);
     }
 
+    async updateOrder(parameters: UpdateOrderParameters) {
+        return updateOrder(this.getConfig(), parameters);
+    }
+
     async cancelOrder(parameters: CancelOrderParameters) {
         return cancelOrder(this.getConfig(), parameters);
     }
@@ -305,6 +320,10 @@ export class RenegadeClient {
 
     async getTaskQueue() {
         return getTaskQueue(this.getConfig());
+    }
+
+    async getTaskQueuePaused() {
+        return getTaskQueuePaused(this.getConfig());
     }
 
     // --- Keychain Generation --- //
@@ -335,7 +354,10 @@ export class RenegadeClient {
 
     // -- Private -- //
 
-    protected getConfig() {
+    /**
+     * @internal
+     */
+    public getConfig() {
         return this.config;
     }
 }
