@@ -46,7 +46,12 @@ export { createAuthConfig, createConfig, createExternalKeyConfig };
 // Clients
 ////////////////////////////////////////////////////////////////////////////////
 
-export { RenegadeClient } from "../clients/renegade/index.js";
+export {
+    AdminRenegadeClient,
+    RenegadeClient,
+} from "../clients/renegade/index.js";
+
+export { AdminRelayerClient } from "../clients/relayer/index.js";
 
 export { ExternalMatchClient } from "../clients/external-match/index.js";
 

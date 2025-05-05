@@ -95,7 +95,7 @@ export {
 } from "../actions/getNetworkOrders.js";
 
 export {
-    type GetOpenOrdersParams,
+    type GetOpenOrdersParameters,
     type GetOpenOrdersReturnType,
     type GetOpenOrdersErrorType,
     getOpenOrders,

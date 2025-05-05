@@ -164,7 +164,7 @@ export class ExternalMatchClient {
     }
 
     // -- Private --
-    private getConfig() {
+    protected getConfig() {
         return this.config;
     }
 }

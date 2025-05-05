@@ -1,7 +1,7 @@
 import type { QueryOptions } from "@tanstack/query-core";
 import {
     type GetOpenOrdersErrorType,
-    type GetOpenOrdersParams,
+    type GetOpenOrdersParameters,
     type GetOpenOrdersReturnType,
     getOpenOrders,
 } from "../actions/getOpenOrders.js";
@@ -9,7 +9,7 @@ import type { Config } from "../createConfig.js";
 import type { Evaluate } from "../types/utils.js";
 import { type ScopeKeyParameter, filterQueryOptions } from "./utils.js";
 
-export type GetOpenOrdersOptions = Evaluate<GetOpenOrdersParams & ScopeKeyParameter>;
+export type GetOpenOrdersOptions = Evaluate<GetOpenOrdersParameters & ScopeKeyParameter>;
 
 export function getOpenOrdersQueryOptions(config: Config, options: GetOpenOrdersOptions = {}) {
     return {
