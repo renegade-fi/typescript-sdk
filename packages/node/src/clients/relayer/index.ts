@@ -20,6 +20,9 @@ import {
 } from "@renegade-fi/core/actions";
 import * as rustUtils from "../../../renegade-utils/index.js";
 
+/**
+ * The client for interacting with the Renegade relayer's admin API with an API key.
+ */
 export class AdminRelayerClient {
     readonly config: Config;
     readonly configv2: SDKConfig;
@@ -123,5 +126,14 @@ export class AdminRelayerClient {
      */
     async triggerSnapshot() {
         return triggerRelayerSnapshot(this.config);
+    }
+
+    /**
+     * Get the config
+     *
+     * TODO: Remove once we migrate to the SDK config
+     */
+    public getConfig() {
+        return this.config;
     }
 }

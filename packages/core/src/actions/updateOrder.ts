@@ -1,7 +1,7 @@
 import invariant from "tiny-invariant";
-import { type Address, toHex } from "viem";
+import { type Address, type Hex, toHex } from "viem";
 import { UPDATE_ORDER_ROUTE } from "../constants.js";
-import type { Config } from "../createConfig.js";
+import type { RenegadeConfig } from "../createConfig.js";
 import { stringifyForWasm } from "../utils/bigJSON.js";
 import { postRelayerWithAuth } from "../utils/http.js";
 import { getBackOfQueueWallet } from "./getBackOfQueueWallet.js";
@@ -16,12 +16,13 @@ export type UpdateOrderParameters = {
     worstCasePrice?: string;
     minFillSize?: bigint;
     allowExternalMatches?: boolean;
+    newPublicKey?: Hex;
 };
 
 export type UpdateOrderReturnType = Promise<{ taskId: string }>;
 
 export async function updateOrder(
-    config: Config,
+    config: RenegadeConfig,
     parameters: UpdateOrderParameters,
 ): UpdateOrderReturnType {
     const {
@@ -33,18 +34,27 @@ export async function updateOrder(
         worstCasePrice = "",
         minFillSize = BigInt(0),
         allowExternalMatches = false,
+        newPublicKey,
     } = parameters;
-    const {
-        getBaseUrl,
-        utils,
-        state: { seed },
-    } = config;
-    invariant(seed, "Seed is required");
+    const { getBaseUrl, utils, renegadeKeyType } = config;
 
     const walletId = getWalletId(config);
     const wallet = await getBackOfQueueWallet(config);
 
-    const body = utils.update_order(
+    const seed = renegadeKeyType === "internal" ? config.state.seed : undefined;
+    const signMessage = renegadeKeyType === "external" ? config.signMessage : undefined;
+
+    if (renegadeKeyType === "external") {
+        invariant(
+            signMessage !== undefined,
+            "Sign message function is required for external key type",
+        );
+    }
+    if (renegadeKeyType === "internal") {
+        invariant(seed !== undefined, "Seed is required for internal key type");
+    }
+
+    const body = await utils.update_order(
         seed,
         stringifyForWasm(wallet),
         id,
@@ -55,6 +65,8 @@ export async function updateOrder(
         worstCasePrice,
         toHex(minFillSize),
         allowExternalMatches,
+        newPublicKey,
+        signMessage,
     );
 
     try {
