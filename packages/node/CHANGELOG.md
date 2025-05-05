@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.5.16
+
+### Patch Changes
+
+- wasm, core: make update order path compatible with external keychains
+- Updated dependencies
+  - @renegade-fi/core@0.7.2
+
 ## 0.5.15
 
 ### Patch Changes
