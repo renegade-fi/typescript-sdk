@@ -1,7 +1,9 @@
+import type { SDKConfig } from "@renegade-fi/core";
 import type { GeneratedSecrets } from "../../actions/generateWalletSecrets.js";
 
 type CommonParams = {
     chainId: number;
+    overrides?: Partial<SDKConfig>;
 };
 
 type SeedParams = CommonParams & {

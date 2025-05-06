@@ -1,4 +1,5 @@
 import { createConfig } from "@renegade-fi/core";
+import type { SDKConfig } from "@renegade-fi/core";
 import {
     type CreateOrderInMatchingPoolParameters,
     createOrderInMatchingPool,
@@ -25,19 +26,23 @@ export class AdminRenegadeClient extends RenegadeClient {
     /**
      * Create an admin client for any chain by seed.
      *
-     * @param params.chainId – the chain ID (e.g. CHAIN_IDS.ArbitrumMainnet)
-     * @param params.seed    – your 0x… seed
+     * @param params.chainId    the chain ID (e.g. CHAIN_IDS.ArbitrumMainnet)
+     * @param params.seed       your 0x… seed
+     * @param params.apiKey     your admin API key
+     * @param params.overrides  optional overrides for SDK config values
      */
     static override new({
         chainId,
         seed,
         apiKey,
+        overrides,
     }: {
         chainId: number;
         seed: `0x${string}`;
         apiKey: string;
+        overrides?: Partial<SDKConfig>;
     }): AdminRenegadeClient {
-        return new AdminRenegadeClient({ chainId, mode: "seed", seed, apiKey });
+        return new AdminRenegadeClient({ chainId, mode: "seed", seed, apiKey, overrides });
     }
 
     /**
