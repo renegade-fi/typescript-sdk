@@ -87,14 +87,24 @@ export async function websocketWaiter<T>(params: WebsocketWaiterParams): Promise
                 .then((result) => {
                     if (result) {
                         promiseSettled = true;
-                        ws.close();
+                        try {
+                            ws.close();
+                        } catch (_) {
+                            // If the WS is not open, this will throw an error.
+                            // This is fine, so we can ignore it.
+                        }
                         resolve(result);
                     }
                 })
                 .catch((error) => {
                     if (!promiseSettled) {
                         promiseSettled = true;
-                        ws.close();
+                        try {
+                            ws.close();
+                        } catch (_) {
+                            // If the WS is not open, this will throw an error.
+                            // This is fine, so we can ignore it.
+                        }
                         reject(error);
                     }
                 });

@@ -66,7 +66,7 @@ export class RelayerWebsocket {
         return this.oncloseCallback?.call(this.ws!, event);
     };
 
-    private handleError = async (event: Event) => {
+    private handleError = (event: Event) => {
         this.cleanup();
         return this.onerrorCallback?.call(this.ws!, event);
     };
@@ -117,7 +117,7 @@ export class RelayerWebsocket {
 
     public close(): void {
         if (!this.ws) {
-            throw new Error("WebSocket connection not open");
+            return;
         }
 
         const message = this.buildUnsubscriptionMessage();
@@ -131,7 +131,7 @@ export class RelayerWebsocket {
     // ---------------
 
     private request(message: SubscriptionMessage | UnsubscriptionMessage): void {
-        if (this.ws?.readyState === this.ws?.CLOSED || this.ws?.readyState === this.ws?.CLOSING) {
+        if (!this.ws || this.ws.readyState !== this.ws.OPEN) {
             throw new WebSocketRequestError({
                 body: message,
                 url: this.ws?.url || "",

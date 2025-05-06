@@ -2,6 +2,8 @@ import type {
     CancelOrderParameters,
     CreateOrderParameters,
     DepositParameters,
+    GetBackOfQueueWalletParameters,
+    GetWalletFromRelayerParameters,
     RenegadeConfig,
     SDKConfig,
     UpdateOrderParameters,
@@ -210,12 +212,20 @@ export class RenegadeClient {
 
     // -- Wallet Operations -- //
 
-    async getWallet() {
-        return getWalletFromRelayer(this.getConfig());
+    async getWallet(
+        params: GetWalletFromRelayerParameters = {
+            filterDefaults: true,
+        },
+    ) {
+        return getWalletFromRelayer(this.getConfig(), params);
     }
 
-    async getBackOfQueueWallet() {
-        return getBackOfQueueWallet(this.getConfig());
+    async getBackOfQueueWallet(
+        params: GetBackOfQueueWalletParameters = {
+            filterDefaults: true,
+        },
+    ) {
+        return getBackOfQueueWallet(this.getConfig(), params);
     }
 
     async lookupWallet() {
