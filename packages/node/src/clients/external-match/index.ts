@@ -43,8 +43,12 @@ export class ExternalMatchClient {
         chainId: number;
         apiKey: string;
         apiSecret: string;
+        overrides?: Partial<SDKConfig>;
     }) {
-        const configv2 = getSDKConfig(params.chainId);
+        const defaultConfig = getSDKConfig(params.chainId);
+        const configv2 = params.overrides
+            ? { ...defaultConfig, ...params.overrides }
+            : defaultConfig;
         this.configv2 = configv2;
         this.apiKey = params.apiKey;
         this.apiSecret = params.apiSecret;
@@ -60,32 +64,36 @@ export class ExternalMatchClient {
     /**
      * Create a new ExternalMatchClient for a given chain.
      *
-     * @param params.apiKey    – your API key
-     * @param params.apiSecret – your API secret
-     * @param params.chainId   – the chain ID
+     * @param params.apiKey    your API key
+     * @param params.apiSecret your API secret
+     * @param params.chainId   the chain ID
+     * @param params.overrides any SDKConfig field can be passed directly as an override
      */
     static new({
         apiKey,
         apiSecret,
         chainId,
+        overrides,
     }: {
         apiKey: string;
         apiSecret: string;
         chainId: number;
+        overrides?: Partial<SDKConfig>;
     }) {
         return new ExternalMatchClient({
             rustUtils,
             chainId,
             apiKey,
             apiSecret,
+            overrides,
         });
     }
 
     /**
      * Create a new ExternalMatchClient for Arbitrum Mainnet.
      *
-     * @param params.apiKey    – your API key
-     * @param params.apiSecret – your API secret
+     * @param params.apiKey    your API key
+     * @param params.apiSecret your API secret
      */
     static newArbitrumMainnetClient({
         apiKey,
@@ -105,8 +113,8 @@ export class ExternalMatchClient {
     /**
      * Create a new ExternalMatchClient for Arbitrum Sepolia.
      *
-     * @param params.apiKey    – your API key
-     * @param params.apiSecret – your API secret
+     * @param params.apiKey    your API key
+     * @param params.apiSecret your API secret
      */
     static newArbitrumSepoliaClient({
         apiKey,

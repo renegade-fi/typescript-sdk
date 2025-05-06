@@ -33,8 +33,12 @@ export class AdminRelayerClient {
     private constructor(params: {
         apiKey: string;
         chainId: number;
+        overrides?: Partial<SDKConfig>;
     }) {
-        const configv2 = getSDKConfig(params.chainId);
+        const defaultConfig = getSDKConfig(params.chainId);
+        const configv2 = params.overrides
+            ? { ...defaultConfig, ...params.overrides }
+            : defaultConfig;
         this.configv2 = configv2;
 
         this.config = createConfig({
@@ -50,24 +54,27 @@ export class AdminRelayerClient {
     /**
      * Create a new AdminRelayerClient
      *
-     * @param params.apiKey – the API key
-     * @param params.chainId – the chain ID
+     * @param params.apiKey     your API key
+     * @param params.chainId    the chain ID
+     * @param params.overrides  any SDKConfig field can be passed directly as an override
      */
     static new({
         apiKey,
         chainId,
+        overrides,
     }: {
         apiKey: string;
         chainId: number;
+        overrides?: Partial<SDKConfig>;
     }) {
-        return new AdminRelayerClient({ apiKey, chainId });
+        return new AdminRelayerClient({ apiKey, chainId, overrides });
     }
 
     /**
      * Assign an order to a matching pool
      *
-     * @param params.orderId - the order ID
-     * @param params.matchingPool - the matching pool address
+     * @param params.orderId        the order ID
+     * @param params.matchingPool   name of the matching pool
      */
     async assignOrder(params: AssignOrderParameters) {
         return assignOrder(this.config, params);
@@ -76,7 +83,7 @@ export class AdminRelayerClient {
     /**
      * Create a matching pool
      *
-     * @param params.matchingPool - the matching pool address
+     * @param params.matchingPool name of the matching pool
      */
     async createMatchingPool(params: CreateMatchingPoolParameters) {
         return createMatchingPool(this.config, params);
@@ -85,7 +92,7 @@ export class AdminRelayerClient {
     /**
      * Destroy a matching pool
      *
-     * @param params.matchingPool - the matching pool address
+     * @param params.matchingPool name of the matching pool
      */
     async destroyMatchingPool(params: DestroyMatchingPoolParameters) {
         return destroyMatchingPool(this.config, params);
@@ -93,8 +100,6 @@ export class AdminRelayerClient {
 
     /**
      * Get open orders managed by the relayer
-     *
-     * @param params.matchingPool - the matching pool address
      */
     async getOpenOrders(params: GetOpenOrdersParameters) {
         return getOpenOrders(this.config, params);
