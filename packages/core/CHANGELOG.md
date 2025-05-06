@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.7.3
+
+### Patch Changes
+
+- core, node: filter defaults when fetching wallet, catch error in prefetch
+
 ## 0.7.2
 
 ### Patch Changes
