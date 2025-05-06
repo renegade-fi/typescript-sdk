@@ -52,19 +52,19 @@ export class AdminRenegadeClient extends RenegadeClient {
     /**
      * @see AdminRelayerClient.new
      */
-    static override newArbMainnetClient: never;
+    static override newArbitrumOneClient: never;
     /**
      * @see AdminRelayerClient.new
      */
-    static override newArbMainnetClientWithKeychain: never;
+    static override newArbitrumOneClientWithKeychain: never;
     /**
      * @see AdminRelayerClient.new
      */
-    static override newArbSepoliaClient: never;
+    static override newArbitrumSepoliaClient: never;
     /**
      * @see AdminRelayerClient.new
      */
-    static override newArbSepoliaClientWithKeychain: never;
+    static override newArbitrumSepoliaClientWithKeychain: never;
 
     /**
      * Create an order in a matching pool

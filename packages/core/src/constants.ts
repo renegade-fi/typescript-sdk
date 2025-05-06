@@ -16,39 +16,40 @@ export const SIG_EXPIRATION_BUFFER_MS = 10_000; // 10 seconds
 ////////////////////////////////////////////////////////////////////////////////
 
 export const CHAIN_IDS = {
-    ArbitrumMainnet: 42161,
+    ArbitrumOne: 42161,
     ArbitrumSepolia: 421614,
 } as const;
 
 export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
 
 ////////////////////////////////////////////////////////////////////////////////
-// Base URLs
+// Environment-Specific Constants
 ////////////////////////////////////////////////////////////////////////////////
 
-export const RELAYER_URL_ARBITRUM_MAINNET = "mainnet.cluster0.renegade.fi";
+export const PRICE_REPORTER_URL_MAINNET = "mainnet.price-reporter.renegade.fi";
+export const PRICE_REPORTER_URL_TESTNET = "testnet.price-reporter.renegade.fi";
+
+export const HSE_URL_MAINNET = "https://mainnet.historical-state.renegade.fi:3000";
+export const HSE_URL_TESTNET = "https://testnet.historical-state.renegade.fi:3000";
+
+////////////////////////////////////////////////////////////////////////////////
+// Chain-Specific Constants
+////////////////////////////////////////////////////////////////////////////////
+
+export const RELAYER_URL_ARBITRUM_ONE = "mainnet.cluster0.renegade.fi";
 export const RELAYER_URL_ARBITRUM_SEPOLIA = "testnet.cluster0.renegade.fi";
 
-export const RELAYER_WS_URL_ARBITRUM_MAINNET = "wss://mainnet.cluster0.renegade.fi";
-export const RELAYER_WS_URL_ARBITRUM_SEPOLIA = "wss://testnet.cluster0.renegade.fi";
-
-export const AUTH_SERVER_URL_ARBITRUM_MAINNET = "https://mainnet.auth-server.renegade.fi:3000";
+export const AUTH_SERVER_URL_ARBITRUM_ONE = "https://mainnet.auth-server.renegade.fi:3000";
 export const AUTH_SERVER_URL_ARBITRUM_SEPOLIA = "https://testnet.auth-server.renegade.fi:3000";
-
-export const PRICE_REPORTER_URL_ARBITRUM_MAINNET = "mainnet.price-reporter.renegade.fi";
-export const PRICE_REPORTER_URL_ARBITRUM_SEPOLIA = "testnet.price-reporter.renegade.fi";
-
-export const HSE_BASE_URL_ARBITRUM_MAINNET = "https://mainnet.historical-state.renegade.fi:3000";
-export const HSE_BASE_URL_ARBITRUM_SEPOLIA = "https://testnet.historical-state.renegade.fi:3000";
 
 ////////////////////////////////////////////////////////////////////////////////
 // Deployed Contracts
 ////////////////////////////////////////////////////////////////////////////////
 
-export const DARKPOOL_ADDRESS_ARBITRUM_MAINNET = "0x30bD8eAb29181F790D7e495786d4B96d7AfDC518";
+export const DARKPOOL_ADDRESS_ARBITRUM_ONE = "0x30bD8eAb29181F790D7e495786d4B96d7AfDC518";
 export const DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA = "0x9af58f1ff20ab22e819e40b57ffd784d115a9ef5";
 
-export const PERMIT2_ADDRESS_ARBITRUM_MAINNET = "0x000000000022D473030F116dDEE9F6B43aC78BA3";
+export const PERMIT2_ADDRESS_ARBITRUM_ONE = "0x000000000022D473030F116dDEE9F6B43aC78BA3";
 export const PERMIT2_ADDRESS_ARBITRUM_SEPOLIA = "0x9458198bcc289c42e460cb8ca143e5854f734442";
 
 ////////////////////////////////////////////////////////////////////////////////

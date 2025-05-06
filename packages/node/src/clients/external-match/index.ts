@@ -90,12 +90,12 @@ export class ExternalMatchClient {
     }
 
     /**
-     * Create a new ExternalMatchClient for Arbitrum Mainnet.
+     * Create a new ExternalMatchClient for Arbitrum One.
      *
      * @param params.apiKey    your API key
      * @param params.apiSecret your API secret
      */
-    static newArbitrumMainnetClient({
+    static newArbitrumOneClient({
         apiKey,
         apiSecret,
     }: {
@@ -104,7 +104,7 @@ export class ExternalMatchClient {
     }) {
         return new ExternalMatchClient({
             rustUtils,
-            chainId: CHAIN_IDS.ArbitrumMainnet,
+            chainId: CHAIN_IDS.ArbitrumOne,
             apiKey,
             apiSecret,
         });
