@@ -1,7 +1,7 @@
 {
     "name": "@renegade-fi/malleable-external-match-example",
     "private": true,
-    "version": "0.0.7",
+    "version": "0.0.8",
     "type": "module",
     "scripts": {
         "start": "tsx --require dotenv/config index.ts"

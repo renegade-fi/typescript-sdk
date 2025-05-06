@@ -1,6 +1,6 @@
 {
     "name": "@renegade-fi/external-match-example",
-    "version": "1.1.13",
+    "version": "1.1.14",
     "description": "Example of fetching and assembling external matches using Renegade SDK",
     "type": "module",
     "scripts": {
