@@ -137,17 +137,17 @@ export class RenegadeClient {
     }
 
     /**
-     * Arbitrum Mainnet client via seed.
+     * Arbitrum One client via seed.
      *
      * @param params.seed your 0x… seed
      */
-    static newArbMainnetClient({
+    static newArbitrumOneClient({
         seed,
     }: {
         seed: `0x${string}`;
     }) {
         return RenegadeClient.new({
-            chainId: CHAIN_IDS.ArbitrumMainnet,
+            chainId: CHAIN_IDS.ArbitrumOne,
             seed,
         });
     }
@@ -159,7 +159,7 @@ export class RenegadeClient {
      * @param params.signMessage    callback to sign auth messages
      * @param params.publicKey      your public key
      */
-    static newArbMainnetClientWithKeychain({
+    static newArbitrumOneClientWithKeychain({
         walletSecrets,
         signMessage,
         publicKey,
@@ -169,7 +169,7 @@ export class RenegadeClient {
         publicKey: `0x${string}`;
     }) {
         return RenegadeClient.newWithExternalKeychain({
-            chainId: CHAIN_IDS.ArbitrumMainnet,
+            chainId: CHAIN_IDS.ArbitrumOne,
             walletSecrets,
             signMessage,
             publicKey,
@@ -181,7 +181,7 @@ export class RenegadeClient {
      *
      * @param params.seed your 0x… seed
      */
-    static newArbSepoliaClient({
+    static newArbitrumSepoliaClient({
         seed,
     }: {
         seed: `0x${string}`;
@@ -199,7 +199,7 @@ export class RenegadeClient {
      * @param params.signMessage    callback to sign auth messages
      * @param params.publicKey      your public key
      */
-    static newArbSepoliaClientWithKeychain({
+    static newArbitrumSepoliaClientWithKeychain({
         walletSecrets,
         signMessage,
         publicKey,

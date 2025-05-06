@@ -1,5 +1,14 @@
 # @renegade-fi/price-reporter
 
+## 0.0.7
+
+### Patch Changes
+
+- core, node price-reporter: update env namespace, add overrides'
+- Updated dependencies
+  - @renegade-fi/core@0.7.4
+  - @renegade-fi/token@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes

@@ -17,8 +17,8 @@ export class PriceReporterClient {
         return new PriceReporterClient(`https://${config.priceReporterUrl}:3000`);
     }
 
-    static newArbitrumMainnetClient() {
-        const config = getSDKConfig(CHAIN_IDS.ArbitrumMainnet);
+    static newArbitrumOneClient() {
+        const config = getSDKConfig(CHAIN_IDS.ArbitrumOne);
         return new PriceReporterClient(`https://${config.priceReporterUrl}:3000`);
     }
 
