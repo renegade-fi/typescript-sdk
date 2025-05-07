@@ -1,5 +1,11 @@
 # @renegade-fi/malleable-external-match-example
 
+## 0.0.9
+
+### Patch Changes
+
+- @renegade-fi/node@0.5.19
+
 ## 0.0.8
 
 ### Patch Changes

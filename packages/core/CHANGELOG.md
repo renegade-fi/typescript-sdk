@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.7.5
+
+### Patch Changes
+
+- Migrate to chain-aware URLs
+
 ## 0.7.4
 
 ### Patch Changes
