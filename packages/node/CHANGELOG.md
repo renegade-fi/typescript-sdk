@@ -1,5 +1,12 @@
 # @renegade-fi/node
 
+## 0.5.19
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.7.5
+
 ## 0.5.18
 
 ### Patch Changes

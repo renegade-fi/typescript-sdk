@@ -36,11 +36,12 @@ export const HSE_URL_TESTNET = "https://testnet.historical-state.renegade.fi:300
 // Chain-Specific Constants
 ////////////////////////////////////////////////////////////////////////////////
 
-export const RELAYER_URL_ARBITRUM_ONE = "mainnet.cluster0.renegade.fi";
-export const RELAYER_URL_ARBITRUM_SEPOLIA = "testnet.cluster0.renegade.fi";
+export const RELAYER_URL_ARBITRUM_ONE = "arbitrum-one.relayer.renegade.fi";
+export const RELAYER_URL_ARBITRUM_SEPOLIA = "arbitrum-sepolia.relayer.renegade.fi";
 
-export const AUTH_SERVER_URL_ARBITRUM_ONE = "https://mainnet.auth-server.renegade.fi:3000";
-export const AUTH_SERVER_URL_ARBITRUM_SEPOLIA = "https://testnet.auth-server.renegade.fi:3000";
+export const AUTH_SERVER_URL_ARBITRUM_ONE = "https://arbitrum-one.auth-server.renegade.fi:3000";
+export const AUTH_SERVER_URL_ARBITRUM_SEPOLIA =
+    "https://arbitrum-sepolia.auth-server.renegade.fi:3000";
 
 ////////////////////////////////////////////////////////////////////////////////
 // Deployed Contracts
