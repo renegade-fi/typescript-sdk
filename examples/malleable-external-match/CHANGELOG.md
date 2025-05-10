@@ -1,5 +1,12 @@
 # @renegade-fi/malleable-external-match-example
 
+## 0.0.10
+
+### Patch Changes
+
+- Correctly set `tx.value` on native asset sells
+  - @renegade-fi/node@0.5.20
+
 ## 0.0.9
 
 ### Patch Changes

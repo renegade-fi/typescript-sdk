@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.7.6
+
+### Patch Changes
+
+- Correctly set `tx.value` on native asset sells
+
 ## 0.7.5
 
 ### Patch Changes
