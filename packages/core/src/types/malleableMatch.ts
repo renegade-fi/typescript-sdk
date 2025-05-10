@@ -1,4 +1,4 @@
-import { bytesToHex, concatBytes, hexToBytes, numberToBytes } from "viem/utils";
+import { bytesToHex, concatBytes, hexToBytes, numberToBytes, numberToHex } from "viem/utils";
 import type {
     ExternalAssetTransfer,
     ExternalSettlementTx,
@@ -12,6 +12,8 @@ import { OrderSide, type OrderSideType } from "./order.js";
 const BASE_AMOUNT_OFFSET = 4;
 /** The length of the base amount in the calldata */
 const BASE_AMOUNT_LENGTH = 32;
+/** The address used to represent the native asset */
+const NATIVE_ASSET_ADDR = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 /**
  * The response type for requesting a malleable quote on an external order
@@ -122,17 +124,33 @@ export class MalleableExternalMatchResponse {
             calldataBytes.length,
         );
 
+        // Set the calldata and the tx value
         const newCalldataBytes = concatBytes([prefix, baseAmountBytes, suffix]);
         const newCalladata = bytesToHex(newCalldataBytes);
+        const value = this.isNativeEthSell() ? baseAmount : 0n;
+        const valueHex = numberToHex(value);
+
         const newMatchBundle = {
             ...this.match_bundle,
             settlement_tx: {
                 ...this.match_bundle.settlement_tx,
                 data: newCalladata,
+                value: valueHex,
             },
         };
 
         this.match_bundle = newMatchBundle;
+    }
+
+    /**
+     * Return whether the trade is a native ETH sell
+     */
+    public isNativeEthSell(): boolean {
+        const matchRes = this.match_bundle.match_result;
+        const isSell = matchRes.direction === OrderSide.SELL;
+        const isBaseEth = matchRes.base_mint.toLowerCase() === NATIVE_ASSET_ADDR.toLowerCase();
+
+        return isBaseEth && isSell;
     }
 
     /**
