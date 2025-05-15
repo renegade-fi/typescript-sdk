@@ -218,6 +218,12 @@ importers:
         specifier: workspace:^
         version: link:../core
 
+  packages/token-nextjs:
+    dependencies:
+      '@renegade-fi/token':
+        specifier: workspace:^
+        version: link:../token
+
 packages:
 
   '@adraffy/ens-normalize@1.10.0':
