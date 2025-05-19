@@ -1,23 +1,27 @@
 import {
     AUTH_SERVER_URL_ARBITRUM_ONE,
     AUTH_SERVER_URL_ARBITRUM_SEPOLIA,
+    AUTH_SERVER_URL_BASE_SEPOLIA,
     CHAIN_IDS,
     type ChainId,
     DARKPOOL_ADDRESS_ARBITRUM_ONE,
     DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
+    DARKPOOL_ADDRESS_BASE_SEPOLIA,
     HSE_URL_MAINNET,
     HSE_URL_TESTNET,
     PERMIT2_ADDRESS_ARBITRUM_ONE,
     PERMIT2_ADDRESS_ARBITRUM_SEPOLIA,
+    PERMIT2_ADDRESS_BASE_SEPOLIA,
     PRICE_REPORTER_URL_MAINNET,
     PRICE_REPORTER_URL_TESTNET,
     RELAYER_URL_ARBITRUM_ONE,
     RELAYER_URL_ARBITRUM_SEPOLIA,
+    RELAYER_URL_BASE_SEPOLIA,
 } from "../constants.js";
 
 export interface SDKConfig {
     readonly id: ChainId;
-    readonly environment: string;
+    readonly chainSpecifier: string;
     readonly hseBaseUrl: string;
     readonly darkpoolAddress: `0x${string}`;
     readonly priceReporterUrl: string;
@@ -30,7 +34,7 @@ export interface SDKConfig {
 export const CONFIGS: Record<ChainId, SDKConfig> = {
     [CHAIN_IDS.ArbitrumOne]: {
         id: CHAIN_IDS.ArbitrumOne,
-        environment: "mainnet",
+        chainSpecifier: "arbitrum-one",
         hseBaseUrl: HSE_URL_MAINNET,
         darkpoolAddress: DARKPOOL_ADDRESS_ARBITRUM_ONE,
         relayerUrl: RELAYER_URL_ARBITRUM_ONE,
@@ -41,7 +45,7 @@ export const CONFIGS: Record<ChainId, SDKConfig> = {
     },
     [CHAIN_IDS.ArbitrumSepolia]: {
         id: CHAIN_IDS.ArbitrumSepolia,
-        environment: "testnet",
+        chainSpecifier: "arbitrum-sepolia",
         hseBaseUrl: HSE_URL_TESTNET,
         darkpoolAddress: DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
         relayerUrl: RELAYER_URL_ARBITRUM_SEPOLIA,
@@ -49,6 +53,17 @@ export const CONFIGS: Record<ChainId, SDKConfig> = {
         priceReporterUrl: PRICE_REPORTER_URL_TESTNET,
         permit2Address: PERMIT2_ADDRESS_ARBITRUM_SEPOLIA,
         authServerUrl: AUTH_SERVER_URL_ARBITRUM_SEPOLIA,
+    },
+    [CHAIN_IDS.BaseSepolia]: {
+        id: CHAIN_IDS.BaseSepolia,
+        chainSpecifier: "base-sepolia",
+        hseBaseUrl: HSE_URL_TESTNET,
+        darkpoolAddress: DARKPOOL_ADDRESS_BASE_SEPOLIA,
+        relayerUrl: RELAYER_URL_BASE_SEPOLIA,
+        websocketUrl: `wss://${RELAYER_URL_BASE_SEPOLIA}:4000`,
+        priceReporterUrl: PRICE_REPORTER_URL_TESTNET,
+        permit2Address: PERMIT2_ADDRESS_BASE_SEPOLIA,
+        authServerUrl: AUTH_SERVER_URL_BASE_SEPOLIA,
     },
 };
 
