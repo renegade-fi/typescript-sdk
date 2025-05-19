@@ -31,7 +31,7 @@ export class Token {
 
     /** Fetch a remap from the repo */
     static async fetchRemapFromRepo(chain: number) {
-        const name = getSDKConfig(chain).environment;
+        const name = getSDKConfig(chain).chainSpecifier;
         const url = new URL(`${REMAP_BASE_URL}${name}.json`);
         const res = await fetch(url);
         const data = (await res.json()) as TokenMapping;
