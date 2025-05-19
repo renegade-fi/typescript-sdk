@@ -1,7 +1,7 @@
 import type { Hex } from "viem";
 import type { Order } from "./order.js";
 
-export type Exchange = "binance" | "coinbase" | "kraken" | "okx";
+export type Exchange = "binance" | "coinbase" | "kraken" | "okx" | "renegade";
 
 export type NetworkOrder = {
     id: string;

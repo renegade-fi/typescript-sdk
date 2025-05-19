@@ -212,7 +212,9 @@ export function getDefaultQuoteToken(exchange: Exchange): Token {
                 { kraken: "USD" },
             );
         case "okx":
-            return Token.findByTicker("USDT");
+            return Token.fromTicker("USDT");
+        case "renegade":
+            return Token.fromTicker("USDC");
     }
 }
 
