@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.7.10
+
+### Patch Changes
+
+- core: export chainIdToEnv
+
 ## 0.7.9
 
 ### Patch Changes
