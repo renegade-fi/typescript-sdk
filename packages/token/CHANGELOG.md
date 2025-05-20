@@ -1,5 +1,12 @@
 # @renegade-fi/token
 
+## 0.0.14
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.8.0
+
 ## 0.0.13
 
 ### Patch Changes

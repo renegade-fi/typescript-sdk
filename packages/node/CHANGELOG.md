@@ -1,5 +1,16 @@
 # @renegade-fi/node
 
+## 0.6.0
+
+### Minor Changes
+
+- add Base-specific withdrawal logic & client
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.8.0
+
 ## 0.5.24
 
 ### Patch Changes

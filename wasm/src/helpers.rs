@@ -1,3 +1,4 @@
+use alloy_primitives::{Address, U160};
 use ark_ec::{twisted_edwards::Projective, CurveGroup};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
 use itertools::Itertools;
@@ -90,6 +91,15 @@ pub fn bytes_from_hex_string(hex: &str) -> Result<Vec<u8>, String> {
 /// A helper to serialize a BigUint to a hex string
 pub fn biguint_to_hex_string(val: &BigUint) -> String {
     format!("0x{}", val.to_str_radix(16 /* radix */))
+}
+
+/// Convert a `BigUint` to an `Address`
+pub fn biguint_to_address(biguint: &BigUint) -> Result<Address, String> {
+    let u160: U160 = biguint
+        .try_into()
+        .map_err(|_| "error converting BigUint to Address".to_string())?;
+
+    Ok(Address::from(u160))
 }
 
 /// A helper to deserialize a BigUint from a hex string

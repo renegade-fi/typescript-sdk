@@ -166,7 +166,7 @@ impl KeyChain {
         self.increment_nonce();
         let nonce = self.public_keys.nonce;
 
-        let sk_root = derive_sk_root_signing_key(&seed, Some(&nonce)).unwrap();
+        let sk_root = derive_sk_root_signing_key(seed, Some(&nonce)).unwrap();
         let rotated_keychain = derive_wallet_keychain(&sk_root).unwrap();
         self.set_pk_root(rotated_keychain.public_keys.pk_root);
         self.secret_keys.sk_root = rotated_keychain.secret_keys.sk_root;

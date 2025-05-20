@@ -1,3 +1,4 @@
+use alloy_sol_types::SolValue;
 use contracts_common::custom_serde::BytesSerializable;
 use ethers::{
     types::{Signature, U256},
@@ -11,9 +12,10 @@ use wasm_bindgen_futures::JsFuture;
 
 use crate::{
     circuit_types::transfers::{
-        to_contract_external_transfer, ExternalTransfer, ExternalTransferDirection,
+        to_arbitrum_external_transfer, to_base_external_transfer, ExternalTransfer,
+        ExternalTransferDirection,
     },
-    common::types::Wallet,
+    common::types::{Chain, Wallet},
     helpers::{bytes_from_hex_string, bytes_to_hex_string},
 };
 
@@ -30,6 +32,7 @@ pub async fn sign_wallet_commitment(
 
 /// Signs a withdrawal authorization.
 pub async fn sign_withdrawal_authorization(
+    chain: &Chain,
     signing_key: Option<&SigningKey>,
     mint: BigUint,
     amount: u128,
@@ -43,11 +46,24 @@ pub async fn sign_withdrawal_authorization(
         account_addr,
     };
 
-    let contract_transfer = to_contract_external_transfer(&transfer)
-        .map_err(|_| String::from("Failed to convert transfer"))?;
+    let contract_transfer_bytes = match chain {
+        &Chain::ArbitrumOne | &Chain::ArbitrumSepolia => {
+            let contract_transfer = to_arbitrum_external_transfer(&transfer)
+                .map_err(|_| String::from("Failed to convert transfer"))?;
 
-    let contract_transfer_bytes = postcard::to_allocvec(&contract_transfer)
-        .map_err(|e| format!("Failed to serialize transfer: {e}"))?;
+            postcard::to_allocvec(&contract_transfer)
+                .map_err(|e| format!("Failed to serialize transfer: {e}"))?
+        }
+        &Chain::BaseMainnet | &Chain::BaseSepolia => {
+            let contract_transfer = to_base_external_transfer(&transfer)
+                .map_err(|_| "Failed to convert transfer".to_string())?;
+
+            contract_transfer.abi_encode()
+        }
+        _ => {
+            return Err("Unsupported chain".to_string());
+        }
+    };
 
     sign_message(signing_key, &contract_transfer_bytes, external_signer).await
 }

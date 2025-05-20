@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.8.0
+
+### Minor Changes
+
+- add Base-specific withdrawal logic & client
+
 ## 0.7.10
 
 ### Patch Changes
