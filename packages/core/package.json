@@ -1,7 +1,7 @@
 {
     "name": "@renegade-fi/core",
     "description": "VanillaJS library for Renegade",
-    "version": "0.7.7",
+    "version": "0.7.8",
     "repository": {
         "type": "git",
         "url": "https://github.com/renegade-fi/typescript-sdk.git",
