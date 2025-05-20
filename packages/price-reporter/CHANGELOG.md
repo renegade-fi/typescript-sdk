@@ -1,5 +1,14 @@
 # @renegade-fi/price-reporter
 
+## 0.0.12
+
+### Patch Changes
+
+- price-reporter: override binance price query
+- Updated dependencies
+  - @renegade-fi/core@0.7.9
+  - @renegade-fi/token@0.0.12
+
 ## 0.0.11
 
 ### Patch Changes
