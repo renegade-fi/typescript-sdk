@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.7.9
+
+### Patch Changes
+
+- price-reporter: override binance price query
+
 ## 0.7.8
 
 ### Patch Changes

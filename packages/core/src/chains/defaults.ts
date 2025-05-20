@@ -83,7 +83,7 @@ export function getSDKConfig(chainId: number): SDKConfig {
 }
 
 /** Get the environment for a given chain ID */
-export function chainIdToEnvironment(chainId: number): Environment {
+export function chainIdToEnv(chainId: number): Environment {
     if (!isSupportedChainId(chainId)) {
         throw new Error(`Unsupported chain ID: ${chainId}`);
     }
