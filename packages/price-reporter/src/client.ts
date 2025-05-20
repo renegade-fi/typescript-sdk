@@ -1,9 +1,15 @@
-import { CHAIN_IDS, getSDKConfig } from "@renegade-fi/core";
 import { getDefaultQuoteToken } from "@renegade-fi/token";
 import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
 import { ResultAsync, errAsync, fromThrowable } from "neverthrow";
-import { ERR_INVALID_URL, ERR_NO_PRICE_REPORTER_URL, PRICE_REPORTER_ROUTE } from "./constants.js";
+import {
+    ENVIRONMENTS,
+    ERR_INVALID_URL,
+    ERR_NO_PRICE_REPORTER_URL,
+    type Environment,
+    PRICE_REPORTER_ROUTE,
+    RENEGADE_EXCHANGE,
+} from "./constants.js";
 import { HttpError, PriceReporterError } from "./error.js";
 
 /**
@@ -12,28 +18,24 @@ import { HttpError, PriceReporterError } from "./error.js";
 export class PriceReporterClient {
     constructor(private readonly baseUrl: string) {}
 
-    static new(chainId: number) {
-        const config = getSDKConfig(chainId);
-        return new PriceReporterClient(`https://${config.priceReporterUrl}:3000`);
+    static new(env: Environment) {
+        return new PriceReporterClient(`https://${env}.price-reporter.renegade.fi:3000`);
     }
 
-    static newArbitrumOneClient() {
-        const config = getSDKConfig(CHAIN_IDS.ArbitrumOne);
-        return new PriceReporterClient(`https://${config.priceReporterUrl}:3000`);
+    static newMainnetClient() {
+        return PriceReporterClient.new(ENVIRONMENTS.Mainnet);
     }
 
-    static newArbitrumSepoliaClient() {
-        const config = getSDKConfig(CHAIN_IDS.ArbitrumSepolia);
-        return new PriceReporterClient(`https://${config.priceReporterUrl}:3000`);
+    static newTestnetClient() {
+        return PriceReporterClient.new(ENVIRONMENTS.Testnet);
     }
 
     /**
      * Get the current Renegade execution price for a specific token
      */
     public getPrice(mint: `0x${string}`): Promise<number> {
-        const exchange = "binance";
-        const quote = getDefaultQuoteToken(exchange).address;
-        return this.getPriceByTopic(exchange, mint, quote);
+        const quote = getDefaultQuoteToken(RENEGADE_EXCHANGE).address;
+        return this.getPriceByTopic(RENEGADE_EXCHANGE, mint, quote);
     }
 
     /**
@@ -42,9 +44,8 @@ export class PriceReporterClient {
      * @returns the price or an error
      */
     public getPriceResult(mint: `0x${string}`): ResultAsync<number, PriceReporterError> {
-        const exchange = "binance";
-        const quote = getDefaultQuoteToken(exchange).address;
-        return this.getPriceByTopicResult(exchange, mint, quote);
+        const quote = getDefaultQuoteToken(RENEGADE_EXCHANGE).address;
+        return this.getPriceByTopicResult(RENEGADE_EXCHANGE, mint, quote);
     }
 
     /**
