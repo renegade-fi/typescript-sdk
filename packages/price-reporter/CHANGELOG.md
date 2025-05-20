@@ -1,5 +1,14 @@
 # @renegade-fi/price-reporter
 
+## 0.0.11
+
+### Patch Changes
+
+- core: add env enum
+- Updated dependencies
+  - @renegade-fi/core@0.7.8
+  - @renegade-fi/token@0.0.11
+
 ## 0.0.10
 
 ### Patch Changes
