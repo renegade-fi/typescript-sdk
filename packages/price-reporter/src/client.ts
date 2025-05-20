@@ -1,12 +1,12 @@
+import type { Environment } from "@renegade-fi/core";
+import { ENVIRONMENT } from "@renegade-fi/core";
 import { getDefaultQuoteToken } from "@renegade-fi/token";
 import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
 import { ResultAsync, errAsync, fromThrowable } from "neverthrow";
 import {
-    ENVIRONMENTS,
     ERR_INVALID_URL,
     ERR_NO_PRICE_REPORTER_URL,
-    type Environment,
     PRICE_REPORTER_ROUTE,
     RENEGADE_EXCHANGE,
 } from "./constants.js";
@@ -23,11 +23,11 @@ export class PriceReporterClient {
     }
 
     static newMainnetClient() {
-        return PriceReporterClient.new(ENVIRONMENTS.Mainnet);
+        return PriceReporterClient.new(ENVIRONMENT.Mainnet);
     }
 
     static newTestnetClient() {
-        return PriceReporterClient.new(ENVIRONMENTS.Testnet);
+        return PriceReporterClient.new(ENVIRONMENT.Testnet);
     }
 
     /**

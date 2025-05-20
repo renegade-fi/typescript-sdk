@@ -23,6 +23,18 @@ export const CHAIN_IDS = {
 
 export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
 
+export const ENVIRONMENT = {
+    Mainnet: "mainnet",
+    Testnet: "testnet",
+} as const;
+export type Environment = (typeof ENVIRONMENT)[keyof typeof ENVIRONMENT];
+
+export const CHAIN_ID_TO_ENVIRONMENT: Record<ChainId, Environment> = {
+    [CHAIN_IDS.ArbitrumOne]: "mainnet",
+    [CHAIN_IDS.ArbitrumSepolia]: "testnet",
+    [CHAIN_IDS.BaseSepolia]: "testnet",
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 // Environment-Specific Constants
 ////////////////////////////////////////////////////////////////////////////////

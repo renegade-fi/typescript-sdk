@@ -20,19 +20,6 @@ export const PRICE_REPORTER_ROUTE = (exchange: string, base: string, quote: stri
     `/price/${PRICE_REPORTER_TOPIC(exchange, base, quote)}`;
 
 /**
- * The environment to fetch the price from
- */
-export const ENVIRONMENTS = {
-    Mainnet: "mainnet",
-    Testnet: "testnet",
-} as const;
-
-/**
- * The type for the environment
- */
-export type Environment = (typeof ENVIRONMENTS)[keyof typeof ENVIRONMENTS];
-
-/**
  * The alias for the canonical exchange
  */
 export const RENEGADE_EXCHANGE = "renegade";
