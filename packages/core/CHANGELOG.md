@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.7.7
+
+### Patch Changes
+
+- price-reporter, core, token: use canonical exchange for getPrice
+
 ## 0.7.6
 
 ### Patch Changes
