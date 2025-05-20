@@ -67,22 +67,6 @@ dependencies = [
 
 [[package]]
 name = "alloy-primitives"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e416903084d3392ebd32d94735c395d6709415b76c7728e594d3f996f2b03e65"
-dependencies = [
- "bytes",
- "cfg-if",
- "const-hex",
- "derive_more",
- "hex-literal",
- "itoa",
- "ruint",
- "tiny-keccak",
-]
-
-[[package]]
-name = "alloy-primitives"
 version = "0.7.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ccb3ead547f4532bc8af961649942f0b9c16ee9226e26caa3f38420651cc0bf4"
@@ -160,7 +144,7 @@ version = "0.7.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a91ca40fa20793ae9c3841b83e74569d1cc9af29a2f5237314fd3452d51e38c7"
 dependencies = [
- "alloy-primitives 0.7.7",
+ "alloy-primitives",
  "alloy-sol-macro",
  "const-hex",
 ]
@@ -753,7 +737,7 @@ name = "contracts-common"
 version = "0.1.0"
 source = "git+https://github.com/renegade-fi/renegade-contracts.git#4bbab0495ca9f1d431e2a2fddc639c9b12c7f78c"
 dependencies = [
- "alloy-primitives 0.7.7",
+ "alloy-primitives",
  "alloy-sol-types",
  "ark-bn254",
  "ark-ec",
@@ -2791,7 +2775,8 @@ dependencies = [
 name = "renegade-utils"
 version = "0.0.2"
 dependencies = [
- "alloy-primitives 0.3.3",
+ "alloy-primitives",
+ "alloy-sol-types",
  "ark-bn254",
  "ark-ec",
  "ark-ed-on-bn254",

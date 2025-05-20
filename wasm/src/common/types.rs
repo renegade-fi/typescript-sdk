@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use super::{keychain::KeyChain, keyed_list::KeyedList};
 use crate::{
     circuit_types::{
@@ -147,5 +149,35 @@ impl Wallet {
         self.private_shares = new_private_share;
         self.blinded_public_shares = new_public_share;
         self.blinder = new_blinder;
+    }
+}
+
+/// The chain environment
+#[derive(Copy, Clone, Debug)]
+pub enum Chain {
+    /// The Arbitrum Sepolia chain
+    ArbitrumSepolia,
+    /// The Arbitrum One chain
+    ArbitrumOne,
+    /// The Base Sepolia chain
+    BaseSepolia,
+    /// The Base Mainnet chain
+    BaseMainnet,
+    /// Any local devnet chain
+    Devnet,
+}
+
+impl FromStr for Chain {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
+            "arbitrum-sepolia" => Ok(Chain::ArbitrumSepolia),
+            "arbitrum-one" => Ok(Chain::ArbitrumOne),
+            "base-sepolia" => Ok(Chain::BaseSepolia),
+            "base-mainnet" => Ok(Chain::BaseMainnet),
+            "devnet" => Ok(Chain::Devnet),
+            _ => Err(format!("Invalid chain: {s}")),
+        }
     }
 }

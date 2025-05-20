@@ -23,6 +23,13 @@ export const CHAIN_IDS = {
 
 export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
 
+export const CHAIN_SPECIFIERS = {
+    [CHAIN_IDS.ArbitrumOne]: "arbitrum-one",
+    [CHAIN_IDS.ArbitrumSepolia]: "arbitrum-sepolia",
+    [CHAIN_IDS.BaseSepolia]: "base-sepolia",
+} as const;
+export type ChainSpecifier = (typeof CHAIN_SPECIFIERS)[keyof typeof CHAIN_SPECIFIERS];
+
 export const ENVIRONMENT = {
     Mainnet: "mainnet",
     Testnet: "testnet",

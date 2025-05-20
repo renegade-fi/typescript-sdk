@@ -80,7 +80,7 @@ pub fn derive_sk_root_signing_key(
 pub fn derive_sk_root_scalars(seed: &str, nonce: &Scalar) -> NonNativeScalar<2> {
     let root_key = derive_root_signing_key(seed).unwrap();
 
-    let sk_root = derive_sk_root(&root_key, Some(&nonce)).unwrap();
+    let sk_root = derive_sk_root(&root_key, Some(nonce)).unwrap();
     let sk_root_biguint = BigUint::from_bytes_be(&sk_root.to_bytes_be());
     // TODO: Should be able to .into() here
     NonNativeScalar::from(&sk_root_biguint)
@@ -221,8 +221,10 @@ pub async fn derive_wallet_id_external(
     sign_message: &Function,
 ) -> Result<WalletIdentifier, String> {
     let bytes = get_extended_sig_bytes_external(WALLET_ID_MESSAGE, sign_message).await?;
-    Ok(WalletIdentifier::from_slice(&bytes[..WALLET_ID_BYTES])
-        .map_err(|_| format!("Failed to create wallet ID"))?)
+    let wallet_id = WalletIdentifier::from_slice(&bytes[..WALLET_ID_BYTES])
+        .map_err(|_| "Failed to create wallet ID".to_string())?;
+
+    Ok(wallet_id)
 }
 
 pub async fn derive_blinder_seed_external(sign_message: &Function) -> Result<Scalar, String> {
@@ -267,7 +269,7 @@ async fn get_sig_bytes_external(
     sign_message: &Function,
 ) -> Result<[u8; KECCAK_HASH_BYTES], String> {
     let digest = keccak256(msg);
-    let digest_hex = format!("0x{}", hex::encode(&digest));
+    let digest_hex = format!("0x{}", hex::encode(digest));
     let this = JsValue::null();
     let arg = JsValue::from_str(&digest_hex);
 
@@ -296,10 +298,10 @@ async fn get_sig_bytes_external(
 
     let sig_hex = signature
         .as_string()
-        .ok_or_else(|| format!("Failed to convert signature to string"))?;
+        .ok_or_else(|| "Failed to convert signature to string".to_string())?;
 
     let bytes = bytes_from_hex_string(&sig_hex)
-        .map_err(|e| format!("Failed to convert signature to bytes: {}", e.to_string()))?;
+        .map_err(|e| format!("Failed to convert signature to bytes: {e}"))?;
 
     // Take the keccak hash of the signature to disperse its elements
     Ok(keccak256(bytes))

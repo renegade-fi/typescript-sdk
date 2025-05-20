@@ -1,6 +1,8 @@
 use crate::{
     errors::ConversionError,
+    helpers::biguint_to_address,
     serde_def_types::{AddressDef, U256Def},
+    sol::{ExternalTransfer as BaseExternalTransfer, TransferType as BaseTransferType},
 };
 use alloy_primitives::{Address, U256 as AlloyU256};
 use num_bigint::BigUint;
@@ -36,7 +38,7 @@ pub enum ExternalTransferDirection {
 /// Represents an external transfer of an ERC20 token
 #[serde_as]
 #[derive(Serialize, Deserialize, Default)]
-pub struct ContractExternalTransfer {
+pub struct ArbitrumExternalTransfer {
     /// The address of the account contract to deposit from or withdraw to
     #[serde_as(as = "AddressDef")]
     pub account_addr: Address,
@@ -50,10 +52,10 @@ pub struct ContractExternalTransfer {
     pub is_withdrawal: bool,
 }
 
-/// Convert an [`ExternalTransfer`] to its corresponding smart contract type
-pub fn to_contract_external_transfer(
+/// Convert an [`ExternalTransfer`] to its corresponding Arbitrum smart contract type
+pub fn to_arbitrum_external_transfer(
     external_transfer: &ExternalTransfer,
-) -> Result<ContractExternalTransfer, ConversionError> {
+) -> Result<ArbitrumExternalTransfer, ConversionError> {
     let account_addr: U160 = external_transfer
         .account_addr
         .clone()
@@ -69,10 +71,33 @@ pub fn to_contract_external_transfer(
         .try_into()
         .map_err(|_| ConversionError::InvalidUint)?;
 
-    Ok(ContractExternalTransfer {
+    Ok(ArbitrumExternalTransfer {
         account_addr: Address::from(account_addr),
         mint: Address::from(mint),
         amount,
         is_withdrawal: external_transfer.direction == ExternalTransferDirection::Withdrawal,
+    })
+}
+
+/// Convert an [`ExternalTransfer`] to its corresponding Base smart contract type
+pub fn to_base_external_transfer(
+    external_transfer: &ExternalTransfer,
+) -> Result<BaseExternalTransfer, ConversionError> {
+    let transfer_type = match external_transfer.direction {
+        ExternalTransferDirection::Deposit => BaseTransferType::Deposit,
+        ExternalTransferDirection::Withdrawal => BaseTransferType::Withdrawal,
+    };
+
+    let account = biguint_to_address(&external_transfer.account_addr)
+        .map_err(|_| ConversionError::InvalidUint)?;
+    let mint =
+        biguint_to_address(&external_transfer.mint).map_err(|_| ConversionError::InvalidUint)?;
+    let amount = U256::from(external_transfer.amount);
+
+    Ok(BaseExternalTransfer {
+        account,
+        mint,
+        amount,
+        transferType: transfer_type,
     })
 }

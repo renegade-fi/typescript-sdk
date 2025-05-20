@@ -216,6 +216,39 @@ export class RenegadeClient {
         });
     }
 
+    /**
+     * Base Sepolia client via seed.
+     *
+     * @param params.seed your 0x… seed
+     */
+    static newBaseSepoliaClient({ seed }: { seed: `0x${string}` }) {
+        return RenegadeClient.new({ chainId: CHAIN_IDS.BaseSepolia, seed });
+    }
+
+    /**
+     * Base Sepolia client with external keychain.
+     *
+     * @param params.walletSecrets  symmetric key + wallet ID
+     * @param params.signMessage    callback to sign auth messages
+     * @param params.publicKey      your public key
+     */
+    static newBaseSepoliaClientWithKeychain({
+        walletSecrets,
+        signMessage,
+        publicKey,
+    }: {
+        walletSecrets: GeneratedSecrets;
+        signMessage: (message: string) => Promise<`0x${string}`>;
+        publicKey: `0x${string}`;
+    }) {
+        return RenegadeClient.newWithExternalKeychain({
+            chainId: CHAIN_IDS.BaseSepolia,
+            walletSecrets,
+            signMessage,
+            publicKey,
+        });
+    }
+
     // -- Wallet Operations -- //
 
     async getWallet(

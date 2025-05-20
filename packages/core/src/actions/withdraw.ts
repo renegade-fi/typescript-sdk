@@ -1,6 +1,6 @@
 import invariant from "tiny-invariant";
 import { type Address, toHex } from "viem";
-import { WITHDRAW_BALANCE_ROUTE } from "../constants.js";
+import { CHAIN_SPECIFIERS, WITHDRAW_BALANCE_ROUTE } from "../constants.js";
 import type { RenegadeConfig } from "../createConfig.js";
 import { stringifyForWasm } from "../utils/bigJSON.js";
 import { postRelayerWithAuth } from "../utils/http.js";
@@ -39,7 +39,10 @@ export async function withdraw(
         invariant(seed !== undefined, "Seed is required for internal key type");
     }
 
+    const chain = CHAIN_SPECIFIERS[config.chainId];
+
     const body = await utils.withdraw(
+        chain,
         seed,
         stringifyForWasm(wallet),
         mint,

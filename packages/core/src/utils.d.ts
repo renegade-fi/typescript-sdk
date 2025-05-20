@@ -1,6 +1,29 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
+* @param {string} path
+* @param {any} headers
+* @param {string} body
+* @param {string} key
+* @returns {string}
+*/
+export function create_request_signature(path: string, headers: any, body: string, key: string): string;
+/**
+* @param {string} b64_key
+* @returns {string}
+*/
+export function b64_to_hex_hmac_key(b64_key: string): string;
+/**
+* @param {string} wallet_id
+* @param {string} blinder_seed
+* @param {string} share_seed
+* @param {string} pk_root
+* @param {string} sk_match
+* @param {string} symmetric_key
+* @returns {Promise<any>}
+*/
+export function create_external_wallet(wallet_id: string, blinder_seed: string, share_seed: string, pk_root: string, sk_match: string, symmetric_key: string): Promise<any>;
+/**
 * @param {string} seed
 * @param {bigint} nonce
 * @returns {any}
@@ -24,44 +47,6 @@ export function get_pk_root_scalars(seed?: string, nonce?: bigint, public_key?: 
 * @returns {any}
 */
 export function get_symmetric_key(seed: string): any;
-/**
-* @param {string} path
-* @param {any} headers
-* @param {string} body
-* @param {string} key
-* @returns {string}
-*/
-export function create_request_signature(path: string, headers: any, body: string, key: string): string;
-/**
-* @param {string} b64_key
-* @returns {string}
-*/
-export function b64_to_hex_hmac_key(b64_key: string): string;
-/**
-* @param {string} wallet_id
-* @param {string} blinder_seed
-* @param {string} share_seed
-* @param {string} pk_root
-* @param {string} sk_match
-* @param {string} symmetric_key
-* @returns {Promise<any>}
-*/
-export function find_external_wallet(wallet_id: string, blinder_seed: string, share_seed: string, pk_root: string, sk_match: string, symmetric_key: string): Promise<any>;
-/**
-* @param {Function} sign_message
-* @returns {Promise<any>}
-*/
-export function generate_wallet_secrets(sign_message: Function): Promise<any>;
-/**
-* @param {string} wallet_id
-* @param {string} blinder_seed
-* @param {string} share_seed
-* @param {string} pk_root
-* @param {string} sk_match
-* @param {string} symmetric_key
-* @returns {Promise<any>}
-*/
-export function create_external_wallet(wallet_id: string, blinder_seed: string, share_seed: string, pk_root: string, sk_match: string, symmetric_key: string): Promise<any>;
 /**
 * @param {string} seed
 * @returns {any}
@@ -97,6 +82,7 @@ export function wallet_id(seed: string): any;
 */
 export function deposit(seed: string | undefined, wallet_str: string, from_addr: string, mint: string, amount: string, permit_nonce: string, permit_deadline: string, permit_signature: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
+* @param {string} chain
 * @param {string | undefined} seed
 * @param {string} wallet_str
 * @param {string} mint
@@ -106,7 +92,7 @@ export function deposit(seed: string | undefined, wallet_str: string, from_addr:
 * @param {Function | undefined} [sign_message]
 * @returns {Promise<any>}
 */
-export function withdraw(seed: string | undefined, wallet_str: string, mint: string, amount: string, destination_addr: string, new_public_key?: string, sign_message?: Function): Promise<any>;
+export function withdraw(chain: string, seed: string | undefined, wallet_str: string, mint: string, amount: string, destination_addr: string, new_public_key?: string, sign_message?: Function): Promise<any>;
 /**
 * @param {string | undefined} seed
 * @param {string} wallet_str
@@ -195,3 +181,18 @@ export function new_external_quote_request(base_mint: string, quote_mint: string
 * @returns {any}
 */
 export function assemble_external_match(do_gas_estimation: boolean, updated_order: string, sponsored_quote_response: string, receiver_address: string): any;
+/**
+* @param {string} wallet_id
+* @param {string} blinder_seed
+* @param {string} share_seed
+* @param {string} pk_root
+* @param {string} sk_match
+* @param {string} symmetric_key
+* @returns {Promise<any>}
+*/
+export function find_external_wallet(wallet_id: string, blinder_seed: string, share_seed: string, pk_root: string, sk_match: string, symmetric_key: string): Promise<any>;
+/**
+* @param {Function} sign_message
+* @returns {Promise<any>}
+*/
+export function generate_wallet_secrets(sign_message: Function): Promise<any>;

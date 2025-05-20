@@ -1,5 +1,7 @@
 #![allow(clippy::too_many_arguments)]
 
+use std::str::FromStr;
+
 use super::types::{
     ApiOrder, ApiOrderType, ApiPrivateKeychain, ApiWallet, SignedExternalQuote,
     SponsoredQuoteResponse,
@@ -11,13 +13,14 @@ use crate::{
             derive_blinder_seed, derive_sk_root_signing_key, derive_wallet_from_key,
             derive_wallet_id, wrap_eyre,
         },
-        types::WalletIdentifier,
+        types::{Chain, WalletIdentifier},
     },
     helpers::{
         biguint_from_hex_string, deserialize_biguint_from_hex_string, deserialize_wallet,
         serialize_biguint_to_hex_string, PoseidonCSPRNG,
     },
     key_rotation::handle_key_rotation,
+    map_js_err,
     signature::{sign_wallet_commitment, sign_withdrawal_authorization},
 };
 use ethers::types::Bytes;
@@ -221,6 +224,7 @@ pub struct WithdrawBalanceRequest {
 
 #[wasm_bindgen]
 pub async fn withdraw(
+    chain: &str,
     seed: Option<String>,
     wallet_str: &str,
     mint: &str,
@@ -275,7 +279,10 @@ pub async fn withdraw(
         new_root_key: next_public_key,
     };
 
+    let chain = Chain::from_str(chain).map_err(map_js_err!())?;
+
     let withdrawal_sig = sign_withdrawal_authorization(
+        &chain,
         signing_key.as_ref(),
         mint.clone(),
         amount.to_u128().unwrap(),
@@ -291,6 +298,7 @@ pub async fn withdraw(
         external_transfer_sig: withdrawal_sig,
         update_auth,
     };
+
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
 }
 

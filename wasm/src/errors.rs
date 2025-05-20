@@ -14,3 +14,10 @@ macro_rules! js_error {
         wasm_bindgen::JsError::new(&format!($($arg)*))
     };
 }
+
+#[macro_export]
+macro_rules! map_js_err {
+    () => {
+        |e| wasm_bindgen::JsError::new(&e.to_string())
+    };
+}

@@ -4,6 +4,7 @@ import {
     AUTH_SERVER_URL_BASE_SEPOLIA,
     CHAIN_IDS,
     CHAIN_ID_TO_ENVIRONMENT,
+    CHAIN_SPECIFIERS,
     type ChainId,
     DARKPOOL_ADDRESS_ARBITRUM_ONE,
     DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
@@ -36,7 +37,7 @@ export interface SDKConfig {
 export const CONFIGS: Record<ChainId, SDKConfig> = {
     [CHAIN_IDS.ArbitrumOne]: {
         id: CHAIN_IDS.ArbitrumOne,
-        chainSpecifier: "arbitrum-one",
+        chainSpecifier: CHAIN_SPECIFIERS[CHAIN_IDS.ArbitrumOne],
         hseBaseUrl: HSE_URL_MAINNET,
         darkpoolAddress: DARKPOOL_ADDRESS_ARBITRUM_ONE,
         relayerUrl: RELAYER_URL_ARBITRUM_ONE,
@@ -47,7 +48,7 @@ export const CONFIGS: Record<ChainId, SDKConfig> = {
     },
     [CHAIN_IDS.ArbitrumSepolia]: {
         id: CHAIN_IDS.ArbitrumSepolia,
-        chainSpecifier: "arbitrum-sepolia",
+        chainSpecifier: CHAIN_SPECIFIERS[CHAIN_IDS.ArbitrumSepolia],
         hseBaseUrl: HSE_URL_TESTNET,
         darkpoolAddress: DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
         relayerUrl: RELAYER_URL_ARBITRUM_SEPOLIA,
@@ -58,7 +59,7 @@ export const CONFIGS: Record<ChainId, SDKConfig> = {
     },
     [CHAIN_IDS.BaseSepolia]: {
         id: CHAIN_IDS.BaseSepolia,
-        chainSpecifier: "base-sepolia",
+        chainSpecifier: CHAIN_SPECIFIERS[CHAIN_IDS.BaseSepolia],
         hseBaseUrl: HSE_URL_TESTNET,
         darkpoolAddress: DARKPOOL_ADDRESS_BASE_SEPOLIA,
         relayerUrl: RELAYER_URL_BASE_SEPOLIA,
