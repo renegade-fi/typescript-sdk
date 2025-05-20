@@ -3,10 +3,12 @@ import {
     AUTH_SERVER_URL_ARBITRUM_SEPOLIA,
     AUTH_SERVER_URL_BASE_SEPOLIA,
     CHAIN_IDS,
+    CHAIN_ID_TO_ENVIRONMENT,
     type ChainId,
     DARKPOOL_ADDRESS_ARBITRUM_ONE,
     DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
     DARKPOOL_ADDRESS_BASE_SEPOLIA,
+    type Environment,
     HSE_URL_MAINNET,
     HSE_URL_TESTNET,
     PERMIT2_ADDRESS_ARBITRUM_ONE,
@@ -78,6 +80,14 @@ export function getSDKConfig(chainId: number): SDKConfig {
         throw new Error(`Unsupported chain ID: ${chainId}`);
     }
     return CONFIGS[chainId];
+}
+
+/** Get the environment for a given chain ID */
+export function chainIdToEnvironment(chainId: number): Environment {
+    if (!isSupportedChainId(chainId)) {
+        throw new Error(`Unsupported chain ID: ${chainId}`);
+    }
+    return CHAIN_ID_TO_ENVIRONMENT[chainId];
 }
 
 /** Quick HSE URL lookup */

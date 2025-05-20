@@ -95,10 +95,7 @@ export class PriceReporterClient {
             return errAsync(new PriceReporterError(ERR_INVALID_URL));
         }
 
-        const exchange = "binance";
-        const quote = getDefaultQuoteToken(exchange).address;
-
-        return client.getPriceByTopicResult(exchange, address, quote);
+        return client.getPriceResult(address);
     }
 
     // --- Private methods ---
