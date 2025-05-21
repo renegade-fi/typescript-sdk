@@ -1,5 +1,13 @@
 # @renegade-fi/malleable-external-match-example
 
+## 0.0.16
+
+### Patch Changes
+
+- Allow setting the quote amount in malleable matches
+  - @renegade-fi/node@0.6.1
+  - @renegade-fi/token@0.0.15
+
 ## 0.0.15
 
 ### Patch Changes
