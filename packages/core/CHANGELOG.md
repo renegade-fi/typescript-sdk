@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.8.1
+
+### Patch Changes
+
+- Allow setting the quote amount in malleable matches
+
 ## 0.8.0
 
 ### Minor Changes

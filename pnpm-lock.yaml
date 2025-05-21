@@ -78,6 +78,9 @@ importers:
       '@renegade-fi/node':
         specifier: workspace:*
         version: link:../../packages/node
+      '@renegade-fi/token':
+        specifier: workspace:*
+        version: link:../../packages/token
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5

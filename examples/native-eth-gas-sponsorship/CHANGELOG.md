@@ -1,5 +1,13 @@
 # @renegade-fi/gas-sponsorship-example
 
+## 0.0.25
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.8.1
+  - @renegade-fi/node@0.6.1
+
 ## 0.0.24
 
 ### Patch Changes
