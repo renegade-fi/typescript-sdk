@@ -1,4 +1,9 @@
-import { type Exchange, getSDKConfig } from "@renegade-fi/core";
+import {
+    CHAIN_SPECIFIERS,
+    type ChainId,
+    type Exchange,
+    isSupportedChainId,
+} from "@renegade-fi/core";
 
 type Address = `0x${string}`;
 
@@ -25,27 +30,50 @@ const REMAP_BASE_URL = "https://raw.githubusercontent.com/renegade-fi/token-mapp
 /** The list of stablecoins */
 export const STABLECOINS = ["USDC", "USDT"];
 
+/**
+ * The default chain. This gets set to the first chain that is added to the token mapping.
+ *
+ * Supports the "default" option to maintain backwards compatibility for
+ * chain-agnostic initialization of the token mapping in a single-chain context
+ * (i.e., `parseRemapFromString`).
+ */
+let DEFAULT_CHAIN: ChainId | "default" | undefined = undefined;
+
 /** The token class */
 export class Token {
-    private static tokenMapping: TokenMapping;
+    private static tokenMappings: Partial<Record<ChainId | "default", TokenMapping>>;
 
     /** Fetch a remap from the repo */
     static async fetchRemapFromRepo(chain: number) {
-        const name = getSDKConfig(chain).chainSpecifier;
-        const url = new URL(`${REMAP_BASE_URL}${name}.json`);
+        if (!isSupportedChainId(chain)) {
+            throw new Error(`Chain ${chain} is not supported`);
+        }
+
+        const chainSpecifier = CHAIN_SPECIFIERS[chain];
+        const url = new URL(`${REMAP_BASE_URL}${chainSpecifier}.json`);
         const res = await fetch(url);
         const data = (await res.json()) as TokenMapping;
-        Token.processRemap(data.tokens);
+        Token.addRemap(chain, data.tokens);
     }
 
-    /** Parse a remap from a stringified JSON object */
+    /**
+     * Parse a remap from a stringified JSON object.
+     *
+     * @deprecated Use `Token.addRemapFromString` instead.
+     */
     static parseRemapFromString(remap: string) {
         const data = JSON.parse(remap) as TokenMapping;
-        Token.processRemap(data.tokens);
+        Token.addRemap("default", data.tokens);
     }
 
-    private static processRemap(tokens: TokenMetadata[]) {
-        Token.tokenMapping = {
+    /** Parse a remap for the specified chain from a stringified JSON object */
+    static addRemapFromString(chain: ChainId, remap: string) {
+        const data = JSON.parse(remap) as TokenMapping;
+        Token.addRemap(chain, data.tokens);
+    }
+
+    private static addRemap(chain: ChainId | "default", tokens: TokenMetadata[]) {
+        Token.tokenMappings[chain] = {
             tokens: [],
         };
 
@@ -65,9 +93,13 @@ export class Token {
                 }) as const satisfies TokenMetadata,
         );
 
-        Token.tokenMapping = {
+        Token.tokenMappings[chain] = {
             tokens: lowercaseTokens,
         };
+
+        if (!DEFAULT_CHAIN) {
+            DEFAULT_CHAIN = chain;
+        }
     }
 
     private _name: string;
@@ -77,8 +109,9 @@ export class Token {
     private _supported_exchanges: Partial<Record<Exchange, string>>;
     private _chain_addresses: Record<string, string>;
     private _logo_url: string;
+    private _chain?: ChainId;
 
-    constructor(tokenMetadata: TokenMetadata) {
+    constructor(tokenMetadata: TokenMetadata, chain?: ChainId) {
         this._name = tokenMetadata.name;
         this._ticker = tokenMetadata.ticker;
         this._address = tokenMetadata.address;
@@ -86,6 +119,7 @@ export class Token {
         this._supported_exchanges = tokenMetadata.supported_exchanges;
         this._chain_addresses = tokenMetadata.chain_addresses;
         this._logo_url = tokenMetadata.logo_url;
+        this._chain = chain;
     }
 
     get name(): string {
@@ -120,6 +154,10 @@ export class Token {
         return this._logo_url;
     }
 
+    get chain(): ChainId | undefined {
+        return this._chain;
+    }
+
     getExchangeTicker(exchange: Exchange): string | undefined {
         return this._supported_exchanges[exchange];
     }
@@ -134,16 +172,40 @@ export class Token {
         return formatUnits(amount, this.decimals);
     }
 
-    static fromTicker(ticker: string): Token {
-        if (Token.tokenMapping.tokens.length === 0) {
-            throw new Error("Token not initialized. Call fetchRemapFromRepo first.");
-        }
+    /**
+     * Get a token from a ticker on a specific chain.
+     *
+     * @param ticker The ticker of the token to get.
+     * @param chain The chain to get the token from.
+     */
+    static fromTickerOnChain(ticker: string, chain: ChainId): Token {
+        const tokenData = Token.getTokenMapping(chain).tokens.find(
+            (token) => token.ticker === ticker,
+        );
 
-        const tokenData = Token.tokenMapping.tokens.find((token) => token.ticker === ticker);
         if (!tokenData) {
             return DEFAULT_TOKEN;
         }
-        return new Token(tokenData);
+
+        return new Token(tokenData, chain);
+    }
+
+    /**
+     * Get a token from a ticker, using the default chain set.
+     *
+     * @param ticker The ticker of the token to get.
+     */
+    static fromTicker(ticker: string): Token {
+        const tokenData = Token.getDefaultTokenMapping().tokens.find(
+            (token) => token.ticker === ticker,
+        );
+
+        if (!tokenData) {
+            return DEFAULT_TOKEN;
+        }
+
+        const chain = Token.resolveDefaultChainId();
+        return new Token(tokenData, chain);
     }
 
     /** @deprecated Use `Token.fromTicker` instead */
@@ -151,18 +213,40 @@ export class Token {
         return Token.fromTicker(ticker);
     }
 
-    static fromAddress(address: Address): Token {
-        if (Token.tokenMapping.tokens.length === 0) {
-            throw new Error("Token not initialized. Call fetchRemapFromRepo first.");
-        }
-
-        const tokenData = Token.tokenMapping.tokens.find(
-            (token) => token.address.toLowerCase() === address.toLowerCase(),
+    /**
+     * Get a token from an address on a specific chain.
+     *
+     * @param address The address of the token to get.
+     * @param chain The chain to get the token from.
+     */
+    static fromAddressOnChain(address: Address, chain: ChainId): Token {
+        const tokenData = Token.getTokenMapping(chain).tokens.find(
+            (token) => token.address === address.toLowerCase(),
         );
+
         if (!tokenData) {
             return DEFAULT_TOKEN;
         }
-        return new Token(tokenData);
+
+        return new Token(tokenData, chain);
+    }
+
+    /**
+     * Get a token from an address, using the default chain set.
+     *
+     * @param address The address of the token to get.
+     */
+    static fromAddress(address: Address): Token {
+        const tokenData = Token.getDefaultTokenMapping().tokens.find(
+            (token) => token.address === address.toLowerCase(),
+        );
+
+        if (!tokenData) {
+            return DEFAULT_TOKEN;
+        }
+
+        const chain = Token.resolveDefaultChainId();
+        return new Token(tokenData, chain);
     }
 
     /** @deprecated Use `Token.fromAddress` instead */
@@ -178,25 +262,74 @@ export class Token {
         supported_exchanges: Partial<Record<Exchange, string>> = {},
         chain_addresses: Record<string, string> = {},
         logo_url = "",
+        chain?: ChainId,
     ): Token {
-        return new Token({
-            name,
-            ticker,
-            address,
-            decimals,
-            supported_exchanges,
-            chain_addresses,
-            logo_url,
-        });
+        return new Token(
+            {
+                name,
+                ticker,
+                address,
+                decimals,
+                supported_exchanges,
+                chain_addresses,
+                logo_url,
+            },
+            chain,
+        );
     }
 
     static getAllTokens(): Token[] {
-        return Token.tokenMapping.tokens.map((token) => new Token(token));
+        const chain = Token.resolveDefaultChainId();
+        return Token.getAllTokensMetadata().map((token) => new Token(token, chain));
+    }
+
+    static getAllTokensOnChain(chain: ChainId): Token[] {
+        const tokenMapping = Token.getTokenMapping(chain);
+
+        return tokenMapping.tokens.map((token) => new Token(token, chain));
+    }
+
+    static resolveDefaultChainId(): ChainId | undefined {
+        return DEFAULT_CHAIN === "default" ? undefined : DEFAULT_CHAIN;
+    }
+
+    private static getAllTokensMetadata(): TokenMetadata[] {
+        return Object.values(Token.tokenMappings).flatMap((mapping) => mapping.tokens);
+    }
+
+    private static getDefaultTokenMapping(): TokenMapping {
+        if (!DEFAULT_CHAIN) {
+            throw new Error(
+                "A default chain has not been set. Initialize the token mapping first.",
+            );
+        }
+
+        return Token.getTokenMapping(DEFAULT_CHAIN);
+    }
+
+    private static getTokenMapping(chain: ChainId | "default"): TokenMapping {
+        if (!Token.tokenMappings[chain]) {
+            throw new Error(
+                `${chain} token mapping not initialized. Initialize the token mapping first.`,
+            );
+        }
+
+        return Token.tokenMappings[chain];
     }
 }
 
-const DEFAULT_TOKEN = Token.create("UNKNOWN", "UNKNOWN", zeroAddress, 0);
+const DEFAULT_TOKEN = Token.create(
+    "UNKNOWN",
+    "UNKNOWN",
+    zeroAddress,
+    0,
+    undefined,
+    undefined,
+    undefined,
+    Token.resolveDefaultChainId(),
+);
 
+/** @deprecated Use `Token.fromTickerOnChain` instead */
 export function getDefaultQuoteToken(exchange: Exchange): Token {
     switch (exchange) {
         case "binance":
@@ -210,11 +343,38 @@ export function getDefaultQuoteToken(exchange: Exchange): Token {
                 "0x0000000000000000000000000000000000000000",
                 6,
                 { kraken: "USD" },
+                undefined,
+                undefined,
+                Token.resolveDefaultChainId(),
             );
         case "okx":
             return Token.fromTicker("USDT");
         case "renegade":
             return Token.fromTicker("USDC");
+    }
+}
+
+export function getDefaultQuoteTokenOnChain(chain: ChainId, exchange: Exchange): Token {
+    switch (exchange) {
+        case "binance":
+            return Token.fromTickerOnChain("USDT", chain);
+        case "coinbase":
+            return Token.fromTickerOnChain("USDC", chain);
+        case "kraken":
+            return Token.create(
+                "USD Coin",
+                "USDC",
+                "0x0000000000000000000000000000000000000000",
+                6,
+                { kraken: "USD" },
+                undefined,
+                undefined,
+                chain,
+            );
+        case "okx":
+            return Token.fromTickerOnChain("USDT", chain);
+        case "renegade":
+            return Token.fromTickerOnChain("USDC", chain);
     }
 }
 
