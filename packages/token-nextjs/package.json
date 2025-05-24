@@ -30,6 +30,7 @@
     "keywords": [],
     "author": "",
     "dependencies": {
+        "@renegade-fi/core": "workspace:^",
         "@renegade-fi/token": "workspace:^"
     }
 }

@@ -42,6 +42,12 @@ export const CHAIN_ID_TO_ENVIRONMENT: Record<ChainId, Environment> = {
     [CHAIN_IDS.BaseSepolia]: "testnet",
 };
 
+export const ENV_AGNOSTIC_CHAINS = {
+    Arbitrum: "arbitrum",
+    Base: "base",
+} as const;
+export type EnvAgnosticChain = (typeof ENV_AGNOSTIC_CHAINS)[keyof typeof ENV_AGNOSTIC_CHAINS];
+
 ////////////////////////////////////////////////////////////////////////////////
 // Environment-Specific Constants
 ////////////////////////////////////////////////////////////////////////////////
