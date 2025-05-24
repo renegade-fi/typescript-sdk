@@ -223,6 +223,9 @@ importers:
 
   packages/token-nextjs:
     dependencies:
+      '@renegade-fi/core':
+        specifier: workspace:^
+        version: link:../core
       '@renegade-fi/token':
         specifier: workspace:^
         version: link:../token

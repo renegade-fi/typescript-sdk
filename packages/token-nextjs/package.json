@@ -1,6 +1,6 @@
 {
     "name": "@renegade-fi/token-nextjs",
-    "version": "0.0.4",
+    "version": "0.1.0",
     "description": "Token remapping for Renegade, preconfigured for Next.js",
     "files": [
         "dist/**",
@@ -30,6 +30,7 @@
     "keywords": [],
     "author": "",
     "dependencies": {
+        "@renegade-fi/core": "workspace:^",
         "@renegade-fi/token": "workspace:^"
     }
 }

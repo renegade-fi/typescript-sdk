@@ -336,6 +336,9 @@ export { parseBigJSON, stringifyForWasm } from "../utils/bigJSON.js";
 export {
     getSDKConfig,
     isSupportedChainId,
+    isSupportedEnvironment,
     chainIdToEnv,
+    chainIdFromEnvAndName,
+    getEnvAgnosticChain,
     type SDKConfig,
 } from "../chains/defaults.js";
