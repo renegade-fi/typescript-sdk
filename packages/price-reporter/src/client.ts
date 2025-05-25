@@ -1,16 +1,14 @@
 import type { Environment } from "@renegade-fi/core";
 import { ENVIRONMENT } from "@renegade-fi/core";
-import { getDefaultQuoteToken } from "@renegade-fi/token";
 import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
 import { ResultAsync, errAsync, fromThrowable } from "neverthrow";
 import {
     ERR_INVALID_URL,
-    ERR_NO_PRICE_REPORTER_URL,
-    PRICE_REPORTER_ROUTE,
-    RENEGADE_EXCHANGE,
+    ERR_NO_PRICE_REPORTER_URL
 } from "./constants.js";
 import { HttpError, PriceReporterError } from "./error.js";
+import { PriceTopic } from "./topic.js";
 
 /**
  * A client for the price reporter
@@ -34,8 +32,13 @@ export class PriceReporterClient {
      * Get the current Renegade execution price for a specific token
      */
     public getPrice(mint: `0x${string}`): Promise<number> {
-        const quote = getDefaultQuoteToken(RENEGADE_EXCHANGE).address;
-        return this.getPriceByTopic(RENEGADE_EXCHANGE, mint, quote);
+        const topic = PriceTopic.new({ base: mint });
+        return this._getPriceByTopic(topic).match(
+            (price) => price,
+            (error) => {
+                throw error;
+            },
+        );
     }
 
     /**
@@ -44,8 +47,8 @@ export class PriceReporterClient {
      * @returns the price or an error
      */
     public getPriceResult(mint: `0x${string}`): ResultAsync<number, PriceReporterError> {
-        const quote = getDefaultQuoteToken(RENEGADE_EXCHANGE).address;
-        return this.getPriceByTopicResult(RENEGADE_EXCHANGE, mint, quote);
+        const topic = PriceTopic.new({ base: mint });
+        return this._getPriceByTopic(topic);
     }
 
     /**
@@ -72,13 +75,8 @@ export class PriceReporterClient {
         address: `0x${string}`,
         quote: `0x${string}`,
     ): ResultAsync<number, PriceReporterError> {
-        const route = PRICE_REPORTER_ROUTE(exchange, address, quote);
-        return this.get<string>(route).andThen((textPrice) => {
-            return fromThrowable(
-                () => Number.parseFloat(textPrice),
-                () => new PriceReporterError(`Failed to parse float from ${textPrice}`),
-            )();
-        });
+        const topic = new PriceTopic({ exchange: exchange as any, base: address, quote });
+        return this._getPriceByTopic(topic);
     }
 
     /**
@@ -98,7 +96,24 @@ export class PriceReporterClient {
         return client.getPriceResult(address);
     }
 
+    /**
+     * Get the base URL of the price reporter
+     */
+    baseURL(): string {
+        return this.baseUrl;
+    }
+
     // --- Private methods ---
+
+    private _getPriceByTopic(topic: PriceTopic): ResultAsync<number, PriceReporterError> {
+        const route = `/price/${topic.toString()}`;
+        return this.get<string>(route).andThen((textPrice) => {
+            return fromThrowable(
+                () => Number.parseFloat(textPrice),
+                () => new PriceReporterError(`Failed to parse float from ${textPrice}`),
+            )();
+        });
+    }
 
     private get<T>(route: string): ResultAsync<T, PriceReporterError> {
         const url = new URL(route, this.baseUrl);
