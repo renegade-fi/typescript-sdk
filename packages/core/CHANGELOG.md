@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.0
+
+### Minor Changes
+
+- multi-chain-aware NextJS token
+
 ## 0.8.1
 
 ### Patch Changes

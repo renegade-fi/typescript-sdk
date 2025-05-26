@@ -9,6 +9,9 @@ import {
     DARKPOOL_ADDRESS_ARBITRUM_ONE,
     DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
     DARKPOOL_ADDRESS_BASE_SEPOLIA,
+    ENVIRONMENT,
+    ENV_AGNOSTIC_CHAINS,
+    type EnvAgnosticChain,
     type Environment,
     HSE_URL_MAINNET,
     HSE_URL_TESTNET,
@@ -75,6 +78,11 @@ export function isSupportedChainId(chainId: number): chainId is ChainId {
     return chainId in CONFIGS;
 }
 
+/** Returns true if the environment is supported */
+export function isSupportedEnvironment(env: string): env is Environment {
+    return env in ENVIRONMENT;
+}
+
 /** Get full config or throw if unsupported */
 export function getSDKConfig(chainId: number): SDKConfig {
     if (!isSupportedChainId(chainId)) {
@@ -89,6 +97,38 @@ export function chainIdToEnv(chainId: number): Environment {
         throw new Error(`Unsupported chain ID: ${chainId}`);
     }
     return CHAIN_ID_TO_ENVIRONMENT[chainId];
+}
+
+/** Get the chain ID for a given environment and chain name */
+export function chainIdFromEnvAndName(env: Environment, name: EnvAgnosticChain): ChainId {
+    switch (env) {
+        case ENVIRONMENT.Mainnet:
+            switch (name) {
+                case ENV_AGNOSTIC_CHAINS.Arbitrum:
+                    return CHAIN_IDS.ArbitrumOne;
+                default:
+                    throw new Error(`Unsupported env / chain: ${env} / ${name}`);
+            }
+
+        case ENVIRONMENT.Testnet:
+            switch (name) {
+                case ENV_AGNOSTIC_CHAINS.Arbitrum:
+                    return CHAIN_IDS.ArbitrumSepolia;
+                case ENV_AGNOSTIC_CHAINS.Base:
+                    return CHAIN_IDS.BaseSepolia;
+            }
+    }
+}
+
+/** Get the env agnostic chain for a given chain ID */
+export function getEnvAgnosticChain(chainId: ChainId): EnvAgnosticChain {
+    switch (chainId) {
+        case CHAIN_IDS.ArbitrumOne:
+        case CHAIN_IDS.ArbitrumSepolia:
+            return ENV_AGNOSTIC_CHAINS.Arbitrum;
+        case CHAIN_IDS.BaseSepolia:
+            return ENV_AGNOSTIC_CHAINS.Base;
+    }
 }
 
 /** Quick HSE URL lookup */

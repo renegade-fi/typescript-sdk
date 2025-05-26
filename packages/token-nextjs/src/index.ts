@@ -1,3 +1,5 @@
+import { ENVIRONMENT, ENV_AGNOSTIC_CHAINS } from "@renegade-fi/core";
+import { chainIdFromEnvAndName, isSupportedEnvironment } from "@renegade-fi/core";
 import { Token as CoreTokenAliased } from "@renegade-fi/token";
 
 // Re-export all named exports from the core package.
@@ -7,40 +9,64 @@ export * from "@renegade-fi/token";
 const PACKAGE_NAME = "@renegade-fi/token-nextjs";
 
 (() => {
-    const tokenMappingJson = process.env.NEXT_PUBLIC_TOKEN_MAPPING;
     const environment = typeof window === "undefined" ? "SERVER" : "CLIENT";
     const logPrefix = `[${PACKAGE_NAME} on ${environment}]`;
 
     if (
-        tokenMappingJson &&
-        typeof tokenMappingJson === "string" &&
-        tokenMappingJson.trim() !== ""
+        !process.env.NEXT_PUBLIC_CHAIN_ENVIRONMENT ||
+        !isSupportedEnvironment(process.env.NEXT_PUBLIC_CHAIN_ENVIRONMENT)
     ) {
+        console.error(
+            `${logPrefix} NEXT_PUBLIC_CHAIN_ENVIRONMENT is unset or invalid, token mapping is unset.`,
+            "Expected to be one of:",
+            Object.values(ENVIRONMENT).join(", "),
+        );
+        return;
+    }
+
+    const chainEnvironment = process.env.NEXT_PUBLIC_CHAIN_ENVIRONMENT;
+    const envAgnosticChains = Object.values(ENV_AGNOSTIC_CHAINS);
+
+    for (const chain of envAgnosticChains) {
+        const envVarName = `NEXT_PUBLIC_${chain.toUpperCase()}_TOKEN_MAPPING`;
+        const tokenMappingJson = process.env[envVarName];
+
+        if (
+            !(
+                tokenMappingJson &&
+                typeof tokenMappingJson === "string" &&
+                tokenMappingJson.trim() !== ""
+            )
+        ) {
+            console.warn(
+                `${logPrefix} ${envVarName} is not set or is empty. Token mapping not initialized from this env var.`,
+                "Token operations will rely on default behavior (e.g., UNKNOWN token or errors if not handled by core Token class).",
+            );
+            continue;
+        }
+
         try {
+            const chainId = chainIdFromEnvAndName(chainEnvironment, chain);
+
             // Initialize the imported and aliased CoreTokenAliased
-            CoreTokenAliased.parseRemapFromString(tokenMappingJson);
+            CoreTokenAliased.addRemapFromString(chainId, tokenMappingJson);
 
             // Check if any tokens were actually loaded after parsing
             if (CoreTokenAliased.getAllTokens().length > 0) {
                 console.info(
-                    `${logPrefix} Token mapping initialized successfully from NEXT_PUBLIC_TOKEN_MAPPING. Loaded ${CoreTokenAliased.getAllTokens().length} tokens.`,
+                    `${logPrefix} Token mapping initialized successfully from ${envVarName}. Loaded ${CoreTokenAliased.getAllTokens().length} tokens.`,
                 );
             } else {
                 console.warn(
-                    `${logPrefix} Token mapping from NEXT_PUBLIC_TOKEN_MAPPING was processed but resulted in zero tokens. Check the JSON content.`,
+                    `${logPrefix} Token mapping from ${envVarName} was processed but resulted in zero tokens. Check the JSON content.`,
                 );
             }
         } catch (error) {
             console.error(
-                `${logPrefix} Failed to parse token mapping from NEXT_PUBLIC_TOKEN_MAPPING. Token operations may fail or use defaults.`,
+                `${logPrefix} Failed to parse token mapping from ${envVarName}. Token operations may fail or use defaults.`,
                 error,
             );
         }
-    } else {
-        console.warn(
-            `${logPrefix} NEXT_PUBLIC_TOKEN_MAPPING is not set or is empty. Token mapping not initialized from env var.`,
-            "Token operations will rely on default behavior (e.g., UNKNOWN token or errors if not handled by core Token class).",
-        );
     }
 })();
 
