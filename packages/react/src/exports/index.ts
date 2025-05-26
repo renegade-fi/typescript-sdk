@@ -227,6 +227,10 @@ export type {
 } from "@renegade-fi/core";
 
 export {
+    // Config
+    getSDKConfig,
+    isSupportedChainId,
+    chainIdToEnv,
     // createStorage
     type CreateStorageParameters,
     type Storage,
@@ -239,7 +243,6 @@ export {
     deepEqual,
     parseCookie,
     stringifyForWasm,
-    isSupportedChainId,
     // Types
     OrderState,
     TaskType,
