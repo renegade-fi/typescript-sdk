@@ -19,6 +19,7 @@ export const CHAIN_IDS = {
     ArbitrumOne: 42161,
     ArbitrumSepolia: 421614,
     BaseSepolia: 84532,
+    BaseMainnet: 8453,
 } as const;
 
 export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
@@ -26,6 +27,7 @@ export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
 export const CHAIN_SPECIFIERS = {
     [CHAIN_IDS.ArbitrumOne]: "arbitrum-one",
     [CHAIN_IDS.ArbitrumSepolia]: "arbitrum-sepolia",
+    [CHAIN_IDS.BaseMainnet]: "base-mainnet",
     [CHAIN_IDS.BaseSepolia]: "base-sepolia",
 } as const;
 export type ChainSpecifier = (typeof CHAIN_SPECIFIERS)[keyof typeof CHAIN_SPECIFIERS];
@@ -39,6 +41,7 @@ export type Environment = (typeof ENVIRONMENT)[keyof typeof ENVIRONMENT];
 export const CHAIN_ID_TO_ENVIRONMENT: Record<ChainId, Environment> = {
     [CHAIN_IDS.ArbitrumOne]: "mainnet",
     [CHAIN_IDS.ArbitrumSepolia]: "testnet",
+    [CHAIN_IDS.BaseMainnet]: "mainnet",
     [CHAIN_IDS.BaseSepolia]: "testnet",
 };
 
@@ -64,11 +67,13 @@ export const HSE_URL_TESTNET = "https://testnet.historical-state.renegade.fi:300
 
 export const RELAYER_URL_ARBITRUM_ONE = "arbitrum-one.relayer.renegade.fi";
 export const RELAYER_URL_ARBITRUM_SEPOLIA = "arbitrum-sepolia.relayer.renegade.fi";
+export const RELAYER_URL_BASE_MAINNET = "base-mainnet.relayer.renegade.fi";
 export const RELAYER_URL_BASE_SEPOLIA = "base-sepolia.relayer.renegade.fi";
 
 export const AUTH_SERVER_URL_ARBITRUM_ONE = "https://arbitrum-one.auth-server.renegade.fi:3000";
 export const AUTH_SERVER_URL_ARBITRUM_SEPOLIA =
     "https://arbitrum-sepolia.auth-server.renegade.fi:3000";
+export const AUTH_SERVER_URL_BASE_MAINNET = "https://base-mainnet.auth-server.renegade.fi:3000";
 export const AUTH_SERVER_URL_BASE_SEPOLIA = "https://base-sepolia.auth-server.renegade.fi:3000";
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,10 +82,12 @@ export const AUTH_SERVER_URL_BASE_SEPOLIA = "https://base-sepolia.auth-server.re
 
 export const DARKPOOL_ADDRESS_ARBITRUM_ONE = "0x30bD8eAb29181F790D7e495786d4B96d7AfDC518";
 export const DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA = "0x9af58f1ff20ab22e819e40b57ffd784d115a9ef5";
+export const DARKPOOL_ADDRESS_BASE_MAINNET = "0xb4a96068577141749CC8859f586fE29016C935dB";
 export const DARKPOOL_ADDRESS_BASE_SEPOLIA = "0x653C95391644EEE16E4975a7ef1f46e0B8276695";
 
 export const PERMIT2_ADDRESS_ARBITRUM_ONE = "0x000000000022D473030F116dDEE9F6B43aC78BA3";
 export const PERMIT2_ADDRESS_ARBITRUM_SEPOLIA = "0x9458198bcc289c42e460cb8ca143e5854f734442";
+export const PERMIT2_ADDRESS_BASE_MAINNET = "0x000000000022D473030F116dDEE9F6B43aC78BA3";
 export const PERMIT2_ADDRESS_BASE_SEPOLIA = "0x000000000022D473030F116dDEE9F6B43aC78BA3";
 
 ////////////////////////////////////////////////////////////////////////////////

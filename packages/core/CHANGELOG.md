@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.1
+
+### Patch Changes
+
+- add base mainnet config
+
 ## 0.9.0
 
 ### Minor Changes
