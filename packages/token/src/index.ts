@@ -41,7 +41,7 @@ let DEFAULT_CHAIN: ChainId | "default" | undefined = undefined;
 
 /** The token class */
 export class Token {
-    private static tokenMappings: Partial<Record<ChainId | "default", TokenMapping>>;
+    private static tokenMappings: Partial<Record<ChainId | "default", TokenMapping>> = {};
 
     /** Fetch a remap from the repo */
     static async fetchRemapFromRepo(chain: number) {

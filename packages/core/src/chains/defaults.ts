@@ -1,6 +1,7 @@
 import {
     AUTH_SERVER_URL_ARBITRUM_ONE,
     AUTH_SERVER_URL_ARBITRUM_SEPOLIA,
+    AUTH_SERVER_URL_BASE_MAINNET,
     AUTH_SERVER_URL_BASE_SEPOLIA,
     CHAIN_IDS,
     CHAIN_ID_TO_ENVIRONMENT,
@@ -8,6 +9,7 @@ import {
     type ChainId,
     DARKPOOL_ADDRESS_ARBITRUM_ONE,
     DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
+    DARKPOOL_ADDRESS_BASE_MAINNET,
     DARKPOOL_ADDRESS_BASE_SEPOLIA,
     ENVIRONMENT,
     ENV_AGNOSTIC_CHAINS,
@@ -17,11 +19,13 @@ import {
     HSE_URL_TESTNET,
     PERMIT2_ADDRESS_ARBITRUM_ONE,
     PERMIT2_ADDRESS_ARBITRUM_SEPOLIA,
+    PERMIT2_ADDRESS_BASE_MAINNET,
     PERMIT2_ADDRESS_BASE_SEPOLIA,
     PRICE_REPORTER_URL_MAINNET,
     PRICE_REPORTER_URL_TESTNET,
     RELAYER_URL_ARBITRUM_ONE,
     RELAYER_URL_ARBITRUM_SEPOLIA,
+    RELAYER_URL_BASE_MAINNET,
     RELAYER_URL_BASE_SEPOLIA,
 } from "../constants.js";
 
@@ -59,6 +63,17 @@ export const CONFIGS: Record<ChainId, SDKConfig> = {
         priceReporterUrl: PRICE_REPORTER_URL_TESTNET,
         permit2Address: PERMIT2_ADDRESS_ARBITRUM_SEPOLIA,
         authServerUrl: AUTH_SERVER_URL_ARBITRUM_SEPOLIA,
+    },
+    [CHAIN_IDS.BaseMainnet]: {
+        id: CHAIN_IDS.BaseMainnet,
+        chainSpecifier: CHAIN_SPECIFIERS[CHAIN_IDS.BaseMainnet],
+        hseBaseUrl: HSE_URL_MAINNET,
+        darkpoolAddress: DARKPOOL_ADDRESS_BASE_MAINNET,
+        relayerUrl: RELAYER_URL_BASE_MAINNET,
+        websocketUrl: `wss://${RELAYER_URL_BASE_MAINNET}:4000`,
+        priceReporterUrl: PRICE_REPORTER_URL_MAINNET,
+        permit2Address: PERMIT2_ADDRESS_BASE_MAINNET,
+        authServerUrl: AUTH_SERVER_URL_BASE_MAINNET,
     },
     [CHAIN_IDS.BaseSepolia]: {
         id: CHAIN_IDS.BaseSepolia,
@@ -127,6 +142,7 @@ export function getEnvAgnosticChain(chainId: ChainId): EnvAgnosticChain {
         case CHAIN_IDS.ArbitrumSepolia:
             return ENV_AGNOSTIC_CHAINS.Arbitrum;
         case CHAIN_IDS.BaseSepolia:
+        case CHAIN_IDS.BaseMainnet:
             return ENV_AGNOSTIC_CHAINS.Base;
     }
 }
