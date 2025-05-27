@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.2
+
+### Patch Changes
+
+- proper env var access in token-nextjs
+
 ## 0.9.1
 
 ### Patch Changes

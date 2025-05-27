@@ -1,5 +1,12 @@
 # @renegade-fi/react
 
+## 0.6.16
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.9.2
+
 ## 0.6.15
 
 ### Patch Changes

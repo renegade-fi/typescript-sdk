@@ -1,5 +1,14 @@
 # @renegade-fi/token-nextjs
 
+## 0.1.2
+
+### Patch Changes
+
+- proper env var access in token-nextjs
+- Updated dependencies
+  - @renegade-fi/core@0.9.2
+  - @renegade-fi/token@0.0.18
+
 ## 0.1.1
 
 ### Patch Changes

@@ -28,8 +28,19 @@ const PACKAGE_NAME = "@renegade-fi/token-nextjs";
     const envAgnosticChains = Object.values(ENV_AGNOSTIC_CHAINS);
 
     for (const chain of envAgnosticChains) {
-        const envVarName = `NEXT_PUBLIC_${chain.toUpperCase()}_TOKEN_MAPPING`;
-        const tokenMappingJson = process.env[envVarName];
+        let tokenMappingJson: string | undefined;
+        let envVarName: string | undefined;
+
+        switch (chain) {
+            case ENV_AGNOSTIC_CHAINS.Arbitrum:
+                tokenMappingJson = process.env.NEXT_PUBLIC_ARBITRUM_TOKEN_MAPPING;
+                envVarName = "NEXT_PUBLIC_ARBITRUM_TOKEN_MAPPING";
+                break;
+            case ENV_AGNOSTIC_CHAINS.Base:
+                tokenMappingJson = process.env.NEXT_PUBLIC_BASE_TOKEN_MAPPING;
+                envVarName = "NEXT_PUBLIC_BASE_TOKEN_MAPPING";
+                break;
+        }
 
         if (
             !(
@@ -52,9 +63,9 @@ const PACKAGE_NAME = "@renegade-fi/token-nextjs";
             CoreTokenAliased.addRemapFromString(chainId, tokenMappingJson);
 
             // Check if any tokens were actually loaded after parsing
-            if (CoreTokenAliased.getAllTokens().length > 0) {
+            if (CoreTokenAliased.getAllTokensOnChain(chainId).length > 0) {
                 console.info(
-                    `${logPrefix} Token mapping initialized successfully from ${envVarName}. Loaded ${CoreTokenAliased.getAllTokens().length} tokens.`,
+                    `${logPrefix} Token mapping initialized successfully from ${envVarName}. Loaded ${CoreTokenAliased.getAllTokensOnChain(chainId).length} tokens.`,
                 );
             } else {
                 console.warn(
