@@ -329,7 +329,7 @@ const DEFAULT_TOKEN = Token.create(
     Token.resolveDefaultChainId(),
 );
 
-/** @deprecated Use `Token.fromTickerOnChain` instead */
+/** @deprecated Use `Token.getDefaultQuoteTokenOnChain` instead */
 export function getDefaultQuoteToken(exchange: Exchange): Token {
     switch (exchange) {
         case "binance":

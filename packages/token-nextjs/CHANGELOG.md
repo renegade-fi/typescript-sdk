@@ -1,5 +1,12 @@
 # @renegade-fi/token-nextjs
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/token@0.0.19
+
 ## 0.1.2
 
 ### Patch Changes

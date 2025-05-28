@@ -23,3 +23,15 @@ export const PRICE_REPORTER_ROUTE = (exchange: string, base: string, quote: stri
  * The alias for the canonical exchange
  */
 export const RENEGADE_EXCHANGE = "renegade";
+
+/**
+ * @param base - The base token to fetch the price for
+ * @returns The topic name for the Renegade price of a given token
+ */
+const RENEGADE_PRICE_TOPIC = (base: string) => `${RENEGADE_EXCHANGE}-${base.toLowerCase()}`;
+
+/**
+ * @param base - The base token to fetch the price for
+ * @returns The HTTP GET route to fetch the price from the price reporter
+ */
+export const RENEGADE_PRICE_ROUTE = (base: string) => `/price/${RENEGADE_PRICE_TOPIC(base)}`;

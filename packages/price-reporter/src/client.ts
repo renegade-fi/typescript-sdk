@@ -1,6 +1,5 @@
 import type { Environment } from "@renegade-fi/core";
 import { ENVIRONMENT } from "@renegade-fi/core";
-import { getDefaultQuoteToken } from "@renegade-fi/token";
 import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
 import { ResultAsync, errAsync, fromThrowable } from "neverthrow";
@@ -8,7 +7,7 @@ import {
     ERR_INVALID_URL,
     ERR_NO_PRICE_REPORTER_URL,
     PRICE_REPORTER_ROUTE,
-    RENEGADE_EXCHANGE,
+    RENEGADE_PRICE_ROUTE,
 } from "./constants.js";
 import { HttpError, PriceReporterError } from "./error.js";
 
@@ -34,8 +33,12 @@ export class PriceReporterClient {
      * Get the current Renegade execution price for a specific token
      */
     public getPrice(mint: `0x${string}`): Promise<number> {
-        const quote = getDefaultQuoteToken(RENEGADE_EXCHANGE).address;
-        return this.getPriceByTopic(RENEGADE_EXCHANGE, mint, quote);
+        return this.getPriceResult(mint).match(
+            (price) => price,
+            (error) => {
+                throw error;
+            },
+        );
     }
 
     /**
@@ -44,8 +47,13 @@ export class PriceReporterClient {
      * @returns the price or an error
      */
     public getPriceResult(mint: `0x${string}`): ResultAsync<number, PriceReporterError> {
-        const quote = getDefaultQuoteToken(RENEGADE_EXCHANGE).address;
-        return this.getPriceByTopicResult(RENEGADE_EXCHANGE, mint, quote);
+        const route = RENEGADE_PRICE_ROUTE(mint);
+        return this.get<string>(route).andThen((textPrice) => {
+            return fromThrowable(
+                () => Number.parseFloat(textPrice),
+                () => new PriceReporterError(`Failed to parse float from ${textPrice}`),
+            )();
+        });
     }
 
     /**
