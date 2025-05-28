@@ -95,7 +95,7 @@ export function isSupportedChainId(chainId: number): chainId is ChainId {
 
 /** Returns true if the environment is supported */
 export function isSupportedEnvironment(env: string): env is Environment {
-    return env in ENVIRONMENT;
+    return Object.values(ENVIRONMENT).includes(env as Environment);
 }
 
 /** Get full config or throw if unsupported */
