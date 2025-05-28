@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.3
+
+### Patch Changes
+
+- fix chainIdFromEnvAndName
+
 ## 0.9.2
 
 ### Patch Changes
