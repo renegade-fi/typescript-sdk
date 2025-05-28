@@ -4,9 +4,10 @@ import type { Config } from "@renegade-fi/core";
 import { type State, hydrate } from "@renegade-fi/core";
 import { type ReactElement, createElement, useEffect, useRef, useState } from "react";
 import { WasmContext } from "./wasm.js";
+import * as RustUtils from "../renegade-utils/index.js";
 
 export type HydrateProps = {
-    config: Config;
+    config: Config | undefined;
     initialState?: State | undefined;
     reconnectOnMount?: boolean | undefined;
 };
@@ -14,6 +15,7 @@ export type HydrateProps = {
 export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
     const { children, config, initialState, reconnectOnMount = true } = parameters;
     const [isInitialized, setIsInitialized] = useState(false);
+    console.log("Config exists:", !!config);
 
     const { onMount } = hydrate(config, {
         initialState,
@@ -21,12 +23,20 @@ export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
     });
 
     // Hydrate for non-SSR
-    if (!config._internal.ssr) onMount();
+    if (config && !config._internal.ssr) onMount();
+
+    useEffect(() => {
+        RustUtils.default().then(() => {
+            setIsInitialized(true);
+            console.log("Backup effect initialized WASM");
+        });
+    }, []);
 
     // Hydrate for SSR
     const active = useRef(true);
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
+        if (!config) return;
         config.utils
             .default()
             .then(() => {
