@@ -1,5 +1,11 @@
 # @renegade-fi/token
 
+## 0.0.19
+
+### Patch Changes
+
+- use renegade price topic
+
 ## 0.0.18
 
 ### Patch Changes
