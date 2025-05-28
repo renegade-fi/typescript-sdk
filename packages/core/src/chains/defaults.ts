@@ -121,6 +121,8 @@ export function chainIdFromEnvAndName(env: Environment, name: EnvAgnosticChain):
             switch (name) {
                 case ENV_AGNOSTIC_CHAINS.Arbitrum:
                     return CHAIN_IDS.ArbitrumOne;
+                case ENV_AGNOSTIC_CHAINS.Base:
+                    return CHAIN_IDS.BaseMainnet;
                 default:
                     throw new Error(`Unsupported env / chain: ${env} / ${name}`);
             }
@@ -131,6 +133,8 @@ export function chainIdFromEnvAndName(env: Environment, name: EnvAgnosticChain):
                     return CHAIN_IDS.ArbitrumSepolia;
                 case ENV_AGNOSTIC_CHAINS.Base:
                     return CHAIN_IDS.BaseSepolia;
+                default:
+                    throw new Error(`Unsupported env / chain: ${env} / ${name}`);
             }
     }
 }
