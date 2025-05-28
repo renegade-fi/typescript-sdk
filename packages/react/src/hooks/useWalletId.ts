@@ -17,14 +17,14 @@ export function useWalletId(parameters: UseWalletIdParameters = {}): UseWalletId
     const [walletId, setWalletId] = useState<string | undefined>(config?.state.id);
 
     useEffect(() => {
-        if (status !== "in relayer") return;
-        setWalletId(config?.state.id);
-        const unsubscribe = config?.subscribe(
+        if (!config || status !== "in relayer") return;
+        setWalletId(config.state.id);
+        const unsubscribe = config.subscribe(
             (state) => state.id,
             (s) => setWalletId(s),
         );
         return () => {
-            unsubscribe?.();
+            unsubscribe();
         };
     }, [status, config]);
 
