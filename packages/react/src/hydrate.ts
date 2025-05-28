@@ -3,8 +3,8 @@
 import type { Config } from "@renegade-fi/core";
 import { type State, hydrate } from "@renegade-fi/core";
 import { type ReactElement, createElement, useEffect, useRef, useState } from "react";
-import { WasmContext } from "./wasm.js";
 import * as RustUtils from "../renegade-utils/index.js";
+import { WasmContext } from "./wasm.js";
 
 export type HydrateProps = {
     config: Config | undefined;

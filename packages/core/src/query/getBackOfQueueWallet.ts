@@ -6,6 +6,7 @@ import {
     getBackOfQueueWallet,
 } from "../actions/getBackOfQueueWallet.js";
 import type { Config } from "../createConfig.js";
+import { ConfigRequiredError } from "../errors/base.js";
 import type { Evaluate } from "../types/utils.js";
 import { type ScopeKeyParameter, filterQueryOptions } from "./utils.js";
 
@@ -13,19 +14,20 @@ export type GetBackOfQueueWalletOptions = Evaluate<GetBackOfQueueWalletParameter
     ScopeKeyParameter;
 
 export function getBackOfQueueWalletQueryOptions(
-    config: Config,
+    config: Config | undefined,
     options: GetBackOfQueueWalletOptions = {},
 ) {
     return {
         async queryFn({ queryKey }) {
             const { scopeKey: _, ...parameters } = queryKey[1];
+            if (!config) throw new ConfigRequiredError("getBackOfQueueWallet");
             const wallet = await getBackOfQueueWallet(config, {
                 ...(parameters as GetBackOfQueueWalletParameters),
             });
             return wallet ?? null;
         },
         queryKey: getBackOfQueueWalletQueryKey({
-            scopeKey: config.state.id,
+            scopeKey: config?.state.id,
             ...options,
         }),
     } as const satisfies QueryOptions<

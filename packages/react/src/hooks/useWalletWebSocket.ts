@@ -27,11 +27,10 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
     const config = useConfig(parameters);
     const status = useStatus(parameters);
     const walletId = useWalletId();
-    const { getWebsocketBaseUrl } = config;
     const { enabled = true, onUpdate } = parameters;
 
     const { readyState, sendJsonMessage } = useWebSocket(
-        getWebsocketBaseUrl(),
+        config?.getWebsocketBaseUrl() ?? "",
         {
             filter: () => false,
             onMessage: (event) => {
@@ -49,7 +48,7 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
             share: true,
             shouldReconnect: () => true,
         },
-        enabled,
+        enabled && !!config?.getWebsocketBaseUrl(),
     );
 
     // Subscribe to wallet updates with auth headers
@@ -62,7 +61,8 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
             !currentWalletId ||
             readyState !== ReadyState.OPEN ||
             status !== "in relayer" ||
-            !isWasmInitialized
+            !isWasmInitialized ||
+            !config
         )
             return;
 
