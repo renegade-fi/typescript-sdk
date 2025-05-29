@@ -1,5 +1,11 @@
 # @renegade-fi/token-nextjs
 
+## 0.1.5
+
+### Patch Changes
+
+- set sideEffects:true in token-nextjs
+
 ## 0.1.4
 
 ### Patch Changes
