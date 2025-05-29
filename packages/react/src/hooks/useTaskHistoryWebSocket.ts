@@ -27,11 +27,11 @@ export function useTaskHistoryWebSocket(parameters: UseTaskHistoryWebSocketParam
     const config = useConfig(parameters);
     const status = useStatus(parameters);
     const walletId = useWalletId();
-    const { getWebsocketBaseUrl } = config;
+
     const { enabled = true, onUpdate } = parameters;
 
     const { readyState, sendJsonMessage } = useWebSocket(
-        getWebsocketBaseUrl(),
+        config?.getWebsocketBaseUrl() ?? "",
         {
             filter: () => false,
             onMessage(event) {
@@ -49,7 +49,7 @@ export function useTaskHistoryWebSocket(parameters: UseTaskHistoryWebSocketParam
             share: true,
             shouldReconnect: () => Boolean(enabled && walletId && status === "in relayer"),
         },
-        enabled,
+        enabled && !!config?.getWebsocketBaseUrl(),
     );
 
     useEffect(() => {
@@ -61,7 +61,8 @@ export function useTaskHistoryWebSocket(parameters: UseTaskHistoryWebSocketParam
             !currentWalletId ||
             readyState !== ReadyState.OPEN ||
             status !== "in relayer" ||
-            !isWasmInitialized
+            !isWasmInitialized ||
+            !config
         )
             return;
 
