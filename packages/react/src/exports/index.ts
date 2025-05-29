@@ -251,4 +251,6 @@ export {
     AuthType,
     RelayerWebsocket,
     type RelayerWebsocketParams,
+    // Errors
+    ConfigRequiredError,
 } from "@renegade-fi/core";
