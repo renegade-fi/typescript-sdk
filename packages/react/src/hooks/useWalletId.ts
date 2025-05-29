@@ -14,19 +14,19 @@ export type UseWalletIdReturnType = string | undefined;
 export function useWalletId(parameters: UseWalletIdParameters = {}): UseWalletIdReturnType {
     const config = useConfig(parameters);
     const status = useStatus(parameters);
-    const [walletId, setWalletId] = useState<string | undefined>(config.state.id);
+    const [walletId, setWalletId] = useState<string | undefined>(config?.state.id);
 
     useEffect(() => {
         if (status !== "in relayer") return;
-        setWalletId(config.state.id);
-        const unsubscribe = config.subscribe(
+        setWalletId(config?.state.id);
+        const unsubscribe = config?.subscribe(
             (state) => state.id,
             (s) => setWalletId(s),
         );
         return () => {
-            unsubscribe();
+            unsubscribe?.();
         };
-    }, [status, config, config.state.id]);
+    }, [status, config]);
 
     return walletId;
 }
