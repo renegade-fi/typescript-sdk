@@ -15,7 +15,6 @@ export type HydrateProps = {
 export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
     const { children, config, initialState, reconnectOnMount = true } = parameters;
     const [isInitialized, setIsInitialized] = useState(false);
-    console.log("Config exists:", !!config);
 
     const { onMount } = hydrate(config, {
         initialState,

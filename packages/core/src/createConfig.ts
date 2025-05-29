@@ -60,6 +60,7 @@ export function createConfig(parameters: CreateConfigParameters): InternalConfig
     function getInitialState(): State {
         return {
             seed: undefined,
+            chainId: undefined,
             status: "disconnected",
             id: undefined,
         };
@@ -76,6 +77,7 @@ export function createConfig(parameters: CreateConfigParameters): InternalConfig
                           return {
                               id: state.id,
                               seed: state.seed,
+                              chainId: state.chainId,
                               status: state.status,
                           } satisfies PartializedState;
                       },
@@ -221,6 +223,7 @@ export type RenegadeConfig = InternalConfig | ExternalConfig;
 
 export interface State {
     seed?: Hex | undefined;
+    chainId?: number;
     status?: "in relayer" | "disconnected" | "looking up" | "creating wallet" | "connecting";
     id?: string | undefined;
 }
@@ -232,4 +235,6 @@ export const keyTypes = {
     NONE: "none",
 } as const;
 
-export type PartializedState = Evaluate<ExactPartial<Pick<State, "id" | "seed" | "status">>>;
+export type PartializedState = Evaluate<
+    ExactPartial<Pick<State, "id" | "seed" | "chainId" | "status">>
+>;
