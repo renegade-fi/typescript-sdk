@@ -54,3 +54,14 @@ export class BaseError extends Error {
         return err;
     }
 }
+
+export type ConfigRequiredErrorType = ConfigRequiredError & {
+    name: "ConfigRequiredError";
+};
+
+export class ConfigRequiredError extends BaseError {
+    override name = "ConfigRequiredError";
+    constructor(fn: string) {
+        super(`${fn} requires a config`);
+    }
+}

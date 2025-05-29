@@ -7,12 +7,14 @@ import {
     cancelOrderRequest,
 } from "../actions/cancelOrderRequest.js";
 import type { Config } from "../createConfig.js";
+import { ConfigRequiredError } from "../errors/base.js";
 import type { Evaluate } from "../types/utils.js";
 import type { Mutate, MutateAsync } from "./types.js";
 
-export function cancelOrderRequestMutationOptions(config: Config) {
+export function cancelOrderRequestMutationOptions(config: Config | undefined) {
     return {
         mutationFn(variables) {
+            if (!config) throw new ConfigRequiredError("cancelOrderRequest");
             return cancelOrderRequest(config, variables);
         },
         mutationKey: ["cancelOrderRequest"],
