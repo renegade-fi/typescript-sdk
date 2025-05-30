@@ -62,7 +62,8 @@ export function useWalletWebsocket(parameters: UseWalletParameters = {}) {
             readyState !== ReadyState.OPEN ||
             status !== "in relayer" ||
             !isWasmInitialized ||
-            !config
+            !config ||
+            !config.state.seed
         )
             return;
 

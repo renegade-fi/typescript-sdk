@@ -62,7 +62,8 @@ export function useTaskHistoryWebSocket(parameters: UseTaskHistoryWebSocketParam
             readyState !== ReadyState.OPEN ||
             status !== "in relayer" ||
             !isWasmInitialized ||
-            !config
+            !config ||
+            !config.state.seed
         )
             return;
 
