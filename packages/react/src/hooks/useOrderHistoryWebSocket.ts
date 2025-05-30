@@ -67,7 +67,8 @@ export function useOrderHistoryWebSocket(parameters: UseOrderHistoryWebSocketPar
             readyState !== ReadyState.OPEN ||
             status !== "in relayer" ||
             !isWasmInitialized ||
-            !config
+            !config ||
+            !config.state.seed
         )
             return;
 
