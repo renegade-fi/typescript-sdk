@@ -6,20 +6,25 @@ import {
     getOrderHistory,
 } from "../actions/getOrderHistory.js";
 import type { Config } from "../createConfig.js";
+import { ConfigRequiredError } from "../errors/base.js";
 import type { Evaluate } from "../types/utils.js";
 import { type ScopeKeyParameter, filterQueryOptions } from "./utils.js";
 
 export type GetOrderHistoryOptions = Evaluate<GetOrderHistoryParameters & ScopeKeyParameter>;
 
-export function getOrderHistoryQueryOptions(config: Config, options: GetOrderHistoryOptions = {}) {
+export function getOrderHistoryQueryOptions(
+    config: Config | undefined,
+    options: GetOrderHistoryOptions = {},
+) {
     return {
         async queryFn({ queryKey }) {
             const { scopeKey: _, ...parameters } = queryKey[1];
+            if (!config) throw new ConfigRequiredError("getOrderHistory");
             const history = await getOrderHistory(config, parameters);
             return history ?? null;
         },
         queryKey: getOrderHistoryQueryKey({
-            scopeKey: config.state.id,
+            scopeKey: config?.state.id,
             ...options,
         }),
     } as const satisfies QueryOptions<

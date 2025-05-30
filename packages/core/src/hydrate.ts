@@ -6,7 +6,9 @@ type HydrateParameters = {
     reconnectOnMount?: boolean | undefined;
 };
 
-export function hydrate(config: Config, parameters: HydrateParameters) {
+export function hydrate(config: Config | undefined, parameters: HydrateParameters) {
+    if (!config) return { onMount: () => {} };
+
     const { initialState, reconnectOnMount } = parameters;
 
     if (initialState && !config._internal.store.persist.hasHydrated())
