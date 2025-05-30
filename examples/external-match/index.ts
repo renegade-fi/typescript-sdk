@@ -1,5 +1,10 @@
-import { type AuthConfig, type GetExternalMatchQuoteReturnType, Token } from "@renegade-fi/core";
-import { createAuthConfig, loadTokenMapping } from "@renegade-fi/node";
+import {
+    type AuthConfig,
+    CHAIN_IDS,
+    type GetExternalMatchQuoteReturnType,
+} from "@renegade-fi/core";
+import { createAuthConfig } from "@renegade-fi/node";
+import { Token } from "@renegade-fi/token";
 // Then do the imports
 import { http, createWalletClient, parseEther } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
@@ -103,7 +108,7 @@ async function submitTransaction(settlementTx: any) {
 }
 
 async function main() {
-    await loadTokenMapping();
+    await Token.fetchRemapFromRepo(CHAIN_IDS.ArbitrumSepolia);
     const config = createAuthConfig({
         apiKey: process.env.EXTERNAL_MATCH_KEY ?? "",
         apiSecret: process.env.EXTERNAL_MATCH_SECRET ?? "",
