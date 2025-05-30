@@ -33,6 +33,27 @@ importers:
         specifier: ^1.5.0
         version: 1.6.0(@types/node@20.16.1)(happy-dom@12.10.3)
 
+  examples/base-sepolia-match:
+    dependencies:
+      '@renegade-fi/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@renegade-fi/node':
+        specifier: workspace:*
+        version: link:../../packages/node
+      '@renegade-fi/token':
+        specifier: workspace:^
+        version: link:../../packages/token
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
+      tsx:
+        specifier: ^4.0.0
+        version: 4.19.2
+      viem:
+        specifier: ^2.0.0
+        version: 2.20.0(typescript@5.5.4)(zod@3.23.8)
+
   examples/external-match:
     dependencies:
       '@renegade-fi/core':
@@ -41,6 +62,9 @@ importers:
       '@renegade-fi/node':
         specifier: workspace:*
         version: link:../../packages/node
+      '@renegade-fi/token':
+        specifier: workspace:^
+        version: link:../../packages/token
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -59,6 +83,9 @@ importers:
       '@renegade-fi/node':
         specifier: workspace:*
         version: link:../../packages/node
+      '@renegade-fi/token':
+        specifier: workspace:^
+        version: link:../../packages/token
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -75,11 +102,14 @@ importers:
 
   examples/malleable-external-match:
     dependencies:
+      '@renegade-fi/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@renegade-fi/node':
         specifier: workspace:*
         version: link:../../packages/node
       '@renegade-fi/token':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/token
       dotenv:
         specifier: ^16.4.5
@@ -103,6 +133,9 @@ importers:
       '@renegade-fi/node':
         specifier: workspace:*
         version: link:../../packages/node
+      '@renegade-fi/token':
+        specifier: workspace:^
+        version: link:../../packages/token
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5

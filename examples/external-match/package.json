@@ -9,6 +9,7 @@
     "dependencies": {
         "@renegade-fi/core": "workspace:*",
         "@renegade-fi/node": "workspace:*",
+        "@renegade-fi/token": "workspace:^",
         "dotenv": "^16.4.5",
         "tsx": "^4.0.0",
         "viem": "^2.0.0"

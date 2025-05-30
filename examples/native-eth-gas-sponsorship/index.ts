@@ -1,5 +1,10 @@
-import { type AuthConfig, type GetExternalMatchQuoteReturnType, Token } from "@renegade-fi/core";
-import { createAuthConfig, loadTokenMapping } from "@renegade-fi/node";
+import {
+    type AuthConfig,
+    CHAIN_IDS,
+    type GetExternalMatchQuoteReturnType,
+} from "@renegade-fi/core";
+import { createAuthConfig } from "@renegade-fi/node";
+import { Token } from "@renegade-fi/token";
 // Then do the imports
 import { http, createWalletClient, parseEther } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
@@ -49,8 +54,8 @@ const walletClient = createWalletClient({
  */
 async function getQuote(config: AuthConfig): Promise<GetExternalMatchQuoteReturnType> {
     console.log("Getting quote...");
-    const baseToken = Token.findByTicker("WETH");
-    const quoteToken = Token.findByTicker("USDC");
+    const baseToken = Token.fromTicker("WETH");
+    const quoteToken = Token.fromTicker("USDC");
 
     return await getExternalMatchQuote(config, {
         disableGasSponsorship: false, // Note that this is false by default
@@ -107,7 +112,7 @@ async function submitTransaction(settlementTx: any) {
 }
 
 async function main() {
-    await loadTokenMapping();
+    await Token.fetchRemapFromRepo(CHAIN_IDS.ArbitrumSepolia);
     const config = createAuthConfig({
         apiKey: apiKey!,
         apiSecret: apiSecret!,

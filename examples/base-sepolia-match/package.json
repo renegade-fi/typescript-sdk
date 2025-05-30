@@ -1,7 +1,7 @@
 {
-    "name": "@renegade-fi/native-eth-gas-sponsorship-example",
-    "private": true,
-    "version": "0.0.29",
+    "name": "@renegade-fi/external-match-example",
+    "version": "1.1.26",
+    "description": "Example of fetching and assembling external matches using Renegade SDK",
     "type": "module",
     "scripts": {
         "start": "tsx --require dotenv/config index.ts"
@@ -11,10 +11,7 @@
         "@renegade-fi/node": "workspace:*",
         "@renegade-fi/token": "workspace:^",
         "dotenv": "^16.4.5",
-        "viem": "^2.7.8"
-    },
-    "devDependencies": {
-        "tsx": "^4.7.0",
-        "typescript": "^5.3.3"
+        "tsx": "^4.0.0",
+        "viem": "^2.0.0"
     }
 }

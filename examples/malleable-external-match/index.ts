@@ -20,7 +20,7 @@ import { arbitrumSepolia } from "viem/chains";
 // Get API credentials from environment variables
 const apiKey = process.env.EXTERNAL_MATCH_KEY;
 const apiSecret = process.env.EXTERNAL_MATCH_SECRET;
-const authServerUrl = "https://testnet.auth-server.renegade.fi";
+const authServerUrl = "https://arbitrum-sepolia.auth-server.renegade.fi";
 const rpcUrl = process.env.RPC_URL || "https://sepolia-rollup.arbitrum.io/rpc";
 const chainId = (process.env.CHAIN_ID || CHAIN_IDS.ArbitrumSepolia) as ChainId;
 
