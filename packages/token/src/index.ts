@@ -15,6 +15,7 @@ type TokenMetadata = {
     supported_exchanges: Partial<Record<Exchange, string>>;
     chain_addresses: Record<string, string>;
     logo_url: string;
+    chain: ChainId | undefined;
 };
 
 type TokenMapping = {
@@ -37,11 +38,12 @@ export const STABLECOINS = ["USDC", "USDT"];
  * chain-agnostic initialization of the token mapping in a single-chain context
  * (i.e., `parseRemapFromString`).
  */
-let DEFAULT_CHAIN: ChainId | "default" | undefined = undefined;
+let DEFAULT_CHAIN: ChainId | undefined = undefined;
 
 /** The token class */
 export class Token {
-    private static tokenMappings: Partial<Record<ChainId | "default", TokenMapping>> = {};
+    private static tokenMappings: Partial<Record<ChainId, TokenMapping>> = {};
+    private static fallbackMapping?: TokenMapping;
 
     /** Fetch a remap from the repo */
     static async fetchRemapFromRepo(chain: number) {
@@ -63,7 +65,24 @@ export class Token {
      */
     static parseRemapFromString(remap: string) {
         const data = JSON.parse(remap) as TokenMapping;
-        Token.addRemap("default", data.tokens);
+
+        // Lowercase all addresses in the fallback remap
+        const lowercaseTokens = data.tokens.map(
+            (token) =>
+                ({
+                    ...token,
+                    address: token.address.toLowerCase() as Address,
+                    supported_exchanges: Object.fromEntries(
+                        Object.entries(token.supported_exchanges).map(([k, v]) => [
+                            k.toLowerCase(),
+                            v,
+                        ]),
+                    ),
+                    chain: undefined,
+                }) as const satisfies TokenMetadata,
+        );
+
+        Token.fallbackMapping = { tokens: lowercaseTokens };
     }
 
     /** Parse a remap for the specified chain from a stringified JSON object */
@@ -72,7 +91,7 @@ export class Token {
         Token.addRemap(chain, data.tokens);
     }
 
-    private static addRemap(chain: ChainId | "default", tokens: TokenMetadata[]) {
+    private static addRemap(chain: ChainId, tokens: TokenMetadata[]) {
         Token.tokenMappings[chain] = {
             tokens: [],
         };
@@ -90,6 +109,7 @@ export class Token {
                             v,
                         ]),
                     ),
+                    chain: chain,
                 }) as const satisfies TokenMetadata,
         );
 
@@ -111,7 +131,7 @@ export class Token {
     private _logo_url: string;
     private _chain?: ChainId;
 
-    constructor(tokenMetadata: TokenMetadata, chain?: ChainId) {
+    constructor(tokenMetadata: TokenMetadata) {
         this._name = tokenMetadata.name;
         this._ticker = tokenMetadata.ticker;
         this._address = tokenMetadata.address;
@@ -119,7 +139,7 @@ export class Token {
         this._supported_exchanges = tokenMetadata.supported_exchanges;
         this._chain_addresses = tokenMetadata.chain_addresses;
         this._logo_url = tokenMetadata.logo_url;
-        this._chain = chain;
+        this._chain = tokenMetadata.chain;
     }
 
     get name(): string {
@@ -187,7 +207,7 @@ export class Token {
             return DEFAULT_TOKEN;
         }
 
-        return new Token(tokenData, chain);
+        return new Token(tokenData);
     }
 
     /**
@@ -204,8 +224,7 @@ export class Token {
             return DEFAULT_TOKEN;
         }
 
-        const chain = Token.resolveDefaultChainId();
-        return new Token(tokenData, chain);
+        return new Token(tokenData);
     }
 
     /** @deprecated Use `Token.fromTicker` instead */
@@ -228,7 +247,7 @@ export class Token {
             return DEFAULT_TOKEN;
         }
 
-        return new Token(tokenData, chain);
+        return new Token(tokenData);
     }
 
     /**
@@ -245,8 +264,7 @@ export class Token {
             return DEFAULT_TOKEN;
         }
 
-        const chain = Token.resolveDefaultChainId();
-        return new Token(tokenData, chain);
+        return new Token(tokenData);
     }
 
     /** @deprecated Use `Token.fromAddress` instead */
@@ -264,50 +282,47 @@ export class Token {
         logo_url = "",
         chain?: ChainId,
     ): Token {
-        return new Token(
-            {
-                name,
-                ticker,
-                address,
-                decimals,
-                supported_exchanges,
-                chain_addresses,
-                logo_url,
-            },
+        return new Token({
+            name,
+            ticker,
+            address,
+            decimals,
+            supported_exchanges,
+            chain_addresses,
+            logo_url,
             chain,
-        );
+        });
     }
 
     static getAllTokens(): Token[] {
-        const chain = Token.resolveDefaultChainId();
-        return Token.getAllTokensMetadata().map((token) => new Token(token, chain));
+        return Token.getAllTokensMetadata().map((token) => new Token(token));
     }
 
     static getAllTokensOnChain(chain: ChainId): Token[] {
         const tokenMapping = Token.getTokenMapping(chain);
 
-        return tokenMapping.tokens.map((token) => new Token(token, chain));
+        return tokenMapping.tokens.map((token) => new Token(token));
     }
 
     static resolveDefaultChainId(): ChainId | undefined {
-        return DEFAULT_CHAIN === "default" ? undefined : DEFAULT_CHAIN;
+        return DEFAULT_CHAIN;
     }
 
     private static getAllTokensMetadata(): TokenMetadata[] {
-        return Object.values(Token.tokenMappings).flatMap((mapping) => mapping.tokens);
+        return Object.values(Token.tokenMappings).flatMap((mapping) => mapping?.tokens ?? []);
     }
 
     private static getDefaultTokenMapping(): TokenMapping {
-        if (!DEFAULT_CHAIN) {
-            throw new Error(
-                "A default chain has not been set. Initialize the token mapping first.",
-            );
+        if (DEFAULT_CHAIN !== undefined) {
+            return Token.getTokenMapping(DEFAULT_CHAIN);
         }
-
-        return Token.getTokenMapping(DEFAULT_CHAIN);
+        if (Token.fallbackMapping) {
+            return Token.fallbackMapping;
+        }
+        throw new Error("A default chain has not been set. Initialize the token mapping first.");
     }
 
-    private static getTokenMapping(chain: ChainId | "default"): TokenMapping {
+    private static getTokenMapping(chain: ChainId): TokenMapping {
         if (!Token.tokenMappings[chain]) {
             throw new Error(
                 `${chain} token mapping not initialized. Initialize the token mapping first.`,
@@ -326,7 +341,6 @@ const DEFAULT_TOKEN = Token.create(
     undefined,
     undefined,
     undefined,
-    Token.resolveDefaultChainId(),
 );
 
 /** @deprecated Use `Token.getDefaultQuoteTokenOnChain` instead */
@@ -351,6 +365,8 @@ export function getDefaultQuoteToken(exchange: Exchange): Token {
             return Token.fromTicker("USDT");
         case "renegade":
             return Token.fromTicker("USDC");
+        default:
+            return DEFAULT_TOKEN;
     }
 }
 
@@ -375,6 +391,8 @@ export function getDefaultQuoteTokenOnChain(chain: ChainId, exchange: Exchange):
             return Token.fromTickerOnChain("USDT", chain);
         case "renegade":
             return Token.fromTickerOnChain("USDC", chain);
+        default:
+            return DEFAULT_TOKEN;
     }
 }
 
