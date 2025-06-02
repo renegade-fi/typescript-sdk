@@ -42,5 +42,10 @@ export async function getTokenPrices(
     if (!res.token_prices) {
         throw new BaseError("Could not fetch token prices");
     }
-    return { token_prices: res.token_prices.map((tokenPrice: TokenPrice) => ({ ...tokenPrice })) };
+    return {
+        token_prices: res.token_prices.map((tokenPrice: TokenPrice) => ({
+            ...tokenPrice,
+            price: Number.parseFloat(tokenPrice.price.toString()),
+        })),
+    };
 }
