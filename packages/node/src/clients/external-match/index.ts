@@ -9,6 +9,7 @@ import type {
     GetExternalMatchQuoteParameters,
     GetExternalMatchQuoteReturnType,
     GetSupportedTokensReturnType,
+    GetTokenPricesReturnType,
     RenegadeConfig,
     SDKConfig,
 } from "@renegade-fi/core";
@@ -21,6 +22,7 @@ import {
     getExternalMatchQuote,
     getSDKConfig,
     getSupportedTokens,
+    getTokenPrices,
 } from "@renegade-fi/core";
 import { CHAIN_IDS } from "@renegade-fi/core/constants";
 import * as rustUtils from "../../../renegade-utils/index.js";
@@ -190,6 +192,13 @@ export class ExternalMatchClient {
      */
     async getSupportedTokens(): Promise<GetSupportedTokensReturnType> {
         return getSupportedTokens(this.getConfig());
+    }
+
+    /**
+     * Get the token prices for all supported tokens
+     */
+    async getTokenPrices(): Promise<GetTokenPricesReturnType> {
+        return getTokenPrices(this.getConfig());
     }
 
     // -- Private --
