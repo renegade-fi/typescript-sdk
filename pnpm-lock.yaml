@@ -150,6 +150,19 @@ importers:
         specifier: ^5.3.3
         version: 5.5.4
 
+  examples/supported-tokens:
+    dependencies:
+      '@renegade-fi/node':
+        specifier: workspace:*
+        version: link:../../packages/node
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
+    devDependencies:
+      tsx:
+        specifier: ^4.0.0
+        version: 4.19.2
+
   packages/core:
     dependencies:
       axios:
