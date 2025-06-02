@@ -100,6 +100,12 @@ export {
 } from "../actions/getBackOfQueueWallet.js";
 
 export {
+    type GetSupportedTokensReturnType,
+    type GetSupportedTokensErrorType,
+    getSupportedTokens,
+} from "../actions/getSupportedTokens.js";
+
+export {
     type GetNetworkOrdersReturnType,
     type GetNetworkOrdersErrorType,
     getNetworkOrders,
