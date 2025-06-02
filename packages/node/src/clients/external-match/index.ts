@@ -8,15 +8,21 @@ import type {
     GetExternalMatchBundleReturnType,
     GetExternalMatchQuoteParameters,
     GetExternalMatchQuoteReturnType,
+    GetSupportedTokensReturnType,
+    GetTokenPricesReturnType,
+    RenegadeConfig,
     SDKConfig,
 } from "@renegade-fi/core";
 import {
     assembleExternalQuote,
     assembleMalleableQuote,
     createAuthConfig,
+    createConfig,
     getExternalMatchBundle,
     getExternalMatchQuote,
     getSDKConfig,
+    getSupportedTokens,
+    getTokenPrices,
 } from "@renegade-fi/core";
 import { CHAIN_IDS } from "@renegade-fi/core/constants";
 import * as rustUtils from "../../../renegade-utils/index.js";
@@ -31,6 +37,7 @@ type RustUtilsInterface = typeof rustUtils;
 export class ExternalMatchClient {
     // TODO: Delete once we migrate to v2
     readonly config: AuthConfig;
+    readonly relayerConfig: RenegadeConfig;
     readonly configv2: SDKConfig;
     readonly apiKey: string;
     readonly apiSecret: string;
@@ -49,6 +56,13 @@ export class ExternalMatchClient {
         const configv2 = params.overrides
             ? { ...defaultConfig, ...params.overrides }
             : defaultConfig;
+        this.relayerConfig = createConfig({
+            darkPoolAddress: configv2.darkpoolAddress,
+            priceReporterUrl: configv2.priceReporterUrl,
+            relayerUrl: configv2.relayerUrl,
+            chainId: configv2.id,
+            utils: rustUtils,
+        });
         this.configv2 = configv2;
         this.apiKey = params.apiKey;
         this.apiSecret = params.apiSecret;
@@ -171,8 +185,35 @@ export class ExternalMatchClient {
         return assembleMalleableQuote(this.getConfig(), params);
     }
 
+    // -- Token -- //
+
+    /**
+     * Get the list of supported tokens
+     */
+    async getSupportedTokens(): Promise<GetSupportedTokensReturnType> {
+        return getSupportedTokens(this.getConfig());
+    }
+
+    /**
+     * Get the token prices for all supported tokens
+     */
+    async getTokenPrices(): Promise<GetTokenPricesReturnType> {
+        return getTokenPrices(this.getConfig());
+    }
+
     // -- Private --
+
+    /**
+     * Get the config for the auth server
+     */
     protected getConfig() {
         return this.config;
+    }
+
+    /**
+     * Get the config for the relayer
+     */
+    protected getRelayerConfig() {
+        return this.relayerConfig;
     }
 }

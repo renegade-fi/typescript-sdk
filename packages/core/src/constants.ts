@@ -275,3 +275,13 @@ export const DISABLE_GAS_SPONSORSHIP_PARAM = "disable_gas_sponsorship";
 export const REFUND_ADDRESS_PARAM = "refund_address";
 /// The query parameter for whether to refund via native ETH
 export const REFUND_NATIVE_ETH_PARAM = "refund_native_eth";
+
+////////////////////////////////////////////////////////////////////////////////
+// Token
+////////////////////////////////////////////////////////////////////////////////
+
+/** The route for fetching the supported token list */
+export const GET_SUPPORTED_TOKENS_ROUTE = "/supported-tokens";
+
+/** The route for fetching token prices for all supported tokens */
+export const GET_TOKEN_PRICES_ROUTE = "/token-prices";

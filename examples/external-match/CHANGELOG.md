@@ -1,5 +1,14 @@
 # renegade-external-match-example
 
+## 1.1.27
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.9.4
+  - @renegade-fi/node@0.6.6
+  - @renegade-fi/token@0.0.22
+
 ## 1.1.26
 
 ### Patch Changes

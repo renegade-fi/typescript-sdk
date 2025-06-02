@@ -1,5 +1,6 @@
 import invariant from "tiny-invariant";
 import type { Hex } from "viem";
+import { CHAIN_SPECIFIERS, type ChainId } from "./constants.js";
 import type { BaseConfig } from "./createConfig.js";
 import type * as rustUtils from "./utils.d.ts";
 
@@ -41,6 +42,18 @@ export function createAuthConfig(parameters: CreateAuthConfigParameters): AuthCo
             invariant(parameters.utils, "Utils are required");
             return parameters.utils.b64_to_hex_hmac_key(apiSecret) as Hex;
         },
+        getChainId: (): ChainId => {
+            const url = new URL(authServerUrl);
+            const hostname = url.hostname;
+            const chainSpecifier = hostname.split(".")[0];
+            const chainId = Object.entries(CHAIN_SPECIFIERS).find(
+                ([_, value]) => value === chainSpecifier,
+            )?.[0];
+            if (!chainId) {
+                throw new Error(`Unknown chain specifier: ${chainSpecifier}`);
+            }
+            return Number.parseInt(chainId) as ChainId;
+        },
     };
 }
 
@@ -49,4 +62,5 @@ export type AuthConfig = BaseConfig & {
     apiKey: string;
     getBaseUrl: (route?: string) => string;
     renegadeKeyType: "none";
+    getChainId: () => ChainId;
 };
