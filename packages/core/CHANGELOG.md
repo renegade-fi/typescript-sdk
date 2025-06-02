@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.4
+
+### Patch Changes
+
+- core, node: add get supported tokens route
+
 ## 0.9.3
 
 ### Patch Changes

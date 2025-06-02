@@ -1,6 +1,6 @@
 {
     "name": "@renegade-fi/supported-tokens",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Example of fetching supported tokens and their prices using Renegade SDK",
     "type": "module",
     "scripts": {

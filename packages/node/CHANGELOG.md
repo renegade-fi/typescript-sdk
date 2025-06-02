@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.6.6
+
+### Patch Changes
+
+- core, node: add get supported tokens route
+- Updated dependencies
+  - @renegade-fi/core@0.9.4
+
 ## 0.6.5
 
 ### Patch Changes
