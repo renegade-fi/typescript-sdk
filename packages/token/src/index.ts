@@ -16,6 +16,7 @@ type TokenMetadata = {
     chain_addresses: Record<string, string>;
     logo_url: string;
     chain: ChainId | undefined;
+    canonical_exchange: Exchange;
 };
 
 type TokenMapping = {
@@ -130,6 +131,7 @@ export class Token {
     private _chain_addresses: Record<string, string>;
     private _logo_url: string;
     private _chain?: ChainId;
+    private _canonical_exchange: Exchange;
 
     constructor(tokenMetadata: TokenMetadata) {
         this._name = tokenMetadata.name;
@@ -140,6 +142,7 @@ export class Token {
         this._chain_addresses = tokenMetadata.chain_addresses;
         this._logo_url = tokenMetadata.logo_url;
         this._chain = tokenMetadata.chain;
+        this._canonical_exchange = tokenMetadata.canonical_exchange;
     }
 
     get name(): string {
@@ -176,6 +179,23 @@ export class Token {
 
     get chain(): ChainId | undefined {
         return this._chain;
+    }
+
+    get canonicalExchange(): Exchange {
+        return this._canonical_exchange.toLowerCase() as Exchange;
+    }
+
+    getCanonicalExchangeTicker(): string {
+        const supportedExchanges = this.supportedExchanges;
+        const canonicalExchange = this.canonicalExchange;
+        if (!supportedExchanges.has(canonicalExchange)) {
+            console.error("Supported exchanges:", supportedExchanges);
+            console.error("Canonical exchange:", canonicalExchange);
+            throw new Error(
+                `Malformed token mapping: ${canonicalExchange} is not a supported exchange for token ${this._ticker}`,
+            );
+        }
+        return this._supported_exchanges[canonicalExchange]!;
     }
 
     getExchangeTicker(exchange: Exchange): string | undefined {
@@ -281,6 +301,7 @@ export class Token {
         chain_addresses: Record<string, string> = {},
         logo_url = "",
         chain?: ChainId,
+        canonical_exchange: Exchange = "renegade",
     ): Token {
         return new Token({
             name,
@@ -291,6 +312,7 @@ export class Token {
             chain_addresses,
             logo_url,
             chain,
+            canonical_exchange,
         });
     }
 
