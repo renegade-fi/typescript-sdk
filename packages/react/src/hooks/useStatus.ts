@@ -12,9 +12,10 @@ export type UseStatusReturnType = Config["state"]["status"];
 
 export function useStatus(parameters: UseStatusParameters = {}): UseStatusReturnType {
     const config = useConfig(parameters);
-    const [status, setStatus] = useState(config.state.status);
+    const [status, setStatus] = useState(config?.state.status);
 
     useEffect(() => {
+        if (!config) return;
         const unsubscribe = watchStatus(config, {
             onChange: (status) => {
                 setStatus(status);

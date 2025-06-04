@@ -7,12 +7,14 @@ import {
     createOrderRequest,
 } from "../actions/createOrderRequest.js";
 import type { Config } from "../createConfig.js";
+import { ConfigRequiredError } from "../errors/base.js";
 import type { Evaluate } from "../types/utils.js";
 import type { Mutate, MutateAsync } from "./types.js";
 
-export function createOrderRequestMutationOptions(config: Config) {
+export function createOrderRequestMutationOptions(config: Config | undefined) {
     return {
         mutationFn(variables) {
+            if (!config) throw new ConfigRequiredError("createOrderRequest");
             return createOrderRequest(config, variables);
         },
         mutationKey: ["createOrderRequest"],

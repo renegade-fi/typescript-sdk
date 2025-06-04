@@ -16,11 +16,10 @@ export type UseOrderBookWebSocketReturnType = NetworkOrder | undefined;
 
 export function useOrderBookWebSocket(parameters: UseOrderBookWebSocketParameters = {}) {
     const config = useConfig(parameters);
-    const { getWebsocketBaseUrl } = config;
     const { enabled = true, onUpdate } = parameters;
 
     const { readyState, sendJsonMessage } = useWebSocket(
-        getWebsocketBaseUrl(),
+        config?.getWebsocketBaseUrl() ?? "",
         {
             filter: () => false,
             onMessage: (event) => {
@@ -39,7 +38,7 @@ export function useOrderBookWebSocket(parameters: UseOrderBookWebSocketParameter
             share: true,
             shouldReconnect: () => true,
         },
-        enabled,
+        enabled && !!config?.getWebsocketBaseUrl(),
     );
 
     useEffect(() => {

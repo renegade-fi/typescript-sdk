@@ -7,12 +7,14 @@ import {
     withdrawRequest,
 } from "../actions/withdrawRequest.js";
 import type { Config } from "../createConfig.js";
+import { ConfigRequiredError } from "../errors/base.js";
 import type { Evaluate } from "../types/utils.js";
 import type { Mutate, MutateAsync } from "./types.js";
 
-export function withdrawRequestMutationOptions(config: Config) {
+export function withdrawRequestMutationOptions(config: Config | undefined) {
     return {
         mutationFn(variables) {
+            if (!config) throw new ConfigRequiredError("withdrawRequest");
             return withdrawRequest(config, variables);
         },
         mutationKey: ["withdrawRequest"],

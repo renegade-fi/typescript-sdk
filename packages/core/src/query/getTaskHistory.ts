@@ -6,20 +6,25 @@ import {
     getTaskHistory,
 } from "../actions/getTaskHistory.js";
 import type { Config } from "../createConfig.js";
+import { ConfigRequiredError } from "../errors/base.js";
 import type { Evaluate } from "../types/utils.js";
 import { type ScopeKeyParameter, filterQueryOptions } from "./utils.js";
 
 export type GetTaskHistoryOptions = Evaluate<GetTaskHistoryParameters & ScopeKeyParameter>;
 
-export function getTaskHistoryQueryOptions(config: Config, options: GetTaskHistoryOptions = {}) {
+export function getTaskHistoryQueryOptions(
+    config: Config | undefined,
+    options: GetTaskHistoryOptions = {},
+) {
     return {
         async queryFn({ queryKey }) {
             const { scopeKey: _, ...parameters } = queryKey[1];
+            if (!config) throw new ConfigRequiredError("getTaskHistory");
             const history = await getTaskHistory(config, parameters);
             return history ?? null;
         },
         queryKey: getTaskHistoryQueryKey({
-            scopeKey: config.state.id,
+            scopeKey: config?.state.id,
             ...options,
         }),
     } as const satisfies QueryOptions<

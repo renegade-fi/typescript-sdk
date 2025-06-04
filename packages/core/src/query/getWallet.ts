@@ -6,21 +6,23 @@ import {
     getWalletFromRelayer,
 } from "../actions/getWalletFromRelayer.js";
 import type { Config } from "../createConfig.js";
+import { ConfigRequiredError } from "../errors/base.js";
 import type { Evaluate } from "../types/utils.js";
 import { type ScopeKeyParameter, filterQueryOptions } from "./utils.js";
 
 export type GetWalletOptions = Evaluate<GetWalletFromRelayerParameters & ScopeKeyParameter>;
 
-export function getWalletQueryOptions(config: Config, options: GetWalletOptions = {}) {
+export function getWalletQueryOptions(config: Config | undefined, options: GetWalletOptions = {}) {
     return {
         async queryFn({ queryKey }) {
             const { scopeKey: _, ...parameters } = queryKey[1];
+            if (!config) throw new ConfigRequiredError("getWallet");
             const wallet = await getWalletFromRelayer(config, {
                 ...(parameters as GetWalletFromRelayerParameters),
             });
             return wallet ?? null;
         },
-        queryKey: getWalletQueryKey({ scopeKey: config.state.id, ...options }),
+        queryKey: getWalletQueryKey({ scopeKey: config?.state.id, ...options }),
     } as const satisfies QueryOptions<
         GetWalletQueryFnData,
         GetWalletFromRelayerErrorType,

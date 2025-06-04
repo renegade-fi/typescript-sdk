@@ -106,6 +106,16 @@ export class PriceReporterClient {
         return client.getPriceResult(address);
     }
 
+    /**
+     * Get the websocket url for the price reporter
+     */
+    public getWebSocketUrl(): string {
+        const url = new URL(this.baseUrl);
+        url.protocol = "wss";
+        url.port = "4000";
+        return url.toString();
+    }
+
     // --- Private methods ---
 
     private get<T>(route: string): ResultAsync<T, PriceReporterError> {
