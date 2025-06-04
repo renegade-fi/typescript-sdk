@@ -1,5 +1,12 @@
 # @renegade-fi/base-sepolia-match
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/token@0.0.23
+
 ## 0.0.2
 
 ### Patch Changes

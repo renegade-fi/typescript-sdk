@@ -1,7 +1,7 @@
 {
     "name": "@renegade-fi/native-eth-gas-sponsorship-example",
     "private": true,
-    "version": "0.0.30",
+    "version": "0.0.31",
     "type": "module",
     "scripts": {
         "start": "tsx --require dotenv/config index.ts"
