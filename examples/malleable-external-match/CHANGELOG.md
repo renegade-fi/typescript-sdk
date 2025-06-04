@@ -1,5 +1,14 @@
 # @renegade-fi/malleable-external-match-example
 
+## 0.0.25
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@0.9.5
+  - @renegade-fi/node@0.6.7
+  - @renegade-fi/token@0.0.24
+
 ## 0.0.24
 
 ### Patch Changes

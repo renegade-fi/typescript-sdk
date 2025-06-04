@@ -1,6 +1,6 @@
 {
     "name": "@renegade-fi/base-sepolia-match",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Example of fetching and assembling base sepolia matches using Renegade SDK",
     "type": "module",
     "scripts": {

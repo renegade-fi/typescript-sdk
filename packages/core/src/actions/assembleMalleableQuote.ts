@@ -11,6 +11,7 @@ export type AssembleMalleableQuoteParameters = {
     quote: SponsoredQuoteResponse;
     updatedOrder?: ExternalOrder;
     doGasEstimation?: boolean;
+    allowShared?: boolean;
     receiverAddress?: `0x${string}`;
     requestGasSponsorship?: boolean;
     refundAddress?: `0x${string}`;
@@ -28,6 +29,7 @@ export async function assembleMalleableQuote(
         quote,
         updatedOrder,
         doGasEstimation = false,
+        allowShared = false,
         receiverAddress = "",
         requestGasSponsorship,
         refundAddress,
@@ -48,6 +50,7 @@ export async function assembleMalleableQuote(
     const stringifiedOrder = updatedOrder ? stringifyForWasm(updatedOrder) : "";
     const body = config.utils.assemble_external_match(
         doGasEstimation,
+        allowShared,
         stringifiedOrder,
         stringifiedQuote,
         receiverAddress,

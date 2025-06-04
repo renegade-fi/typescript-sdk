@@ -17,6 +17,7 @@ export type AssembleExternalQuoteParameters = {
     receiverAddress?: `0x${string}`;
     requestGasSponsorship?: boolean;
     refundAddress?: `0x${string}`;
+    allowShared?: boolean;
 };
 
 export type AssembleExternalQuoteReturnType = SponsoredMatchResponse;
@@ -34,6 +35,7 @@ export async function assembleExternalQuote(
         receiverAddress = "",
         requestGasSponsorship,
         refundAddress,
+        allowShared = false,
     } = parameters;
 
     if (requestGasSponsorship !== undefined || refundAddress !== undefined) {
@@ -51,6 +53,7 @@ export async function assembleExternalQuote(
     const stringifiedOrder = updatedOrder ? stringifyForWasm(updatedOrder) : "";
     const body = config.utils.assemble_external_match(
         doGasEstimation,
+        allowShared,
         stringifiedOrder,
         stringifiedQuote,
         receiverAddress,

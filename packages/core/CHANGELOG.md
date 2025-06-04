@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.5
+
+### Patch Changes
+
+- Add `allowShared` parameter for assembling matches
+
 ## 0.9.4
 
 ### Patch Changes
