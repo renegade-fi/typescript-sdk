@@ -1,5 +1,11 @@
 # @renegade-fi/token
 
+## 0.0.23
+
+### Patch Changes
+
+- token: add canonical exhange
+
 ## 0.0.22
 
 ### Patch Changes
