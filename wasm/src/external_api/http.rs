@@ -749,11 +749,17 @@ pub fn new_external_quote_request(
 /// The request type for assembling an external match, potentially with gas sponsorship
 #[derive(Clone, Serialize, Deserialize)]
 pub struct AssembleExternalMatchRequest {
-    /// The signed external match quote
-    pub signed_quote: SignedExternalQuote,
     /// Whether or not to include gas estimation in the response
     #[serde(default)]
     pub do_gas_estimation: bool,
+    /// Whether or not to allow shared access to the resulting bundle
+    ///
+    /// If true, the bundle may be sent to other clients requesting an external
+    /// match. If false, the bundle will be exclusively held for some time
+    #[serde(default)]
+    pub allow_shared: bool,
+    /// The signed external match quote
+    pub signed_quote: SignedExternalQuote,
     /// The receiver address of the match, if not the message sender
     #[serde(default)]
     pub receiver_address: Option<String>,
@@ -765,6 +771,7 @@ pub struct AssembleExternalMatchRequest {
 #[wasm_bindgen]
 pub fn assemble_external_match(
     do_gas_estimation: bool,
+    allow_shared: bool,
     updated_order: &str,
     sponsored_quote_response: &str,
     receiver_address: &str,
@@ -790,9 +797,10 @@ pub fn assemble_external_match(
 
     let req = AssembleExternalMatchRequest {
         do_gas_estimation,
+        allow_shared,
         receiver_address,
         updated_order,
-        signed_quote,
+        signed_quote: signed_quote,
     };
 
     Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
