@@ -8,7 +8,7 @@ import { useWalletId } from "./useWalletId.js";
  * Checks if the wallet is indexed in the relayer.
  * This is necessary to subscribe to topics once a wallet is indexed.
  * The query runs every 2 seconds until the wallet is indexed, or 30 times (1 minute) if the wallet is not indexed.
- * This is fine because in most cases the wallet is indexed in >> 1 minute.
+ * This is fine because in most cases the wallet is indexed in << 1 minute.
  * If after 1 minute the wallet is not indexed, there is a higher level issue that should be addressed.
  */
 export function useIsIndexed() {
