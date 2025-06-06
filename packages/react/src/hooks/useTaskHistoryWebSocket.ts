@@ -13,7 +13,7 @@ import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket.js";
 import { createSignedWebSocketRequest } from "../utils/websocket.js";
 import { useWasmInitialized } from "../wasm.js";
 import { useConfig } from "./useConfig.js";
-import { useStatus } from "./useStatus.js";
+import { useIsIndexed } from "./useIsIndexed.js";
 import { useWalletId } from "./useWalletId.js";
 
 export type UseTaskHistoryWebSocketParameters = {
@@ -25,7 +25,6 @@ export type UseTaskHistoryWebSocketParameters = {
 export function useTaskHistoryWebSocket(parameters: UseTaskHistoryWebSocketParameters = {}) {
     const isWasmInitialized = useWasmInitialized();
     const config = useConfig(parameters);
-    const status = useStatus(parameters);
     const walletId = useWalletId();
 
     const { enabled = true, onUpdate } = parameters;
@@ -47,10 +46,12 @@ export function useTaskHistoryWebSocket(parameters: UseTaskHistoryWebSocketParam
                 } catch (_) {}
             },
             share: true,
-            shouldReconnect: () => Boolean(enabled && walletId && status === "in relayer"),
+            shouldReconnect: () => Boolean(enabled && walletId),
         },
         enabled && !!config?.getWebsocketBaseUrl(),
     );
+
+    const { data: isIndexed } = useIsIndexed();
 
     useEffect(() => {
         // Capture the current (old) wallet id in a local variable
@@ -60,10 +61,10 @@ export function useTaskHistoryWebSocket(parameters: UseTaskHistoryWebSocketParam
             !enabled ||
             !currentWalletId ||
             readyState !== ReadyState.OPEN ||
-            status !== "in relayer" ||
             !isWasmInitialized ||
             !config ||
-            !config.state.seed
+            !config.state.seed ||
+            !isIndexed
         )
             return;
 
@@ -76,5 +77,5 @@ export function useTaskHistoryWebSocket(parameters: UseTaskHistoryWebSocketParam
         const subscriptionMessage = createSignedWebSocketRequest(config, symmetricKey, body);
 
         sendJsonMessage(subscriptionMessage);
-    }, [enabled, walletId, readyState, status, isWasmInitialized, sendJsonMessage, config]);
+    }, [enabled, walletId, readyState, isWasmInitialized, sendJsonMessage, config, isIndexed]);
 }
