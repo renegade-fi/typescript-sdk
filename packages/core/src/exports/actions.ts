@@ -13,6 +13,12 @@ export {
     cancelOrder,
 } from "../actions/cancelOrder.js";
 
+export {
+    type CancelOrderRequestParameters,
+    type CancelOrderRequestReturnType,
+    cancelOrderRequest,
+} from "../actions/cancelOrderRequest.js";
+
 export { type ConnectReturnType, connect } from "../actions/connect.js";
 
 export {
@@ -25,6 +31,12 @@ export {
     type CreateOrderReturnType,
     createOrder,
 } from "../actions/createOrder.js";
+
+export {
+    type CreateOrderRequestParameters,
+    type CreateOrderRequestReturnType,
+    createOrderRequest,
+} from "../actions/createOrderRequest.js";
 
 export {
     type CreateOrderInMatchingPoolParameters,
