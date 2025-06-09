@@ -8,6 +8,8 @@ import {
 
 import * as RustUtils from "../../renegade-utils/index.js";
 
+export { default as RustUtils } from "../../renegade-utils/index.js";
+
 function createConfig(
     ...args: Parameters<typeof core_createConfig>
 ): ReturnType<typeof core_createConfig> {
@@ -206,6 +208,8 @@ export { useWasmInitialized } from "../wasm.js";
 ////////////////////////////////////////////////////////////////////////////////
 
 export { useQuery } from "../utils/query.js";
+
+export { createSignedWebSocketRequest } from "../utils/websocket.js";
 
 ////////////////////////////////////////////////////////////////////////////////
 // @renegade/core
