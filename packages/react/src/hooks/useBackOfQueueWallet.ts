@@ -43,7 +43,7 @@ export function useBackOfQueueWallet<selectData = GetBackOfQueueWalletData>(
         filterDefaults,
     });
     const enabled = Boolean(
-        status === "in relayer" && config.state.seed && (query.enabled ?? true),
+        status === "in relayer" && config?.state.seed && (query.enabled ?? true),
     );
 
     useWalletWebsocket({

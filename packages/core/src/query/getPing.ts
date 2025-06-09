@@ -1,15 +1,17 @@
 import type { QueryOptions } from "@tanstack/query-core";
 import { type GetPingErrorType, type GetPingReturnType, getPing } from "../actions/ping.js";
 import type { Config } from "../createConfig.js";
+import { ConfigRequiredError } from "../errors/base.js";
 import type { Evaluate } from "../types/utils.js";
 import { type ScopeKeyParameter, filterQueryOptions } from "./utils.js";
 
 export type GetPingOptions = Evaluate<ScopeKeyParameter>;
 
-export function getPingQueryOptions(config: Config, options: GetPingOptions = {}) {
+export function getPingQueryOptions(config: Config | undefined, options: GetPingOptions = {}) {
     return {
         async queryFn({ queryKey }) {
             const { scopeKey: _ } = queryKey[1];
+            if (!config) throw new ConfigRequiredError("getPing");
             const ping = await getPing(config);
             return ping ?? null;
         },

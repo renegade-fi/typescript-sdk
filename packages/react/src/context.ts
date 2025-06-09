@@ -7,7 +7,7 @@ import { Hydrate } from "./hydrate.js";
 export const RenegadeContext = createContext<Config | undefined>(undefined);
 
 export type RenegadeProviderProps = {
-    config: Config;
+    config: Config | undefined;
     initialState?: State | undefined;
     reconnectOnMount?: boolean | undefined;
 };

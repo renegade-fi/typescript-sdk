@@ -6,15 +6,20 @@ import {
     getOpenOrders,
 } from "../actions/getOpenOrders.js";
 import type { Config } from "../createConfig.js";
+import { ConfigRequiredError } from "../errors/base.js";
 import type { Evaluate } from "../types/utils.js";
 import { type ScopeKeyParameter, filterQueryOptions } from "./utils.js";
 
 export type GetOpenOrdersOptions = Evaluate<GetOpenOrdersParameters & ScopeKeyParameter>;
 
-export function getOpenOrdersQueryOptions(config: Config, options: GetOpenOrdersOptions = {}) {
+export function getOpenOrdersQueryOptions(
+    config: Config | undefined,
+    options: GetOpenOrdersOptions = {},
+) {
     return {
         async queryFn({ queryKey }) {
             const { scopeKey: _, ...parameters } = queryKey[1];
+            if (!config) throw new ConfigRequiredError("getOpenOrders");
             const orders = await getOpenOrders(config, parameters);
             return orders ?? null;
         },
