@@ -8,6 +8,8 @@ import {
 
 import * as RustUtils from "../../renegade-utils/index.js";
 
+export { default as RustUtils } from "../../renegade-utils/index.js";
+
 function createConfig(
     ...args: Parameters<typeof core_createConfig>
 ): ReturnType<typeof core_createConfig> {
