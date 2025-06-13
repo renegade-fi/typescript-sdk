@@ -2,6 +2,7 @@ use itertools::Itertools;
 use num_bigint::BigUint;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+use wasm_bindgen::JsError;
 
 use crate::{
     circuit_types::{
@@ -62,8 +63,10 @@ pub struct ApiWallet {
 
 /// Conversion from a wallet that has been indexed in the global state to the
 /// API type
-impl From<Wallet> for ApiWallet {
-    fn from(wallet: Wallet) -> Self {
+impl TryFrom<Wallet> for ApiWallet {
+    type Error = JsError;
+
+    fn try_from(wallet: Wallet) -> Result<Self, Self::Error> {
         // Build API types from the indexed wallet
         let orders = wallet
             .orders
@@ -84,22 +87,22 @@ impl From<Wallet> for ApiWallet {
             .map(scalar_to_biguint)
             .collect_vec();
 
-        Self {
+        Ok(Self {
             id: wallet.wallet_id,
             orders,
             balances,
-            key_chain: wallet.key_chain.into(),
-            managing_cluster: jubjub_to_hex_string(&wallet.managing_cluster),
+            key_chain: wallet.key_chain.try_into()?,
+            managing_cluster: jubjub_to_hex_string(&wallet.managing_cluster)?,
             match_fee: wallet.match_fee,
             blinded_public_shares,
             private_shares,
             blinder: scalar_to_biguint(&wallet.blinder),
-        }
+        })
     }
 }
 
 impl TryFrom<ApiWallet> for Wallet {
-    type Error = String;
+    type Error = JsError;
 
     fn try_from(wallet: ApiWallet) -> Result<Self, Self::Error> {
         let orders = wallet
@@ -260,7 +263,7 @@ impl ApiPrivateKeychain {
 }
 
 impl TryFrom<ApiPrivateKeychain> for PrivateKeyChain {
-    type Error = String;
+    type Error = JsError;
 
     fn try_from(keys: ApiPrivateKeychain) -> Result<Self, Self::Error> {
         let sk_root = keys
@@ -279,11 +282,13 @@ impl TryFrom<ApiPrivateKeychain> for PrivateKeyChain {
     }
 }
 
-impl From<KeyChain> for ApiKeychain {
-    fn from(keys: KeyChain) -> Self {
-        Self {
+impl TryFrom<KeyChain> for ApiKeychain {
+    type Error = JsError;
+
+    fn try_from(keys: KeyChain) -> Result<Self, Self::Error> {
+        Ok(Self {
             public_keys: ApiPublicKeychain {
-                pk_root: public_sign_key_to_hex_string(&keys.pk_root()),
+                pk_root: public_sign_key_to_hex_string(&keys.pk_root())?,
                 pk_match: scalar_to_hex_string(&keys.pk_match().key),
             },
             private_keys: ApiPrivateKeychain {
@@ -291,13 +296,13 @@ impl From<KeyChain> for ApiKeychain {
                 sk_match: scalar_to_hex_string(&keys.sk_match().key),
                 symmetric_key: keys.symmetric_key().to_hex_string(),
             },
-            nonce: scalar_to_u64(&keys.public_keys.nonce),
-        }
+            nonce: scalar_to_u64(&keys.public_keys.nonce)?,
+        })
     }
 }
 
 impl TryFrom<ApiKeychain> for KeyChain {
-    type Error = String;
+    type Error = JsError;
 
     fn try_from(keys: ApiKeychain) -> Result<Self, Self::Error> {
         Ok(KeyChain {

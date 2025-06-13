@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.6
+
+### Patch Changes
+
+- remove all unwraps from wasm module
+
 ## 0.9.5
 
 ### Patch Changes

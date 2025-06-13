@@ -11,7 +11,7 @@ use crate::{
     common::{
         derivation::{
             derive_blinder_seed, derive_sk_root_signing_key, derive_wallet_from_key,
-            derive_wallet_id, wrap_eyre,
+            derive_wallet_id,
         },
         types::{Chain, WalletIdentifier},
     },
@@ -20,7 +20,7 @@ use crate::{
         serialize_biguint_to_hex_string, PoseidonCSPRNG,
     },
     key_rotation::handle_key_rotation,
-    map_js_err,
+    map_js_error,
     signature::{sign_wallet_commitment, sign_withdrawal_authorization},
 };
 use ethers::types::Bytes;
@@ -59,15 +59,17 @@ pub struct CreateWalletRequest {
 
 #[wasm_bindgen]
 pub fn create_wallet(seed: &str) -> Result<JsValue, JsError> {
-    let sk_root = derive_sk_root_signing_key(seed, None).unwrap();
-    let (mut wallet, blinder_seed, _) = derive_wallet_from_key(&sk_root).unwrap();
+    let sk_root = derive_sk_root_signing_key(seed, None)?;
+    let (mut wallet, blinder_seed, _) = derive_wallet_from_key(&sk_root)?;
     wallet.key_chain.private_keys.delete_sk_root();
     let req = CreateWalletRequest {
         wallet,
         blinder_seed: blinder_seed.to_biguint(),
     };
 
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    let serialized =
+        serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
+    Ok(JsValue::from_str(&serialized))
 }
 
 /// The request type to find a wallet in contract storage and begin managing it
@@ -85,8 +87,8 @@ pub struct FindWalletRequest {
 
 #[wasm_bindgen]
 pub fn find_wallet(seed: &str) -> Result<JsValue, JsError> {
-    let sk_root = derive_sk_root_signing_key(seed, None).unwrap();
-    let (mut wallet, blinder_seed, share_seed) = derive_wallet_from_key(&sk_root).unwrap();
+    let sk_root = derive_sk_root_signing_key(seed, None)?;
+    let (mut wallet, blinder_seed, share_seed) = derive_wallet_from_key(&sk_root)?;
     wallet.key_chain.private_keys.delete_sk_root();
     let req = FindWalletRequest {
         wallet_id: wallet.id,
@@ -95,23 +97,27 @@ pub fn find_wallet(seed: &str) -> Result<JsValue, JsError> {
         // TODO: Remove sk_root
         private_keychain: wallet.key_chain.private_keys,
     };
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    let serialized =
+        serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
+    Ok(JsValue::from_str(&serialized))
 }
 
 #[wasm_bindgen]
 pub fn derive_blinder_share(seed: &str) -> Result<JsValue, JsError> {
-    let sk_root = derive_sk_root_signing_key(seed, None).unwrap();
-    let blinder_seed = wrap_eyre!(derive_blinder_seed(&sk_root)).unwrap();
+    let sk_root = derive_sk_root_signing_key(seed, None)?;
+    let blinder_seed = derive_blinder_seed(&sk_root)?;
     let mut blinder_csprng = PoseidonCSPRNG::new(blinder_seed);
-    let (blinder, blinder_private) = blinder_csprng.next_tuple().unwrap();
+    let (blinder, blinder_private) = blinder_csprng
+        .next_tuple()
+        .ok_or(JsError::new("Failed to generate blinder tuple"))?;
     let blinder_share = blinder - blinder_private;
     Ok(JsValue::from_str(&blinder_share.to_biguint().to_string()))
 }
 
 #[wasm_bindgen]
 pub fn wallet_id(seed: &str) -> Result<JsValue, JsError> {
-    let sk_root = derive_sk_root_signing_key(seed, None).unwrap();
-    let wallet_id = derive_wallet_id(&sk_root).unwrap();
+    let sk_root = derive_sk_root_signing_key(seed, None)?;
+    let wallet_id = derive_wallet_id(&sk_root)?;
     Ok(JsValue::from_str(&wallet_id.to_string()))
 }
 
@@ -158,30 +164,25 @@ pub async fn deposit(
     new_public_key: Option<String>,
     sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
-    let mut new_wallet = deserialize_wallet(wallet_str);
+    let mut new_wallet = deserialize_wallet(wallet_str)?;
 
-    let (next_public_key, signing_key) = wrap_eyre!(handle_key_rotation(
-        &mut new_wallet,
-        seed.as_deref(),
-        new_public_key
-    ))
-    .unwrap();
+    let (next_public_key, signing_key) =
+        handle_key_rotation(&mut new_wallet, seed.as_deref(), new_public_key)?;
 
     // Modify the wallet
-    let mint = wrap_eyre!(biguint_from_hex_string(mint)).unwrap();
-    let amount = wrap_eyre!(biguint_from_hex_string(amount)).unwrap();
-    wrap_eyre!(new_wallet.add_balance(Balance::new_from_mint_and_amount(
+    let mint = biguint_from_hex_string(mint)?;
+    let amount = biguint_from_hex_string(amount)?;
+    new_wallet.add_balance(Balance::new_from_mint_and_amount(
         mint.clone(),
-        amount.to_u128().unwrap()
-    )))
-    .unwrap();
-    new_wallet.reblind_wallet();
+        amount
+            .to_u128()
+            .ok_or_else(|| JsError::new("Amount too large for u128"))?,
+    ))?;
+    new_wallet.reblind_wallet()?;
 
     // Sign a commitment to the new shares
     let statement_sig =
-        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref())
-            .await
-            .map_err(|e| JsError::new(&e.to_string()))?;
+        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref()).await?;
 
     let update_auth = WalletUpdateAuthorization {
         statement_sig,
@@ -189,17 +190,17 @@ pub async fn deposit(
     };
 
     let req = DepositBalanceRequest {
-        from_addr: biguint_from_hex_string(from_addr).unwrap(),
+        from_addr: biguint_from_hex_string(from_addr)?,
         mint,
         amount,
         update_auth,
-        permit_nonce: biguint_from_hex_string(permit_nonce).unwrap(),
-        permit_deadline: biguint_from_hex_string(permit_deadline).unwrap(),
-        permit_signature: biguint_from_hex_string(permit_signature)
-            .unwrap()
-            .to_bytes_be(),
+        permit_nonce: biguint_from_hex_string(permit_nonce)?,
+        permit_deadline: biguint_from_hex_string(permit_deadline)?,
+        permit_signature: biguint_from_hex_string(permit_signature)?.to_bytes_be(),
     };
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    let serialized =
+        serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
+    Ok(JsValue::from_str(&serialized))
 }
 
 /// The request type to withdraw a balance from the Darkpool
@@ -233,64 +234,64 @@ pub async fn withdraw(
     new_public_key: Option<String>,
     sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
-    let mut new_wallet = deserialize_wallet(wallet_str);
+    let mut new_wallet = deserialize_wallet(wallet_str)?;
 
-    let (next_public_key, signing_key) = wrap_eyre!(handle_key_rotation(
-        &mut new_wallet,
-        seed.as_deref(),
-        new_public_key
-    ))
-    .unwrap();
+    let (next_public_key, signing_key) =
+        handle_key_rotation(&mut new_wallet, seed.as_deref(), new_public_key)?;
 
     // Modify the wallet
-    let mint = wrap_eyre!(biguint_from_hex_string(mint)).unwrap();
-    let amount = wrap_eyre!(biguint_from_hex_string(amount)).unwrap();
-    let destination_addr = wrap_eyre!(biguint_from_hex_string(destination_addr)).unwrap();
+    let mint = biguint_from_hex_string(mint)?;
+    let amount = biguint_from_hex_string(amount)?;
+    let destination_addr = biguint_from_hex_string(destination_addr)?;
 
     for (mint, balance) in new_wallet.balances.clone() {
         if balance.relayer_fee_balance > 0 {
             new_wallet
                 .get_balance_mut(&mint)
-                .unwrap()
+                .ok_or_else(|| JsError::new("Balance not found"))?
                 .relayer_fee_balance = 0;
-            new_wallet.reblind_wallet();
+            new_wallet.reblind_wallet()?;
         }
 
         if balance.protocol_fee_balance > 0 {
             new_wallet
                 .get_balance_mut(&mint)
-                .unwrap()
+                .ok_or_else(|| JsError::new("Balance not found"))?
                 .protocol_fee_balance = 0;
-            new_wallet.reblind_wallet();
+            new_wallet.reblind_wallet()?;
         }
     }
 
-    wrap_eyre!(new_wallet.withdraw(&mint, amount.to_u128().unwrap())).unwrap();
-    new_wallet.reblind_wallet();
+    new_wallet.withdraw(
+        &mint,
+        amount
+            .to_u128()
+            .ok_or_else(|| JsError::new("Amount too large for u128"))?,
+    )?;
+    new_wallet.reblind_wallet()?;
 
     // Sign a commitment to the new shares
     let statement_sig =
-        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref())
-            .await
-            .map_err(|e| JsError::new(&e.to_string()))?;
+        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref()).await?;
 
     let update_auth = WalletUpdateAuthorization {
         statement_sig,
         new_root_key: next_public_key,
     };
 
-    let chain = Chain::from_str(chain).map_err(map_js_err!())?;
+    let chain = Chain::from_str(chain)?;
 
     let withdrawal_sig = sign_withdrawal_authorization(
         &chain,
         signing_key.as_ref(),
         mint.clone(),
-        amount.to_u128().unwrap(),
+        amount
+            .to_u128()
+            .ok_or_else(|| JsError::new("Amount too large for u128"))?,
         destination_addr.clone(),
         sign_message.as_ref(),
     )
-    .await
-    .map_err(|e| JsError::new(&e.to_string()))?;
+    .await?;
 
     let req = WithdrawBalanceRequest {
         amount,
@@ -299,7 +300,9 @@ pub async fn withdraw(
         update_auth,
     };
 
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    let serialized =
+        serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
+    Ok(JsValue::from_str(&serialized))
 }
 
 /// Serializes a calldata element for a contract call
@@ -345,7 +348,7 @@ fn create_order(
     let id = if id.is_empty() {
         Uuid::new_v4()
     } else {
-        Uuid::parse_str(id).map_err(|e| JsError::new(&format!("Invalid UUID: {}", e)))?
+        Uuid::parse_str(id).map_err(map_js_error!("Invalid UUID: {}"))?
     };
 
     // Convert the side string to OrderSide enum
@@ -355,15 +358,13 @@ fn create_order(
         _ => return Err(JsError::new("Invalid order side")),
     };
 
-    let amount = wrap_eyre!(biguint_from_hex_string(amount))
-        .unwrap()
+    let amount = biguint_from_hex_string(amount)?
         .to_u128()
-        .unwrap();
+        .ok_or_else(|| JsError::new("Amount too large for u128"))?;
 
-    let min_fill_size = wrap_eyre!(biguint_from_hex_string(min_fill_size))
-        .unwrap()
+    let min_fill_size = biguint_from_hex_string(min_fill_size)?
         .to_u128()
-        .unwrap();
+        .ok_or_else(|| JsError::new("Min fill size too large for u128"))?;
 
     let worst_case_price = if worst_case_price.is_empty() {
         match side {
@@ -373,14 +374,18 @@ fn create_order(
     } else {
         worst_case_price
             .parse::<f64>()
-            .map_err(|e| JsError::new(&format!("Invalid worst_case_price: {}", e)))
-            .map(FixedPoint::from_f64_round_down)?
+            .map_err(map_js_error!("Invalid worst_case_price: {}"))?;
+        FixedPoint::from_f64_round_down(
+            worst_case_price
+                .parse::<f64>()
+                .map_err(map_js_error!("Invalid worst_case_price: {}"))?,
+        )?
     };
 
     Ok(ApiOrder {
         id,
-        base_mint: biguint_from_hex_string(base_mint).unwrap(),
-        quote_mint: biguint_from_hex_string(quote_mint).unwrap(),
+        base_mint: biguint_from_hex_string(base_mint)?,
+        quote_mint: biguint_from_hex_string(quote_mint)?,
         side,
         amount,
         worst_case_price,
@@ -404,14 +409,10 @@ pub async fn create_order_request(
     new_public_key: Option<String>,
     sign_message: Option<Function>,
 ) -> Result<CreateOrderRequest, JsError> {
-    let mut new_wallet = deserialize_wallet(wallet_str);
+    let mut new_wallet = deserialize_wallet(wallet_str)?;
 
-    let (next_public_key, signing_key) = wrap_eyre!(handle_key_rotation(
-        &mut new_wallet,
-        seed.as_deref(),
-        new_public_key
-    ))
-    .unwrap();
+    let (next_public_key, signing_key) =
+        handle_key_rotation(&mut new_wallet, seed.as_deref(), new_public_key)?;
 
     let order = create_order(
         id,
@@ -425,14 +426,12 @@ pub async fn create_order_request(
     )?;
 
     // Modify the wallet
-    wrap_eyre!(new_wallet.add_order(order.id, order.clone().into())).unwrap();
-    new_wallet.reblind_wallet();
+    new_wallet.add_order(order.id, order.clone().into())?;
+    new_wallet.reblind_wallet()?;
 
     // Sign a commitment to the new shares
     let statement_sig =
-        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref())
-            .await
-            .map_err(|e| JsError::new(&e.to_string()))?;
+        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref()).await?;
 
     let update_auth = WalletUpdateAuthorization {
         statement_sig,
@@ -472,7 +471,9 @@ pub async fn new_order(
         sign_message,
     )
     .await?;
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    let serialized =
+        serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
+    Ok(JsValue::from_str(&serialized))
 }
 
 #[wasm_bindgen]
@@ -511,7 +512,9 @@ pub async fn new_order_in_matching_pool(
         update_auth: create_order_req.update_auth,
         matching_pool: matching_pool.to_string(),
     };
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    let serialized =
+        serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
+    Ok(JsValue::from_str(&serialized))
 }
 
 /// The request type to cancel a given order
@@ -530,17 +533,12 @@ pub async fn cancel_order(
     new_public_key: Option<String>,
     sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
-    let mut new_wallet = deserialize_wallet(wallet_str);
+    let mut new_wallet = deserialize_wallet(wallet_str)?;
 
-    let (next_public_key, signing_key) = wrap_eyre!(handle_key_rotation(
-        &mut new_wallet,
-        seed.as_deref(),
-        new_public_key
-    ))
-    .unwrap();
+    let (next_public_key, signing_key) =
+        handle_key_rotation(&mut new_wallet, seed.as_deref(), new_public_key)?;
 
-    let order_id =
-        Uuid::parse_str(order_id).map_err(|e| JsError::new(&format!("Invalid UUID: {}", e)))?;
+    let order_id = Uuid::parse_str(order_id).map_err(map_js_error!("Invalid UUID: {}"))?;
 
     // Modify the wallet
     new_wallet
@@ -548,13 +546,11 @@ pub async fn cancel_order(
         .remove(&order_id)
         .ok_or_else(|| JsError::new(ERR_ORDER_NOT_FOUND))?;
 
-    new_wallet.reblind_wallet();
+    new_wallet.reblind_wallet()?;
 
     // Sign a commitment to the new shares
     let statement_sig =
-        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref())
-            .await
-            .map_err(|e| JsError::new(&e.to_string()))?;
+        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref()).await?;
 
     let update_auth = WalletUpdateAuthorization {
         statement_sig,
@@ -562,7 +558,9 @@ pub async fn cancel_order(
     };
 
     let req = CancelOrderRequest { update_auth };
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    let serialized =
+        serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
+    Ok(JsValue::from_str(&serialized))
 }
 
 /// The request type to update an order
@@ -590,14 +588,10 @@ pub async fn update_order(
     new_public_key: Option<String>,
     sign_message: Option<Function>,
 ) -> Result<JsValue, JsError> {
-    let mut new_wallet = deserialize_wallet(wallet_str);
+    let mut new_wallet = deserialize_wallet(wallet_str)?;
 
-    let (next_public_key, signing_key) = wrap_eyre!(handle_key_rotation(
-        &mut new_wallet,
-        seed.as_deref(),
-        new_public_key
-    ))
-    .unwrap();
+    let (next_public_key, signing_key) =
+        handle_key_rotation(&mut new_wallet, seed.as_deref(), new_public_key)?;
 
     let new_order = create_order(
         id,
@@ -620,13 +614,11 @@ pub async fn update_order(
         .get_mut(&new_order.id)
         .ok_or_else(|| JsError::new(ERR_ORDER_NOT_FOUND))?;
     *order = new_order.clone().into();
-    new_wallet.reblind_wallet();
+    new_wallet.reblind_wallet()?;
 
     // Sign a commitment to the new shares
     let statement_sig =
-        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref())
-            .await
-            .map_err(|e| JsError::new(&e.to_string()))?;
+        sign_wallet_commitment(&new_wallet, signing_key.as_ref(), sign_message.as_ref()).await?;
 
     let update_auth = WalletUpdateAuthorization {
         statement_sig,
@@ -637,7 +629,9 @@ pub async fn update_order(
         order: new_order,
         update_auth,
     };
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    let serialized =
+        serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
+    Ok(JsValue::from_str(&serialized))
 }
 
 /// The request type for requesting an external match
@@ -714,7 +708,9 @@ pub fn new_external_order(
         receiver_address,
         external_order,
     };
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    let serialized =
+        serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
+    Ok(JsValue::from_str(&serialized))
 }
 
 /// The request type for requesting an external match quote
@@ -743,7 +739,9 @@ pub fn new_external_quote_request(
     )?;
 
     let req = ExternalQuoteRequest { external_order };
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    let serialized =
+        serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
+    Ok(JsValue::from_str(&serialized))
 }
 
 /// The request type for assembling an external match, potentially with gas sponsorship
@@ -780,7 +778,10 @@ pub fn assemble_external_match(
     let updated_order = if updated_order.is_empty() {
         None
     } else {
-        Some(serde_json::from_str(updated_order)?)
+        Some(
+            serde_json::from_str(updated_order)
+                .map_err(map_js_error!("Failed to parse updated order: {}"))?,
+        )
     };
 
     let receiver_address = if receiver_address.is_empty() {
@@ -791,7 +792,9 @@ pub fn assemble_external_match(
 
     let SponsoredQuoteResponse {
         quote, signature, ..
-    } = serde_json::from_str(sponsored_quote_response)?;
+    } = serde_json::from_str(sponsored_quote_response).map_err(map_js_error!(
+        "Failed to parse sponsored quote response: {}"
+    ))?;
 
     let signed_quote = SignedExternalQuote { quote, signature };
 
@@ -800,10 +803,12 @@ pub fn assemble_external_match(
         allow_shared,
         receiver_address,
         updated_order,
-        signed_quote: signed_quote,
+        signed_quote,
     };
 
-    Ok(JsValue::from_str(&serde_json::to_string(&req).unwrap()))
+    let serialized =
+        serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
+    Ok(JsValue::from_str(&serialized))
 }
 
 fn build_external_order(
@@ -819,22 +824,19 @@ fn build_external_order(
         "buy" => OrderSide::Buy,
         _ => return Err(JsError::new("Invalid order side")),
     };
-    let base_amount = wrap_eyre!(biguint_from_hex_string(base_amount))
-        .unwrap()
+    let base_amount = biguint_from_hex_string(base_amount)?
         .to_u128()
-        .unwrap();
-    let quote_amount = wrap_eyre!(biguint_from_hex_string(quote_amount))
-        .unwrap()
+        .ok_or_else(|| JsError::new("Base amount too large for u128"))?;
+    let quote_amount = biguint_from_hex_string(quote_amount)?
         .to_u128()
-        .unwrap();
+        .ok_or_else(|| JsError::new("Quote amount too large for u128"))?;
 
-    let min_fill_size = wrap_eyre!(biguint_from_hex_string(min_fill_size))
-        .unwrap()
+    let min_fill_size = biguint_from_hex_string(min_fill_size)?
         .to_u128()
-        .unwrap();
+        .ok_or_else(|| JsError::new("Min fill size too large for u128"))?;
     Ok(ExternalOrder {
-        base_mint: biguint_from_hex_string(base_mint).unwrap(),
-        quote_mint: biguint_from_hex_string(quote_mint).unwrap(),
+        base_mint: biguint_from_hex_string(base_mint)?,
+        quote_mint: biguint_from_hex_string(quote_mint)?,
         side,
         base_amount,
         quote_amount,

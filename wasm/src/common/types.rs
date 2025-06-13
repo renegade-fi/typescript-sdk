@@ -16,6 +16,7 @@ use itertools::Itertools;
 use num_bigint::BigUint;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+use wasm_bindgen::JsError;
 
 /// A type alias for the wallet identifier type, currently a UUID
 pub type WalletIdentifier = Uuid;
@@ -53,16 +54,18 @@ pub struct Wallet {
     pub blinded_public_shares: Vec<Scalar>,
 }
 
-impl From<Wallet> for SizedCircuitWallet {
-    fn from(wallet: Wallet) -> Self {
-        SizedCircuitWallet {
-            balances: wallet.get_balances_list(),
-            orders: wallet.get_orders_list(),
+impl TryFrom<Wallet> for SizedCircuitWallet {
+    type Error = JsError;
+
+    fn try_from(wallet: Wallet) -> Result<Self, Self::Error> {
+        Ok(SizedCircuitWallet {
+            balances: wallet.get_balances_list()?,
+            orders: wallet.get_orders_list()?,
             keys: wallet.key_chain.public_keys,
             match_fee: wallet.match_fee,
             managing_cluster: wallet.managing_cluster,
             blinder: wallet.blinder,
-        }
+        })
     }
 }
 
@@ -73,7 +76,7 @@ impl Wallet {
         blinder_seed: Scalar,
         share_seed: Scalar,
         key_chain: KeyChain,
-    ) -> Self {
+    ) -> Result<Self, JsError> {
         // Create a wallet with dummy shares, compute the shares, then update the wallet
         let dummy_shares = vec![Scalar::zero(); 70];
 
@@ -90,11 +93,13 @@ impl Wallet {
         };
 
         // Cast the wallet to a circuit type to use the circuit helpers
-        let circuit_wallet: SizedCircuitWallet = wallet.clone().into();
+        let circuit_wallet: SizedCircuitWallet = wallet.clone().try_into()?;
 
         // Sample blinders and private shares
         let mut blinder_csprng = PoseidonCSPRNG::new(blinder_seed);
-        let (blinder, blinder_private) = blinder_csprng.next_tuple().unwrap();
+        let (blinder, blinder_private) = blinder_csprng
+            .next_tuple()
+            .ok_or(JsError::new("Failed to generate blinder tuple"))?;
 
         let share_csprng = PoseidonCSPRNG::new(share_seed);
         let private_shares = share_csprng.take(NUM_SCALARS).collect_vec();
@@ -109,7 +114,7 @@ impl Wallet {
         wallet.blinded_public_shares = blinded_public_shares;
         wallet.blinder = blinder;
 
-        wallet
+        Ok(wallet)
     }
 
     /// Compute the commitment to the full wallet shares
@@ -125,7 +130,7 @@ impl Wallet {
     // -----------
 
     /// Reblind the wallet, consuming the next set of blinders and secret shares
-    pub fn reblind_wallet(&mut self) {
+    pub fn reblind_wallet(&mut self) -> Result<(), JsError> {
         let private_shares_serialized: Vec<Scalar> = self.private_shares.clone();
 
         // Sample a new blinder and private secret share
@@ -140,15 +145,14 @@ impl Wallet {
             evaluate_hash_chain(private_shares_serialized[n_shares - 2], n_shares - 1);
         new_private_shares.push(new_blinder_private_share);
 
-        let (new_private_share, new_public_share) = create_wallet_shares_from_private(
-            &self.clone().into(),
-            &new_private_shares,
-            new_blinder,
-        );
+        let circuit_wallet: SizedCircuitWallet = self.clone().try_into()?;
+        let (new_private_share, new_public_share) =
+            create_wallet_shares_from_private(&circuit_wallet, &new_private_shares, new_blinder);
 
         self.private_shares = new_private_share;
         self.blinded_public_shares = new_public_share;
         self.blinder = new_blinder;
+        Ok(())
     }
 }
 
@@ -168,7 +172,7 @@ pub enum Chain {
 }
 
 impl FromStr for Chain {
-    type Err = String;
+    type Err = JsError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s.to_lowercase().as_str() {
@@ -177,7 +181,7 @@ impl FromStr for Chain {
             "base-sepolia" => Ok(Chain::BaseSepolia),
             "base-mainnet" => Ok(Chain::BaseMainnet),
             "devnet" => Ok(Chain::Devnet),
-            _ => Err(format!("Invalid chain: {s}")),
+            _ => Err(JsError::new(&format!("Invalid chain: {s}"))),
         }
     }
 }

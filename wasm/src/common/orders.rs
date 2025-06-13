@@ -1,6 +1,7 @@
 //! Wallet helpers for orders in the wallet
 
 use itertools::Itertools;
+use wasm_bindgen::JsError;
 
 use crate::{circuit_types::order::Order, MAX_ORDERS};
 
@@ -25,7 +26,7 @@ impl Wallet {
     }
 
     /// Get a list of orders in order in their circuit representation
-    pub fn get_orders_list(&self) -> [Order; MAX_ORDERS] {
+    pub fn get_orders_list(&self) -> Result<[Order; MAX_ORDERS], JsError> {
         self.orders
             .clone()
             .into_values()
@@ -33,7 +34,7 @@ impl Wallet {
             .take(MAX_ORDERS)
             .collect::<Vec<_>>()
             .try_into()
-            .unwrap()
+            .map_err(|_| JsError::new("Failed to convert orders to fixed-size array"))
     }
 
     /// Get the list of orders that are eligible for matching
@@ -62,14 +63,14 @@ impl Wallet {
 
     /// Add an order to the wallet, replacing the first default order if the
     /// wallet is full
-    pub fn add_order(&mut self, id: OrderIdentifier, order: Order) -> Result<(), String> {
+    pub fn add_order(&mut self, id: OrderIdentifier, order: Order) -> Result<(), JsError> {
         // Append if the orders are not full
         if let Some(index) = self.find_first_replaceable_order() {
             self.orders.replace_at_index(index, id, order);
         } else if self.orders.len() < MAX_ORDERS {
             self.orders.append(id, order)
         } else {
-            return Err(ERR_ORDERS_FULL.to_string());
+            return Err(JsError::new(ERR_ORDERS_FULL));
         }
 
         Ok(())

@@ -5,7 +5,7 @@ use crate::circuit_types::keychain::{
     SecretSigningKey,
 };
 use crate::helpers::{bytes_from_hex_string, bytes_to_hex_string};
-use crate::types::Scalar;
+use crate::{map_js_error, types::Scalar};
 use contracts_common::custom_serde::BytesSerializable;
 use derivative::Derivative;
 use ethers::{
@@ -16,6 +16,7 @@ use ethers::{
 use hmac::Mac;
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
+use wasm_bindgen::JsError;
 
 use super::derivation::{derive_sk_root_signing_key, derive_wallet_keychain};
 use super::types::Wallet;
@@ -28,7 +29,7 @@ type HmacSha256 = hmac::Hmac<Sha256>;
 pub struct HmacKey(pub [u8; 32]);
 impl HmacKey {
     /// Create a new HMAC key from a hex string
-    pub fn new(hex: &str) -> Result<Self, String> {
+    pub fn new(hex: &str) -> Result<Self, JsError> {
         Self::from_hex_string(hex)
     }
 
@@ -43,13 +44,19 @@ impl HmacKey {
     }
 
     /// Try to convert a hex string to an HMAC key
-    pub fn from_hex_string(hex: &str) -> Result<Self, String> {
+    pub fn from_hex_string(hex: &str) -> Result<Self, JsError> {
         let bytes = bytes_from_hex_string(hex)?;
         if bytes.len() != 32 {
-            return Err(format!("expected 32 byte HMAC key, got {}", bytes.len()));
+            return Err(JsError::new(&format!(
+                "expected 32 byte HMAC key, got {}",
+                bytes.len()
+            )));
         }
 
-        Ok(Self(bytes.try_into().unwrap()))
+        let bytes_arr: [u8; 32] = bytes
+            .try_into()
+            .map_err(|_| JsError::new("Failed to convert bytes to array"))?;
+        Ok(Self(bytes_arr))
     }
 
     /// Compute the HMAC of a message
@@ -154,7 +161,7 @@ impl KeyChain {
     }
 
     /// Get the next rotated keychain's public key without modifying the current keychain
-    pub fn get_next_rotated_public_key(&self, seed: &str) -> Result<PublicSigningKey, String> {
+    pub fn get_next_rotated_public_key(&self, seed: &str) -> Result<PublicSigningKey, JsError> {
         let next_nonce = self.public_keys.nonce + Scalar::one();
         let sk_root = derive_sk_root_signing_key(seed, Some(&next_nonce))?;
         let rotated_keychain = derive_wallet_keychain(&sk_root)?;
@@ -162,14 +169,15 @@ impl KeyChain {
     }
 
     // Rotate the keychain by incrementing the nonce and re-deriving the keys
-    pub fn rotate(&mut self, seed: &str) {
+    pub fn rotate(&mut self, seed: &str) -> Result<(), JsError> {
         self.increment_nonce();
         let nonce = self.public_keys.nonce;
 
-        let sk_root = derive_sk_root_signing_key(seed, Some(&nonce)).unwrap();
-        let rotated_keychain = derive_wallet_keychain(&sk_root).unwrap();
+        let sk_root = derive_sk_root_signing_key(seed, Some(&nonce))?;
+        let rotated_keychain = derive_wallet_keychain(&sk_root)?;
         self.set_pk_root(rotated_keychain.public_keys.pk_root);
         self.secret_keys.sk_root = rotated_keychain.secret_keys.sk_root;
+        Ok(())
     }
 }
 
@@ -181,14 +189,14 @@ impl Wallet {
     ///
     /// The contracts expect a recoverable signature with the recover ID set to
     /// 0/1; we use ethers `sign_prehash_recoverable` to generate this signature
-    pub fn sign_commitment(&self, commitment: Scalar) -> Result<Signature, String> {
+    pub fn sign_commitment(&self, commitment: Scalar) -> Result<Signature, JsError> {
         // Fetch the `sk_root` key
         let root_key = self
             .key_chain
             .secret_keys
             .sk_root
             .as_ref()
-            .ok_or(ERR_NO_SK_ROOT)?;
+            .ok_or(JsError::new(ERR_NO_SK_ROOT))?;
         let key = EthersSigningKey::try_from(root_key)?;
 
         // Hash the message and sign it
@@ -196,7 +204,7 @@ impl Wallet {
         let digest = keccak256(comm_bytes);
         let (sig, recovery_id) = key
             .sign_prehash_recoverable(&digest)
-            .map_err(|e| format!("failed to sign commitment: {}", e))?;
+            .map_err(map_js_error!("failed to sign commitment: {}"))?;
 
         Ok(Signature {
             r: U256::from_big_endian(&sig.r().to_bytes()),

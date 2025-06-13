@@ -44,24 +44,14 @@ where
 
 #[wasm_bindgen]
 pub async fn generate_wallet_secrets(sign_message: &Function) -> Result<JsValue, JsError> {
-    let wallet_id = derive_wallet_id_external(sign_message)
-        .await
-        .map_err(|e| JsError::new(&e.to_string()))?;
-    let blinder_seed = derive_blinder_seed_external(sign_message)
-        .await
-        .map_err(|e| JsError::new(&e.to_string()))?;
-    let share_seed = derive_share_seed_external(sign_message)
-        .await
-        .map_err(|e| JsError::new(&e.to_string()))?;
+    let wallet_id = derive_wallet_id_external(sign_message).await?;
+    let blinder_seed = derive_blinder_seed_external(sign_message).await?;
+    let share_seed = derive_share_seed_external(sign_message).await?;
 
-    let sk_match = derive_sk_match_external(sign_message)
-        .await
-        .map_err(|e| JsError::new(&e.to_string()))?;
+    let sk_match = derive_sk_match_external(sign_message).await?;
     let sk_match = SecretIdentificationKey::from(sk_match);
 
-    let symmetric_key = derive_symmetric_key_external(sign_message)
-        .await
-        .map_err(|e| JsError::new(&e.to_string()))?;
+    let symmetric_key = derive_symmetric_key_external(sign_message).await?;
 
     let res = GeneratedSecrets {
         wallet_id,
