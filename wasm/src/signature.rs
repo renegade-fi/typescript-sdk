@@ -17,6 +17,7 @@ use crate::{
     },
     common::types::{Chain, Wallet},
     helpers::{bytes_from_hex_string, bytes_to_hex_string},
+    map_js_error,
 };
 
 /// Signs a wallet commitment.
@@ -24,7 +25,7 @@ pub async fn sign_wallet_commitment(
     wallet: &Wallet,
     signing_key: Option<&SigningKey>,
     external_signer: Option<&Function>,
-) -> Result<Vec<u8>, String> {
+) -> Result<Vec<u8>, JsError> {
     let comm = wallet.get_wallet_share_commitment();
     let comm_bytes = comm.inner().serialize_to_bytes();
     sign_message(signing_key, &comm_bytes, external_signer).await
@@ -38,7 +39,7 @@ pub async fn sign_withdrawal_authorization(
     amount: u128,
     account_addr: BigUint,
     external_signer: Option<&Function>,
-) -> Result<Vec<u8>, String> {
+) -> Result<Vec<u8>, JsError> {
     let transfer = ExternalTransfer {
         mint,
         amount,
@@ -49,19 +50,19 @@ pub async fn sign_withdrawal_authorization(
     let contract_transfer_bytes = match chain {
         &Chain::ArbitrumOne | &Chain::ArbitrumSepolia => {
             let contract_transfer = to_arbitrum_external_transfer(&transfer)
-                .map_err(|_| String::from("Failed to convert transfer"))?;
+                .map_err(map_js_error!("Failed to convert transfer: {}"))?;
 
             postcard::to_allocvec(&contract_transfer)
-                .map_err(|e| format!("Failed to serialize transfer: {e}"))?
+                .map_err(map_js_error!("Failed to serialize transfer: {}"))?
         }
         &Chain::BaseMainnet | &Chain::BaseSepolia => {
             let contract_transfer = to_base_external_transfer(&transfer)
-                .map_err(|_| "Failed to convert transfer".to_string())?;
+                .map_err(map_js_error!("Failed to convert transfer: {}"))?;
 
             contract_transfer.abi_encode()
         }
         _ => {
-            return Err("Unsupported chain".to_string());
+            return Err(JsError::new("Unsupported chain"));
         }
     };
 
@@ -76,24 +77,24 @@ pub async fn sign_message(
     signing_key: Option<&SigningKey>,
     message: &[u8],
     external_signer: Option<&Function>,
-) -> Result<Vec<u8>, String> {
+) -> Result<Vec<u8>, JsError> {
     if let Some(signer) = external_signer {
         sign_with_external_key(message, Some(signer)).await
     } else if let Some(key) = signing_key {
         sign_with_internal_key(key, message)
     } else {
-        Err(String::from(
+        Err(JsError::new(
             "Either signing key or external signer is required",
         ))
     }
 }
 
 /// Helper function to sign a message with a SigningKey and return an Ethers Signature
-fn sign_with_internal_key(signing_key: &SigningKey, message: &[u8]) -> Result<Vec<u8>, String> {
+fn sign_with_internal_key(signing_key: &SigningKey, message: &[u8]) -> Result<Vec<u8>, JsError> {
     let digest = keccak256(message);
     let (sig, recovery_id) = signing_key
         .sign_prehash_recoverable(&digest)
-        .map_err(|_| String::from("Failed to sign message"))?;
+        .map_err(map_js_error!("Failed to sign message: {}"))?;
 
     let signature = Signature {
         r: U256::from_big_endian(&sig.r().to_bytes()),
@@ -108,9 +109,9 @@ fn sign_with_internal_key(signing_key: &SigningKey, message: &[u8]) -> Result<Ve
 async fn sign_with_external_key(
     message: &[u8],
     external_signer: Option<&Function>,
-) -> Result<Vec<u8>, String> {
+) -> Result<Vec<u8>, JsError> {
     let sign_message = external_signer
-        .ok_or_else(|| String::from("sign_message function is required for external key type"))?;
+        .ok_or_else(|| JsError::new("sign_message function is required for external key type"))?;
 
     let message_hex = bytes_to_hex_string(message);
 
@@ -120,31 +121,29 @@ async fn sign_with_external_key(
     let sig_promise: Promise = sign_message
         .call1(&this, &arg)
         .map_err(|e| {
-            format!(
+            JsError::new(&format!(
                 "Failed to invoke sign_message: {}",
                 e.as_string().unwrap_or_default()
-            )
+            ))
         })?
         .dyn_into()
         .map_err(|e| {
-            format!(
+            JsError::new(&format!(
                 "Failed to convert Promise to Signature: {}",
                 e.as_string().unwrap_or_default()
-            )
+            ))
         })?;
 
     let signature = JsFuture::from(sig_promise).await.map_err(|e| {
-        format!(
+        JsError::new(&format!(
             "Failed to invoke sign_message: {}",
             e.as_string().unwrap_or_default()
-        )
+        ))
     })?;
 
     let sig_hex = signature
         .as_string()
-        .ok_or_else(|| String::from("Failed to convert signature to string"))?;
-    let bytes = bytes_from_hex_string(&sig_hex)
-        .map_err(|e| format!("Failed to convert signature to bytes: {}", e))?;
+        .ok_or_else(|| JsError::new("Failed to convert signature to string"))?;
 
-    Ok(bytes)
+    bytes_from_hex_string(&sig_hex)
 }

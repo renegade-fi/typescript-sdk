@@ -5,6 +5,7 @@ use lazy_static::lazy_static;
 use num_bigint::BigUint;
 use num_bigint::ToBigInt;
 use serde::{Deserialize, Serialize};
+use wasm_bindgen::JsError;
 
 /// The default fixed point decimal precision in bits
 /// i.e. the number of bits allocated to a fixed point's decimal
@@ -70,19 +71,20 @@ impl FixedPoint {
 
     /// Create a new fixed point representation, rounding up to the nearest
     /// representable float
-    pub fn from_f64_round_down(val: f64) -> Self {
+    pub fn from_f64_round_down(val: f64) -> Result<Self, JsError> {
         // Convert to a bigdecimal to shift
-        let val_big_dec = BigDecimal::from_f64(val).expect("Failed to convert f64 to BigDecimal");
+        let val_big_dec =
+            BigDecimal::from_f64(val).ok_or(JsError::new("Failed to convert f64 to BigDecimal"))?;
         let shifted_val_big_dec =
             val_big_dec * BigDecimal::from(2u64.pow(DEFAULT_FP_PRECISION as u32));
 
         // Convert to a big integer
         let val_bigint = shifted_val_big_dec
             .to_bigint()
-            .expect("Failed to convert BigDecimal to BigInt");
+            .ok_or(JsError::new("Failed to convert BigDecimal to BigInt"))?;
 
-        Self {
-            repr: bigint_to_scalar(&val_bigint),
-        }
+        Ok(Self {
+            repr: bigint_to_scalar(&val_bigint)?,
+        })
     }
 }

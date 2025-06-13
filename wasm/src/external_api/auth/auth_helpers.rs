@@ -1,4 +1,4 @@
-use crate::common::keychain::HmacKey;
+use crate::{common::keychain::HmacKey, map_js_error};
 use base64::engine::{general_purpose as b64_general_purpose, Engine};
 use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
@@ -13,11 +13,11 @@ pub fn create_request_signature(
     body: &str,
     key: &str,
 ) -> Result<String, JsError> {
-    let key = HmacKey::from_hex_string(key).unwrap();
+    let key = HmacKey::from_hex_string(key)?;
     let body_bytes = body.as_bytes();
 
     let headers: HashMap<String, String> = serde_wasm_bindgen::from_value(headers)
-        .map_err(|e| JsError::new(&format!("Failed to deserialize headers: {}", e)))?;
+        .map_err(map_js_error!("Failed to deserialize headers: {}"))?;
     let mac = _create_request_signature(path, &headers, body_bytes, &key);
     Ok(b64_general_purpose::STANDARD_NO_PAD.encode(mac))
 }
@@ -70,7 +70,7 @@ pub fn b64_to_hex_hmac_key(b64_key: &str) -> Result<String, JsError> {
     // Decode the base64 string to bytes
     let key_bytes = b64_general_purpose::STANDARD
         .decode(b64_key)
-        .map_err(|e| JsError::new(&format!("Failed to decode base64 key: {}", e)))?;
+        .map_err(map_js_error!("Failed to decode base64 key: {}"))?;
 
     // Create an HmacKey from the decoded bytes
     let hmac_key: [u8; 32] = key_bytes

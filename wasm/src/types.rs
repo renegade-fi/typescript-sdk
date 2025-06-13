@@ -3,6 +3,9 @@ use ark_ff::PrimeField;
 use num_bigint::{BigInt, BigUint, Sign};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::ops::{Add, AddAssign, Mul, Neg, Sub};
+use wasm_bindgen::JsError;
+
+use crate::map_js_error;
 
 pub type ScalarField = Fr;
 
@@ -161,13 +164,15 @@ pub fn scalar_to_biguint(a: &Scalar) -> BigUint {
 }
 
 /// Reduces the scalar to a u64, truncating anything above 2^64 - 1
-pub fn scalar_to_u64(a: &Scalar) -> u64 {
+pub fn scalar_to_u64(a: &Scalar) -> Result<u64, JsError> {
     let bytes = a.to_bytes_be();
     let len = bytes.len();
 
     // Take the last 8 bytes (64 bits)
-    let bytes: [u8; 8] = bytes[len - 8..len].try_into().unwrap();
-    u64::from_be_bytes(bytes)
+    let bytes: [u8; 8] = bytes[len - 8..len]
+        .try_into()
+        .map_err(map_js_error!("Failed to convert bytes to u64: {}"))?;
+    Ok(u64::from_be_bytes(bytes))
 }
 
 // ----------------------------
@@ -175,13 +180,21 @@ pub fn scalar_to_u64(a: &Scalar) -> u64 {
 // ----------------------------
 
 /// Convert a bigint to a scalar
-pub fn bigint_to_scalar(a: &BigInt) -> Scalar {
+pub fn bigint_to_scalar(a: &BigInt) -> Result<Scalar, JsError> {
     match a.sign() {
         Sign::Minus => {
-            let biguint = a.neg().to_biguint().unwrap();
-            -Scalar::from(biguint)
+            let biguint = a
+                .neg()
+                .to_biguint()
+                .ok_or(JsError::new("Failed to convert negative BigInt to BigUint"))?;
+            Ok(-Scalar::from(biguint))
         }
-        _ => Scalar::from(a.to_biguint().unwrap()),
+        _ => {
+            let biguint = a
+                .to_biguint()
+                .ok_or(JsError::new("Failed to convert BigInt to BigUint"))?;
+            Ok(Scalar::from(biguint))
+        }
     }
 }
 

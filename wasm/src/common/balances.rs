@@ -4,6 +4,7 @@ use std::iter;
 
 use itertools::Itertools;
 use num_bigint::BigUint;
+use wasm_bindgen::JsError;
 
 use crate::{
     circuit_types::{balance::Balance, order::Order, Amount},
@@ -42,17 +43,20 @@ impl Wallet {
 
     /// Get a mutable reference to the balance for the given mint or add a
     /// zero'd balance if one does not exist
-    pub fn get_balance_mut_or_default(&mut self, mint: &BigUint) -> &mut Balance {
+    pub fn get_balance_mut_or_default(&mut self, mint: &BigUint) -> Result<&mut Balance, JsError> {
         if !self.balances.contains_key(mint) {
             let bal = Balance::new_from_mint(mint.clone());
-            self.add_balance(bal).unwrap();
+            self.add_balance(bal)?;
         }
 
-        self.balances.get_mut(mint).unwrap()
+        self.balances.get_mut(mint).ok_or(JsError::new(&format!(
+            "Balance not found for mint {}",
+            mint
+        )))
     }
 
     /// Get a list of balances in order in their circuit representation
-    pub fn get_balances_list(&self) -> [Balance; MAX_BALANCES] {
+    pub fn get_balances_list(&self) -> Result<[Balance; MAX_BALANCES], JsError> {
         self.balances
             .clone()
             .into_values()
@@ -60,7 +64,7 @@ impl Wallet {
             .take(MAX_BALANCES)
             .collect_vec()
             .try_into()
-            .unwrap()
+            .map_err(|_| JsError::new("Failed to convert balances to fixed-size array"))
     }
 
     /// Get the balance that covers the side sold by the given order
@@ -77,13 +81,13 @@ impl Wallet {
     // -----------
 
     /// Add a balance to the wallet, replacing the first default balance
-    pub fn add_balance(&mut self, balance: Balance) -> Result<(), String> {
+    pub fn add_balance(&mut self, balance: Balance) -> Result<(), JsError> {
         // If the balance exists, increment it
         if let Some(bal) = self.balances.get_mut(&balance.mint) {
             bal.amount = bal
                 .amount
                 .checked_add(balance.amount)
-                .ok_or(ERR_BALANCE_OVERFLOW.to_string())?;
+                .ok_or(JsError::new(ERR_BALANCE_OVERFLOW))?;
             return Ok(());
         }
 
@@ -93,7 +97,7 @@ impl Wallet {
         } else if self.balances.len() < MAX_BALANCES {
             self.balances.append(balance.mint.clone(), balance);
         } else {
-            return Err(ERR_BALANCES_FULL.to_string());
+            return Err(JsError::new(ERR_BALANCES_FULL));
         }
 
         Ok(())
@@ -107,12 +111,13 @@ impl Wallet {
     }
 
     /// Withdraw an amount from the balance for the given mint
-    pub fn withdraw(&mut self, mint: &BigUint, amount: Amount) -> Result<(), String> {
+    pub fn withdraw(&mut self, mint: &BigUint, amount: Amount) -> Result<(), JsError> {
         let bal = self
             .get_balance_mut(mint)
-            .ok_or(ERR_INSUFFICIENT_BALANCE.to_string())?;
+            .ok_or(JsError::new(ERR_INSUFFICIENT_BALANCE))?;
+
         if bal.amount < amount {
-            return Err(ERR_INSUFFICIENT_BALANCE.to_string());
+            return Err(JsError::new(ERR_INSUFFICIENT_BALANCE));
         }
 
         bal.amount = bal.amount.saturating_sub(amount);

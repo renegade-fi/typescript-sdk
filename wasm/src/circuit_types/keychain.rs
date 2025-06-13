@@ -5,11 +5,13 @@ use k256::{
     AffinePoint, EncodedPoint, FieldElement as K256FieldElement,
 };
 use num_bigint::BigUint;
-use serde::{Deserialize, Serialize};
+use serde::{de::Error as SerdeErr, Deserialize, Serialize};
 use std::iter;
+use wasm_bindgen::JsError;
 
 use crate::{
     helpers::compute_poseidon_hash,
+    map_js_error,
     types::{get_scalar_field_modulus, Scalar},
 };
 
@@ -132,7 +134,7 @@ impl<const SCALAR_WORDS: usize> Default for NonNativeScalar<SCALAR_WORDS> {
 
 impl<const SCALAR_WORDS: usize> NonNativeScalar<SCALAR_WORDS> {
     /// Split a biguint into scalar words in little endian order
-    fn split_biguint_into_words(mut val: BigUint) -> [Scalar; SCALAR_WORDS] {
+    fn split_biguint_into_words(mut val: BigUint) -> Result<[Scalar; SCALAR_WORDS], JsError> {
         let scalar_mod = get_scalar_field_modulus();
         let mut res = Vec::with_capacity(SCALAR_WORDS);
         for _ in 0..SCALAR_WORDS {
@@ -141,7 +143,8 @@ impl<const SCALAR_WORDS: usize> NonNativeScalar<SCALAR_WORDS> {
             res.push(word);
         }
 
-        res.try_into().unwrap()
+        res.try_into()
+            .map_err(|_| JsError::new("Failed to convert vector to fixed-size array"))
     }
 
     /// Re-collect the key words into a biguint
@@ -156,11 +159,13 @@ impl<const SCALAR_WORDS: usize> NonNativeScalar<SCALAR_WORDS> {
     }
 }
 
-impl<const SCALAR_WORDS: usize> From<&BigUint> for NonNativeScalar<SCALAR_WORDS> {
-    fn from(val: &BigUint) -> Self {
-        Self {
-            scalar_words: Self::split_biguint_into_words(val.clone()),
-        }
+impl<const SCALAR_WORDS: usize> TryFrom<&BigUint> for NonNativeScalar<SCALAR_WORDS> {
+    type Error = JsError;
+
+    fn try_from(val: &BigUint) -> Result<Self, Self::Error> {
+        Ok(Self {
+            scalar_words: Self::split_biguint_into_words(val.clone())?,
+        })
     }
 }
 
@@ -186,12 +191,17 @@ impl<'de, const SCALAR_WORDS: usize> Deserialize<'de> for NonNativeScalar<SCALAR
         D: serde::Deserializer<'de>,
     {
         let val = biguint_from_hex_string(deserializer)?;
-        Ok(Self::from(&val))
+        let scalar = Self::try_from(&val)
+            .map_err(|_| SerdeErr::custom("Failed to convert BigUint to NonNativeScalar"))?;
+
+        Ok(scalar)
     }
 }
 
-impl From<&NonNativeScalar<K256_FELT_WORDS>> for K256FieldElement {
-    fn from(value: &NonNativeScalar<K256_FELT_WORDS>) -> Self {
+impl TryFrom<&NonNativeScalar<K256_FELT_WORDS>> for K256FieldElement {
+    type Error = JsError;
+
+    fn try_from(value: &NonNativeScalar<K256_FELT_WORDS>) -> Result<Self, Self::Error> {
         let val_bigint = BigUint::from(value);
         let mut bytes = val_bigint
             .to_bytes_le()
@@ -201,18 +211,24 @@ impl From<&NonNativeScalar<K256_FELT_WORDS>> for K256FieldElement {
             .collect_vec();
         bytes.reverse();
 
-        let bytes_arr: [u8; K256_FELT_BYTES] = bytes.try_into().unwrap();
+        let bytes_arr: [u8; K256_FELT_BYTES] = bytes
+            .try_into()
+            .map_err(|_| JsError::new("Failed to convert bytes to array"))?;
 
-        K256FieldElement::from_bytes(&bytes_arr.into()).unwrap()
+        K256FieldElement::from_bytes(&bytes_arr.into())
+            .into_option()
+            .ok_or(JsError::new("Failed to create K256FieldElement from bytes"))
     }
 }
 
-impl From<&K256FieldElement> for NonNativeScalar<K256_FELT_WORDS> {
-    fn from(value: &K256FieldElement) -> Self {
+impl TryFrom<&K256FieldElement> for NonNativeScalar<K256_FELT_WORDS> {
+    type Error = JsError;
+
+    fn try_from(value: &K256FieldElement) -> Result<Self, Self::Error> {
         let bytes = value.to_bytes();
         let val_bigint = BigUint::from_bytes_be(&bytes);
 
-        Self::from(&val_bigint)
+        Self::try_from(&val_bigint)
     }
 }
 
@@ -230,32 +246,37 @@ pub struct PublicSigningKey {
 
 impl PublicSigningKey {
     /// Construct a key from bytes
-    pub fn from_bytes(bytes: &[u8]) -> Result<Self, String> {
+    pub fn from_bytes(bytes: &[u8]) -> Result<Self, JsError> {
         // Parse the encoded K256 point assumed to be compressed
-        let point = EncodedPoint::from_bytes(bytes).map_err(|e| e.to_string())?;
+        let point = EncodedPoint::from_bytes(bytes).map_err(map_js_error!("{}"))?;
 
         // Convert to circuit-native types, it is simpler to go through the whole
         // conversion than decompressing manually
         let verifying_key =
-            K256VerifyingKey::from_encoded_point(&point).map_err(|e| e.to_string())?;
-        Ok((&verifying_key).into())
+            K256VerifyingKey::from_encoded_point(&point).map_err(map_js_error!("{}"))?;
+        (&verifying_key).try_into()
     }
 
     /// Convert the key to bytes
-    pub fn to_uncompressed_bytes(&self) -> Vec<u8> {
-        let verifying_key = K256VerifyingKey::from(self);
-        verifying_key
+    pub fn to_uncompressed_bytes(&self) -> Result<Vec<u8>, JsError> {
+        let verifying_key = K256VerifyingKey::try_from(self)?;
+
+        let bytes = verifying_key
             .to_encoded_point(false /* compress */)
             .as_bytes()
-            .to_vec()
+            .to_vec();
+
+        Ok(bytes)
     }
 }
 
-impl From<&PublicSigningKey> for K256VerifyingKey {
-    fn from(value: &PublicSigningKey) -> Self {
+impl TryFrom<&PublicSigningKey> for K256VerifyingKey {
+    type Error = JsError;
+
+    fn try_from(value: &PublicSigningKey) -> Result<Self, JsError> {
         // Construct a point from the raw coordinates
-        let x_coord = K256FieldElement::from(&value.x);
-        let y_coord = K256FieldElement::from(&value.y);
+        let x_coord = K256FieldElement::try_from(&value.x)?;
+        let y_coord = K256FieldElement::try_from(&value.y)?;
 
         // `k256` does not expose direct access to coordinates except through a
         // compressed form
@@ -264,24 +285,47 @@ impl From<&PublicSigningKey> for K256VerifyingKey {
             &y_coord.to_bytes(),
             false, // compress
         ))
-        .unwrap();
+        .into_option()
+        .ok_or(JsError::new(
+            "Failed to create AffinePoint from coordinates",
+        ))?;
 
-        K256VerifyingKey::from_affine(point).unwrap()
+        K256VerifyingKey::from_affine(point)
+            .map_err(map_js_error!("Failed to create VerifyingKey: {}"))
     }
 }
 
-impl From<&K256VerifyingKey> for PublicSigningKey {
-    fn from(value: &K256VerifyingKey) -> Self {
+impl TryFrom<&K256VerifyingKey> for PublicSigningKey {
+    type Error = JsError;
+
+    fn try_from(value: &K256VerifyingKey) -> Result<Self, JsError> {
         // Parse the coordinates of the affine representation of the key
         let encoded_key = value.as_affine().to_encoded_point(false /* compress */);
-        let x_coord = K256FieldElement::from_bytes(encoded_key.x().unwrap()).unwrap();
-        let y_coord = K256FieldElement::from_bytes(encoded_key.y().unwrap()).unwrap();
+        let x_coord = K256FieldElement::from_bytes(
+            encoded_key
+                .x()
+                .ok_or(JsError::new("Failed to get x coordinate"))?,
+        )
+        .into_option()
+        .ok_or(JsError::new(
+            "Failed to create K256FieldElement from x coordinate",
+        ))?;
+
+        let y_coord = K256FieldElement::from_bytes(
+            encoded_key
+                .y()
+                .ok_or(JsError::new("Failed to get y coordinate"))?,
+        )
+        .into_option()
+        .ok_or(JsError::new(
+            "Failed to create K256FieldElement from y coordinate",
+        ))?;
 
         // Convert to circuit-native types
-        let x = NonNativeScalar::from(&x_coord);
-        let y = NonNativeScalar::from(&y_coord);
+        let x = NonNativeScalar::try_from(&x_coord)?;
+        let y = NonNativeScalar::try_from(&y_coord)?;
 
-        Self { x, y }
+        Ok(Self { x, y })
     }
 }
 
@@ -289,19 +333,21 @@ impl From<&K256VerifyingKey> for PublicSigningKey {
 pub type SecretSigningKey = NonNativeScalar<K256_FELT_WORDS>;
 
 impl TryFrom<&SecretSigningKey> for K256SigningKey {
-    type Error = String;
+    type Error = JsError;
 
     fn try_from(value: &SecretSigningKey) -> Result<Self, Self::Error> {
         let scalar = BigUint::from(value);
         K256SigningKey::from_slice(&scalar.to_bytes_be())
-            .map_err(|e| format!("error deserializing signing key: {e}"))
+            .map_err(map_js_error!("error deserializing signing key: {}"))
     }
 }
 
-impl From<&K256SigningKey> for SecretSigningKey {
-    fn from(value: &K256SigningKey) -> Self {
+impl TryFrom<&K256SigningKey> for SecretSigningKey {
+    type Error = JsError;
+
+    fn try_from(value: &K256SigningKey) -> Result<Self, Self::Error> {
         let bigint = BigUint::from_bytes_be(&value.to_bytes());
-        NonNativeScalar::from(&bigint)
+        NonNativeScalar::try_from(&bigint)
     }
 }
 

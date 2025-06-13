@@ -8,16 +8,15 @@ pub enum ConversionError {
     InvalidUint,
 }
 
-#[macro_export]
-macro_rules! js_error {
-    ($($arg:tt)*) => {
-        wasm_bindgen::JsError::new(&format!($($arg)*))
-    };
+impl std::fmt::Display for ConversionError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 #[macro_export]
-macro_rules! map_js_err {
-    () => {
-        |e| wasm_bindgen::JsError::new(&e.to_string())
-    };
+macro_rules! map_js_error {
+    ($fmt:expr $(, $($arg:tt)*)?) => {
+        |e| wasm_bindgen::JsError::new(&format!($fmt $(, $($arg)*)?, e))
+    }
 }
