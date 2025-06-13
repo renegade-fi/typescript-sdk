@@ -27,6 +27,6 @@ export function useIsIndexed() {
         },
         staleTime: Number.POSITIVE_INFINITY,
         enabled: !!walletId && !!isWasmInitialized && !!config,
-        retry: 30
+        retry: 30,
     });
 }
