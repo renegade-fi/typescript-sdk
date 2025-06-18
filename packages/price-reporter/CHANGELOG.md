@@ -1,5 +1,14 @@
 # @renegade-fi/price-reporter
 
+## 0.0.26
+
+### Patch Changes
+
+- feat: base
+- Updated dependencies
+  - @renegade-fi/core@0.9.7
+  - @renegade-fi/token@0.0.26
+
 ## 0.0.25
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.7
+
+### Patch Changes
+
+- feat: base
+
 ## 0.9.6
 
 ### Patch Changes
