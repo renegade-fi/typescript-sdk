@@ -89,6 +89,7 @@ export function filterQueryOptions<type extends Record<string, unknown>>(options
         query,
         ...rest
     } = options;
+    // biome-ignore-end lint/correctness/noUnusedVariables: <explanation>
 
     return rest as type;
 }

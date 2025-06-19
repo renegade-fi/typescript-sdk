@@ -25,6 +25,9 @@
             "correctness": {
                 "noUnusedVariables": "error"
             },
+            "nursery": {
+                "noFloatingPromises": "error"
+            },
             "performance": {
                 "noDelete": "off"
             },
