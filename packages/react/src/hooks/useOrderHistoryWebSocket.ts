@@ -2,9 +2,9 @@
 
 import {
     type Config,
+    getSymmetricKey,
     type OrderMetadata,
     WS_WALLET_ORDERS_ROUTE,
-    getSymmetricKey,
 } from "@renegade-fi/core";
 import { useEffect } from "react";
 import { ReadyState } from "react-use-websocket";

@@ -2,7 +2,7 @@ import type { Environment } from "@renegade-fi/core";
 import { ENVIRONMENT } from "@renegade-fi/core";
 import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
-import { ResultAsync, errAsync, fromThrowable } from "neverthrow";
+import { errAsync, fromThrowable, ResultAsync } from "neverthrow";
 import {
     ERR_INVALID_URL,
     ERR_NO_PRICE_REPORTER_URL,

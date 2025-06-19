@@ -1,8 +1,7 @@
 import axios from "axios";
-import { getTaskStatus } from "./getTaskStatus.js";
-
 import type { Config } from "../createConfig.js";
 import type { OldTask as Task } from "../types/wallet.js";
+import { getTaskStatus } from "./getTaskStatus.js";
 
 export type WaitForTaskCompletionParameters = { id: string; timeout?: number };
 

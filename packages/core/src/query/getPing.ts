@@ -3,7 +3,7 @@ import { type GetPingErrorType, type GetPingReturnType, getPing } from "../actio
 import type { Config } from "../createConfig.js";
 import { ConfigRequiredError } from "../errors/base.js";
 import type { Evaluate } from "../types/utils.js";
-import { type ScopeKeyParameter, filterQueryOptions } from "./utils.js";
+import { filterQueryOptions, type ScopeKeyParameter } from "./utils.js";
 
 export type GetPingOptions = Evaluate<ScopeKeyParameter>;
 

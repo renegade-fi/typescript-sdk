@@ -1,12 +1,12 @@
 import {
     type AuthConfig,
     CHAIN_IDS,
-    type GetExternalMatchQuoteReturnType,
     createAuthConfig,
+    type GetExternalMatchQuoteReturnType,
 } from "@renegade-fi/node";
 import { Token } from "@renegade-fi/token";
 // Then do the imports
-import { http, createWalletClient, parseEther } from "viem";
+import { createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains";
 import {

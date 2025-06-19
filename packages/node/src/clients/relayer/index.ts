@@ -1,4 +1,4 @@
-import { type Config, type SDKConfig, createConfig, getSDKConfig } from "@renegade-fi/core";
+import { type Config, createConfig, getSDKConfig, type SDKConfig } from "@renegade-fi/core";
 import type {
     AssignOrderParameters,
     CreateMatchingPoolParameters,

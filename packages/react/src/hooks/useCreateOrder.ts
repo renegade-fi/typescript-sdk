@@ -1,7 +1,6 @@
 "use client";
 
-import type { CreateOrderRequestErrorType } from "@renegade-fi/core";
-import type { Evaluate } from "@renegade-fi/core";
+import type { CreateOrderRequestErrorType, Evaluate } from "@renegade-fi/core";
 import {
     type CreateOrderRequestData,
     type CreateOrderRequestMutate,

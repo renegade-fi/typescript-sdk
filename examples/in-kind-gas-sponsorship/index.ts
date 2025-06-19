@@ -6,7 +6,7 @@ import {
 import { createAuthConfig } from "@renegade-fi/node";
 import { Token } from "@renegade-fi/token";
 // Then do the imports
-import { http, createWalletClient, parseEther, zeroAddress } from "viem";
+import { createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { arbitrumSepolia } from "viem/chains";
 import {

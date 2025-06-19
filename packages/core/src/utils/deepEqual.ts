@@ -23,8 +23,7 @@ export function deepEqual(a: any, b: any) {
         length = keys.length;
         if (length !== Object.keys(b).length) return false;
 
-        for (i = length; i-- !== 0; )
-            if (!Object.prototype.hasOwnProperty.call(b, keys[i]!)) return false;
+        for (i = length; i-- !== 0; ) if (!Object.hasOwn(b, keys[i]!)) return false;
 
         for (i = length; i-- !== 0; ) {
             const key = keys[i];

@@ -1,4 +1,4 @@
-import { type TypedDataDomain, type WalletClient, hashTypedData, verifyTypedData } from "viem";
+import { hashTypedData, type TypedDataDomain, verifyTypedData, type WalletClient } from "viem";
 import { publicKeyToAddress, recoverPublicKey } from "viem/utils";
 
 export function millisecondsToSeconds(milliseconds: number): number {

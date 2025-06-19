@@ -1,7 +1,6 @@
 "use client";
 
-import type { DepositRequestErrorType } from "@renegade-fi/core";
-import type { Evaluate } from "@renegade-fi/core";
+import type { DepositRequestErrorType, Evaluate } from "@renegade-fi/core";
 import {
     type DepositRequestData,
     type DepositRequestMutate,

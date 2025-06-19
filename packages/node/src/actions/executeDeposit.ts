@@ -1,13 +1,13 @@
 import {
     type DepositReturnType,
-    type RenegadeConfig,
     deposit,
     getBackOfQueueWallet,
     getPkRootScalars,
+    type RenegadeConfig,
     waitForTaskCompletionWs,
 } from "@renegade-fi/core";
 import invariant from "tiny-invariant";
-import { type Address, type WalletClient, erc20Abi, zeroAddress } from "viem";
+import { type Address, erc20Abi, type WalletClient, zeroAddress } from "viem";
 import { signPermit2 } from "../utils/permit2.js";
 
 export type ExecuteDepositParameters = {

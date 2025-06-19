@@ -1,7 +1,6 @@
 "use client";
 
-import type { PayFeesErrorType } from "@renegade-fi/core";
-import type { Evaluate } from "@renegade-fi/core";
+import type { Evaluate, PayFeesErrorType } from "@renegade-fi/core";
 import {
     type PayFeesRequestData,
     type PayFeesRequestMutate,

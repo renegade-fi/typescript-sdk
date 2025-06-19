@@ -1,5 +1,5 @@
-import { createConfig } from "@renegade-fi/core";
 import type { SDKConfig } from "@renegade-fi/core";
+import { createConfig } from "@renegade-fi/core";
 import {
     type CreateOrderInMatchingPoolParameters,
     createOrderInMatchingPool,
