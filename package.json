@@ -1,7 +1,7 @@
 {
     "private": true,
     "devDependencies": {
-        "@biomejs/biome": "^1.9.4",
+        "@biomejs/biome": "^2.0.0",
         "@changesets/cli": "^2.27.1",
         "@types/node": "^20.12.7",
         "happy-dom": "^12.2.1",

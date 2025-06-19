@@ -4,33 +4,33 @@
 
 export {
     type CancelOrderRequestData,
-    type CancelOrderRequestVariables,
     type CancelOrderRequestMutate,
     type CancelOrderRequestMutateAsync,
+    type CancelOrderRequestVariables,
     cancelOrderRequestMutationOptions,
 } from "../query/cancelOrderRequest.js";
 
 export {
     type ConnectData,
-    type ConnectVariables,
     type ConnectMutate,
     type ConnectMutateAsync,
+    type ConnectVariables,
     connectMutationOptions,
 } from "../query/connect.js";
 
 export {
     type CreateOrderRequestData,
-    type CreateOrderRequestVariables,
     type CreateOrderRequestMutate,
     type CreateOrderRequestMutateAsync,
+    type CreateOrderRequestVariables,
     createOrderRequestMutationOptions,
 } from "../query/createOrderRequest.js";
 
 export {
     type DepositRequestData,
-    type DepositRequestVariables,
     type DepositRequestMutate,
     type DepositRequestMutateAsync,
+    type DepositRequestVariables,
     depositRequestMutationOptions,
 } from "../query/depositRequest.js";
 
@@ -42,34 +42,6 @@ export {
     getBackOfQueueWalletQueryKey,
     getBackOfQueueWalletQueryOptions,
 } from "../query/getBackOfQueueWallet.js";
-
-export {
-    type GetOrderHistoryData,
-    type GetOrderHistoryOptions,
-    type GetOrderHistoryQueryFnData,
-    type GetOrderHistoryQueryKey,
-    getOrderHistoryQueryKey,
-    getOrderHistoryQueryOptions,
-} from "../query/getOrderHistory.js";
-
-export {
-    type GetOrderMetadataData,
-    type GetOrderMetadataOptions,
-    type GetOrderMetadataQueryFnData,
-    type GetOrderMetadataQueryKey,
-    getOrderMetadataQueryKey,
-    getOrderMetadataQueryOptions,
-} from "../query/getOrderMetadata.js";
-
-export {
-    type GetPingData,
-    type GetPingOptions,
-    type GetPingQueryFnData,
-    type GetPingQueryKey,
-    getPingQueryKey,
-    getPingQueryOptions,
-} from "../query/getPing.js";
-
 export {
     type GetNetworkOrdersData,
     type GetNetworkOrdersOptions,
@@ -78,27 +50,6 @@ export {
     getNetworkOrdersQueryKey,
     getNetworkOrdersQueryOptions,
 } from "../query/getNetworkOrders.js";
-
-export {
-    type GetTaskHistoryData,
-    type GetTaskHistoryOptions,
-    type GetTaskHistoryQueryFnData,
-    type GetTaskHistoryQueryKey,
-    getTaskHistoryQueryKey,
-    getTaskHistoryQueryOptions,
-} from "../query/getTaskHistory.js";
-
-export {
-    type GetWalletData,
-    type GetWalletOptions,
-    type GetWalletQueryFnData,
-    type GetWalletQueryKey,
-    getWalletQueryKey,
-    getWalletQueryOptions,
-} from "../query/getWallet.js";
-
-export { hashFn, structuralSharing } from "../query/utils.js";
-
 export {
     type GetOpenOrdersData,
     type GetOpenOrdersOptions,
@@ -107,19 +58,59 @@ export {
     getOpenOrdersQueryKey,
     getOpenOrdersQueryOptions,
 } from "../query/getOpenOrders.js";
-
+export {
+    type GetOrderHistoryData,
+    type GetOrderHistoryOptions,
+    type GetOrderHistoryQueryFnData,
+    type GetOrderHistoryQueryKey,
+    getOrderHistoryQueryKey,
+    getOrderHistoryQueryOptions,
+} from "../query/getOrderHistory.js";
+export {
+    type GetOrderMetadataData,
+    type GetOrderMetadataOptions,
+    type GetOrderMetadataQueryFnData,
+    type GetOrderMetadataQueryKey,
+    getOrderMetadataQueryKey,
+    getOrderMetadataQueryOptions,
+} from "../query/getOrderMetadata.js";
+export {
+    type GetPingData,
+    type GetPingOptions,
+    type GetPingQueryFnData,
+    type GetPingQueryKey,
+    getPingQueryKey,
+    getPingQueryOptions,
+} from "../query/getPing.js";
+export {
+    type GetTaskHistoryData,
+    type GetTaskHistoryOptions,
+    type GetTaskHistoryQueryFnData,
+    type GetTaskHistoryQueryKey,
+    getTaskHistoryQueryKey,
+    getTaskHistoryQueryOptions,
+} from "../query/getTaskHistory.js";
+export {
+    type GetWalletData,
+    type GetWalletOptions,
+    type GetWalletQueryFnData,
+    type GetWalletQueryKey,
+    getWalletQueryKey,
+    getWalletQueryOptions,
+} from "../query/getWallet.js";
 export {
     type PayFeesRequestData,
-    type PayFeesRequestVariables,
     type PayFeesRequestMutate,
     type PayFeesRequestMutateAsync,
+    type PayFeesRequestVariables,
     payFeesRequestMutationOptions,
 } from "../query/payFeesRequest.js";
+export { hashFn, structuralSharing } from "../query/utils.js";
 
 export {
     type WithdrawRequestData,
-    type WithdrawRequestVariables,
     type WithdrawRequestMutate,
     type WithdrawRequestMutateAsync,
+    type WithdrawRequestVariables,
     withdrawRequestMutationOptions,
 } from "../query/withdrawRequest.js";

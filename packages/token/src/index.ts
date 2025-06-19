@@ -39,7 +39,7 @@ export const STABLECOINS = ["USDC", "USDT"];
  * chain-agnostic initialization of the token mapping in a single-chain context
  * (i.e., `parseRemapFromString`).
  */
-let DEFAULT_CHAIN: ChainId | undefined = undefined;
+let DEFAULT_CHAIN: ChainId | undefined;
 
 /** The token class */
 export class Token {

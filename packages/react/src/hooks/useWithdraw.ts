@@ -1,7 +1,6 @@
 "use client";
 
-import type { WithdrawRequestErrorType } from "@renegade-fi/core";
-import type { Evaluate } from "@renegade-fi/core";
+import type { Evaluate, WithdrawRequestErrorType } from "@renegade-fi/core";
 import {
     type WithdrawRequestData,
     type WithdrawRequestMutate,

@@ -1,16 +1,17 @@
 {
-    "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
     "files": {
-        "ignore": [
-            "CHANGELOG.md",
-            "pnpm-lock.yaml",
-            "package.json",
-            "tsconfig.base.json",
-            "wasm/**",
-            "dist/**",
-            "renegade-utils/**",
-            "*.d.ts",
-            "version.ts"
+        "includes": [
+            "**",
+            "!**/CHANGELOG.md",
+            "!**/pnpm-lock.yaml",
+            "!**/package.json",
+            "!**/tsconfig.base.json",
+            "!**/wasm/**",
+            "!**/dist/**",
+            "!**/renegade-utils/**",
+            "!**/*.d.ts",
+            "!**/version.ts"
         ]
     },
     "formatter": {
@@ -22,15 +23,16 @@
         "rules": {
             "recommended": true,
             "correctness": {
-                "noUnusedVariables": "error",
-                "useExhaustiveDependencies": "error"
+                "noUnusedVariables": "error"
+            },
+            "nursery": {
+                "noFloatingPromises": "error"
             },
             "performance": {
                 "noDelete": "off"
             },
             "style": {
-                "noNonNullAssertion": "off",
-                "useShorthandArrayType": "error"
+                "noNonNullAssertion": "off"
             },
             "suspicious": {
                 "noArrayIndexKey": "off",
@@ -39,9 +41,7 @@
             }
         }
     },
-    "organizeImports": {
-        "enabled": true
-    },
+    "assist": { "actions": { "source": { "organizeImports": "on" } } },
     "vcs": {
         "enabled": true,
         "clientKind": "git",

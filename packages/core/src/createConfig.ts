@@ -1,14 +1,14 @@
 import invariant from "tiny-invariant";
-import { http, type Address, type Hex, type PublicClient, createPublicClient } from "viem";
+import { type Address, createPublicClient, type Hex, http, type PublicClient } from "viem";
 import { arbitrumSepolia } from "viem/chains";
 import { persist, subscribeWithSelector } from "zustand/middleware";
-import { type Mutate, type StoreApi, createStore } from "zustand/vanilla";
+import { createStore, type Mutate, type StoreApi } from "zustand/vanilla";
 import type { ChainId } from "./constants.js";
 import type { ExternalConfig } from "./createExternalKeyConfig.js";
-import { type Storage, createStorage, noopStorage } from "./createStorage.js";
+import { createStorage, noopStorage, type Storage } from "./createStorage.js";
 import type { Evaluate, ExactPartial } from "./types/utils.js";
-import type * as rustUtils from "./utils.d.ts";
 import { AuthType } from "./utils/websocket.js";
+import type * as rustUtils from "./utils.d.ts";
 
 export type CreateConfigParameters = {
     chainId: ChainId;

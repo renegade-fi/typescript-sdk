@@ -46,30 +46,29 @@ export { createAuthConfig, createConfig, createExternalKeyConfig };
 // Clients
 ////////////////////////////////////////////////////////////////////////////////
 
+export { ExternalMatchClient } from "../clients/external-match/index.js";
+
+export { AdminRelayerClient } from "../clients/relayer/index.js";
 export {
     AdminRenegadeClient,
     RenegadeClient,
 } from "../clients/renegade/index.js";
-
-export { AdminRelayerClient } from "../clients/relayer/index.js";
-
-export { ExternalMatchClient } from "../clients/external-match/index.js";
 
 ////////////////////////////////////////////////////////////////////////////////
 // Actions
 ////////////////////////////////////////////////////////////////////////////////
 
 export {
-    executeDeposit,
     type ExecuteDepositParameters,
+    executeDeposit,
 } from "../actions/executeDeposit.js";
 export {
-    executeWithdrawal,
     type ExecuteWithdrawalParameters,
+    executeWithdrawal,
 } from "../actions/executeWithdrawal.js";
 export {
-    generateWalletSecrets,
     type GeneratedSecrets,
+    generateWalletSecrets,
 } from "../actions/generateWalletSecrets.js";
 
 export { createOrderWebSocket } from "../services/orderWebSocket.js";

@@ -47,6 +47,7 @@ function hasObjectPrototype(o: any): boolean {
 }
 
 export function filterQueryOptions<type extends Record<string, unknown>>(options: type): type {
+    // biome-ignore-start lint/correctness/noUnusedVariables: <explanation>
     const {
         _defaulted,
         behavior,
@@ -88,6 +89,7 @@ export function filterQueryOptions<type extends Record<string, unknown>>(options
         query,
         ...rest
     } = options;
+    // biome-ignore-end lint/correctness/noUnusedVariables: <explanation>
 
     return rest as type;
 }

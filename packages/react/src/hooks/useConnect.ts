@@ -1,7 +1,6 @@
 "use client";
 
-import type { ConnectErrorType } from "@renegade-fi/core";
-import type { Evaluate } from "@renegade-fi/core";
+import type { ConnectErrorType, Evaluate } from "@renegade-fi/core";
 import {
     type ConnectData,
     type ConnectMutate,

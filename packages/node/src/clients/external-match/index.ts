@@ -109,13 +109,7 @@ export class ExternalMatchClient {
      * @param params.apiKey    your API key
      * @param params.apiSecret your API secret
      */
-    static newArbitrumOneClient({
-        apiKey,
-        apiSecret,
-    }: {
-        apiKey: string;
-        apiSecret: string;
-    }) {
+    static newArbitrumOneClient({ apiKey, apiSecret }: { apiKey: string; apiSecret: string }) {
         return new ExternalMatchClient({
             rustUtils,
             chainId: CHAIN_IDS.ArbitrumOne,
@@ -130,13 +124,7 @@ export class ExternalMatchClient {
      * @param params.apiKey    your API key
      * @param params.apiSecret your API secret
      */
-    static newArbitrumSepoliaClient({
-        apiKey,
-        apiSecret,
-    }: {
-        apiKey: string;
-        apiSecret: string;
-    }) {
+    static newArbitrumSepoliaClient({ apiKey, apiSecret }: { apiKey: string; apiSecret: string }) {
         return new ExternalMatchClient({
             rustUtils,
             chainId: CHAIN_IDS.ArbitrumSepolia,

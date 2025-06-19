@@ -141,11 +141,7 @@ export class RenegadeClient {
      *
      * @param params.seed your 0x… seed
      */
-    static newArbitrumOneClient({
-        seed,
-    }: {
-        seed: `0x${string}`;
-    }) {
+    static newArbitrumOneClient({ seed }: { seed: `0x${string}` }) {
         return RenegadeClient.new({
             chainId: CHAIN_IDS.ArbitrumOne,
             seed,
@@ -181,11 +177,7 @@ export class RenegadeClient {
      *
      * @param params.seed your 0x… seed
      */
-    static newArbitrumSepoliaClient({
-        seed,
-    }: {
-        seed: `0x${string}`;
-    }) {
+    static newArbitrumSepoliaClient({ seed }: { seed: `0x${string}` }) {
         return RenegadeClient.new({
             chainId: CHAIN_IDS.ArbitrumSepolia,
             seed,
@@ -393,11 +385,7 @@ export class RenegadeClient {
      * @param sign - the callback to sign messages
      * @returns the keychain
      */
-    static async generateKeychain({
-        sign,
-    }: {
-        sign: (message: string) => Promise<`0x${string}`>;
-    }) {
+    static async generateKeychain({ sign }: { sign: (message: string) => Promise<`0x${string}`> }) {
         return generateWalletSecrets(sign);
     }
 

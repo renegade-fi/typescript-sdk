@@ -1,8 +1,7 @@
-import { getRelayerWithAuth } from "../utils/http.js";
-
 import { GET_TASK_STATUS_ROUTE } from "../constants.js";
 import type { Config } from "../createConfig.js";
 import type { OldTask as Task } from "../types/wallet.js";
+import { getRelayerWithAuth } from "../utils/http.js";
 
 export type GetTaskStatusParameters = { id: string };
 

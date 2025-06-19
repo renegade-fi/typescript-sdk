@@ -2,7 +2,7 @@ import { BaseError } from "viem";
 import { getSDKConfig } from "../chains/defaults.js";
 import { GET_TOKEN_PRICES_ROUTE } from "../constants.js";
 import type { AuthConfig } from "../createAuthConfig.js";
-import { type RenegadeConfig, createConfig } from "../createConfig.js";
+import { createConfig, type RenegadeConfig } from "../createConfig.js";
 import type { BaseErrorType } from "../errors/base.js";
 import { getRelayerRaw } from "../utils/http.js";
 

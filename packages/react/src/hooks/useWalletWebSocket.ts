@@ -2,10 +2,10 @@
 
 import {
     type Config,
-    WALLET_ROUTE,
-    type Wallet,
     getSymmetricKey,
     parseBigJSON,
+    WALLET_ROUTE,
+    type Wallet,
 } from "@renegade-fi/core";
 import { useEffect } from "react";
 import { ReadyState } from "react-use-websocket";

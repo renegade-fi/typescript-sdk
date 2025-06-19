@@ -2,10 +2,10 @@
 
 import {
     type Config,
-    type Task,
-    WS_TASK_HISTORY_ROUTE,
     getSymmetricKey,
     parseBigJSON,
+    type Task,
+    WS_TASK_HISTORY_ROUTE,
 } from "@renegade-fi/core";
 import { useEffect } from "react";
 import { ReadyState } from "react-use-websocket";

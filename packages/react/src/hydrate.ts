@@ -1,8 +1,8 @@
 "use client";
 
 import type { Config } from "@renegade-fi/core";
-import { type State, hydrate } from "@renegade-fi/core";
-import { type ReactElement, createElement, useEffect, useRef, useState } from "react";
+import { hydrate, type State } from "@renegade-fi/core";
+import { createElement, type ReactElement, useEffect, useRef, useState } from "react";
 import * as RustUtils from "../renegade-utils/index.js";
 import { WasmContext } from "./wasm.js";
 

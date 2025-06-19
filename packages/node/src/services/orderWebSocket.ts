@@ -1,10 +1,10 @@
 import {
     AuthType,
+    getWalletId,
     type OrderMetadata,
     RelayerWebsocket,
     type RenegadeConfig,
     WS_WALLET_ORDERS_ROUTE,
-    getWalletId,
 } from "@renegade-fi/core";
 
 interface OrderWebSocketOptions {

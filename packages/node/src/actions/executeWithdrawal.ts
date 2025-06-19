@@ -1,9 +1,9 @@
 import {
+    getWalletId,
+    payFees,
     type RenegadeConfig,
     type WithdrawParameters,
     type WithdrawReturnType,
-    getWalletId,
-    payFees,
     waitForTaskCompletionWs,
     withdraw,
 } from "@renegade-fi/core";
