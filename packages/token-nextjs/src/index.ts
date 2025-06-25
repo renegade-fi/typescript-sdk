@@ -67,11 +67,7 @@ const PACKAGE_NAME = "@renegade-fi/token-nextjs";
             CoreTokenAliased.addRemapFromString(chainId, tokenMappingJson);
 
             // Check if any tokens were actually loaded after parsing
-            if (CoreTokenAliased.getAllTokensOnChain(chainId).length > 0) {
-                console.info(
-                    `${logPrefix} Token mapping initialized successfully from ${envVarName}. Loaded ${CoreTokenAliased.getAllTokensOnChain(chainId).length} tokens.`,
-                );
-            } else {
+            if (!CoreTokenAliased.getAllTokensOnChain(chainId).length) {
                 console.warn(
                     `${logPrefix} Token mapping from ${envVarName} was processed but resulted in zero tokens. Check the JSON content.`,
                 );
