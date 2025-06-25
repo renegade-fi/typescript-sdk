@@ -1,5 +1,11 @@
 # @renegade-fi/token-nextjs
 
+## 0.1.12
+
+### Patch Changes
+
+- token-next-js: remove spammy log
+
 ## 0.1.11
 
 ### Patch Changes
