@@ -3,6 +3,7 @@ import type {
     CreateOrderParameters,
     DepositParameters,
     GetBackOfQueueWalletParameters,
+    GetOrderHistoryParameters,
     GetWalletFromRelayerParameters,
     RenegadeConfig,
     SDKConfig,
@@ -12,6 +13,7 @@ import type {
 import {
     createConfig,
     createExternalKeyConfig,
+    getOrderHistory,
     getSDKConfig,
     getTaskQueue,
     getWalletId,
@@ -213,6 +215,39 @@ export class RenegadeClient {
      *
      * @param params.seed your 0x… seed
      */
+    static newBaseMainnetClient({ seed }: { seed: `0x${string}` }) {
+        return RenegadeClient.new({ chainId: CHAIN_IDS.BaseMainnet, seed });
+    }
+
+    /**
+     * Base Sepolia client with external keychain.
+     *
+     * @param params.walletSecrets  symmetric key + wallet ID
+     * @param params.signMessage    callback to sign auth messages
+     * @param params.publicKey      your public key
+     */
+    static newBaseMainnetClientWithKeychain({
+        walletSecrets,
+        signMessage,
+        publicKey,
+    }: {
+        walletSecrets: GeneratedSecrets;
+        signMessage: (message: string) => Promise<`0x${string}`>;
+        publicKey: `0x${string}`;
+    }) {
+        return RenegadeClient.newWithExternalKeychain({
+            chainId: CHAIN_IDS.BaseMainnet,
+            walletSecrets,
+            signMessage,
+            publicKey,
+        });
+    }
+
+    /**
+     * Base Sepolia client via seed.
+     *
+     * @param params.seed your 0x… seed
+     */
     static newBaseSepoliaClient({ seed }: { seed: `0x${string}` }) {
         return RenegadeClient.new({ chainId: CHAIN_IDS.BaseSepolia, seed });
     }
@@ -287,6 +322,10 @@ export class RenegadeClient {
 
     getWalletId() {
         return getWalletId(this.getConfig());
+    }
+
+    async getOrderHistory(parameters: GetOrderHistoryParameters) {
+        return getOrderHistory(this.getConfig(), parameters);
     }
 
     // -- Balance Operations -- //
