@@ -1,5 +1,11 @@
 # @renegade-fi/node
 
+## 0.6.10
+
+### Patch Changes
+
+- node: renegade client: add get order history and base mainnet constructors
+
 ## 0.6.9
 
 ### Patch Changes
