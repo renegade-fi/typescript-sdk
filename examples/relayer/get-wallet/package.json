@@ -1,0 +1,12 @@
+{
+  "name": "example-relayer-get-wallet",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@renegade-fi/node": "latest",
+    "viem": "latest"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.3"
+  }
+}
