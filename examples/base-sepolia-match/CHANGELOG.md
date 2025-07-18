@@ -1,5 +1,12 @@
 # @renegade-fi/base-sepolia-match
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/node@0.6.10
+
 ## 0.0.6
 
 ### Patch Changes
