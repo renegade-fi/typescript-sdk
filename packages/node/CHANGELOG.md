@@ -1,5 +1,11 @@
 # @renegade-fi/node
 
+## 0.6.11
+
+### Patch Changes
+
+- node: external match client: add base constructors
+
 ## 0.6.10
 
 ### Patch Changes
