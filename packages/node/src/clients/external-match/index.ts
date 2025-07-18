@@ -133,6 +133,36 @@ export class ExternalMatchClient {
         });
     }
 
+    /**
+     * Create a new ExternalMatchClient for Base Mainnet.
+     *
+     * @param params.apiKey    your API key
+     * @param params.apiSecret your API secret
+     */
+    static newBaseMainnetClient({ apiKey, apiSecret }: { apiKey: string; apiSecret: string }) {
+        return new ExternalMatchClient({
+            rustUtils,
+            chainId: CHAIN_IDS.BaseMainnet,
+            apiKey,
+            apiSecret,
+        });
+    }
+
+    /**
+     * Create a new ExternalMatchClient for Base Sepolia.
+     *
+     * @param params.apiKey    your API key
+     * @param params.apiSecret your API secret
+     */
+    static newBaseSepoliaClient({ apiKey, apiSecret }: { apiKey: string; apiSecret: string }) {
+        return new ExternalMatchClient({
+            rustUtils,
+            chainId: CHAIN_IDS.BaseSepolia,
+            apiKey,
+            apiSecret,
+        });
+    }
+
     // -- Direct Match -- //
 
     /**
