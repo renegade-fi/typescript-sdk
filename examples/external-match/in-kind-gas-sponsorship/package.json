@@ -1,0 +1,11 @@
+{
+  "name": "example-external-match-in-kind-gas-sponsorship",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@renegade-fi/node": "latest"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.3"
+  }
+}
