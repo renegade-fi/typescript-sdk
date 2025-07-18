@@ -1,0 +1,306 @@
+{
+    "tokens": [
+        {
+            "name": "USD Coin",
+            "ticker": "USDC",
+            "address": "0xdf8d259c04020562717557f2b5a3cf28e92707d1",
+            "decimals": 6,
+            "supported_exchanges": {
+                "Binance": "USDC",
+                "Coinbase": "USD",
+                "Kraken": "USDC",
+                "Okx": "USDC"
+            },
+            "chain_addresses": {
+                "1": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "1151111081099710": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/usdc.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Tether USD",
+            "ticker": "USDT",
+            "address": "0x8fda47a4d2885e5aeba699ad967f15e3d9c4e1f7",
+            "decimals": 6,
+            "supported_exchanges": {
+                "Binance": "USDT",
+                "Coinbase": "USD",
+                "Kraken": "USD",
+                "Okx": "USDT"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/usdt.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Wrapped BTC",
+            "ticker": "WBTC",
+            "address": "0xa6ef8d1359e3be0d091c6339ff74d157d078c46e",
+            "decimals": 8,
+            "supported_exchanges": {
+                "Binance": "WBTC",
+                "Coinbase": "BTC",
+                "Kraken": "BTC",
+                "Okx": "WBTC"
+            },
+            "chain_addresses": {
+                "1": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/wbtc.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Wrapped Ether",
+            "ticker": "WETH",
+            "address": "0xc3414a7ef14aaaa9c4522dfc00a4e66e74e9c25a",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "ETH",
+                "Coinbase": "ETH",
+                "Kraken": "ETH",
+                "Okx": "ETH"
+            },
+            "chain_addresses": {
+                "1": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/weth.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Arbitrum",
+            "ticker": "ARB",
+            "address": "0x91bc4f29b85e8000a090dc894617729c71db4fbd",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "ARB",
+                "Coinbase": "ARB",
+                "Kraken": "ARB",
+                "Okx": "ARB"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/arb.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "GMX",
+            "ticker": "GMX",
+            "address": "0x6840d04f30f645697549c7ab852ddf022bccf7b7",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "GMX",
+                "Kraken": "GMX",
+                "Okx": "GMX"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/gmx.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Pendle",
+            "ticker": "PENDLE",
+            "address": "0x276e66034cdf2e10a98999be78307bdfb4aa26ef",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "PENDLE",
+                "Kraken": "PENDLE"
+            },
+            "chain_addresses": {
+                "1": "0x808507121b80c02388fad14726482e061b8da827"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/pendle.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Lido DAO Token",
+            "ticker": "LDO",
+            "address": "0xb6447ee182e04d987cfc29a96270da7865550058",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "LDO",
+                "Coinbase": "LDO",
+                "Kraken": "LDO",
+                "Okx": "LDO"
+            },
+            "chain_addresses": {
+                "1": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/ldo.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "ChainLink Token",
+            "ticker": "LINK",
+            "address": "0x50348f82e1ec4f76979f8b98f2729370a3971b1f",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "LINK",
+                "Coinbase": "LINK",
+                "Kraken": "LINK",
+                "Okx": "LINK"
+            },
+            "chain_addresses": {
+                "1": "0x514910771AF9Ca656af840dff83E8264EcF986CA"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/link.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Curve DAO Token",
+            "ticker": "CRV",
+            "address": "0x017dc958eb7171de1127829bd12a9939778ea8dd",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "CRV",
+                "Coinbase": "CRV",
+                "Kraken": "CRV",
+                "Okx": "CRV"
+            },
+            "chain_addresses": {
+                "1": "0xD533a949740bb3306d119CC777fa900bA034cd52"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/crv.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Uniswap",
+            "ticker": "UNI",
+            "address": "0x61f23c9d60e04509c9d732d395951027cb44995d",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "UNI",
+                "Coinbase": "UNI",
+                "Kraken": "UNI",
+                "Okx": "UNI"
+            },
+            "chain_addresses": {
+                "1": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/uni.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "LayerZero",
+            "ticker": "ZRO",
+            "address": "0x3953496267860cf93ba2675c23f1e4c278f58767",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "ZRO",
+                "Coinbase": "ZRO",
+                "Kraken": "ZRO",
+                "Okx": "ZRO"
+            },
+            "chain_addresses": {
+                "1": "0x6985884C4392D348587B19cb9eAAf157F13271cd"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/zro.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Livepeer Token",
+            "ticker": "LPT",
+            "address": "0x410c082fd0e7b49d68b021215720166c296dde98",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "LPT",
+                "Coinbase": "LPT",
+                "Kraken": "LPT",
+                "Okx": "LPT"
+            },
+            "chain_addresses": {
+                "1": "0x58b6A8A3302369DAEc383334672404Ee733aB239"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/lpt.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Graph Token",
+            "ticker": "GRT",
+            "address": "0x5267cf9eadf73c4b1a21dc2a0f6115c504b53373",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "GRT",
+                "Coinbase": "GRT",
+                "Kraken": "GRT",
+                "Okx": "GRT"
+            },
+            "chain_addresses": {
+                "1": "0xc944E90C64B2c07662A292be6244BDf05Cda44a7"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/grt.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Compound",
+            "ticker": "COMP",
+            "address": "0x8c7ab63b908b7575fba683c5ac6d6a1056ed2e79",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "COMP",
+                "Coinbase": "COMP",
+                "Kraken": "COMP",
+                "Okx": "COMP"
+            },
+            "chain_addresses": {
+                "1": "0xc00e94Cb662C3520282E6f5717214004A7f26888"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/comp.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Aave Token",
+            "ticker": "AAVE",
+            "address": "0x5d0aa5cfed1b4ad46c6a5226ec7a6b534e972766",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "AAVE",
+                "Coinbase": "AAVE",
+                "Kraken": "AAVE",
+                "Okx": "AAVE"
+            },
+            "chain_addresses": {
+                "1": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/aave.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Xai",
+            "ticker": "XAI",
+            "address": "0x4c42b54a35889e05b74f7507c7b4fc1e991315fa",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "XAI"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/xai.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Radiant",
+            "ticker": "RDNT",
+            "address": "0xd54c59fbcfef1efc66bc04dc1ca7a05b94aa6d41",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "RDNT",
+                "Okx": "RDNT"
+            },
+            "chain_addresses": {
+                "1": "0x137dDB47Ee24EaA998a535Ab00378d6BFa84F893"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/rdnt.png",
+            "canonical_exchange": "Binance"
+        },
+        {
+            "name": "Ether.fi",
+            "ticker": "ETHFI",
+            "address": "0x5fcaeddd67bf47e638d6b8688f6f5f89654af28d",
+            "decimals": 18,
+            "supported_exchanges": {
+                "Binance": "ETHFI",
+                "Okx": "ETHFI"
+            },
+            "chain_addresses": {
+                "1": "0xFe0c30065B384F05761f15d0CC899D4F9F9Cc0eB"
+            },
+            "logo_url": "https://raw.githubusercontent.com/renegade-fi/token-mappings/refs/heads/main/token-logos/ethfi.png",
+            "canonical_exchange": "Binance"
+        }
+    ]
+}

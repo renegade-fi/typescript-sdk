@@ -1,0 +1,11 @@
+{
+  "name": "example-token-async-initialization",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@renegade-fi/token": "latest"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.3"
+  }
+}
