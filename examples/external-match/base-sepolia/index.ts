@@ -1,6 +1,6 @@
 import { ExternalMatchClient } from "@renegade-fi/node";
 import { erc20Abi } from "viem";
-import { API_KEY, API_SECRET, chainId, owner, publicClient, walletClient } from "./env";
+import { API_KEY, API_SECRET, owner, publicClient, walletClient } from "./env";
 
 if (!API_KEY) {
     throw new Error("API_KEY is not set");
@@ -10,14 +10,13 @@ if (!API_SECRET) {
     throw new Error("API_SECRET is not set");
 }
 
-const client = ExternalMatchClient.new({
+const client = ExternalMatchClient.newBaseSepoliaClient({
     apiKey: API_KEY,
     apiSecret: API_SECRET,
-    chainId,
 });
 
-const WETH_ADDRESS = "0xc3414a7ef14aaaa9c4522dfc00a4e66e74e9c25a";
-const USDC_ADDRESS = "0xdf8d259c04020562717557f2b5a3cf28e92707d1";
+const WETH_ADDRESS = "0x31a5552AF53C35097Fdb20FFf294c56dc66FA04c";
+const USDC_ADDRESS = "0xD9961Bb4Cb27192f8dAd20a662be081f546b0E74";
 const quoteAmount = BigInt(2_000_000); // 2 USDC
 const side = "buy";
 
