@@ -1,5 +1,12 @@
 # @renegade-fi/supported-tokens
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/node@0.6.11
+
 ## 0.0.6
 
 ### Patch Changes
