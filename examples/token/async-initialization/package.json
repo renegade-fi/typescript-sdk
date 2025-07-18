@@ -2,10 +2,15 @@
   "name": "example-token-async-initialization",
   "private": true,
   "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
   "dependencies": {
-    "@renegade-fi/token": "latest"
+    "@renegade-fi/token": "latest",
+    "viem": "latest"
   },
   "devDependencies": {
+    "tsx": "^4.20.3",
     "typescript": "^5.0.3"
   }
 }
