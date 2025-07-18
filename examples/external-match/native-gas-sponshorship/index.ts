@@ -33,6 +33,8 @@ console.log("Fetching quote...");
 const quote = await client.getQuote({
     order,
     disableGasSponsorship: false, // Note that this is false by default
+    refundAddress: owner,
+    refundNativeEth: true,
 });
 
 const gasSponsorshipInfo = quote.gas_sponsorship_info?.gas_sponsorship_info;
