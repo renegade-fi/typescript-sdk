@@ -1,5 +1,11 @@
 # @renegade-fi/types
 
+## 0.0.5
+
+### Patch Changes
+
+- types: add ws types'
+
 ## 0.0.4
 
 ### Patch Changes

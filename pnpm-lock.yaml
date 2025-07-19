@@ -212,7 +212,7 @@ importers:
   packages/types:
     devDependencies:
       zod:
-        specifier: ^4.0.5
+        specifier: ^4
         version: 4.0.5
 
 packages:
