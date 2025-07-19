@@ -1,10 +1,12 @@
-import { z } from "zod";
-import { OrderMetadataWsMessage } from "./order.js";
+import z from "zod/v4";
+import { type OrderMetadataWsMessage, OrderMetadataWsMessageSchema } from "./order.js";
+import { type SubscriptionsAck, SubscriptionsAckSchema } from "./subscriptions.js";
 
-/**
- * Union of all incoming WS message shapes,
- * discriminated on event.type
- */
-export const RenegadeWsMessage = z.discriminatedUnion("event.type", [OrderMetadataWsMessage]);
+export const RenegadeWsMessageSchema = z.union([
+    SubscriptionsAckSchema,
+    OrderMetadataWsMessageSchema,
+]);
+export type RenegadeWsMessage = SubscriptionsAck | OrderMetadataWsMessage;
 
-export type RenegadeWsMessage = z.infer<typeof RenegadeWsMessage>;
+export { type OrderMetadataWsMessage, OrderMetadataWsMessageSchema } from "./order.js";
+export { type SubscriptionsAck, SubscriptionsAckSchema } from "./subscriptions.js";
