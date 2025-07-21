@@ -2,10 +2,15 @@
   "name": "example-external-match-token-prices",
   "private": true,
   "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
   "dependencies": {
-    "@renegade-fi/node": "latest"
+    "@renegade-fi/node": "latest",
+    "viem": "latest"
   },
   "devDependencies": {
+    "tsx": "^4.20.3",
     "typescript": "^5.0.3"
   }
 }
