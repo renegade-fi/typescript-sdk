@@ -1,12 +1,12 @@
 {
-  "name": "example-token-async-initialization",
+  "name": "example-external-match-supported-tokens",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "tsx index.ts"
   },
   "dependencies": {
-    "@renegade-fi/token": "latest",
+    "@renegade-fi/node": "latest",
     "viem": "latest"
   },
   "devDependencies": {

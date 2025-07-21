@@ -1,12 +1,9 @@
 {
-  "name": "example-token-async-initialization",
+  "name": "example-external-match-native-gas-sponsorship",
   "private": true,
   "type": "module",
-  "scripts": {
-    "start": "tsx index.ts"
-  },
   "dependencies": {
-    "@renegade-fi/token": "latest",
+    "@renegade-fi/node": "latest",
     "viem": "latest"
   },
   "devDependencies": {
