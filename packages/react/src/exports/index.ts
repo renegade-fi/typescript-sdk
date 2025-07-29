@@ -220,6 +220,7 @@ export {
     ConfigRequiredError,
     // createStorage
     type CreateStorageParameters,
+    chainIdFromEnvAndName,
     chainIdToEnv,
     // Utils
     cookieStorage,
@@ -229,7 +230,6 @@ export {
     // Config
     getSDKConfig,
     isSupportedChainId,
-    chainIdFromEnvAndName,
     noopStorage,
     // Types
     OrderState,

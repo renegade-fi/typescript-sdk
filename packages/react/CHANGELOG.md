@@ -1,5 +1,11 @@
 # @renegade-fi/react
 
+## 0.6.22
+
+### Patch Changes
+
+- export chainIdFromEnvAndName
+
 ## 0.6.21
 
 ### Patch Changes
