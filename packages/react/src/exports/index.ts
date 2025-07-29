@@ -229,6 +229,7 @@ export {
     // Config
     getSDKConfig,
     isSupportedChainId,
+    chainIdFromEnvAndName,
     noopStorage,
     // Types
     OrderState,
