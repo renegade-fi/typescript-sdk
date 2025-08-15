@@ -5,6 +5,7 @@ import type {
     GetBackOfQueueWalletParameters,
     GetOrderHistoryParameters,
     GetWalletFromRelayerParameters,
+    OrderMetadata,
     RenegadeConfig,
     SDKConfig,
     UpdateOrderParameters,
@@ -44,6 +45,7 @@ import {
     type GeneratedSecrets,
     generateWalletSecrets,
 } from "../../actions/generateWalletSecrets.js";
+import { createOrderWebSocket } from "../../services/orderWebSocket.js";
 import type { ConstructorParams } from "./types.js";
 
 /**
@@ -394,6 +396,13 @@ export class RenegadeClient {
 
     async cancelOrder(parameters: CancelOrderParameters) {
         return cancelOrder(this.getConfig(), parameters);
+    }
+
+    async createOrderWebSocket(onUpdate: (order: OrderMetadata) => void) {
+        return createOrderWebSocket({
+            config: this.getConfig(),
+            onUpdate,
+        });
     }
 
     // -- Task Operations -- //
