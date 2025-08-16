@@ -17,10 +17,10 @@ export function createOrderWebSocket(options: OrderWebSocketOptions) {
 }
 
 class OrderWebSocketImpl {
-    private config: RenegadeConfig;
-    private ws: RelayerWebsocket | null = null;
-    private callback: (order: OrderMetadata) => void;
-    private walletId: string;
+    config: RenegadeConfig;
+    ws: RelayerWebsocket | null = null;
+    callback: (order: OrderMetadata) => void;
+    walletId: string;
 
     constructor(options: OrderWebSocketOptions) {
         this.config = options.config;
@@ -48,7 +48,7 @@ class OrderWebSocketImpl {
         this.ws = null;
     }
 
-    private handleMessage(event: MessageEvent) {
+    handleMessage(event: MessageEvent) {
         try {
             const message = JSON.parse(event.data, (key, value) => {
                 if (typeof value === "number" && key !== "price") {
@@ -69,12 +69,12 @@ class OrderWebSocketImpl {
         }
     }
 
-    private handleClose() {
+    handleClose() {
         console.log("WebSocket connection closed");
         this.ws = null;
     }
 
-    private handleError() {
+    handleError() {
         console.error("WebSocket connection error");
         this.ws = null;
     }
