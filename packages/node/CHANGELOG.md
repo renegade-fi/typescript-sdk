@@ -1,5 +1,11 @@
 # @renegade-fi/node
 
+## 0.6.12
+
+### Patch Changes
+
+- node: clients: renegade: base: Make createOrderWebsocket fields public
+
 ## 0.6.11
 
 ### Patch Changes
