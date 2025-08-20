@@ -12,6 +12,9 @@ use super::{
 /// state
 pub type WalletShareStateCommitment = Scalar;
 
+/// Nullifier type alias for readability
+pub type Nullifier = Scalar;
+
 // --------------------
 // | Wallet Base Type |
 // --------------------

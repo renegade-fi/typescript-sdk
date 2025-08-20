@@ -28,6 +28,7 @@ import {
     getBackOfQueueWallet,
     getTaskQueuePaused,
     getWalletFromRelayer,
+    getWalletNullifier,
     lookupWallet,
     payFees,
     refreshWallet,
@@ -324,6 +325,10 @@ export class RenegadeClient {
 
     getWalletId() {
         return getWalletId(this.getConfig());
+    }
+
+    async getWalletNullifier() {
+        return getWalletNullifier(this.getConfig());
     }
 
     async getOrderHistory(parameters: GetOrderHistoryParameters) {

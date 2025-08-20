@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.6.13
+
+### Patch Changes
+
+- add getWalletNullifier action
+- Updated dependencies
+  - @renegade-fi/core@0.9.8
+
 ## 0.6.12
 
 ### Patch Changes

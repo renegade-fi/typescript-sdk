@@ -9,22 +9,18 @@ use super::types::{
 use crate::{
     circuit_types::{balance::Balance, fixed_point::FixedPoint, order::OrderSide, Amount},
     common::{
-        derivation::{
-            derive_blinder_seed, derive_sk_root_signing_key, derive_wallet_from_key,
-            derive_wallet_id,
-        },
+        derivation::{derive_sk_root_signing_key, derive_wallet_from_key},
         types::{Chain, WalletIdentifier},
     },
     helpers::{
         biguint_from_hex_string, deserialize_biguint_from_hex_string, deserialize_wallet,
-        serialize_biguint_to_hex_string, PoseidonCSPRNG,
+        serialize_biguint_to_hex_string,
     },
     key_rotation::handle_key_rotation,
     map_js_error,
     signature::{sign_wallet_commitment, sign_withdrawal_authorization},
 };
 use ethers::types::Bytes;
-use itertools::Itertools;
 use js_sys::Function;
 use num_bigint::BigUint;
 use num_traits::ToPrimitive;
@@ -100,25 +96,6 @@ pub fn find_wallet(seed: &str) -> Result<JsValue, JsError> {
     let serialized =
         serde_json::to_string(&req).map_err(map_js_error!("Failed to serialize request: {}"))?;
     Ok(JsValue::from_str(&serialized))
-}
-
-#[wasm_bindgen]
-pub fn derive_blinder_share(seed: &str) -> Result<JsValue, JsError> {
-    let sk_root = derive_sk_root_signing_key(seed, None)?;
-    let blinder_seed = derive_blinder_seed(&sk_root)?;
-    let mut blinder_csprng = PoseidonCSPRNG::new(blinder_seed);
-    let (blinder, blinder_private) = blinder_csprng
-        .next_tuple()
-        .ok_or(JsError::new("Failed to generate blinder tuple"))?;
-    let blinder_share = blinder - blinder_private;
-    Ok(JsValue::from_str(&blinder_share.to_biguint().to_string()))
-}
-
-#[wasm_bindgen]
-pub fn wallet_id(seed: &str) -> Result<JsValue, JsError> {
-    let sk_root = derive_sk_root_signing_key(seed, None)?;
-    let wallet_id = derive_wallet_id(&sk_root)?;
-    Ok(JsValue::from_str(&wallet_id.to_string()))
 }
 
 /// The request type to deposit a balance into the darkpool

@@ -140,7 +140,6 @@ export {
     type GetTaskQueueReturnType,
     getTaskQueue,
 } from "../actions/getTaskQueue.js";
-
 export {
     type GetTaskStatusParameters,
     type GetTaskStatusReturnType,
@@ -151,25 +150,23 @@ export {
     type GetTokenPricesReturnType,
     getTokenPrices,
 } from "../actions/getTokenPrices.js";
-
 export {
     type GetWalletFromRelayerErrorType as GetWalletErrorType,
     type GetWalletFromRelayerParameters,
     type GetWalletFromRelayerReturnType,
     getWalletFromRelayer,
 } from "../actions/getWalletFromRelayer.js";
-
 export {
     type GetWalletIdReturnType,
     getWalletId,
 } from "../actions/getWalletId.js";
-
 export {
     type GetWalletMatchableOrderIdsErrorType,
     type GetWalletMatchableOrderIdsParameters,
     type GetWalletMatchableOrderIdsReturnType,
     getWalletMatchableOrderIds,
 } from "../actions/getWalletMatchableOrderIds.js";
+export { getWalletNullifier } from "../actions/getWalletNullifier.js";
 
 export {
     type LookupWalletReturnType,
