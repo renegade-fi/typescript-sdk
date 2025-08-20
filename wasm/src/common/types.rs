@@ -3,11 +3,16 @@ use std::str::FromStr;
 use super::{keychain::KeyChain, keyed_list::KeyedList};
 use crate::{
     circuit_types::{
-        balance::Balance, compute_wallet_share_commitment, create_wallet_shares_from_private,
-        create_wallet_shares_with_randomness, elgamal::EncryptionKey, fixed_point::FixedPoint,
-        order::Order, wallet::WalletShareStateCommitment, SizedWallet as SizedCircuitWallet,
+        balance::Balance,
+        compute_wallet_share_commitment, create_wallet_shares_from_private,
+        create_wallet_shares_with_randomness,
+        elgamal::EncryptionKey,
+        fixed_point::FixedPoint,
+        order::Order,
+        wallet::{Nullifier, WalletShareStateCommitment},
+        SizedWallet as SizedCircuitWallet,
     },
-    helpers::{evaluate_hash_chain, PoseidonCSPRNG},
+    helpers::{compute_poseidon_hash, evaluate_hash_chain, PoseidonCSPRNG},
     types::Scalar,
     CLUSTER_SYMMETRIC_KEY_LENGTH, MAX_BALANCES, MAX_ORDERS, NUM_SCALARS,
 };
@@ -123,6 +128,11 @@ impl Wallet {
             &self.blinded_public_shares,
             &self.private_shares,
         )
+    }
+
+    /// Compute the wallet nullifier
+    pub fn get_wallet_nullifier(&self) -> Nullifier {
+        compute_poseidon_hash(&[self.get_wallet_share_commitment(), self.blinder])
     }
 
     // -----------

@@ -82,47 +82,39 @@ export {
     type GetExternalMatchQuoteReturnType,
     getExternalMatchQuote,
 } from "../actions/getExternalMatchQuote.js";
-
 export {
     type GetNetworkOrdersErrorType,
     type GetNetworkOrdersReturnType,
     getNetworkOrders,
 } from "../actions/getNetworkOrders.js";
-
 export {
     type GetOpenOrdersErrorType,
     type GetOpenOrdersParameters,
     type GetOpenOrdersReturnType,
     getOpenOrders,
 } from "../actions/getOpenOrders.js";
-
 export {
     type GetOrderParameters,
     type GetOrderReturnType,
     getOrder,
 } from "../actions/getOrder.js";
-
 export {
     type GetOrderHistoryErrorType,
     type GetOrderHistoryReturnType,
     getOrderHistory,
 } from "../actions/getOrderHistory.js";
-
 export {
     type GetOrderMatchingPoolParameters,
     type GetOrderMatchingPoolReturnType,
     getOrderMatchingPool,
 } from "../actions/getOrderMatchingPool.js";
-
 export {
     type GetOrderMetadataErrorType,
     type GetOrderMetadataParameters,
     type GetOrderMetadataReturnType,
     getOrderMetadata,
 } from "../actions/getOrderMetadata.js";
-
 export { type GetOrdersReturnType, getOrders } from "../actions/getOrders.js";
-
 export {
     type GetPkRootReturnType,
     type GetPkRootScalarsReturnType,
@@ -169,6 +161,7 @@ export {
     type GetWalletMatchableOrderIdsReturnType,
     getWalletMatchableOrderIds,
 } from "../actions/getWalletMatchableOrderIds.js";
+export { getWalletNullifier } from "../actions/getWalletNullifier.js";
 export {
     type LookupWalletReturnType,
     lookupWallet,
