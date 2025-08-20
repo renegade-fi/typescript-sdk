@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.9
+
+### Patch Changes
+
+- fix getWalletNullifier return type
+
 ## 0.9.8
 
 ### Patch Changes
