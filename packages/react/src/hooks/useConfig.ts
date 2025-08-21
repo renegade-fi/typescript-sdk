@@ -13,7 +13,7 @@ export type UseConfigReturnType<config extends Config = Config> = config | undef
 export function useConfig<config extends Config = Config>(
     parameters: UseConfigParameters<config> = {},
 ): UseConfigReturnType<config> {
-    // biome-ignore-start lint/correctness/useHookAtTopLevel: <explanation>
+    // biome-ignore lint/correctness/useHookAtTopLevel: from wagmi
     const config = parameters.config ?? useContext(RenegadeContext);
     return config as UseConfigReturnType<config>;
 }

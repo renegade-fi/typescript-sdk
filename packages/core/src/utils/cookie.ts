@@ -10,10 +10,12 @@ export const cookieStorage = {
     },
     setItem(key, value) {
         if (typeof window === "undefined") return;
+        // biome-ignore lint/suspicious/noDocumentCookie: from wagmi
         document.cookie = `${key}=${value}`;
     },
     removeItem(key) {
         if (typeof window === "undefined") return;
+        // biome-ignore lint/suspicious/noDocumentCookie: from wagmi
         document.cookie = `${key}=;max-age=-1`;
     },
 } satisfies BaseStorage;

@@ -33,7 +33,7 @@ export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
 
     // Hydrate for SSR
     const active = useRef(true);
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    // biome-ignore lint/correctness/useExhaustiveDependencies: we only want to initialize once on mount
     useEffect(() => {
         if (!config) return;
         config.utils

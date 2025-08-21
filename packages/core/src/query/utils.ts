@@ -20,7 +20,7 @@ export function hashFn(queryKey: QueryKey): string {
     });
 }
 
-// biome-ignore lint/complexity/noBannedTypes: <explanation>
+// biome-ignore lint/complexity/noBannedTypes: from wagmi
 function isPlainObject(o: any): o is Object {
     if (!hasObjectPrototype(o)) {
         return false;
@@ -35,7 +35,7 @@ function isPlainObject(o: any): o is Object {
     if (!hasObjectPrototype(prot)) return false;
 
     // If constructor does not have an Object-specific method
-    // biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
+    // biome-ignore lint/suspicious/noPrototypeBuiltins: from wagmi
     if (!prot.hasOwnProperty("isPrototypeOf")) return false;
 
     // Most likely a plain Object
@@ -47,7 +47,7 @@ function hasObjectPrototype(o: any): boolean {
 }
 
 export function filterQueryOptions<type extends Record<string, unknown>>(options: type): type {
-    // biome-ignore-start lint/correctness/noUnusedVariables: <explanation>
+    // biome-ignore-start lint/correctness/noUnusedVariables: from wagmi
     const {
         _defaulted,
         behavior,
@@ -89,7 +89,7 @@ export function filterQueryOptions<type extends Record<string, unknown>>(options
         query,
         ...rest
     } = options;
-    // biome-ignore-end lint/correctness/noUnusedVariables: <explanation>
+    // biome-ignore-end lint/correctness/noUnusedVariables: from wagmi
 
     return rest as type;
 }

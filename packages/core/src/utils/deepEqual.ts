@@ -35,6 +35,6 @@ export function deepEqual(a: any, b: any) {
     }
 
     // true if both NaN, false otherwise
-    // biome-ignore lint/suspicious/noSelfCompare: <explanation>
+    // biome-ignore lint/suspicious/noSelfCompare: from wagmi
     return a !== a && b !== b;
 }

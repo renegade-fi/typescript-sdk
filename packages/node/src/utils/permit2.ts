@@ -56,7 +56,7 @@ export async function signPermit2({
     walletClient: WalletClient;
     pkRoot: bigint[];
 }) {
-    if (!walletClient.account) throw new Error("`0x${string}` not found on wallet client");
+    if (!walletClient.account) throw new Error("Account not found on wallet client");
 
     // Construct Domain
     const domain: TypedDataDomain = {
