@@ -11,7 +11,9 @@ if (!API_SECRET) {
 
 const client = ExternalMatchClient.newArbitrumSepoliaClient(API_KEY, API_SECRET);
 
-const response = await client.getSupportedTokens();
-const tickers = response.tokens.map((token) => token.symbol);
+// Example base token mint (WETH)
+const WETH = "0xc3414a7ef14aaaa9c4522dfc00a4e66e74e9c25a";
 
-console.log(`Renegade supports the following tokens: ${tickers.join(", ")}`);
+const depth = await client.getOrderBookDepth(WETH);
+
+console.log(depth);

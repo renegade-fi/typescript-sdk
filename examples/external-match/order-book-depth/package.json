@@ -1,5 +1,5 @@
 {
-  "name": "example-external-match-native-gas-sponsorship",
+  "name": "example-external-match-order-book-depth",
   "private": true,
   "type": "module",
   "scripts": {

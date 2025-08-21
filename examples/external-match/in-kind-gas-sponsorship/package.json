@@ -6,10 +6,11 @@
     "start": "tsx index.ts"
   },
   "dependencies": {
-    "@renegade-fi/node": "latest",
+    "@renegade-fi/renegade-sdk": "latest",
     "viem": "latest"
   },
   "devDependencies": {
-    "typescript": "^5.0.3"
+    "tsx": "^4",
+    "typescript": "^5"
   }
 }
