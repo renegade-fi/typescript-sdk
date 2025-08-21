@@ -3,18 +3,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 export {
-    type AssembleExternalQuoteErrorType,
-    type AssembleExternalQuoteParameters,
-    type AssembleExternalQuoteReturnType,
-    assembleExternalQuote,
-} from "../actions/assembleExternalQuote.js";
-export {
-    type AssembleMalleableQuoteErrorType,
-    type AssembleMalleableQuoteParameters,
-    type AssembleMalleableQuoteReturnType,
-    assembleMalleableQuote,
-} from "../actions/assembleMalleableQuote.js";
-export {
     type CancelOrderErrorType,
     type CancelOrderParameters,
     type CancelOrderReturnType,
@@ -75,18 +63,6 @@ export {
     getBalances,
 } from "../actions/getBalances.js";
 export {
-    type GetExternalMatchBundleErrorType,
-    type GetExternalMatchBundleParameters,
-    type GetExternalMatchBundleReturnType,
-    getExternalMatchBundle,
-} from "../actions/getExternalMatchBundle.js";
-export {
-    type GetExternalMatchQuoteErrorType,
-    type GetExternalMatchQuoteParameters,
-    type GetExternalMatchQuoteReturnType,
-    getExternalMatchQuote,
-} from "../actions/getExternalMatchQuote.js";
-export {
     type GetNetworkOrdersErrorType,
     type GetNetworkOrdersReturnType,
     getNetworkOrders,
@@ -122,11 +98,6 @@ export {
     getSkRoot,
 } from "../actions/getSkRoot.js";
 export {
-    type GetSupportedTokensErrorType,
-    type GetSupportedTokensReturnType,
-    getSupportedTokens,
-} from "../actions/getSupportedTokens.js";
-export {
     type GetSymmetricKeyReturnType,
     getSymmetricKey,
 } from "../actions/getSymmetricKey.js";
@@ -145,11 +116,6 @@ export {
     type GetTaskStatusReturnType,
     getTaskStatus,
 } from "../actions/getTaskStatus.js";
-export {
-    type GetTokenPricesErrorType,
-    type GetTokenPricesReturnType,
-    getTokenPrices,
-} from "../actions/getTokenPrices.js";
 export {
     type GetWalletFromRelayerErrorType as GetWalletErrorType,
     type GetWalletFromRelayerParameters,
@@ -224,11 +190,6 @@ export * from "./constants.js";
 // createConfig
 ////////////////////////////////////////////////////////////////////////////////
 
-export {
-    type AuthConfig,
-    type CreateAuthConfigParameters,
-    createAuthConfig,
-} from "../createAuthConfig.js";
 export {
     type BaseConfig,
     type Config,

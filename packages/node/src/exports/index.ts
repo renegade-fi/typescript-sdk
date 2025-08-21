@@ -3,7 +3,6 @@ export * from "@renegade-fi/core/actions";
 export * from "@renegade-fi/core/constants";
 
 import {
-    createAuthConfig as core_createAuthConfig,
     createConfig as core_createConfig,
     createExternalKeyConfig as core_createExternalKeyConfig,
 } from "@renegade-fi/core";
@@ -20,16 +19,6 @@ function createConfig(
     return config;
 }
 
-function createAuthConfig(
-    ...args: Parameters<typeof core_createAuthConfig>
-): ReturnType<typeof core_createAuthConfig> {
-    const config = core_createAuthConfig({
-        ...args[0],
-        utils: RustUtils,
-    });
-    return config;
-}
-
 function createExternalKeyConfig(
     ...args: Parameters<typeof core_createExternalKeyConfig>
 ): ReturnType<typeof core_createExternalKeyConfig> {
@@ -40,13 +29,11 @@ function createExternalKeyConfig(
     return config;
 }
 
-export { createAuthConfig, createConfig, createExternalKeyConfig };
+export { createConfig, createExternalKeyConfig };
 
 ////////////////////////////////////////////////////////////////////////////////
 // Clients
 ////////////////////////////////////////////////////////////////////////////////
-
-export { ExternalMatchClient } from "../clients/external-match/index.js";
 
 export { AdminRelayerClient } from "../clients/relayer/index.js";
 export {

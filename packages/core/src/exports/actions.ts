@@ -3,18 +3,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 export {
-    type AssembleExternalQuoteErrorType,
-    type AssembleExternalQuoteParameters,
-    type AssembleExternalQuoteReturnType,
-    assembleExternalQuote,
-} from "../actions/assembleExternalQuote.js";
-export {
-    type AssembleMalleableQuoteErrorType,
-    type AssembleMalleableQuoteParameters,
-    type AssembleMalleableQuoteReturnType,
-    assembleMalleableQuote,
-} from "../actions/assembleMalleableQuote.js";
-export {
     type AssignOrderParameters,
     assignOrder,
 } from "../actions/assignOrder.js";
@@ -70,18 +58,6 @@ export {
     type GetBalancesReturnType,
     getBalances,
 } from "../actions/getBalances.js";
-export {
-    type GetExternalMatchBundleErrorType,
-    type GetExternalMatchBundleParameters,
-    type GetExternalMatchBundleReturnType,
-    getExternalMatchBundle,
-} from "../actions/getExternalMatchBundle.js";
-export {
-    type GetExternalMatchQuoteErrorType,
-    type GetExternalMatchQuoteParameters,
-    type GetExternalMatchQuoteReturnType,
-    getExternalMatchQuote,
-} from "../actions/getExternalMatchQuote.js";
 export {
     type GetNetworkOrdersErrorType,
     type GetNetworkOrdersReturnType,
