@@ -1,10 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // createConfig
 ////////////////////////////////////////////////////////////////////////////////
-import {
-    createAuthConfig as core_createAuthConfig,
-    createConfig as core_createConfig,
-} from "@renegade-fi/core";
+import { createConfig as core_createConfig } from "@renegade-fi/core";
 
 import * as RustUtils from "../../renegade-utils/index.js";
 
@@ -20,17 +17,7 @@ function createConfig(
     return config;
 }
 
-function createAuthConfig(
-    ...args: Parameters<typeof core_createAuthConfig>
-): ReturnType<typeof core_createAuthConfig> {
-    const config = core_createAuthConfig({
-        ...args[0],
-        utils: RustUtils,
-    });
-    return config;
-}
-
-export { createAuthConfig, createConfig };
+export { createConfig };
 
 ////////////////////////////////////////////////////////////////////////////////
 // Context
