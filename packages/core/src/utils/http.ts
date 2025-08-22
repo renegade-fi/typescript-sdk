@@ -69,7 +69,7 @@ export async function getRelayerRaw(url: string, headers = {}) {
                     ) {
                         // We use ts-ignore here because TypeScript doesn't recognize the
                         // `context` argument in the JSON.parse reviver
-                        // @ts-ignore
+                        // @ts-expect-error
                         return JSON.parse(data, (key, value, context) => {
                             if (typeof value === "number" && key !== "price") {
                                 if (context?.source === undefined) {

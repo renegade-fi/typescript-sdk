@@ -15,7 +15,7 @@ export async function payFees(config: RenegadeConfig): Promise<PayFeesReturnType
     try {
         const res = await postRelayerWithAuth(config, getBaseUrl(PAY_FEES_ROUTE(walletId)));
         if (res?.task_ids) {
-            res.task_ids.map((id: string) => {
+            res.task_ids.forEach((id: string) => {
                 console.log(`task pay-fees(${id}): ${walletId}`);
             });
         }

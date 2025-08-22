@@ -25,10 +25,14 @@ export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
     if (config && !config._internal.ssr) onMount();
 
     useEffect(() => {
-        RustUtils.default().then(() => {
-            setIsInitialized(true);
-            console.log("Backup effect initialized WASM");
-        });
+        RustUtils.default()
+            .then(() => {
+                setIsInitialized(true);
+                console.log("Backup effect initialized WASM");
+            })
+            .catch((error: unknown) => {
+                console.error("❌ Failed to initialize Rust utils", error);
+            });
     }, []);
 
     // Hydrate for SSR
