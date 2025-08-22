@@ -25,15 +25,19 @@ export function Hydrate(parameters: React.PropsWithChildren<HydrateProps>) {
     if (config && !config._internal.ssr) onMount();
 
     useEffect(() => {
-        RustUtils.default().then(() => {
-            setIsInitialized(true);
-            console.log("Backup effect initialized WASM");
-        });
+        RustUtils.default()
+            .then(() => {
+                setIsInitialized(true);
+                console.log("Backup effect initialized WASM");
+            })
+            .catch((error: unknown) => {
+                console.error("❌ Failed to initialize Rust utils", error);
+            });
     }, []);
 
     // Hydrate for SSR
     const active = useRef(true);
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    // biome-ignore lint/correctness/useExhaustiveDependencies: we only want to initialize once on mount
     useEffect(() => {
         if (!config) return;
         config.utils

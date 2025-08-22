@@ -1,5 +1,5 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
     "files": {
         "includes": [
             "**",
@@ -7,9 +7,9 @@
             "!**/pnpm-lock.yaml",
             "!**/package.json",
             "!**/tsconfig.base.json",
-            "!**/wasm/**",
-            "!**/dist/**",
-            "!**/renegade-utils/**",
+            "!**/wasm",
+            "!**/dist",
+            "!**/renegade-utils",
             "!**/*.d.ts",
             "!**/version.ts"
         ]
