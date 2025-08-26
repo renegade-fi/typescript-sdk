@@ -4,4 +4,4 @@
 bun run index.ts
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/renegade-fi/typescript-sdk/tree/main/examples/relayer/lookup-wallet)
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/renegade-fi/typescript-sdk/tree/main/examples/external-keychain/lookup-wallet)
