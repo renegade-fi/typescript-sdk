@@ -331,7 +331,7 @@ export class RenegadeClient {
         return getWalletNullifier(this.getConfig());
     }
 
-    async getOrderHistory(parameters: GetOrderHistoryParameters) {
+    async getOrderHistory(parameters: GetOrderHistoryParameters = {}) {
         return getOrderHistory(this.getConfig(), parameters);
     }
 
