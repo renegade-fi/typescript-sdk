@@ -16,6 +16,7 @@ export async function createOrderInMatchingPool(
     config: Config,
     parameters: CreateOrderInMatchingPoolParameters,
 ): Promise<CreateOrderReturnType> {
+    const logger = config.getLogger("core:actions:createOrderInMatchingPool");
     const {
         id = "",
         base,
@@ -57,12 +58,18 @@ export async function createOrderInMatchingPool(
             getBaseUrl(ADMIN_CREATE_ORDER_IN_MATCHING_POOL_ROUTE(walletId)),
             body,
         );
-        console.log(`task update-wallet(${res.task_id}): ${walletId}`);
+        logger.debug(`task update-wallet(${res.task_id})`, {
+            walletId,
+            orderId: id,
+            taskId: res.task_id,
+            matchingPool,
+        });
         return { taskId: res.task_id };
     } catch (error) {
-        console.error(`${walletId}`, {
-            error,
-        });
+        logger.error(
+            `Create order in matching pool failed: ${error instanceof Error ? error.message : String(error)}`,
+            { walletId, orderId: id },
+        );
         throw error;
     }
 }

@@ -18,6 +18,7 @@ export async function createWallet(
     parameters: CreateWalletParameters = {},
 ): CreateWalletReturnType {
     const { getBaseUrl, utils } = config;
+    const logger = config.getLogger("core:actions:createWallet");
     let body: string;
     const headers = {
         "Content-Type": "application/json",
@@ -48,9 +49,9 @@ export async function createWallet(
         if (config.renegadeKeyType === "internal") {
             config.setState((x) => ({ ...x, status: "creating wallet" }));
         }
-        console.log(`task create-wallet(${res.task_id}): ${res.wallet_id}`, {
-            status: "creating wallet",
+        logger.debug(`task create-wallet(${res.task_id})`, {
             walletId: res.wallet_id,
+            taskId: res.task_id,
         });
         return waitForWalletIndexing(config, {
             isLookup: false,
@@ -58,13 +59,15 @@ export async function createWallet(
                 if (config.renegadeKeyType === "internal") {
                     config.setState((x) => ({ ...x, status: "in relayer" }));
                 }
-                console.log(`task create-wallet(${res.task_id}) completed: ${wallet.id}`, {
-                    status: "in relayer",
+                logger.debug(`task create-wallet(${res.task_id}) completed`, {
                     walletId: wallet.id,
+                    taskId: res.task_id,
                 });
             },
             onFailure: () => {
-                console.log(`task create-wallet(${res.task_id}) failed`);
+                logger.debug(`task create-wallet(${res.task_id}) failed`, {
+                    walletId: res.wallet_id,
+                });
                 if (config.renegadeKeyType === "internal") {
                     config.setState({});
                 }

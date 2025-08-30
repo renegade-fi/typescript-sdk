@@ -20,28 +20,26 @@ export async function connect(
     config: Config,
     params: ConnectParameters = {},
 ): Promise<ConnectReturnType> {
+    const logger = config.getLogger("core:actions:connect");
     try {
         const { isCreateWallet = false } = params;
         const walletId = getWalletId(config);
         config.setState((x) => ({ ...x, id: walletId }));
 
-        console.log("Attempting to connect wallet", { walletId: config.state.id });
+        logger.debug("Attempting to connect wallet", { walletId: config.state.id });
 
         try {
             const wallet = await getWalletFromRelayer(config);
             if (wallet) {
                 config.setState((x) => ({ ...x, status: "in relayer" }));
-                console.log("Wallet found in relayer", {
-                    status: "in relayer",
-                    walletId: config.state.id,
-                });
+                logger.debug("Wallet found in relayer", { walletId: config.state.id });
                 return;
             }
         } catch (error) {
-            console.error("Wallet not found in relayer", {
-                error,
-                walletId: config.state.id,
-            });
+            logger.error(
+                `Wallet not found in relayer: ${error instanceof Error ? error.message : String(error)}`,
+                { walletId: config.state.id },
+            );
         }
 
         // Create wallet iff no WalletUpdated events found onchain
@@ -57,10 +55,10 @@ export async function connect(
             job: lookupWallet(config),
         });
     } catch (error) {
-        console.error("Could not connect wallet", {
-            error,
-            walletId: config.state.id,
-        });
+        logger.error(
+            `Could not connect wallet: ${error instanceof Error ? error.message : String(error)}`,
+            { walletId: config.state.id },
+        );
         config.setState({});
     }
 }

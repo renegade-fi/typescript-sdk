@@ -11,18 +11,22 @@ export type PayFeesErrorType = BaseError;
 export async function payFees(config: RenegadeConfig): Promise<PayFeesReturnType> {
     const { getBaseUrl } = config;
     const walletId = getWalletId(config);
+    const logger = config.getLogger("core:actions:payFees");
 
     try {
         const res = await postRelayerWithAuth(config, getBaseUrl(PAY_FEES_ROUTE(walletId)));
         if (res?.task_ids) {
-            res.task_ids.forEach((id: string) => {
-                console.log(`task pay-fees(${id}): ${walletId}`);
-            });
+            for (const id of res.task_ids) {
+                logger.debug(`task pay-fees(${id}): ${walletId}`, {
+                    walletId,
+                    taskId: id,
+                });
+            }
         }
         return { taskIds: res.task_ids };
     } catch (error) {
-        console.error(`wallet id: ${walletId} pay fees failed`, {
-            error,
+        logger.error(`Pay fees failed: ${error instanceof Error ? error.message : String(error)}`, {
+            walletId,
         });
         throw error;
     }

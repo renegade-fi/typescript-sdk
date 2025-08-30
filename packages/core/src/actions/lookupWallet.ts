@@ -19,6 +19,7 @@ export async function lookupWallet(
     parameters: LookupWalletParameters = {},
 ): LookupWalletReturnType {
     const { getBaseUrl, utils } = config;
+    const logger = config.getLogger("core:actions:lookupWallet");
     let body: string;
 
     if (config.renegadeKeyType === "internal") {
@@ -43,9 +44,9 @@ export async function lookupWallet(
     const res = await postRelayerRaw(getBaseUrl(FIND_WALLET_ROUTE), body);
 
     if (res.task_id) {
-        console.log(`task lookup-wallet(${res.task_id}): ${res.wallet_id}`, {
-            status: "looking up",
+        logger.debug(`task lookup-wallet(${res.task_id})`, {
             walletId: res.wallet_id,
+            taskId: res.task_id,
         });
         if (config.renegadeKeyType === "internal") {
             config.setState((x) => ({ ...x, status: "looking up" }));
@@ -60,13 +61,16 @@ export async function lookupWallet(
                         status: "in relayer",
                     }));
                 }
-                console.log(`task lookup-wallet(${res.task_id}) completed: ${wallet.id}`, {
-                    status: "in relayer",
+                logger.debug(`task lookup-wallet(${res.task_id}) completed`, {
                     walletId: wallet.id,
+                    taskId: res.task_id,
                 });
             },
             onFailure() {
-                console.log(`task lookup-wallet(${res.task_id}) failed: ${res.wallet_id}`);
+                logger.debug(`task lookup-wallet(${res.task_id}) failed`, {
+                    walletId: res.wallet_id,
+                    taskId: res.task_id,
+                });
                 if (config.renegadeKeyType === "internal") {
                     config.setState({});
                 }
@@ -78,6 +82,7 @@ export async function lookupWallet(
 
 // Returns true iff the query successfully returns 0 logs
 export async function checkForWalletUpdatesOnChain(config: Config) {
+    const logger = config.getLogger("core:actions:lookupWallet:checkForWalletUpdatesOnChain");
     try {
         const {
             utils,
@@ -96,7 +101,10 @@ export async function checkForWalletUpdatesOnChain(config: Config) {
         });
         return logs.length === 0;
     } catch (error) {
-        console.error(`Error looking up wallet on chain: ${error}`);
+        logger.error(
+            `Error looking up wallet on chain: ${error instanceof Error ? error.message : String(error)}`,
+            {},
+        );
         return false;
     }
 }

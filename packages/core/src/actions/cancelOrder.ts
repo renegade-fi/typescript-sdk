@@ -3,6 +3,7 @@ import type { Hex } from "viem";
 import { CANCEL_ORDER_ROUTE } from "../constants.js";
 import type { RenegadeConfig } from "../createConfig.js";
 import type { BaseErrorType } from "../errors/base.js";
+import type { Logger } from "../logging/types.js";
 import { stringifyForWasm } from "../utils/bigJSON.js";
 import { postRelayerWithAuth } from "../utils/http.js";
 import { getBackOfQueueWallet } from "./getBackOfQueueWallet.js";
@@ -23,6 +24,7 @@ export async function cancelOrder(
 ): Promise<CancelOrderReturnType> {
     const { id, newPublicKey } = parameters;
     const { getBaseUrl, utils, renegadeKeyType } = config;
+    const logger: Logger = config.getLogger("core:actions:cancelOrder");
 
     const walletId = getWalletId(config);
     const wallet = await getBackOfQueueWallet(config);
@@ -54,12 +56,17 @@ export async function cancelOrder(
             getBaseUrl(CANCEL_ORDER_ROUTE(walletId, id)),
             body,
         );
-        console.log(`task update-wallet(${res.task_id}): ${walletId}`);
+        logger.debug(`task update-wallet(${res.task_id})`, {
+            walletId,
+            orderId: id,
+            taskId: res.task_id,
+        });
         return { taskId: res.task_id };
     } catch (error) {
-        console.error(`${walletId}`, {
-            error,
-        });
+        logger.error(
+            `Cancel order failed: ${error instanceof Error ? error.message : String(error)}`,
+            { walletId, orderId: id },
+        );
         throw error;
     }
 }

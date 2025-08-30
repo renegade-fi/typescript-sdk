@@ -12,6 +12,7 @@ export async function destroyMatchingPool(
 ) {
     const { matchingPool } = parameters;
     const { getBaseUrl } = config;
+    const logger = config.getLogger("core:actions:destroyMatchingPool");
 
     try {
         await postRelayerWithAdmin(
@@ -19,9 +20,10 @@ export async function destroyMatchingPool(
             getBaseUrl(ADMIN_MATCHING_POOL_DESTROY_ROUTE(matchingPool)),
         );
     } catch (error) {
-        console.error(`Failed to destroy matching pool ${matchingPool}`, {
-            error,
-        });
+        logger.error(
+            `Failed to destroy matching pool: ${error instanceof Error ? error.message : String(error)}`,
+            { matchingPool },
+        );
         throw error;
     }
 }

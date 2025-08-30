@@ -10,17 +10,18 @@ export type RefreshWalletReturnType = {
 export async function refreshWallet(config: RenegadeConfig): Promise<RefreshWalletReturnType> {
     const { getBaseUrl } = config;
     const walletId = getWalletId(config);
+    const logger = config.getLogger("core:actions:refreshWallet");
 
     try {
         const res = await postRelayerWithAuth(config, getBaseUrl(REFRESH_WALLET_ROUTE(walletId)));
-        if (res?.task_id) {
-            console.log(`task refresh-wallet(${res.task_id}): ${walletId}`);
-        }
+        if (res?.task_id)
+            logger.debug(`task refresh-wallet(${res.task_id})`, { walletId, taskId: res.task_id });
         return { taskId: res.task_id };
     } catch (error) {
-        console.error(`${walletId}`, {
-            error,
-        });
+        logger.error(
+            `Refresh wallet failed: ${error instanceof Error ? error.message : String(error)}`,
+            { walletId },
+        );
         throw error;
     }
 }

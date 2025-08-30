@@ -28,6 +28,7 @@ export async function createOrder(
     config: RenegadeConfig,
     parameters: CreateOrderParameters,
 ): Promise<CreateOrderReturnType> {
+    const logger = config.getLogger("core:actions:createOrder");
     const {
         id = "",
         base,
@@ -78,12 +79,17 @@ export async function createOrder(
             getBaseUrl(WALLET_ORDERS_ROUTE(walletId)),
             body,
         );
-        console.log(`task update-wallet(${res.task_id}): ${walletId}`);
+        logger.debug(`task update-wallet(${res.task_id})`, {
+            walletId,
+            orderId: id,
+            taskId: res.task_id,
+        });
         return { taskId: res.task_id };
     } catch (error) {
-        console.error(`${walletId}`, {
-            error,
-        });
+        logger.error(
+            `Create order failed: ${error instanceof Error ? error.message : String(error)}`,
+            { walletId, orderId: id },
+        );
         throw error;
     }
 }

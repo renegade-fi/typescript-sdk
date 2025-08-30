@@ -10,6 +10,7 @@ export type AssignOrderParameters = {
 export async function assignOrder(config: Config, parameters: AssignOrderParameters) {
     const { orderId, matchingPool } = parameters;
     const { getBaseUrl } = config;
+    const logger = config.getLogger("core:actions:assignOrder");
 
     try {
         await postRelayerWithAdmin(
@@ -17,9 +18,10 @@ export async function assignOrder(config: Config, parameters: AssignOrderParamet
             getBaseUrl(ADMIN_ASSIGN_ORDER_ROUTE(orderId, matchingPool)),
         );
     } catch (error) {
-        console.error(`Failed to assign order ${orderId} to matching pool ${matchingPool}`, {
-            error,
-        });
+        logger.error(
+            `Failed to assign order to matching pool: ${error instanceof Error ? error.message : String(error)}`,
+            { orderId, matchingPool },
+        );
         throw error;
     }
 }

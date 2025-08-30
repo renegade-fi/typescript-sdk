@@ -102,6 +102,9 @@ export function createConfig(parameters: CreateConfigParameters): InternalConfig
         relayerUrl,
         priceReporterUrl,
         darkPoolAddress: parameters.darkPoolAddress,
+        getLogger(namespace?: string): Logger {
+            return namespace ? childLogger(baseLogger, { ns: namespace }) : baseLogger;
+        },
         getBaseUrl: (route = "") => {
             const protocol =
                 useInsecureTransport || parameters.relayerUrl.includes("localhost")
@@ -177,12 +180,6 @@ export function createConfig(parameters: CreateConfigParameters): InternalConfig
         _internal: {
             store,
             ssr: Boolean(ssr),
-            /** Base logger for SDK internals. */
-            logger: baseLogger,
-            /** Retrieve a namespaced child logger when supported by the consumer logger. */
-            getLogger(namespace?: string): Logger {
-                return namespace ? childLogger(baseLogger, { ns: namespace }) : baseLogger;
-            },
         },
         chainId: parameters.chainId,
     };
@@ -193,6 +190,8 @@ export type BaseConfig = {
     getWebsocketBaseUrl: () => string;
     getBaseUrl: (route?: string) => string;
     getSymmetricKey: (type?: AuthType) => Hex;
+    /** Retrieve a logger, optionally namespaced. */
+    getLogger: (namespace?: string) => Logger;
 };
 
 export type Config = BaseConfig & {
@@ -226,8 +225,6 @@ export type Config = BaseConfig & {
     _internal: {
         readonly store: Mutate<StoreApi<any>, [["zustand/persist", any]]>;
         readonly ssr: boolean;
-        readonly logger: Logger;
-        getLogger(namespace?: string): Logger;
     };
 };
 

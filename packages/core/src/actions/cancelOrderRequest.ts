@@ -18,6 +18,7 @@ export async function cancelOrderRequest(
     const { getBaseUrl } = config;
 
     const walletId = getWalletId(config);
+    const logger = config.getLogger("core:actions:cancelOrderRequest");
 
     try {
         const res = await postRelayerWithAuth(
@@ -25,12 +26,17 @@ export async function cancelOrderRequest(
             getBaseUrl(CANCEL_ORDER_ROUTE(walletId, id)),
             request,
         );
-        console.log(`task update-wallet(${res.task_id}): ${walletId}`);
+        logger.debug(`task update-wallet(${res.task_id})`, {
+            walletId,
+            orderId: id,
+            taskId: res.task_id,
+        });
         return { taskId: res.task_id };
     } catch (error) {
-        console.error(`${walletId}`, {
-            error,
-        });
+        logger.error(
+            `Cancel order request failed: ${error instanceof Error ? error.message : String(error)}`,
+            { walletId, orderId: id },
+        );
         throw error;
     }
 }

@@ -38,20 +38,17 @@ export async function postRelayerRaw(url: string, body: any, headers = {}) {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                console.error("Response error:", error.response.data);
                 throw new BaseError(error.response.data);
             }
             if (error.request) {
                 // The request was made but no response was received
-                console.error("Request error: No response received");
+                throw new BaseError("Request error: No response received");
             } else {
                 // Something happened in setting up the request that triggered an Error
-                console.error("Error:", error.message);
+                throw new BaseError(error.message);
             }
-        } else {
-            // Non-Axios error
-            console.error("Error:", error);
         }
+        // Non-Axios error
         throw error; // Rethrow the error for further handling or logging
     }
 }
@@ -73,9 +70,6 @@ export async function getRelayerRaw(url: string, headers = {}) {
                         return JSON.parse(data, (key, value, context) => {
                             if (typeof value === "number" && key !== "price") {
                                 if (context?.source === undefined) {
-                                    console.warn(
-                                        `No JSON source for ${key}, converting parsed value to BigInt`,
-                                    );
                                     return BigInt(value);
                                 }
                                 return BigInt(context.source);
@@ -94,7 +88,6 @@ export async function getRelayerRaw(url: string, headers = {}) {
                 }
             },
         });
-        // console.log(`GET ${url} response: `, response.data)
         // Process the response data as needed
         return response.data; // Assuming the function should return the response data
     } catch (error) {
@@ -102,19 +95,17 @@ export async function getRelayerRaw(url: string, headers = {}) {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                console.error("Response error:", error.response.data);
+                throw new BaseError(error.response.data);
             } else if (error.request) {
                 // The request was made but no response was received
-                console.error("Request error: No response received");
+                throw new BaseError("Request error: No response received");
             } else {
                 // Something happened in setting up the request that triggered an Error
-                console.error("Error:", error.message);
+                throw new BaseError(error.message);
             }
-        } else {
-            // Non-Axios error
-            console.error("Error:", error);
         }
-        throw error; // Rethrow the error for further handling or logging
+        // Non-Axios error
+        throw new BaseError(error instanceof Error ? error.message : String(error));
     }
 }
 

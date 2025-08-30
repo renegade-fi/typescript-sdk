@@ -9,6 +9,7 @@ export type CreateMatchingPoolParameters = {
 export async function createMatchingPool(config: Config, parameters: CreateMatchingPoolParameters) {
     const { matchingPool } = parameters;
     const { getBaseUrl } = config;
+    const logger = config.getLogger("core:actions:createMatchingPool");
 
     try {
         await postRelayerWithAdmin(
@@ -16,9 +17,10 @@ export async function createMatchingPool(config: Config, parameters: CreateMatch
             getBaseUrl(ADMIN_MATCHING_POOL_CREATE_ROUTE(matchingPool)),
         );
     } catch (error) {
-        console.error(`Failed to create matching pool ${matchingPool}`, {
-            error,
-        });
+        logger.error(
+            `Failed to create matching pool: ${error instanceof Error ? error.message : String(error)}`,
+            { matchingPool },
+        );
         throw error;
     }
 }

@@ -14,6 +14,7 @@ export async function getOrderMatchingPool(
 ): Promise<GetOrderMatchingPoolReturnType> {
     const { orderId } = parameters;
     const { getBaseUrl } = config;
+    const logger = config.getLogger("core:actions:getOrderMatchingPool");
 
     try {
         const res = await getRelayerWithAdmin(
@@ -23,7 +24,10 @@ export async function getOrderMatchingPool(
 
         return res.matching_pool;
     } catch (error) {
-        console.error(`Failed to get matching pool for order ${orderId}`, { error });
+        logger.error(
+            `Failed to get matching pool: ${error instanceof Error ? error.message : String(error)}`,
+            { orderId },
+        );
 
         throw error;
     }

@@ -37,6 +37,7 @@ export async function updateOrder(
         newPublicKey,
     } = parameters;
     const { getBaseUrl, utils, renegadeKeyType } = config;
+    const logger = config.getLogger("core:actions:updateOrder");
 
     const walletId = getWalletId(config);
     const wallet = await getBackOfQueueWallet(config);
@@ -75,12 +76,17 @@ export async function updateOrder(
             getBaseUrl(UPDATE_ORDER_ROUTE(walletId, id)),
             body,
         );
-        console.log(`task update-wallet(${res.task_id}): ${walletId}`);
+        logger.debug(`task update-wallet(${res.task_id})`, {
+            walletId,
+            orderId: id,
+            taskId: res.task_id,
+        });
         return { taskId: res.task_id };
     } catch (error) {
-        console.error(`${walletId}`, {
-            error,
-        });
+        logger.error(
+            `Update order failed: ${error instanceof Error ? error.message : String(error)}`,
+            { walletId, orderId: id },
+        );
         throw error;
     }
 }

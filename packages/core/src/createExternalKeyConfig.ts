@@ -80,6 +80,9 @@ export function createExternalKeyConfig(
         utils: parameters.utils,
         renegadeKeyType: "external" as const,
         relayerUrl,
+        getLogger(namespace?: string): Logger {
+            return namespace ? childLogger(baseLogger, { ns: namespace }) : baseLogger;
+        },
         getBaseUrl: (route = "") => {
             const formattedRoute = route.startsWith("/") ? route : `/${route}`;
             return `${relayerUrl}/v0${formattedRoute}`;
@@ -93,14 +96,6 @@ export function createExternalKeyConfig(
         viemClient,
         darkPoolAddress,
         chainId: parameters.chainId,
-        _internal: {
-            /** Base logger for SDK internals. */
-            logger: baseLogger as Logger,
-            /** Retrieve a namespaced child logger when supported by the consumer logger. */
-            getLogger(namespace?: string): Logger {
-                return namespace ? childLogger(baseLogger, { ns: namespace }) : baseLogger;
-            },
-        },
     };
 }
 
@@ -116,8 +111,4 @@ export type ExternalConfig = BaseConfig & {
     setPublicKey: (newPublicKey: `0x${string}`) => void;
     viemClient?: PublicClient;
     darkPoolAddress: Address;
-    _internal?: {
-        readonly logger: Logger;
-        getLogger(namespace?: string): Logger;
-    };
 };

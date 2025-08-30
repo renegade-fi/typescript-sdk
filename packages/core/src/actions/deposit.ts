@@ -27,6 +27,7 @@ export async function deposit(
         parameters;
 
     const { getBaseUrl, utils, renegadeKeyType } = config;
+    const logger = config.getLogger("core:actions:deposit");
 
     const walletId = getWalletId(config);
     const wallet = await getBackOfQueueWallet(config);
@@ -64,11 +65,11 @@ export async function deposit(
             getBaseUrl(DEPOSIT_BALANCE_ROUTE(walletId)),
             body,
         );
-        console.log(`task update-wallet(${res.task_id}): ${walletId}`);
+        logger.debug(`task update-wallet(${res.task_id})`, { walletId, taskId: res.task_id });
         return { taskId: res.task_id };
     } catch (error) {
-        console.error(`${walletId}`, {
-            error,
+        logger.error(`Deposit failed: ${error instanceof Error ? error.message : String(error)}`, {
+            walletId,
         });
         throw error;
     }

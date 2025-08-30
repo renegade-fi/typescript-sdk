@@ -22,6 +22,7 @@ export async function withdraw(
 ): WithdrawReturnType {
     const { mint, amount, destinationAddr, newPublicKey } = parameters;
     const { getBaseUrl, utils, renegadeKeyType } = config;
+    const logger = config.getLogger("core:actions:withdraw");
 
     const walletId = getWalletId(config);
     const wallet = await getBackOfQueueWallet(config);
@@ -58,11 +59,11 @@ export async function withdraw(
             getBaseUrl(WITHDRAW_BALANCE_ROUTE(walletId, mint)),
             body,
         );
-        console.log(`task update-wallet(${res.task_id}): ${walletId}`);
+        logger.debug(`task update-wallet(${res.task_id})`, { walletId, taskId: res.task_id });
         return { taskId: res.task_id };
     } catch (error) {
-        console.error(`${walletId}`, {
-            error,
+        logger.error(`Withdraw failed: ${error instanceof Error ? error.message : String(error)}`, {
+            walletId,
         });
         throw error;
     }

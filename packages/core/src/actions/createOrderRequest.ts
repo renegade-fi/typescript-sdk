@@ -18,6 +18,7 @@ export async function createOrderRequest(
     const { getBaseUrl } = config;
 
     const walletId = getWalletId(config);
+    const logger = config.getLogger("core:actions:createOrderRequest");
 
     try {
         const res = await postRelayerWithAuth(
@@ -25,12 +26,13 @@ export async function createOrderRequest(
             getBaseUrl(WALLET_ORDERS_ROUTE(walletId)),
             request,
         );
-        console.log(`task update-wallet(${res.task_id}): ${walletId}`);
+        logger.debug(`task update-wallet(${res.task_id})`, { walletId, taskId: res.task_id });
         return { taskId: res.task_id };
     } catch (error) {
-        console.error(`${walletId}`, {
-            error,
-        });
+        logger.error(
+            `Create order request failed: ${error instanceof Error ? error.message : String(error)}`,
+            { walletId },
+        );
         throw error;
     }
 }
