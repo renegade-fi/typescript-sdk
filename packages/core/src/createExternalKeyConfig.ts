@@ -2,6 +2,8 @@ import invariant from "tiny-invariant";
 import type { Address, PublicClient, SignMessageReturnType } from "viem";
 import type { ChainId } from "./constants.js";
 import type { BaseConfig } from "./createConfig.js";
+import { childLogger, createLogger } from "./logging/logger.js";
+import type { Logger, LoggingOptions } from "./logging/types.js";
 import type * as rustUtils from "./utils.d.ts";
 
 export type CreateExternalKeyConfigParameters = {
@@ -27,6 +29,9 @@ export type CreateExternalKeyConfigParameters = {
     darkPoolAddress: Address;
     /** Utils */
     utils?: typeof rustUtils;
+    /** Logging options */
+    /** Optional logging configuration (silent by default). */
+    logging?: LoggingOptions;
 };
 
 /**
@@ -57,6 +62,9 @@ export function createExternalKeyConfig(
 
     let currentPublicKey = initialPublicKey;
 
+    // Initialize logger (silent by default when not provided by consumer)
+    const baseLogger = createLogger(parameters.logging);
+
     return {
         // External keychain
         signMessage,
@@ -85,6 +93,14 @@ export function createExternalKeyConfig(
         viemClient,
         darkPoolAddress,
         chainId: parameters.chainId,
+        _internal: {
+            /** Base logger for SDK internals. */
+            logger: baseLogger as Logger,
+            /** Retrieve a namespaced child logger when supported by the consumer logger. */
+            getLogger(namespace?: string): Logger {
+                return namespace ? childLogger(baseLogger, { ns: namespace }) : baseLogger;
+            },
+        },
     };
 }
 
@@ -100,4 +116,8 @@ export type ExternalConfig = BaseConfig & {
     setPublicKey: (newPublicKey: `0x${string}`) => void;
     viemClient?: PublicClient;
     darkPoolAddress: Address;
+    _internal?: {
+        readonly logger: Logger;
+        getLogger(namespace?: string): Logger;
+    };
 };

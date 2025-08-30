@@ -6,6 +6,8 @@ import { createStore, type Mutate, type StoreApi } from "zustand/vanilla";
 import type { ChainId } from "./constants.js";
 import type { ExternalConfig } from "./createExternalKeyConfig.js";
 import { createStorage, noopStorage, type Storage } from "./createStorage.js";
+import { childLogger, createLogger } from "./logging/logger.js";
+import type { Logger, LoggingOptions } from "./logging/types.js";
 import type { Evaluate, ExactPartial } from "./types/utils.js";
 import { AuthType } from "./utils/websocket.js";
 import type * as rustUtils from "./utils.d.ts";
@@ -24,6 +26,8 @@ export type CreateConfigParameters = {
     websocketPort?: number;
     viemClient?: PublicClient;
     adminKey?: string;
+    /** Optional logging configuration (silent by default). */
+    logging?: LoggingOptions;
 };
 
 export function createConfig(parameters: CreateConfigParameters): InternalConfig {
@@ -87,6 +91,9 @@ export function createConfig(parameters: CreateConfigParameters): InternalConfig
                 : getInitialState,
         ),
     );
+
+    // Initialize logger (silent by default when not provided by consumer)
+    const baseLogger = createLogger(parameters.logging);
 
     return {
         utils: parameters.utils,
@@ -170,6 +177,12 @@ export function createConfig(parameters: CreateConfigParameters): InternalConfig
         _internal: {
             store,
             ssr: Boolean(ssr),
+            /** Base logger for SDK internals. */
+            logger: baseLogger,
+            /** Retrieve a namespaced child logger when supported by the consumer logger. */
+            getLogger(namespace?: string): Logger {
+                return namespace ? childLogger(baseLogger, { ns: namespace }) : baseLogger;
+            },
         },
         chainId: parameters.chainId,
     };
@@ -213,6 +226,8 @@ export type Config = BaseConfig & {
     _internal: {
         readonly store: Mutate<StoreApi<any>, [["zustand/persist", any]]>;
         readonly ssr: boolean;
+        readonly logger: Logger;
+        getLogger(namespace?: string): Logger;
     };
 };
 
