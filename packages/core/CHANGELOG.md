@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.10
+
+### Patch Changes
+
+- core, node: use logger interface
+
 ## 0.9.9
 
 ### Patch Changes
