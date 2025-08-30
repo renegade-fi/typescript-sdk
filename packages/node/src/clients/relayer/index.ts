@@ -1,4 +1,10 @@
-import { type Config, createConfig, getSDKConfig, type SDKConfig } from "@renegade-fi/core";
+import {
+    type Config,
+    createConfig,
+    getSDKConfig,
+    type Logger,
+    type SDKConfig,
+} from "@renegade-fi/core";
 import type {
     AssignOrderParameters,
     CreateMatchingPoolParameters,
@@ -34,6 +40,7 @@ export class AdminRelayerClient {
         apiKey: string;
         chainId: number;
         overrides?: Partial<SDKConfig>;
+        logger?: Logger;
     }) {
         const defaultConfig = getSDKConfig(params.chainId);
         const configv2 = params.overrides
@@ -48,6 +55,9 @@ export class AdminRelayerClient {
             relayerUrl: configv2.relayerUrl,
             chainId: configv2.id,
             utils: rustUtils,
+            logging: params.logger
+                ? { logger: params.logger, namespace: "node:clients:relayer" }
+                : undefined,
         });
     }
 
@@ -62,12 +72,14 @@ export class AdminRelayerClient {
         apiKey,
         chainId,
         overrides,
+        logger,
     }: {
         apiKey: string;
         chainId: number;
         overrides?: Partial<SDKConfig>;
+        logger?: Logger;
     }) {
-        return new AdminRelayerClient({ apiKey, chainId, overrides });
+        return new AdminRelayerClient({ apiKey, chainId, overrides, logger });
     }
 
     /**

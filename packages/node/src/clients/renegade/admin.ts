@@ -1,4 +1,4 @@
-import type { SDKConfig } from "@renegade-fi/core";
+import type { Logger, SDKConfig } from "@renegade-fi/core";
 import { createConfig } from "@renegade-fi/core";
 import {
     type CreateOrderInMatchingPoolParameters,
@@ -17,7 +17,7 @@ export class AdminRenegadeClient extends RenegadeClient {
     /**
      * @internal
      */
-    private constructor(params: ConstructorParams & { apiKey: string }) {
+    private constructor(params: ConstructorParams & { apiKey: string; logger?: Logger }) {
         const { apiKey, ...renegadeParams } = params;
         super(renegadeParams);
         this.apiKey = apiKey;
@@ -36,13 +36,15 @@ export class AdminRenegadeClient extends RenegadeClient {
         seed,
         apiKey,
         overrides,
+        logger,
     }: {
         chainId: number;
         seed: `0x${string}`;
         apiKey: string;
         overrides?: Partial<SDKConfig>;
+        logger?: Logger;
     }): AdminRenegadeClient {
-        return new AdminRenegadeClient({ chainId, mode: "seed", seed, apiKey, overrides });
+        return new AdminRenegadeClient({ chainId, mode: "seed", seed, apiKey, overrides, logger });
     }
 
     /**
@@ -78,6 +80,7 @@ export class AdminRenegadeClient extends RenegadeClient {
             relayerUrl: this.configv2.relayerUrl,
             chainId: this.configv2.id,
             utils: rustUtils,
+            logging: { logger: this.getConfig().getLogger() },
             // Inject the admin key
             adminKey: this.apiKey,
         });

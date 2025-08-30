@@ -65,17 +65,23 @@ class OrderWebSocketImpl {
                 this.callback(message.event.order);
             }
         } catch (error) {
-            console.error("Error processing WebSocket message:", error);
+            const logger = this.config.getLogger("node:services:orderWebSocket");
+            const msg = error instanceof Error ? error.message : String(error);
+            logger.error(`Error processing WebSocket message: ${msg}`, {
+                walletId: this.walletId,
+            });
         }
     }
 
     handleClose() {
-        console.log("WebSocket connection closed");
+        const logger = this.config.getLogger("node:services:orderWebSocket");
+        logger.debug("WebSocket connection closed", { walletId: this.walletId });
         this.ws = null;
     }
 
     handleError() {
-        console.error("WebSocket connection error");
+        const logger = this.config.getLogger("node:services:orderWebSocket");
+        logger.error("WebSocket connection error", { walletId: this.walletId });
         this.ws = null;
     }
 }

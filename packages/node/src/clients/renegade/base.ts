@@ -18,6 +18,7 @@ import {
     getSDKConfig,
     getTaskQueue,
     getWalletId,
+    type Logger,
     updateOrder,
 } from "@renegade-fi/core";
 import {
@@ -61,7 +62,7 @@ export class RenegadeClient {
     /**
      * @internal
      */
-    protected constructor(params: ConstructorParams) {
+    protected constructor(params: ConstructorParams & { logger?: Logger }) {
         const defaultConfig = getSDKConfig(params.chainId);
         const configv2 = params.overrides
             ? { ...defaultConfig, ...params.overrides }
@@ -76,6 +77,9 @@ export class RenegadeClient {
                 relayerUrl: configv2.relayerUrl,
                 chainId: configv2.id,
                 utils: rustUtils,
+                logging: params.logger
+                    ? { logger: params.logger, namespace: "node:clients:renegade" }
+                    : undefined,
             });
             this.config.setState((s) => ({ ...s, seed: params.seed }));
         } else {
@@ -90,6 +94,9 @@ export class RenegadeClient {
                 symmetricKey: params.walletSecrets.symmetric_key,
                 walletId: params.walletSecrets.wallet_id,
                 publicKey: params.publicKey,
+                logging: params.logger
+                    ? { logger: params.logger, namespace: "node:clients:renegade" }
+                    : undefined,
             });
         }
     }
@@ -105,12 +112,14 @@ export class RenegadeClient {
         chainId,
         seed,
         overrides,
+        logger,
     }: {
         chainId: number;
         seed: `0x${string}`;
         overrides?: Partial<SDKConfig>;
+        logger?: Logger;
     }): RenegadeClient {
-        return new RenegadeClient({ chainId, mode: "seed", seed, overrides });
+        return new RenegadeClient({ chainId, mode: "seed", seed, overrides, logger });
     }
 
     /**
@@ -126,11 +135,13 @@ export class RenegadeClient {
         walletSecrets,
         signMessage,
         publicKey,
+        logger,
     }: {
         chainId: number;
         walletSecrets: GeneratedSecrets;
         signMessage: (message: string) => Promise<`0x${string}`>;
         publicKey: `0x${string}`;
+        logger?: Logger;
     }): RenegadeClient {
         return new RenegadeClient({
             chainId,
@@ -138,6 +149,7 @@ export class RenegadeClient {
             walletSecrets,
             signMessage,
             publicKey,
+            logger,
         });
     }
 
@@ -146,10 +158,11 @@ export class RenegadeClient {
      *
      * @param params.seed your 0x… seed
      */
-    static newArbitrumOneClient({ seed }: { seed: `0x${string}` }) {
+    static newArbitrumOneClient({ seed, logger }: { seed: `0x${string}`; logger?: Logger }) {
         return RenegadeClient.new({
             chainId: CHAIN_IDS.ArbitrumOne,
             seed,
+            logger,
         });
     }
 
@@ -164,16 +177,19 @@ export class RenegadeClient {
         walletSecrets,
         signMessage,
         publicKey,
+        logger,
     }: {
         walletSecrets: GeneratedSecrets;
         signMessage: (message: string) => Promise<`0x${string}`>;
         publicKey: `0x${string}`;
+        logger?: Logger;
     }) {
         return RenegadeClient.newWithExternalKeychain({
             chainId: CHAIN_IDS.ArbitrumOne,
             walletSecrets,
             signMessage,
             publicKey,
+            logger,
         });
     }
 
@@ -182,10 +198,11 @@ export class RenegadeClient {
      *
      * @param params.seed your 0x… seed
      */
-    static newArbitrumSepoliaClient({ seed }: { seed: `0x${string}` }) {
+    static newArbitrumSepoliaClient({ seed, logger }: { seed: `0x${string}`; logger?: Logger }) {
         return RenegadeClient.new({
             chainId: CHAIN_IDS.ArbitrumSepolia,
             seed,
+            logger,
         });
     }
 
@@ -200,16 +217,19 @@ export class RenegadeClient {
         walletSecrets,
         signMessage,
         publicKey,
+        logger,
     }: {
         walletSecrets: GeneratedSecrets;
         signMessage: (message: string) => Promise<`0x${string}`>;
         publicKey: `0x${string}`;
+        logger?: Logger;
     }) {
         return RenegadeClient.newWithExternalKeychain({
             chainId: CHAIN_IDS.ArbitrumSepolia,
             walletSecrets,
             signMessage,
             publicKey,
+            logger,
         });
     }
 
@@ -218,8 +238,8 @@ export class RenegadeClient {
      *
      * @param params.seed your 0x… seed
      */
-    static newBaseMainnetClient({ seed }: { seed: `0x${string}` }) {
-        return RenegadeClient.new({ chainId: CHAIN_IDS.BaseMainnet, seed });
+    static newBaseMainnetClient({ seed, logger }: { seed: `0x${string}`; logger?: Logger }) {
+        return RenegadeClient.new({ chainId: CHAIN_IDS.BaseMainnet, seed, logger });
     }
 
     /**
@@ -233,16 +253,19 @@ export class RenegadeClient {
         walletSecrets,
         signMessage,
         publicKey,
+        logger,
     }: {
         walletSecrets: GeneratedSecrets;
         signMessage: (message: string) => Promise<`0x${string}`>;
         publicKey: `0x${string}`;
+        logger?: Logger;
     }) {
         return RenegadeClient.newWithExternalKeychain({
             chainId: CHAIN_IDS.BaseMainnet,
             walletSecrets,
             signMessage,
             publicKey,
+            logger,
         });
     }
 
@@ -251,8 +274,8 @@ export class RenegadeClient {
      *
      * @param params.seed your 0x… seed
      */
-    static newBaseSepoliaClient({ seed }: { seed: `0x${string}` }) {
-        return RenegadeClient.new({ chainId: CHAIN_IDS.BaseSepolia, seed });
+    static newBaseSepoliaClient({ seed, logger }: { seed: `0x${string}`; logger?: Logger }) {
+        return RenegadeClient.new({ chainId: CHAIN_IDS.BaseSepolia, seed, logger });
     }
 
     /**
@@ -266,16 +289,19 @@ export class RenegadeClient {
         walletSecrets,
         signMessage,
         publicKey,
+        logger,
     }: {
         walletSecrets: GeneratedSecrets;
         signMessage: (message: string) => Promise<`0x${string}`>;
         publicKey: `0x${string}`;
+        logger?: Logger;
     }) {
         return RenegadeClient.newWithExternalKeychain({
             chainId: CHAIN_IDS.BaseSepolia,
             walletSecrets,
             signMessage,
             publicKey,
+            logger,
         });
     }
 
@@ -355,6 +381,7 @@ export class RenegadeClient {
                 chainId: this.configv2.id,
                 utils: rustUtils,
                 viemClient: parameters.publicClient,
+                logging: { logger: this.config.getLogger() },
             });
             config.setState((s) => ({ ...s, seed: this.seed }));
         } else {
@@ -369,6 +396,7 @@ export class RenegadeClient {
                 walletId: this.config.walletId,
                 publicKey: this.config.publicKey,
                 viemClient: parameters.publicClient,
+                logging: { logger: this.config.getLogger() },
             });
         }
         return executeDeposit(config, {

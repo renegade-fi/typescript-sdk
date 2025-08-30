@@ -17,18 +17,21 @@ export async function executeWithdrawal(
     parameters: ExecuteWithdrawalParameters,
 ): WithdrawReturnType {
     const walletId = getWalletId(config);
+    const logger = config.getLogger("node:actions:executeWithdrawal");
 
-    console.log(`Paying fees for wallet ${walletId}`);
+    logger.debug("Paying fees", { walletId });
     await payFees(config);
 
-    console.log(
-        `Initiating withdrawal of ${parameters.amount} ${parameters.mint} for wallet ${walletId}`,
-    );
+    logger.debug("Initiating withdrawal", {
+        walletId,
+        mint: parameters.mint,
+        amount: parameters.amount,
+    });
     const { taskId } = await withdraw(config, parameters);
 
     if (parameters.awaitTask) {
         await waitForTaskCompletionWs(config, { id: taskId });
-        console.log(`Withdrawal completed for wallet ${walletId}`);
+        logger.debug("Withdrawal completed", { walletId, taskId });
     }
 
     return { taskId };
