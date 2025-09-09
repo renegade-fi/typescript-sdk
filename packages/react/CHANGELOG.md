@@ -1,5 +1,13 @@
 # @renegade-fi/react
 
+## 0.6.26
+
+### Patch Changes
+
+- chore: pin safe versions
+- Updated dependencies
+  - @renegade-fi/core@0.9.11
+
 ## 0.6.25
 
 ### Patch Changes

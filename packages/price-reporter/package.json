@@ -1,6 +1,6 @@
 {
     "name": "@renegade-fi/price-reporter",
-    "version": "0.0.29",
+    "version": "0.0.30",
     "description": "A TypeScript client for interacting with the Price Reporter",
     "files": [
         "dist/**",

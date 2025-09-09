@@ -1,5 +1,14 @@
 # @renegade-fi/price-reporter
 
+## 0.0.30
+
+### Patch Changes
+
+- chore: pin safe versions
+- Updated dependencies
+  - @renegade-fi/core@0.9.11
+  - @renegade-fi/token@0.0.30
+
 ## 0.0.29
 
 ### Patch Changes
