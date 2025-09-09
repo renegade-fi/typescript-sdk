@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.11
+
+### Patch Changes
+
+- chore: pin safe versions
+
 ## 0.9.10
 
 ### Patch Changes

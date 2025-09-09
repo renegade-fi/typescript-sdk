@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.6.16
+
+### Patch Changes
+
+- chore: pin safe versions
+- Updated dependencies
+  - @renegade-fi/core@0.9.11
+
 ## 0.6.15
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @renegade-fi/token-nextjs
 
+## 0.1.16
+
+### Patch Changes
+
+- chore: pin safe versions
+- Updated dependencies
+  - @renegade-fi/core@0.9.11
+  - @renegade-fi/token@0.0.30
+
 ## 0.1.15
 
 ### Patch Changes
