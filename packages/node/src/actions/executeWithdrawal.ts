@@ -1,6 +1,5 @@
 import {
     getWalletId,
-    payFees,
     type RenegadeConfig,
     type WithdrawParameters,
     type WithdrawReturnType,
@@ -18,9 +17,6 @@ export async function executeWithdrawal(
 ): WithdrawReturnType {
     const walletId = getWalletId(config);
     const logger = config.getLogger("node:actions:executeWithdrawal");
-
-    logger.debug("Paying fees", { walletId });
-    await payFees(config);
 
     logger.debug("Initiating withdrawal", {
         walletId,

@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.12
+
+### Patch Changes
+
+- Assume fees paid in withdrawal API
+
 ## 0.9.11
 
 ### Patch Changes

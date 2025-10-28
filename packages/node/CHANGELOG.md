@@ -1,5 +1,13 @@
 # @renegade-fi/node
 
+## 0.6.17
+
+### Patch Changes
+
+- Assume fees paid in withdrawal API
+- Updated dependencies
+  - @renegade-fi/core@0.9.12
+
 ## 0.6.16
 
 ### Patch Changes
