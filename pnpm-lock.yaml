@@ -255,8 +255,8 @@ importers:
   examples/external-match/direct-match:
     dependencies:
       '@renegade-fi/renegade-sdk':
-        specifier: workspace:*
-        version: link:../../../packages/external-match
+        specifier: latest
+        version: 0.1.11(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.39.0(typescript@5.5.4)(zod@4.0.5)
@@ -1015,6 +1015,9 @@ packages:
     resolution: {integrity: sha512-xkl7B/qoBvAgHqfYAeuCk+8dLep/OwC+pSXN8ebGtZYNnXfvufFb7CGHJN9Cx/X63MQLcERm7n/+V8pQNk/oaA==}
     peerDependencies:
       viem: 2.x
+
+  '@renegade-fi/renegade-sdk@0.1.11':
+    resolution: {integrity: sha512-vsK2P7EYgztS8gepe5ge0PWog14W+uUk26mlMnTwOXzv+x32PJI/zpu1dxC2qggs0VSgopPG/9dWSZu0JZ+7HA==}
 
   '@renegade-fi/renegade-sdk@0.1.9':
     resolution: {integrity: sha512-mua0Kpffr9DbTFpIzBF6QhqLGhB8I+4PbRZal0kl2Xjjv69uzNHU65Wg4F/mSB4vqzIIHkuwNSGAP4LpMQ0ZNg==}
@@ -2050,6 +2053,17 @@ snapshots:
       - immer
       - react
       - ws
+
+  '@renegade-fi/renegade-sdk@0.1.11(typescript@5.5.4)(zod@4.0.5)':
+    dependencies:
+      '@noble/hashes': 1.8.0
+      json-bigint: 1.0.0
+      viem: 2.39.0(typescript@5.5.4)(zod@4.0.5)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
 
   '@renegade-fi/renegade-sdk@0.1.9(typescript@5.5.4)(zod@4.0.5)':
     dependencies:
