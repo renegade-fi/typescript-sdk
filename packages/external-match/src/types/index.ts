@@ -112,7 +112,6 @@ export interface AssembleExternalMatchRequest {
 
 export interface ExternalMatchRequest {
     do_gas_estimation?: boolean;
-    matching_pool?: string;
     receiver_address?: string;
     external_order: ExternalOrder;
 }
