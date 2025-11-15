@@ -1,5 +1,11 @@
 # @renegade-fi/renegade-sdk
 
+## 0.1.11
+
+### Patch Changes
+
+- external-match: client: add direct match
+
 ## 0.1.10
 
 ### Patch Changes

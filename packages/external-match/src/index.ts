@@ -8,6 +8,7 @@ export {
     AssembleExternalMatchOptions,
     ExternalMatchClient,
     ExternalMatchClientError,
+    RequestExternalMatchOptions,
     RequestQuoteOptions,
 } from "./client.js";
 
@@ -20,6 +21,7 @@ export type {
     ApiTimestampedPrice,
     AssembleExternalMatchRequest,
     AtomicMatchApiBundle,
+    ExternalMatchRequest,
     ExternalMatchResponse,
     ExternalOrder,
     ExternalQuoteRequest,
