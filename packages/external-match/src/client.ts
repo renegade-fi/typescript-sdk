@@ -9,6 +9,7 @@ import { RelayerHttpClient } from "./http.js";
 import {
     type ApiSignedExternalQuote,
     type AssembleExternalMatchRequest,
+    type ExternalMatchRequest,
     type ExternalMatchResponse,
     type ExternalOrder,
     type ExternalQuoteRequest,
@@ -45,6 +46,7 @@ const ASSEMBLE_EXTERNAL_MATCH_ROUTE = "/v0/matching-engine/assemble-external-mat
  */
 const ASSEMBLE_MALLEABLE_EXTERNAL_MATCH_ROUTE =
     "/v0/matching-engine/assemble-malleable-external-match";
+const REQUEST_EXTERNAL_MATCH_ROUTE = "/v0/matching-engine/request-external-match";
 const ORDER_BOOK_DEPTH_ROUTE = "/v0/order_book/depth";
 /** Returns the supported tokens list */
 const SUPPORTED_TOKENS_ROUTE = "/v0/supported-tokens";
@@ -83,7 +85,7 @@ export class RequestQuoteOptions {
     /**
      * Set whether gas sponsorship should be disabled.
      */
-    withGasSponsorshipDisabled(disableGasSponsorship: boolean): RequestQuoteOptions {
+    withGasSponsorshipDisabled(disableGasSponsorship: boolean): this {
         this.disableGasSponsorship = disableGasSponsorship;
         return this;
     }
@@ -91,7 +93,7 @@ export class RequestQuoteOptions {
     /**
      * Set the gas refund address.
      */
-    withGasRefundAddress(gasRefundAddress: string): RequestQuoteOptions {
+    withGasRefundAddress(gasRefundAddress: string): this {
         this.gasRefundAddress = gasRefundAddress;
         return this;
     }
@@ -99,7 +101,7 @@ export class RequestQuoteOptions {
     /**
      * Set whether to refund in native ETH.
      */
-    withRefundNativeEth(refundNativeEth: boolean): RequestQuoteOptions {
+    withRefundNativeEth(refundNativeEth: boolean): this {
         this.refundNativeEth = refundNativeEth;
         return this;
     }
@@ -119,6 +121,93 @@ export class RequestQuoteOptions {
         }
 
         return `${REQUEST_EXTERNAL_QUOTE_ROUTE}?${params.toString()}`;
+    }
+}
+
+/**
+ * Options for requesting an external match directly.
+ */
+export class RequestExternalMatchOptions {
+    disableGasSponsorship = false;
+    gasRefundAddress?: string;
+    refundNativeEth = false;
+    doGasEstimation = false;
+    matchingPool?: string;
+    receiverAddress?: string;
+
+    /**
+     * Create a new instance of RequestExternalMatchOptions.
+     */
+    static new(): RequestExternalMatchOptions {
+        return new RequestExternalMatchOptions();
+    }
+
+    /**
+     * Set whether gas sponsorship should be disabled.
+     */
+    withGasSponsorshipDisabled(disableGasSponsorship: boolean): this {
+        this.disableGasSponsorship = disableGasSponsorship;
+        return this;
+    }
+
+    /**
+     * Set the gas refund address.
+     */
+    withGasRefundAddress(gasRefundAddress: string): this {
+        this.gasRefundAddress = gasRefundAddress;
+        return this;
+    }
+
+    /**
+     * Set whether to refund in native ETH.
+     */
+    withRefundNativeEth(refundNativeEth: boolean): this {
+        this.refundNativeEth = refundNativeEth;
+        return this;
+    }
+
+    /**
+     * Set whether the relayer should include gas estimation in the response.
+     */
+    withGasEstimation(doGasEstimation: boolean): this {
+        this.doGasEstimation = doGasEstimation;
+        return this;
+    }
+
+    /**
+     * Set a preferred matching pool.
+     */
+    withMatchingPool(matchingPool: string): this {
+        this.matchingPool = matchingPool;
+        return this;
+    }
+
+    /**
+     * Set the receiver address for the match.
+     */
+    withReceiverAddress(receiverAddress: string): this {
+        this.receiverAddress = receiverAddress;
+        return this;
+    }
+
+    /**
+     * Build the request path with query parameters.
+     */
+    buildRequestPath(): string {
+        const params = new URLSearchParams();
+        params.set(DISABLE_GAS_SPONSORSHIP_QUERY_PARAM, this.disableGasSponsorship.toString());
+        if (this.gasRefundAddress) {
+            params.set(GAS_REFUND_ADDRESS_QUERY_PARAM, this.gasRefundAddress);
+        }
+
+        if (this.refundNativeEth) {
+            params.set(REFUND_NATIVE_ETH_QUERY_PARAM, this.refundNativeEth.toString());
+        }
+
+        const query = params.toString();
+        return query.length > 0
+            ? `${REQUEST_EXTERNAL_MATCH_ROUTE}?${query}`
+            : REQUEST_EXTERNAL_MATCH_ROUTE;
     }
 }
 
@@ -427,6 +516,54 @@ export class ExternalMatchClient {
 
             throw new ExternalMatchClientError(
                 error.message || "Failed to request quote",
+                error.status,
+            );
+        }
+    }
+
+    /**
+     * Request an external match directly with default options.
+     */
+    async requestExternalMatch(order: ExternalOrder): Promise<ExternalMatchResponse | null> {
+        return this.requestExternalMatchWithOptions(order, RequestExternalMatchOptions.new());
+    }
+
+    /**
+     * Request an external match directly with custom options.
+     */
+    async requestExternalMatchWithOptions(
+        order: ExternalOrder,
+        options: RequestExternalMatchOptions,
+    ): Promise<ExternalMatchResponse | null> {
+        const request: ExternalMatchRequest = {
+            do_gas_estimation: options.doGasEstimation,
+            matching_pool: options.matchingPool,
+            receiver_address: options.receiverAddress,
+            external_order: order,
+        };
+
+        const path = options.buildRequestPath();
+        const headers = this.getHeaders();
+
+        try {
+            const response = await this.httpClient.post<ExternalMatchResponse>(
+                path,
+                request,
+                headers,
+            );
+
+            if (response.status === 204 || !response.data) {
+                return null;
+            }
+
+            return response.data;
+        } catch (error: any) {
+            if (error.status === 204) {
+                return null;
+            }
+
+            throw new ExternalMatchClientError(
+                error.message || "Failed to request external match",
                 error.status,
             );
         }

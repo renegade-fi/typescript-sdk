@@ -110,6 +110,13 @@ export interface AssembleExternalMatchRequest {
     updated_order?: ExternalOrder;
 }
 
+export interface ExternalMatchRequest {
+    do_gas_estimation?: boolean;
+    matching_pool?: string;
+    receiver_address?: string;
+    external_order: ExternalOrder;
+}
+
 export interface ExternalMatchResponse {
     match_bundle: AtomicMatchApiBundle;
     gas_sponsored: boolean;
