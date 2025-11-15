@@ -132,7 +132,6 @@ export class RequestExternalMatchOptions {
     gasRefundAddress?: string;
     refundNativeEth = false;
     doGasEstimation = false;
-    matchingPool?: string;
     receiverAddress?: string;
 
     /**
@@ -171,14 +170,6 @@ export class RequestExternalMatchOptions {
      */
     withGasEstimation(doGasEstimation: boolean): this {
         this.doGasEstimation = doGasEstimation;
-        return this;
-    }
-
-    /**
-     * Set a preferred matching pool.
-     */
-    withMatchingPool(matchingPool: string): this {
-        this.matchingPool = matchingPool;
         return this;
     }
 
@@ -537,7 +528,6 @@ export class ExternalMatchClient {
     ): Promise<ExternalMatchResponse | null> {
         const request: ExternalMatchRequest = {
             do_gas_estimation: options.doGasEstimation,
-            matching_pool: options.matchingPool,
             receiver_address: options.receiverAddress,
             external_order: order,
         };
