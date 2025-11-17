@@ -47,6 +47,11 @@ const ASSEMBLE_EXTERNAL_MATCH_ROUTE = "/v0/matching-engine/assemble-external-mat
 const ASSEMBLE_MALLEABLE_EXTERNAL_MATCH_ROUTE =
     "/v0/matching-engine/assemble-malleable-external-match";
 const REQUEST_EXTERNAL_MATCH_ROUTE = "/v0/matching-engine/request-external-match";
+/**
+ * The route used to request a malleable external match directly
+ */
+const REQUEST_MALLEABLE_EXTERNAL_MATCH_ROUTE =
+    "/v0/matching-engine/request-malleable-external-match";
 const ORDER_BOOK_DEPTH_ROUTE = "/v0/order_book/depth";
 /** Returns the supported tokens list */
 const SUPPORTED_TOKENS_ROUTE = "/v0/supported-tokens";
@@ -199,6 +204,26 @@ export class RequestExternalMatchOptions {
         return query.length > 0
             ? `${REQUEST_EXTERNAL_MATCH_ROUTE}?${query}`
             : REQUEST_EXTERNAL_MATCH_ROUTE;
+    }
+
+    /**
+     * Build the request path for malleable external match with query parameters.
+     */
+    buildMalleableRequestPath(): string {
+        const params = new URLSearchParams();
+        params.set(DISABLE_GAS_SPONSORSHIP_QUERY_PARAM, this.disableGasSponsorship.toString());
+        if (this.gasRefundAddress) {
+            params.set(GAS_REFUND_ADDRESS_QUERY_PARAM, this.gasRefundAddress);
+        }
+
+        if (this.refundNativeEth) {
+            params.set(REFUND_NATIVE_ETH_QUERY_PARAM, this.refundNativeEth.toString());
+        }
+
+        const query = params.toString();
+        return query.length > 0
+            ? `${REQUEST_MALLEABLE_EXTERNAL_MATCH_ROUTE}?${query}`
+            : REQUEST_MALLEABLE_EXTERNAL_MATCH_ROUTE;
     }
 }
 
@@ -554,6 +579,72 @@ export class ExternalMatchClient {
 
             throw new ExternalMatchClientError(
                 error.message || "Failed to request external match",
+                error.status,
+            );
+        }
+    }
+
+    /**
+     * Request a malleable external match directly with default options.
+     *
+     * @param order The order to request a malleable match for
+     * @returns A promise that resolves to a malleable match response if one is available, null otherwise
+     * @throws ExternalMatchClientError if the request fails
+     */
+    async requestMalleableExternalMatch(
+        order: ExternalOrder,
+    ): Promise<MalleableExternalMatchResponse | null> {
+        return this.requestMalleableExternalMatchWithOptions(
+            order,
+            RequestExternalMatchOptions.new(),
+        );
+    }
+
+    /**
+     * Request a malleable external match directly with custom options.
+     *
+     * @param order The order to request a malleable match for
+     * @param options Custom options for the malleable match request
+     * @returns A promise that resolves to a malleable match response if one is available, null otherwise
+     * @throws ExternalMatchClientError if the request fails
+     */
+    async requestMalleableExternalMatchWithOptions(
+        order: ExternalOrder,
+        options: RequestExternalMatchOptions,
+    ): Promise<MalleableExternalMatchResponse | null> {
+        const request: ExternalMatchRequest = {
+            do_gas_estimation: options.doGasEstimation,
+            receiver_address: options.receiverAddress,
+            external_order: order,
+        };
+
+        const path = options.buildMalleableRequestPath();
+        const headers = this.getHeaders();
+
+        try {
+            const response = await this.httpClient.post<MalleableExternalMatchResponse>(
+                path,
+                request,
+                headers,
+            );
+
+            if (response.status === 204 || !response.data) {
+                return null;
+            }
+
+            return new MalleableExternalMatchResponse(
+                response.data.match_bundle,
+                response.data.gas_sponsored,
+                response.data.gas_sponsorship_info,
+                response.data.base_amount,
+            );
+        } catch (error: any) {
+            if (error.status === 204) {
+                return null;
+            }
+
+            throw new ExternalMatchClientError(
+                error.message || "Failed to request malleable external match",
                 error.status,
             );
         }
