@@ -1,5 +1,11 @@
 # @renegade-fi/types
 
+## 0.0.7
+
+### Patch Changes
+
+- external-match: client: Add direct malleable match method
+
 ## 0.0.6
 
 ### Patch Changes

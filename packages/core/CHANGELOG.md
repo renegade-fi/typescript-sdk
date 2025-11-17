@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 0.9.13
+
+### Patch Changes
+
+- external-match: client: Add direct malleable match method
+
 ## 0.9.12
 
 ### Patch Changes

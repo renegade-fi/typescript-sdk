@@ -1,5 +1,14 @@
 # @renegade-fi/token-nextjs
 
+## 0.1.18
+
+### Patch Changes
+
+- external-match: client: Add direct malleable match method
+- Updated dependencies
+  - @renegade-fi/core@0.9.13
+  - @renegade-fi/token@0.0.32
+
 ## 0.1.17
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @renegade-fi/price-reporter
 
+## 0.0.32
+
+### Patch Changes
+
+- external-match: client: Add direct malleable match method
+- Updated dependencies
+  - @renegade-fi/core@0.9.13
+  - @renegade-fi/token@0.0.32
+
 ## 0.0.31
 
 ### Patch Changes

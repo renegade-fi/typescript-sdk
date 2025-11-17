@@ -1,6 +1,6 @@
 {
     "name": "@renegade-fi/token",
-    "version": "0.0.31",
+    "version": "0.0.32",
     "description": "Token remapping for Renegade",
     "files": [
         "dist/**",
