@@ -6,20 +6,22 @@
  */
 
 import { RelayerHttpClient } from "./http.js";
+import type {
+    ApiSignedExternalQuote,
+    AssembleExternalMatchRequest,
+    ExternalMatchRequest,
+    ExternalOrder,
+    ExternalQuoteRequest,
+    ExternalQuoteResponse,
+    SupportedTokensResponse,
+    TokenPrice,
+    TokenPricesResponse,
+} from "./types/index.js";
 import {
-    type ApiSignedExternalQuote,
-    type AssembleExternalMatchRequest,
-    type ExternalMatchRequest,
-    type ExternalMatchResponse,
-    type ExternalOrder,
-    type ExternalQuoteRequest,
-    type ExternalQuoteResponse,
+    ExternalMatchResponse,
     MalleableExternalMatchResponse,
-    type OrderBookDepth,
-    type SignedExternalQuote,
-    type SupportedTokensResponse,
-    type TokenPrice,
-    type TokenPricesResponse,
+    OrderBookDepth,
+    SignedExternalQuote,
 } from "./types/index.js";
 import { VERSION } from "./version.js";
 
@@ -516,14 +518,7 @@ export class ExternalMatchClient {
                 return null;
             }
 
-            const quoteResp = response.data;
-            const signedQuote: SignedExternalQuote = {
-                quote: quoteResp.signed_quote.quote,
-                signature: quoteResp.signed_quote.signature,
-                gas_sponsorship_info: quoteResp.gas_sponsorship_info,
-            };
-
-            return signedQuote;
+            return SignedExternalQuote.deserialize(response.data);
         } catch (error: any) {
             // Handle HTTP-related errors from fetch implementation
             if (error.status === 204) {
@@ -571,7 +566,7 @@ export class ExternalMatchClient {
                 return null;
             }
 
-            return response.data;
+            return ExternalMatchResponse.deserialize(response.data);
         } catch (error: any) {
             if (error.status === 204) {
                 return null;
@@ -632,12 +627,7 @@ export class ExternalMatchClient {
                 return null;
             }
 
-            return new MalleableExternalMatchResponse(
-                response.data.match_bundle,
-                response.data.gas_sponsored,
-                response.data.gas_sponsorship_info,
-                response.data.base_amount,
-            );
+            return MalleableExternalMatchResponse.deserialize(response.data);
         } catch (error: any) {
             if (error.status === 204) {
                 return null;
@@ -701,7 +691,7 @@ export class ExternalMatchClient {
                 return null;
             }
 
-            return response.data;
+            return ExternalMatchResponse.deserialize(response.data);
         } catch (error: any) {
             // Handle HTTP-related errors from fetch implementation
             if (error.status === 204) {
@@ -766,12 +756,7 @@ export class ExternalMatchClient {
                 return null;
             }
 
-            return new MalleableExternalMatchResponse(
-                response.data.match_bundle,
-                response.data.gas_sponsored,
-                response.data.gas_sponsorship_info,
-                response.data.base_amount,
-            );
+            return MalleableExternalMatchResponse.deserialize(response.data);
         } catch (error: any) {
             // Handle HTTP-related errors from fetch implementation
             if (error.status === 204) {
@@ -804,7 +789,7 @@ export class ExternalMatchClient {
                     response.status,
                 );
             }
-            return response.data;
+            return OrderBookDepth.deserialize(response.data);
         } catch (error: any) {
             throw new ExternalMatchClientError(
                 error.message || "Failed to get order book depth",
@@ -866,6 +851,7 @@ export class ExternalMatchClient {
             );
         }
     }
+
     /**
      * Get the headers required for API requests.
      *

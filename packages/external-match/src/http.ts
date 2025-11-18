@@ -5,7 +5,6 @@
 
 import { hmac } from "@noble/hashes/hmac";
 import { sha256 } from "@noble/hashes/sha2";
-import JSONBigInt from "json-bigint";
 
 // Constants for authentication
 export const RENEGADE_HEADER_PREFIX = "x-renegade";
@@ -15,31 +14,23 @@ export const RENEGADE_AUTH_EXPIRATION_HEADER = "x-renegade-auth-expiration";
 // Authentication constants
 const REQUEST_SIGNATURE_DURATION_MS = 10 * 1000; // 10 seconds in milliseconds
 
-// Configure JSON-BigInt for parsing and stringifying
-const jsonProcessor = JSONBigInt({
-    alwaysParseAsBig: true,
-    useNativeBigInt: true,
-});
-
 /**
- * Parse JSON string that may contain BigInt values
+ * Stringify data that may contain bigint values by converting them to numbers, importantly without quotes.
  */
-export const parseBigJSON = (data: string) => {
-    try {
-        return jsonProcessor.parse(data);
-    } catch (error) {
-        // If parsing fails, return original data
-        console.error("Failed to parse JSON with BigInt", error);
-        return data;
-    }
-};
-
-/**
- * Stringify object that may contain BigInt values
- */
-export const stringifyBigJSON = (data: any) => {
-    return jsonProcessor.stringify(data);
-};
+const stringifyBody = (data: unknown): string =>
+    JSON.stringify(data, (_key, value) => {
+        if (typeof value === "bigint") {
+            // Convert bigint to number for request bodies (server expects numbers, not strings)
+            const num = Number(value);
+            if (!Number.isSafeInteger(num)) {
+                throw new Error(
+                    `Cannot safely convert bigint ${value} to number. Value exceeds safe integer range.`,
+                );
+            }
+            return num;
+        }
+        return value;
+    });
 
 // Define interface for HTTP response similar to Axios response
 export interface HttpResponse<T = any> {
@@ -70,6 +61,8 @@ export class RelayerHttpClient {
         }
         this.defaultHeaders = {
             "Content-Type": "application/json",
+            // Ask the server to encode all numeric values as strings.
+            Accept: "application/json; numbers=string",
         };
     }
 
@@ -130,8 +123,8 @@ export class RelayerHttpClient {
 
         // Prepare request body
         let body: string | undefined;
-        if (data) {
-            body = typeof data === "string" ? data : stringifyBigJSON(data);
+        if (data !== undefined) {
+            body = typeof data === "string" ? data : stringifyBody(data);
         }
 
         // Make the fetch request
@@ -145,8 +138,7 @@ export class RelayerHttpClient {
         let responseData: any;
         const contentType = response.headers.get("content-type") || "";
         if (contentType.includes("application/json")) {
-            const text = await response.text();
-            responseData = parseBigJSON(text);
+            responseData = await response.json();
         } else {
             responseData = await response.text();
         }
@@ -222,8 +214,8 @@ export class RelayerHttpClient {
 
         // Add body to signature
         let body = "";
-        if (data) {
-            body = typeof data === "string" ? data : stringifyBigJSON(data);
+        if (data !== undefined) {
+            body = typeof data === "string" ? data : stringifyBody(data);
         }
         mac.update(new TextEncoder().encode(body));
 

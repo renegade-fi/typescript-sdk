@@ -77,6 +77,50 @@ export class MalleableExternalMatchResponse {
         this.quote_amount = quote_amount;
     }
 
+    static deserialize(data: any): MalleableExternalMatchResponse {
+        const matchBundle = {
+            match_result: {
+                quote_mint: data.match_bundle.match_result.quote_mint,
+                base_mint: data.match_bundle.match_result.base_mint,
+                price_fp: data.match_bundle.match_result.price_fp,
+                min_base_amount: BigInt(data.match_bundle.match_result.min_base_amount),
+                max_base_amount: BigInt(data.match_bundle.match_result.max_base_amount),
+                direction: data.match_bundle.match_result.direction,
+            },
+            fee_rates: data.match_bundle.fee_rates,
+            max_receive: {
+                mint: data.match_bundle.max_receive.mint,
+                amount: BigInt(data.match_bundle.max_receive.amount),
+            },
+            min_receive: {
+                mint: data.match_bundle.min_receive.mint,
+                amount: BigInt(data.match_bundle.min_receive.amount),
+            },
+            max_send: {
+                mint: data.match_bundle.max_send.mint,
+                amount: BigInt(data.match_bundle.max_send.amount),
+            },
+            min_send: {
+                mint: data.match_bundle.min_send.mint,
+                amount: BigInt(data.match_bundle.min_send.amount),
+            },
+            settlement_tx: data.match_bundle.settlement_tx,
+        };
+
+        return new MalleableExternalMatchResponse(
+            matchBundle,
+            data.gas_sponsored,
+            data.gas_sponsorship_info
+                ? {
+                      refund_amount: BigInt(data.gas_sponsorship_info.refund_amount),
+                      refund_native_eth: data.gas_sponsorship_info.refund_native_eth,
+                      refund_address: data.gas_sponsorship_info.refund_address,
+                  }
+                : undefined,
+            data.base_amount ? BigInt(data.base_amount) : undefined,
+        );
+    }
+
     /**
      * Set the `base_amount` of the `match_result`
      *
