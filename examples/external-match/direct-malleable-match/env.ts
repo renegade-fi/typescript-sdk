@@ -31,4 +31,3 @@ const walletClient = createWalletClient({
 });
 
 export { account, chainId, publicClient, walletClient, API_KEY, API_SECRET, owner };
-

@@ -24,7 +24,7 @@ export function hydrate(config: Config | undefined, parameters: HydrateParameter
             }
 
             if (reconnectOnMount) {
-                reconnect(config);
+                await reconnect(config);
             }
         },
     };

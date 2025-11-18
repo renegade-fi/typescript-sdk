@@ -1,5 +1,5 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.3.6/schema.json",
     "files": {
         "includes": [
             "**",
@@ -23,7 +23,8 @@
         "rules": {
             "recommended": true,
             "correctness": {
-                "noUnusedVariables": "error"
+                "noUnusedVariables": "error",
+                "noUnusedPrivateClassMembers": "off"
             },
             "nursery": {
                 "noFloatingPromises": "error"
