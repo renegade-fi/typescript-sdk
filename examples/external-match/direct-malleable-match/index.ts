@@ -114,4 +114,3 @@ const hash = await walletClient.sendTransaction({
 });
 
 console.log("Successfully submitted transaction", hash);
-

@@ -23,7 +23,8 @@
         "rules": {
             "recommended": true,
             "correctness": {
-                "noUnusedVariables": "error"
+                "noUnusedVariables": "error",
+                "noUnusedPrivateClassMembers": "off"
             },
             "nursery": {
                 "noFloatingPromises": "error"
