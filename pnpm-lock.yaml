@@ -37,7 +37,7 @@ importers:
         version: 2.3.0
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -56,7 +56,7 @@ importers:
         version: 2.3.0
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -75,7 +75,7 @@ importers:
         version: 2.3.0
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -94,7 +94,7 @@ importers:
         version: 2.3.0
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -113,7 +113,7 @@ importers:
         version: 2.3.0
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -132,7 +132,7 @@ importers:
         version: 2.3.0
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -151,7 +151,7 @@ importers:
         version: 2.3.0
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -170,7 +170,7 @@ importers:
         version: 2.3.0
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -189,7 +189,7 @@ importers:
         version: 2.3.0
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -208,7 +208,7 @@ importers:
         version: 2.3.0
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -224,7 +224,7 @@ importers:
     dependencies:
       '@renegade-fi/renegade-sdk':
         specifier: latest
-        version: link:../../../packages/external-match
+        version: 0.1.12(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -240,7 +240,7 @@ importers:
     dependencies:
       '@renegade-fi/renegade-sdk':
         specifier: latest
-        version: link:../../../packages/external-match
+        version: 0.1.12(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -256,7 +256,7 @@ importers:
     dependencies:
       '@renegade-fi/renegade-sdk':
         specifier: latest
-        version: link:../../../packages/external-match
+        version: 0.1.12(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.39.0(typescript@5.5.4)(zod@4.0.5)
@@ -272,7 +272,7 @@ importers:
     dependencies:
       '@renegade-fi/renegade-sdk':
         specifier: latest
-        version: link:../../../packages/external-match
+        version: 0.1.12(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.39.0(typescript@5.5.4)(zod@4.0.5)
@@ -288,7 +288,7 @@ importers:
     dependencies:
       '@renegade-fi/renegade-sdk':
         specifier: latest
-        version: link:../../../packages/external-match
+        version: 0.1.12(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -304,7 +304,7 @@ importers:
     dependencies:
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -320,7 +320,7 @@ importers:
     dependencies:
       '@renegade-fi/renegade-sdk':
         specifier: latest
-        version: link:../../../packages/external-match
+        version: 0.1.12(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -336,7 +336,7 @@ importers:
     dependencies:
       '@renegade-fi/renegade-sdk':
         specifier: latest
-        version: link:../../../packages/external-match
+        version: 0.1.12(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -352,7 +352,7 @@ importers:
     dependencies:
       '@renegade-fi/renegade-sdk':
         specifier: latest
-        version: link:../../../packages/external-match
+        version: 0.1.12(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -368,7 +368,7 @@ importers:
     dependencies:
       '@renegade-fi/renegade-sdk':
         specifier: latest
-        version: link:../../../packages/external-match
+        version: 0.1.12(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -384,7 +384,7 @@ importers:
     dependencies:
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -400,7 +400,7 @@ importers:
     dependencies:
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -416,7 +416,7 @@ importers:
     dependencies:
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -432,7 +432,7 @@ importers:
     dependencies:
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -445,7 +445,7 @@ importers:
     dependencies:
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -461,7 +461,7 @@ importers:
     dependencies:
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -477,7 +477,7 @@ importers:
     dependencies:
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -493,7 +493,7 @@ importers:
     dependencies:
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -509,7 +509,7 @@ importers:
     dependencies:
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -525,7 +525,7 @@ importers:
     dependencies:
       '@renegade-fi/node':
         specifier: latest
-        version: link:../../../packages/node
+        version: 0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -541,7 +541,7 @@ importers:
     dependencies:
       '@renegade-fi/token':
         specifier: latest
-        version: link:../../../packages/token
+        version: 0.0.32(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -557,7 +557,7 @@ importers:
     dependencies:
       '@renegade-fi/token':
         specifier: latest
-        version: link:../../../packages/token
+        version: 0.0.32(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -605,16 +605,9 @@ importers:
       '@noble/hashes':
         specifier: ^1.7.1
         version: 1.8.0
-      json-bigint:
-        specifier: ^1.0.0
-        version: 1.0.0
       viem:
         specifier: ^2.23.15
         version: 2.34.0(typescript@5.5.4)(zod@3.23.8)
-    devDependencies:
-      '@types/json-bigint':
-        specifier: ^1.0.4
-        version: 1.0.4
 
   packages/node:
     dependencies:
@@ -1017,6 +1010,26 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
+
+  '@renegade-fi/core@0.9.13':
+    resolution: {integrity: sha512-2cSI2WQTqDSjl95iYXo5aJvE8DL7KzlAGmCpDhlFFxanYDE3FNdiUCrrB6BgXTKWDByfPK/fbQ/TAYV5LHiH5Q==}
+    peerDependencies:
+      '@tanstack/query-core': '>=5.0.0'
+      viem: 2.x
+    peerDependenciesMeta:
+      '@tanstack/query-core':
+        optional: true
+
+  '@renegade-fi/node@0.6.18':
+    resolution: {integrity: sha512-PWCxzigA7IPXyZuIkd76oX8Yw1fG0U/DZG50+wku7TNHske2Fs1yLErPF+c7UJjpaJgWnPqI34PhxxVYEXdpJg==}
+    peerDependencies:
+      viem: 2.x
+
+  '@renegade-fi/renegade-sdk@0.1.12':
+    resolution: {integrity: sha512-I03XxqZoAdssin3FHBxdWgqcf9sSC7kT5LkzeSo4MrJInW2dATMxTuZNNanyqj29WYEPFQL5+g8J9AESoZq/DA==}
+
+  '@renegade-fi/token@0.0.32':
+    resolution: {integrity: sha512-ck1MEze8sSHFry82pUKTsgMuoqgSIx5ue0PxN0gdYIH/cLORz+1XLzr7k4WJXdITvazl0CBf/3+uGXJ/eAyT2w==}
 
   '@rollup/rollup-linux-x64-gnu@4.35.0':
     resolution: {integrity: sha512-Pim1T8rXOri+0HmV4CdKSGrqcBWX0d1HoPnQ0uw0bdp1aP5SdQVNBy8LjYncvnLgu3fnnCt17xjWGd4cqh8/hA==}
@@ -2015,6 +2028,60 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
+
+  '@renegade-fi/core@0.9.13(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)':
+    dependencies:
+      axios: 1.7.5
+      isows: 1.0.7(ws@8.18.3)
+      json-bigint: 1.0.0
+      neverthrow: 8.2.0
+      tiny-invariant: 1.3.3
+      viem: 2.37.4(typescript@5.5.4)(zod@4.0.5)
+      zustand: 4.5.5(@types/react@18.3.4)(react@18.3.1)
+    optionalDependencies:
+      '@tanstack/query-core': 5.52.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - debug
+      - immer
+      - react
+      - ws
+
+  '@renegade-fi/node@0.6.18(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)':
+    dependencies:
+      '@renegade-fi/core': 0.9.13(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
+      tiny-invariant: 1.3.3
+      viem: 2.37.4(typescript@5.5.4)(zod@4.0.5)
+    transitivePeerDependencies:
+      - '@tanstack/query-core'
+      - '@types/react'
+      - debug
+      - immer
+      - react
+      - ws
+
+  '@renegade-fi/renegade-sdk@0.1.12(typescript@5.5.4)(zod@4.0.5)':
+    dependencies:
+      '@noble/hashes': 1.8.0
+      json-bigint: 1.0.0
+      viem: 2.39.0(typescript@5.5.4)(zod@4.0.5)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+
+  '@renegade-fi/token@0.0.32(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)':
+    dependencies:
+      '@renegade-fi/core': 0.9.13(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
+    transitivePeerDependencies:
+      - '@tanstack/query-core'
+      - '@types/react'
+      - debug
+      - immer
+      - react
+      - viem
+      - ws
 
   '@rollup/rollup-linux-x64-gnu@4.35.0':
     optional: true

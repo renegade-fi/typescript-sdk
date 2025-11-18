@@ -32,12 +32,8 @@
         "clean": "rm -rf dist tsconfig.tsbuildinfo",
         "typecheck": "tsc --noEmit"
     },
-    "devDependencies": {
-        "@types/json-bigint": "^1.0.4"
-    },
     "dependencies": {
         "@noble/hashes": "^1.7.1",
-        "json-bigint": "^1.0.0",
         "viem": "^2.23.15"
     },
     "keywords": [],
