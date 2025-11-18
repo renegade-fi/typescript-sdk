@@ -1,5 +1,11 @@
 # @renegade-fi/renegade-sdk
 
+## 0.1.13
+
+### Patch Changes
+
+- external-match: request stringified numbers from auth server
+
 ## 0.1.12
 
 ### Patch Changes
