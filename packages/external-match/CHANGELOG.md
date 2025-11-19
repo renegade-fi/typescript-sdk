@@ -1,5 +1,11 @@
 # @renegade-fi/renegade-sdk
 
+## 0.1.14
+
+### Patch Changes
+
+- external-match: client: handle optional responses
+
 ## 0.1.13
 
 ### Patch Changes

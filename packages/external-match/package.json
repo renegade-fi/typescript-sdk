@@ -1,6 +1,6 @@
 {
     "name": "@renegade-fi/renegade-sdk",
-    "version": "0.1.13",
+    "version": "0.1.14",
     "description": "A TypeScript client for interacting with the Renegade Darkpool API",
     "repository": {
         "type": "git",
