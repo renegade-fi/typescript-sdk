@@ -5,6 +5,7 @@
 
 import { hmac } from "@noble/hashes/hmac";
 import { sha256 } from "@noble/hashes/sha2";
+import JSONBigInt from "json-bigint";
 
 // Constants for authentication
 export const RENEGADE_HEADER_PREFIX = "x-renegade";
@@ -14,23 +15,18 @@ export const RENEGADE_AUTH_EXPIRATION_HEADER = "x-renegade-auth-expiration";
 // Authentication constants
 const REQUEST_SIGNATURE_DURATION_MS = 10 * 1000; // 10 seconds in milliseconds
 
+// Configure JSON-BigInt for parsing and stringifying
+const jsonProcessor = JSONBigInt({
+    alwaysParseAsBig: true,
+    useNativeBigInt: true,
+});
+
 /**
- * Stringify data that may contain bigint values by converting them to numbers, importantly without quotes.
+ * Stringify object that may contain BigInt values
  */
-const stringifyBody = (data: unknown): string =>
-    JSON.stringify(data, (_key, value) => {
-        if (typeof value === "bigint") {
-            // Convert bigint to number for request bodies (server expects numbers, not strings)
-            const num = Number(value);
-            if (!Number.isSafeInteger(num)) {
-                throw new Error(
-                    `Cannot safely convert bigint ${value} to number. Value exceeds safe integer range.`,
-                );
-            }
-            return num;
-        }
-        return value;
-    });
+export const stringifyBody = (data: any) => {
+    return jsonProcessor.stringify(data);
+};
 
 // Define interface for HTTP response similar to Axios response
 export interface HttpResponse<T = any> {

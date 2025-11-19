@@ -1,6 +1,6 @@
 {
     "name": "@renegade-fi/renegade-sdk",
-    "version": "0.1.14",
+    "version": "0.1.15",
     "description": "A TypeScript client for interacting with the Renegade Darkpool API",
     "repository": {
         "type": "git",
@@ -34,8 +34,12 @@
     },
     "dependencies": {
         "@noble/hashes": "^1.7.1",
+        "json-bigint": "^1.0.0",
         "viem": "^2.23.15"
     },
     "keywords": [],
-    "author": ""
+    "author": "",
+    "devDependencies": {
+        "@types/json-bigint": "^1.0.4"
+    }
 }
