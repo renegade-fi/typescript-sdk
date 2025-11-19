@@ -1,5 +1,11 @@
 # @renegade-fi/renegade-sdk
 
+## 0.1.15
+
+### Patch Changes
+
+- external-match: client: use json-bigint for stringification
+
 ## 0.1.14
 
 ### Patch Changes
