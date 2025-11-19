@@ -5,7 +5,7 @@
  * assembling matches, and executing trades.
  */
 
-import { RelayerHttpClient } from "./http.js";
+import { type HttpResponse, RelayerHttpClient } from "./http.js";
 import type {
     ApiSignedExternalQuote,
     AssembleExternalMatchRequest,
@@ -506,30 +506,9 @@ export class ExternalMatchClient {
         const path = options.buildRequestPath();
         const headers = this.getHeaders();
 
-        try {
-            const response = await this.httpClient.post<ExternalQuoteResponse>(
-                path,
-                request,
-                headers,
-            );
+        const response = await this.httpClient.post<ExternalQuoteResponse>(path, request, headers);
 
-            // Handle 204 No Content (no quotes available)
-            if (response.status === 204 || !response.data) {
-                return null;
-            }
-
-            return SignedExternalQuote.deserialize(response.data);
-        } catch (error: any) {
-            // Handle HTTP-related errors from fetch implementation
-            if (error.status === 204) {
-                return null;
-            }
-
-            throw new ExternalMatchClientError(
-                error.message || "Failed to request quote",
-                error.status,
-            );
-        }
+        return this.handleOptionalResponse(response, SignedExternalQuote.deserialize);
     }
 
     /**
@@ -555,28 +534,9 @@ export class ExternalMatchClient {
         const path = options.buildRequestPath();
         const headers = this.getHeaders();
 
-        try {
-            const response = await this.httpClient.post<ExternalMatchResponse>(
-                path,
-                request,
-                headers,
-            );
+        const response = await this.httpClient.post<ExternalMatchResponse>(path, request, headers);
 
-            if (response.status === 204 || !response.data) {
-                return null;
-            }
-
-            return ExternalMatchResponse.deserialize(response.data);
-        } catch (error: any) {
-            if (error.status === 204) {
-                return null;
-            }
-
-            throw new ExternalMatchClientError(
-                error.message || "Failed to request external match",
-                error.status,
-            );
-        }
+        return this.handleOptionalResponse(response, ExternalMatchResponse.deserialize);
     }
 
     /**
@@ -616,28 +576,13 @@ export class ExternalMatchClient {
         const path = options.buildMalleableRequestPath();
         const headers = this.getHeaders();
 
-        try {
-            const response = await this.httpClient.post<MalleableExternalMatchResponse>(
-                path,
-                request,
-                headers,
-            );
+        const response = await this.httpClient.post<MalleableExternalMatchResponse>(
+            path,
+            request,
+            headers,
+        );
 
-            if (response.status === 204 || !response.data) {
-                return null;
-            }
-
-            return MalleableExternalMatchResponse.deserialize(response.data);
-        } catch (error: any) {
-            if (error.status === 204) {
-                return null;
-            }
-
-            throw new ExternalMatchClientError(
-                error.message || "Failed to request malleable external match",
-                error.status,
-            );
-        }
+        return this.handleOptionalResponse(response, MalleableExternalMatchResponse.deserialize);
     }
 
     /**
@@ -679,30 +624,9 @@ export class ExternalMatchClient {
         const path = options.buildRequestPath();
         const headers = this.getHeaders();
 
-        try {
-            const response = await this.httpClient.post<ExternalMatchResponse>(
-                path,
-                request,
-                headers,
-            );
+        const response = await this.httpClient.post<ExternalMatchResponse>(path, request, headers);
 
-            // Handle 204 No Content
-            if (response.status === 204 || !response.data) {
-                return null;
-            }
-
-            return ExternalMatchResponse.deserialize(response.data);
-        } catch (error: any) {
-            // Handle HTTP-related errors from fetch implementation
-            if (error.status === 204) {
-                return null;
-            }
-
-            throw new ExternalMatchClientError(
-                error.message || "Failed to assemble quote",
-                error.status,
-            );
-        }
+        return this.handleOptionalResponse(response, ExternalMatchResponse.deserialize);
     }
 
     /**
@@ -744,30 +668,13 @@ export class ExternalMatchClient {
         const path = options.buildRequestPath();
         const headers = this.getHeaders();
 
-        try {
-            const response = await this.httpClient.post<MalleableExternalMatchResponse>(
-                path,
-                request,
-                headers,
-            );
+        const response = await this.httpClient.post<MalleableExternalMatchResponse>(
+            path,
+            request,
+            headers,
+        );
 
-            // Handle 204 No Content
-            if (response.status === 204 || !response.data) {
-                return null;
-            }
-
-            return MalleableExternalMatchResponse.deserialize(response.data);
-        } catch (error: any) {
-            // Handle HTTP-related errors from fetch implementation
-            if (error.status === 204) {
-                return null;
-            }
-
-            throw new ExternalMatchClientError(
-                error.message || "Failed to assemble quote",
-                error.status,
-            );
-        }
+        return this.handleOptionalResponse(response, MalleableExternalMatchResponse.deserialize);
     }
 
     /**
@@ -853,10 +760,49 @@ export class ExternalMatchClient {
     }
 
     /**
+     * Handle an optional HTTP response, returning null for 204, deserializing for 200,
+     * and throwing an error for other status codes.
+     *
+     * @param response The HTTP response
+     * @param deserialize Function to deserialize the response data
+     * @returns The deserialized response or null for 204
+     * @throws ExternalMatchClientError for non-200/204 status codes
+     */
+    private handleOptionalResponse<T>(
+        response: HttpResponse<any>,
+        deserialize: (data: any) => T,
+    ): T | null {
+        if (response.status === 204) {
+            return null;
+        }
+
+        if (response.status === 200) {
+            return deserialize(response.data);
+        }
+
+        const errorMessage = this.extractErrorMessage(response.data);
+        throw new ExternalMatchClientError(errorMessage, response.status);
+    }
+
+    /**
+     * Extract error message from an error response.
+     * Per OpenAPI spec, error responses follow the ErrorResponse schema with an "error" field.
+     *
+     * @param data The response data (may be ErrorResponse object, string, or other)
+     * @returns The extracted error message
+     */
+    private extractErrorMessage(data: any): string {
+        if (data && typeof data === "object" && "error" in data && typeof data.error === "string") {
+            return data.error;
+        }
+        return typeof data === "string" ? data : JSON.stringify(data);
+    }
+    /**
      * Get the headers required for API requests.
      *
      * @returns Headers containing the API key and SDK version
      */
+
     private getHeaders(): Record<string, string> {
         return {
             [RENEGADE_API_KEY_HEADER]: this.apiKey,

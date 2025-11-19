@@ -227,13 +227,14 @@ export class RelayerHttpClient {
      * Decode a base64 string to a Uint8Array.
      */
     private decodeBase64(base64: string): Uint8Array {
-        return Buffer.from(base64, "base64");
+        return new Uint8Array(Buffer.from(base64, "base64"));
     }
 
     /**
      * Encode a Uint8Array or Buffer to a base64 string.
      */
     private encodeBase64(data: Uint8Array | Buffer): string {
-        return Buffer.from(data).toString("base64").replace(/=+$/, "");
+        const buffer = Buffer.isBuffer(data) ? data : Buffer.from(data);
+        return buffer.toString("base64").replace(/=+$/, "");
     }
 }
