@@ -605,9 +605,16 @@ importers:
       '@noble/hashes':
         specifier: ^1.7.1
         version: 1.8.0
+      json-bigint:
+        specifier: ^1.0.0
+        version: 1.0.0
       viem:
         specifier: ^2.23.15
         version: 2.34.0(typescript@5.9.3)(zod@3.23.8)
+    devDependencies:
+      '@types/json-bigint':
+        specifier: ^1.0.4
+        version: 1.0.4
 
   packages/node:
     dependencies:

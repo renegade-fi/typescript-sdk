@@ -34,8 +34,12 @@
     },
     "dependencies": {
         "@noble/hashes": "^1.7.1",
+        "json-bigint": "^1.0.0",
         "viem": "^2.23.15"
     },
     "keywords": [],
-    "author": ""
+    "author": "",
+    "devDependencies": {
+        "@types/json-bigint": "^1.0.4"
+    }
 }
