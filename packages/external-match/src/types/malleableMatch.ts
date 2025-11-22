@@ -105,6 +105,7 @@ export class MalleableExternalMatchResponse {
                 amount: BigInt(data.match_bundle.min_send.amount),
             },
             settlement_tx: data.match_bundle.settlement_tx,
+            deadline: BigInt(data.match_bundle.deadline),
         };
 
         return new MalleableExternalMatchResponse(
@@ -477,4 +478,6 @@ interface MalleableAtomicMatchApiBundle {
     min_send: ApiExternalAssetTransfer;
     /** The transaction which settles the match on-chain */
     settlement_tx: SettlementTransaction;
+    /** The deadline of the match */
+    deadline: bigint;
 }

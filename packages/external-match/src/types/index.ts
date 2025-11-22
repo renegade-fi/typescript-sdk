@@ -59,6 +59,7 @@ export interface ApiExternalQuote {
 export interface ApiSignedExternalQuote {
     quote: ApiExternalQuote;
     signature: string;
+    deadline: bigint;
 }
 
 export interface GasSponsorshipInfo {
@@ -75,15 +76,18 @@ export interface SignedGasSponsorshipInfo {
 export class SignedExternalQuote {
     quote: ApiExternalQuote;
     signature: string;
+    deadline: bigint;
     gas_sponsorship_info?: SignedGasSponsorshipInfo;
 
     constructor(
         quote: ApiExternalQuote,
         signature: string,
+        deadline: bigint,
         gas_sponsorship_info?: SignedGasSponsorshipInfo,
     ) {
         this.quote = quote;
         this.signature = signature;
+        this.deadline = deadline;
         this.gas_sponsorship_info = gas_sponsorship_info;
     }
 
@@ -119,6 +123,7 @@ export class SignedExternalQuote {
                 timestamp: BigInt(quote.timestamp),
             },
             data.signed_quote.signature,
+            BigInt(data.signed_quote.deadline),
             data.gas_sponsorship_info
                 ? {
                       gas_sponsorship_info: {
@@ -150,6 +155,7 @@ export interface AtomicMatchApiBundle {
     receive: ApiExternalAssetTransfer;
     send: ApiExternalAssetTransfer;
     settlement_tx: SettlementTransaction;
+    deadline: bigint;
 }
 
 export interface ExternalQuoteRequest {
@@ -213,6 +219,7 @@ export class ExternalMatchResponse {
                     amount: BigInt(data.match_bundle.send.amount),
                 },
                 settlement_tx: data.match_bundle.settlement_tx,
+                deadline: BigInt(data.match_bundle.deadline),
             },
             data.gas_sponsored,
             data.gas_sponsorship_info
@@ -231,21 +238,53 @@ export interface DepthSideInfo {
     total_quantity_usd: number;
 }
 
+/// The fee rates for a given pair
+export interface FeeRates {
+    relayer_fee_rate: number;
+    protocol_fee_rate: number;
+}
+
+export class GetDepthForAllPairsResponse {
+    pairs: OrderBookDepth[];
+
+    constructor(pairs: OrderBookDepth[]) {
+        this.pairs = pairs;
+    }
+
+    static deserialize(data: any): GetDepthForAllPairsResponse {
+        return new GetDepthForAllPairsResponse(
+            data.pairs.map((pair: any) => OrderBookDepth.deserialize(pair)),
+        );
+    }
+}
+
 export class OrderBookDepth {
+    address: string;
     price: number;
     timestamp: number;
     buy: DepthSideInfo;
     sell: DepthSideInfo;
+    fee_rates: FeeRates;
 
-    constructor(price: number, timestamp: number, buy: DepthSideInfo, sell: DepthSideInfo) {
+    constructor(
+        address: string,
+        price: number,
+        timestamp: number,
+        buy: DepthSideInfo,
+        sell: DepthSideInfo,
+        fee_rates: FeeRates,
+    ) {
+        this.address = address;
         this.price = price;
         this.timestamp = timestamp;
         this.buy = buy;
         this.sell = sell;
+        this.fee_rates = fee_rates;
     }
 
     static deserialize(data: any): OrderBookDepth {
         return new OrderBookDepth(
+            data.address,
             Number(data.price),
             Number(data.timestamp),
             {
@@ -255,6 +294,10 @@ export class OrderBookDepth {
             {
                 total_quantity: BigInt(data.sell.total_quantity),
                 total_quantity_usd: Number(data.sell.total_quantity_usd),
+            },
+            {
+                relayer_fee_rate: Number(data.fee_rates.relayer_fee_rate),
+                protocol_fee_rate: Number(data.fee_rates.protocol_fee_rate),
             },
         );
     }

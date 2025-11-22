@@ -6,16 +6,17 @@
  */
 
 import { type HttpResponse, RelayerHttpClient } from "./http.js";
-import type {
-    ApiSignedExternalQuote,
-    AssembleExternalMatchRequest,
-    ExternalMatchRequest,
-    ExternalOrder,
-    ExternalQuoteRequest,
-    ExternalQuoteResponse,
-    SupportedTokensResponse,
-    TokenPrice,
-    TokenPricesResponse,
+import {
+    GetDepthForAllPairsResponse,
+    type ApiSignedExternalQuote,
+    type AssembleExternalMatchRequest,
+    type ExternalMatchRequest,
+    type ExternalOrder,
+    type ExternalQuoteRequest,
+    type ExternalQuoteResponse,
+    type SupportedTokensResponse,
+    type TokenPrice,
+    type TokenPricesResponse,
 } from "./types/index.js";
 import {
     ExchangeMetadataResponse,
@@ -614,6 +615,7 @@ export class ExternalMatchClient {
         const signedQuote: ApiSignedExternalQuote = {
             quote: quote.quote,
             signature: quote.signature,
+            deadline: quote.deadline,
         };
 
         const request: AssembleExternalMatchRequest = {
@@ -658,6 +660,7 @@ export class ExternalMatchClient {
         const signedQuote: ApiSignedExternalQuote = {
             quote: quote.quote,
             signature: quote.signature,
+            deadline: quote.deadline,
         };
 
         const request: AssembleExternalMatchRequest = {
@@ -687,7 +690,7 @@ export class ExternalMatchClient {
      * @returns A promise that resolves to the order book depth
      * @throws ExternalMatchClientError if the request fails
      */
-    async getOrderBookDepth(mint: string): Promise<OrderBookDepth> {
+    async getOrderBookDepth(mint: string): Promise<OrderBookDepth | null> {
         const path = `${ORDER_BOOK_DEPTH_ROUTE}/${mint}`;
         const headers = this.getHeaders();
 
@@ -699,7 +702,33 @@ export class ExternalMatchClient {
                     response.status,
                 );
             }
-            return OrderBookDepth.deserialize(response.data);
+            return this.handleOptionalResponse(response, OrderBookDepth.deserialize);
+        } catch (error: any) {
+            throw new ExternalMatchClientError(
+                error.message || "Failed to get order book depth",
+                error.status,
+            );
+        }
+    }
+
+    /**
+     * Get order book depth for all pairs
+     * @returns A promise that resolves to the order book depth for all pairs
+     * @throws ExternalMatchClientError if the request fails
+     */
+    async getOrderBookDepthAllPairs(): Promise<GetDepthForAllPairsResponse | null> {
+        const path = `${ORDER_BOOK_DEPTH_ROUTE}`;
+        const headers = this.getHeaders();
+
+        try {
+            const response = await this.httpClient.get<GetDepthForAllPairsResponse>(path, headers);
+            if (response.status !== 200 || !response.data) {
+                throw new ExternalMatchClientError(
+                    "Failed to get order book depth",
+                    response.status,
+                );
+            }
+            return this.handleOptionalResponse(response, GetDepthForAllPairsResponse.deserialize);
         } catch (error: any) {
             throw new ExternalMatchClientError(
                 error.message || "Failed to get order book depth",
