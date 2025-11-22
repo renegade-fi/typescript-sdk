@@ -22,16 +22,21 @@ export type {
     AssembleExternalMatchRequest,
     AtomicMatchApiBundle,
     ExternalMatchRequest,
-    ExternalMatchResponse,
     ExternalOrder,
     ExternalQuoteRequest,
     ExternalQuoteResponse,
     FeeTake,
     GasSponsorshipInfo,
     SettlementTransaction,
-    SignedExternalQuote,
     SignedGasSponsorshipInfo,
 } from "./types/index.js";
-
+// Export classes
 // Export enums
-export { OrderSide } from "./types/index.js";
+export {
+    ExchangeMetadataResponse,
+    ExternalMatchResponse,
+    MalleableExternalMatchResponse,
+    OrderBookDepth,
+    OrderSide,
+    SignedExternalQuote,
+} from "./types/index.js";

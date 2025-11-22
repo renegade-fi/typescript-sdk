@@ -1,0 +1,17 @@
+{
+  "name": "example-external-match-exchange-metadata",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "@renegade-fi/renegade-sdk": "workspace:*",
+    "viem": "latest"
+  },
+  "devDependencies": {
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}
+

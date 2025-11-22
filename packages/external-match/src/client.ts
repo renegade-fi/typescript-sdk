@@ -18,6 +18,7 @@ import type {
     TokenPricesResponse,
 } from "./types/index.js";
 import {
+    ExchangeMetadataResponse,
     ExternalMatchResponse,
     MalleableExternalMatchResponse,
     OrderBookDepth,
@@ -59,6 +60,8 @@ const ORDER_BOOK_DEPTH_ROUTE = "/v0/order_book/depth";
 const SUPPORTED_TOKENS_ROUTE = "/v0/supported-tokens";
 /** Returns the token prices */
 const TOKEN_PRICES_ROUTE = "/v0/token-prices";
+/** Returns the exchange metadata */
+const EXCHANGE_METADATA_ROUTE = "/v0/exchange-metadata";
 
 // Query Parameters
 const DISABLE_GAS_SPONSORSHIP_QUERY_PARAM = "disable_gas_sponsorship";
@@ -757,6 +760,21 @@ export class ExternalMatchClient {
                 error.status,
             );
         }
+    }
+
+    /**
+     * Get exchange metadata including chain ID, settlement contract address, and supported tokens
+     */
+    async getExchangeMetadata(): Promise<ExchangeMetadataResponse> {
+        const path = `${EXCHANGE_METADATA_ROUTE}`;
+        const headers = this.getHeaders();
+
+        const response = await this.httpClient.get<ExchangeMetadataResponse>(path, headers);
+        console.log("response", JSON.stringify(response, null, 2));
+        return this.handleOptionalResponse(
+            response,
+            ExchangeMetadataResponse.deserialize,
+        ) as ExchangeMetadataResponse;
     }
 
     /**

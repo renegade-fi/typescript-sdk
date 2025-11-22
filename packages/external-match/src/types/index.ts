@@ -279,4 +279,31 @@ export interface TokenPricesResponse {
     token_prices: TokenPrice[];
 }
 
+export class ExchangeMetadataResponse {
+    chain_id: number;
+    settlement_contract_address: string;
+    supported_tokens: ApiToken[];
+
+    constructor(
+        chain_id: number,
+        settlement_contract_address: string,
+        supported_tokens: ApiToken[],
+    ) {
+        this.chain_id = chain_id;
+        this.settlement_contract_address = settlement_contract_address;
+        this.supported_tokens = supported_tokens;
+    }
+
+    static deserialize(data: any): ExchangeMetadataResponse {
+        return new ExchangeMetadataResponse(
+            Number(data.chain_id),
+            data.settlement_contract_address,
+            data.supported_tokens.map((token: any) => ({
+                address: token.address,
+                symbol: token.symbol,
+            })),
+        );
+    }
+}
+
 export * from "./malleableMatch.js";

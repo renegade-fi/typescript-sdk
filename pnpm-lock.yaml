@@ -284,6 +284,22 @@ importers:
         specifier: ^5
         version: 5.5.4
 
+  examples/external-match/exchange-metadata:
+    dependencies:
+      '@renegade-fi/renegade-sdk':
+        specifier: workspace:*
+        version: link:../../../packages/external-match
+      viem:
+        specifier: latest
+        version: 2.39.3(typescript@5.9.3)(zod@4.0.5)
+    devDependencies:
+      tsx:
+        specifier: ^4
+        version: 4.20.6
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
   examples/external-match/in-kind-gas-sponsorship:
     dependencies:
       '@renegade-fi/renegade-sdk':
