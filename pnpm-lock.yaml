@@ -239,7 +239,7 @@ importers:
   examples/external-match/basic:
     dependencies:
       '@renegade-fi/renegade-sdk':
-        specifier: ^0.1.17
+        specifier: latest
         version: 0.1.17(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
@@ -287,7 +287,7 @@ importers:
   examples/external-match/exchange-metadata:
     dependencies:
       '@renegade-fi/renegade-sdk':
-        specifier: ^0.1.17
+        specifier: latest
         version: 0.1.17(typescript@5.9.3)(zod@4.0.5)
       viem:
         specifier: latest
@@ -351,7 +351,7 @@ importers:
   examples/external-match/order-book-depth:
     dependencies:
       '@renegade-fi/renegade-sdk':
-        specifier: ^0.1.17
+        specifier: latest
         version: 0.1.17(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
@@ -367,7 +367,7 @@ importers:
   examples/external-match/order-book-depth-all-pairs:
     dependencies:
       '@renegade-fi/renegade-sdk':
-        specifier: ^0.1.17
+        specifier: latest
         version: 0.1.17(typescript@5.9.3)(zod@4.0.5)
       viem:
         specifier: latest
