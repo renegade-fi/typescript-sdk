@@ -1,5 +1,17 @@
 # @renegade-fi/renegade-sdk
 
+## 0.1.17
+
+### Patch Changes
+
+- external-match: client: add external metadata
+
+## 0.1.16
+
+### Patch Changes
+
+- external-match: client: add external metadata
+
 ## 0.1.15
 
 ### Patch Changes

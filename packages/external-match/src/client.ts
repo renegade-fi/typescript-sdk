@@ -6,22 +6,22 @@
  */
 
 import { type HttpResponse, RelayerHttpClient } from "./http.js";
-import type {
-    ApiSignedExternalQuote,
-    AssembleExternalMatchRequest,
-    ExternalMatchRequest,
-    ExternalOrder,
-    ExternalQuoteRequest,
-    ExternalQuoteResponse,
-    SupportedTokensResponse,
-    TokenPrice,
-    TokenPricesResponse,
-} from "./types/index.js";
 import {
+    type ApiSignedExternalQuote,
+    type AssembleExternalMatchRequest,
+    ExchangeMetadataResponse,
+    type ExternalMatchRequest,
     ExternalMatchResponse,
+    type ExternalOrder,
+    type ExternalQuoteRequest,
+    type ExternalQuoteResponse,
+    GetDepthForAllPairsResponse,
     MalleableExternalMatchResponse,
     OrderBookDepth,
     SignedExternalQuote,
+    type SupportedTokensResponse,
+    type TokenPrice,
+    type TokenPricesResponse,
 } from "./types/index.js";
 import { VERSION } from "./version.js";
 
@@ -59,6 +59,8 @@ const ORDER_BOOK_DEPTH_ROUTE = "/v0/order_book/depth";
 const SUPPORTED_TOKENS_ROUTE = "/v0/supported-tokens";
 /** Returns the token prices */
 const TOKEN_PRICES_ROUTE = "/v0/token-prices";
+/** Returns the exchange metadata */
+const EXCHANGE_METADATA_ROUTE = "/v0/exchange-metadata";
 
 // Query Parameters
 const DISABLE_GAS_SPONSORSHIP_QUERY_PARAM = "disable_gas_sponsorship";
@@ -611,6 +613,7 @@ export class ExternalMatchClient {
         const signedQuote: ApiSignedExternalQuote = {
             quote: quote.quote,
             signature: quote.signature,
+            deadline: quote.deadline,
         };
 
         const request: AssembleExternalMatchRequest = {
@@ -655,6 +658,7 @@ export class ExternalMatchClient {
         const signedQuote: ApiSignedExternalQuote = {
             quote: quote.quote,
             signature: quote.signature,
+            deadline: quote.deadline,
         };
 
         const request: AssembleExternalMatchRequest = {
@@ -684,7 +688,7 @@ export class ExternalMatchClient {
      * @returns A promise that resolves to the order book depth
      * @throws ExternalMatchClientError if the request fails
      */
-    async getOrderBookDepth(mint: string): Promise<OrderBookDepth> {
+    async getOrderBookDepth(mint: string): Promise<OrderBookDepth | null> {
         const path = `${ORDER_BOOK_DEPTH_ROUTE}/${mint}`;
         const headers = this.getHeaders();
 
@@ -696,7 +700,33 @@ export class ExternalMatchClient {
                     response.status,
                 );
             }
-            return OrderBookDepth.deserialize(response.data);
+            return this.handleOptionalResponse(response, OrderBookDepth.deserialize);
+        } catch (error: any) {
+            throw new ExternalMatchClientError(
+                error.message || "Failed to get order book depth",
+                error.status,
+            );
+        }
+    }
+
+    /**
+     * Get order book depth for all pairs
+     * @returns A promise that resolves to the order book depth for all pairs
+     * @throws ExternalMatchClientError if the request fails
+     */
+    async getOrderBookDepthAllPairs(): Promise<GetDepthForAllPairsResponse | null> {
+        const path = `${ORDER_BOOK_DEPTH_ROUTE}`;
+        const headers = this.getHeaders();
+
+        try {
+            const response = await this.httpClient.get<GetDepthForAllPairsResponse>(path, headers);
+            if (response.status !== 200 || !response.data) {
+                throw new ExternalMatchClientError(
+                    "Failed to get order book depth",
+                    response.status,
+                );
+            }
+            return this.handleOptionalResponse(response, GetDepthForAllPairsResponse.deserialize);
         } catch (error: any) {
             throw new ExternalMatchClientError(
                 error.message || "Failed to get order book depth",
@@ -757,6 +787,20 @@ export class ExternalMatchClient {
                 error.status,
             );
         }
+    }
+
+    /**
+     * Get exchange metadata including chain ID, settlement contract address, and supported tokens
+     */
+    async getExchangeMetadata(): Promise<ExchangeMetadataResponse> {
+        const path = `${EXCHANGE_METADATA_ROUTE}`;
+        const headers = this.getHeaders();
+
+        const response = await this.httpClient.get<ExchangeMetadataResponse>(path, headers);
+        return this.handleOptionalResponse(
+            response,
+            ExchangeMetadataResponse.deserialize,
+        ) as ExchangeMetadataResponse;
     }
 
     /**
