@@ -7,23 +7,21 @@
 
 import { type HttpResponse, RelayerHttpClient } from "./http.js";
 import {
-    GetDepthForAllPairsResponse,
     type ApiSignedExternalQuote,
     type AssembleExternalMatchRequest,
+    ExchangeMetadataResponse,
     type ExternalMatchRequest,
+    ExternalMatchResponse,
     type ExternalOrder,
     type ExternalQuoteRequest,
     type ExternalQuoteResponse,
-    type SupportedTokensResponse,
-    type TokenPrice,
-    type TokenPricesResponse,
-} from "./types/index.js";
-import {
-    ExchangeMetadataResponse,
-    ExternalMatchResponse,
+    GetDepthForAllPairsResponse,
     MalleableExternalMatchResponse,
     OrderBookDepth,
     SignedExternalQuote,
+    type SupportedTokensResponse,
+    type TokenPrice,
+    type TokenPricesResponse,
 } from "./types/index.js";
 import { VERSION } from "./version.js";
 

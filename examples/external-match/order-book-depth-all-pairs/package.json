@@ -1,5 +1,5 @@
 {
-  "name": "example-external-match-exchange-metadata",
+  "name": "example-external-match-order-book-depth-all-pairs",
   "private": true,
   "type": "module",
   "scripts": {
