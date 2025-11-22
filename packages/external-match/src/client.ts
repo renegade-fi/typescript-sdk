@@ -797,7 +797,6 @@ export class ExternalMatchClient {
         const headers = this.getHeaders();
 
         const response = await this.httpClient.get<ExchangeMetadataResponse>(path, headers);
-        console.log("response", JSON.stringify(response, null, 2));
         return this.handleOptionalResponse(
             response,
             ExchangeMetadataResponse.deserialize,

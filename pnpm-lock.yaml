@@ -239,8 +239,8 @@ importers:
   examples/external-match/basic:
     dependencies:
       '@renegade-fi/renegade-sdk':
-        specifier: workspace:*
-        version: link:../../../packages/external-match
+        specifier: ^0.1.17
+        version: 0.1.17(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -255,8 +255,8 @@ importers:
   examples/external-match/direct-malleable-match:
     dependencies:
       '@renegade-fi/renegade-sdk':
-        specifier: workspace:*
-        version: link:../../../packages/external-match
+        specifier: latest
+        version: 0.1.16(typescript@5.9.3)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.39.0(typescript@5.9.3)(zod@4.0.5)
@@ -287,8 +287,8 @@ importers:
   examples/external-match/exchange-metadata:
     dependencies:
       '@renegade-fi/renegade-sdk':
-        specifier: workspace:*
-        version: link:../../../packages/external-match
+        specifier: ^0.1.17
+        version: 0.1.17(typescript@5.9.3)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.39.3(typescript@5.9.3)(zod@4.0.5)
@@ -351,8 +351,8 @@ importers:
   examples/external-match/order-book-depth:
     dependencies:
       '@renegade-fi/renegade-sdk':
-        specifier: workspace:*
-        version: link:../../../packages/external-match
+        specifier: ^0.1.17
+        version: 0.1.17(typescript@5.5.4)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.37.4(typescript@5.5.4)(zod@4.0.5)
@@ -367,8 +367,8 @@ importers:
   examples/external-match/order-book-depth-all-pairs:
     dependencies:
       '@renegade-fi/renegade-sdk':
-        specifier: workspace:*
-        version: link:../../../packages/external-match
+        specifier: ^0.1.17
+        version: 0.1.17(typescript@5.9.3)(zod@4.0.5)
       viem:
         specifier: latest
         version: 2.39.3(typescript@5.9.3)(zod@4.0.5)
@@ -1066,6 +1066,12 @@ packages:
 
   '@renegade-fi/renegade-sdk@0.1.12':
     resolution: {integrity: sha512-I03XxqZoAdssin3FHBxdWgqcf9sSC7kT5LkzeSo4MrJInW2dATMxTuZNNanyqj29WYEPFQL5+g8J9AESoZq/DA==}
+
+  '@renegade-fi/renegade-sdk@0.1.16':
+    resolution: {integrity: sha512-2d05V/p2csdEFqaWFc/4jS7z9wtmlvYGjvADHNQQMGDXfxvMuT60vrAJVYCjeCccezaWvESxIR5iJnEVJQYvsg==}
+
+  '@renegade-fi/renegade-sdk@0.1.17':
+    resolution: {integrity: sha512-QS/9khcqBi4x7IsQyk9T0tR6/9IbuLsrhlZ6F0NTgo/WtyFUF73M81OHHjBVrnkdTmVOwb0m1OaQc+8JhJmsAA==}
 
   '@renegade-fi/token@0.0.32':
     resolution: {integrity: sha512-ck1MEze8sSHFry82pUKTsgMuoqgSIx5ue0PxN0gdYIH/cLORz+1XLzr7k4WJXdITvazl0CBf/3+uGXJ/eAyT2w==}
@@ -2128,6 +2134,39 @@ snapshots:
       - utf-8-validate
       - zod
 
+  '@renegade-fi/renegade-sdk@0.1.16(typescript@5.9.3)(zod@4.0.5)':
+    dependencies:
+      '@noble/hashes': 1.8.0
+      json-bigint: 1.0.0
+      viem: 2.39.3(typescript@5.9.3)(zod@4.0.5)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+
+  '@renegade-fi/renegade-sdk@0.1.17(typescript@5.5.4)(zod@4.0.5)':
+    dependencies:
+      '@noble/hashes': 1.8.0
+      json-bigint: 1.0.0
+      viem: 2.39.3(typescript@5.5.4)(zod@4.0.5)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+
+  '@renegade-fi/renegade-sdk@0.1.17(typescript@5.9.3)(zod@4.0.5)':
+    dependencies:
+      '@noble/hashes': 1.8.0
+      json-bigint: 1.0.0
+      viem: 2.39.3(typescript@5.9.3)(zod@4.0.5)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+
   '@renegade-fi/token@0.0.32(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)':
     dependencies:
       '@renegade-fi/core': 0.9.13(@tanstack/query-core@5.52.0)(@types/react@18.3.4)(react@18.3.1)(viem@2.37.4(typescript@5.5.4)(zod@4.0.5))(ws@8.18.3)
@@ -2814,6 +2853,23 @@ snapshots:
       ws: 8.18.3
     optionalDependencies:
       typescript: 5.9.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
+
+  viem@2.39.3(typescript@5.5.4)(zod@4.0.5):
+    dependencies:
+      '@noble/curves': 1.9.1
+      '@noble/hashes': 1.8.0
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
+      abitype: 1.1.0(typescript@5.5.4)(zod@4.0.5)
+      isows: 1.0.7(ws@8.18.3)
+      ox: 0.9.6(typescript@5.5.4)(zod@4.0.5)
+      ws: 8.18.3
+    optionalDependencies:
+      typescript: 5.5.4
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
