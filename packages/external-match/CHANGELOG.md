@@ -1,5 +1,11 @@
 # @renegade-fi/renegade-sdk
 
+## 0.1.18
+
+### Patch Changes
+
+- external-match: client: fix typo in accept header
+
 ## 0.1.17
 
 ### Patch Changes
