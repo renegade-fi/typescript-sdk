@@ -58,7 +58,7 @@ export class RelayerHttpClient {
         this.defaultHeaders = {
             "Content-Type": "application/json",
             // Ask the server to encode all numeric values as strings.
-            Accept: "application/json; numbers=string",
+            Accept: "application/json; number=string",
         };
     }
 
