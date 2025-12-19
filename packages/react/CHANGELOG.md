@@ -1,5 +1,16 @@
 # @renegade-fi/react
 
+## 1.0.0
+
+### Major Changes
+
+- v1 release
+
+### Patch Changes
+
+- Updated dependencies
+  - @renegade-fi/core@1.0.0
+
 ## 0.6.28
 
 ### Patch Changes

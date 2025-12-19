@@ -1,5 +1,11 @@
 # @renegade-fi/core
 
+## 1.0.0
+
+### Major Changes
+
+- v1 release
+
 ## 0.9.13
 
 ### Patch Changes

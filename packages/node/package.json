@@ -1,7 +1,7 @@
 {
     "name": "@renegade-fi/node",
     "description": "Node.js library for Renegade",
-    "version": "0.6.18",
+    "version": "1.0.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/renegade-fi/typescript-sdk.git",

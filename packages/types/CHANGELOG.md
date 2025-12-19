@@ -1,5 +1,11 @@
 # @renegade-fi/types
 
+## 1.0.0
+
+### Major Changes
+
+- v1 release
+
 ## 0.0.7
 
 ### Patch Changes

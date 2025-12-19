@@ -1,5 +1,11 @@
 # @renegade-fi/renegade-sdk
 
+## 1.0.0
+
+### Major Changes
+
+- v1 release
+
 ## 0.1.18
 
 ### Patch Changes
