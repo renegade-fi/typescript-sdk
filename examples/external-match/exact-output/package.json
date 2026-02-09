@@ -1,0 +1,16 @@
+{
+  "name": "example-external-match-exact-output",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "@renegade-fi/renegade-sdk": "latest",
+    "viem": "latest"
+  },
+  "devDependencies": {
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}

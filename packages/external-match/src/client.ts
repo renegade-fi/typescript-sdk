@@ -362,6 +362,40 @@ export class AssembleMalleableExternalMatchOptions extends AssembleExternalMatch
 }
 
 /**
+ * Validate that an external order has the required fields and exactly one sizing field set.
+ */
+function validateExternalOrder(order: ExternalOrder): void {
+    if (!order.base_mint) {
+        throw new ExternalMatchClientError("base_mint must be set");
+    }
+    if (!order.quote_mint) {
+        throw new ExternalMatchClientError("quote_mint must be set");
+    }
+    if (!order.side) {
+        throw new ExternalMatchClientError("side must be set");
+    }
+
+    const sizingFields = [
+        order.base_amount,
+        order.quote_amount,
+        order.exact_base_output,
+        order.exact_quote_output,
+    ];
+    const numSet = sizingFields.filter((f) => f !== undefined && f !== BigInt(0)).length;
+
+    if (numSet === 0) {
+        throw new ExternalMatchClientError(
+            "exactly one of base_amount, quote_amount, exact_base_output, or exact_quote_output must be set",
+        );
+    }
+    if (numSet > 1) {
+        throw new ExternalMatchClientError(
+            "exactly one of base_amount, quote_amount, exact_base_output, or exact_quote_output must be set",
+        );
+    }
+}
+
+/**
  * Error thrown by the ExternalMatchClient.
  */
 export class ExternalMatchClientError extends Error {
@@ -501,6 +535,7 @@ export class ExternalMatchClient {
         order: ExternalOrder,
         options: RequestQuoteOptions,
     ): Promise<SignedExternalQuote | null> {
+        validateExternalOrder(order);
         const request: ExternalQuoteRequest = {
             external_order: order,
         };
@@ -527,6 +562,7 @@ export class ExternalMatchClient {
         order: ExternalOrder,
         options: RequestExternalMatchOptions,
     ): Promise<ExternalMatchResponse | null> {
+        validateExternalOrder(order);
         const request: ExternalMatchRequest = {
             do_gas_estimation: options.doGasEstimation,
             receiver_address: options.receiverAddress,
@@ -569,6 +605,7 @@ export class ExternalMatchClient {
         order: ExternalOrder,
         options: RequestExternalMatchOptions,
     ): Promise<MalleableExternalMatchResponse | null> {
+        validateExternalOrder(order);
         const request: ExternalMatchRequest = {
             do_gas_estimation: options.doGasEstimation,
             receiver_address: options.receiverAddress,
@@ -610,6 +647,9 @@ export class ExternalMatchClient {
         quote: SignedExternalQuote,
         options: AssembleExternalMatchOptions,
     ): Promise<ExternalMatchResponse | null> {
+        if (options.updatedOrder) {
+            validateExternalOrder(options.updatedOrder);
+        }
         const signedQuote: ApiSignedExternalQuote = {
             quote: quote.quote,
             signature: quote.signature,
@@ -655,6 +695,9 @@ export class ExternalMatchClient {
         quote: SignedExternalQuote,
         options: AssembleMalleableExternalMatchOptions,
     ): Promise<MalleableExternalMatchResponse | null> {
+        if (options.updatedOrder) {
+            validateExternalOrder(options.updatedOrder);
+        }
         const signedQuote: ApiSignedExternalQuote = {
             quote: quote.quote,
             signature: quote.signature,
