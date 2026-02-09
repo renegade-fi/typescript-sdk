@@ -1,5 +1,11 @@
 # @renegade-fi/renegade-sdk
 
+## 1.0.1
+
+### Patch Changes
+
+- Add external order validation logic w/ an exact-output external match example
+
 ## 1.0.0
 
 ### Major Changes
