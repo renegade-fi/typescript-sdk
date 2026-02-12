@@ -147,6 +147,7 @@ export interface SettlementTransaction {
     to: string;
     data: string;
     value: string;
+    gas?: string;
 }
 
 export interface AtomicMatchApiBundle {

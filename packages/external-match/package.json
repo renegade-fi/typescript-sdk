@@ -1,6 +1,6 @@
 {
     "name": "@renegade-fi/renegade-sdk",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "A TypeScript client for interacting with the Renegade Darkpool API",
     "repository": {
         "type": "git",
@@ -16,9 +16,9 @@
     ],
     "sideEffects": false,
     "type": "module",
-    "main": "./dist/esm/exports/index.js",
-    "types": "./dist/types/exports/index.d.ts",
-    "typings": "./dist/types/exports/index.d.ts",
+    "main": "./dist/index.js",
+    "types": "./dist/types/index.d.ts",
+    "typings": "./dist/types/index.d.ts",
     "exports": {
         ".": {
             "types": "./dist/types/index.d.ts",

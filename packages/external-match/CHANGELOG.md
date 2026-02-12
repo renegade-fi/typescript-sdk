@@ -1,5 +1,11 @@
 # @renegade-fi/renegade-sdk
 
+## 1.0.2
+
+### Patch Changes
+
+- Fix build artifact paths for older bundler
+
 ## 1.0.1
 
 ### Patch Changes
