@@ -39,68 +39,63 @@ if (!matchResponse) {
 }
 
 console.log("Received malleable external match response", {
-    gasSponsored: matchResponse.gas_sponsored,
+    gasSponsored: matchResponse.gas_sponsorship_info != null,
     gasSponsorshipInfo: matchResponse.gas_sponsorship_info,
 });
 
 // --- Malleable Bundle Manipulation --- //
 
-// Print bundle info
+// Print bundle info (v2 uses input/output terminology)
 console.log("\nBundle bounds:");
-const [minBase, maxBase] = matchResponse.baseBounds();
-const [minQuote, maxQuote] = matchResponse.quoteBounds();
-console.log(`Base bounds: ${minBase} - ${maxBase}`);
-console.log(`Quote bounds: ${minQuote} - ${maxQuote}`);
+const [minInput, maxInput] = matchResponse.inputBounds();
+const [minOutput, maxOutput] = matchResponse.outputBounds();
+console.log(`Input bounds: ${minInput} - ${maxInput}`);
+console.log(`Output bounds: ${minOutput} - ${maxOutput}`);
 
-// Set a specific base amount on the bundle
+// Set a specific input amount on the bundle
 // This modifies the settlement transaction calldata to use the specified amount
-const targetBaseAmount = minBase + (maxBase - minBase) / BigInt(2);
-const receiveAmount = matchResponse.setBaseAmount(targetBaseAmount);
+const targetInputAmount = minInput + (maxInput - minInput) / BigInt(2);
+const receiveAmount = matchResponse.setInputAmount(targetInputAmount);
 const sendAmount = matchResponse.sendAmount();
 
-console.log(`\nSet base amount: ${targetBaseAmount}`);
+console.log(`\nSet input amount: ${targetInputAmount}`);
 console.log(`Send amount: ${sendAmount}`);
 console.log(`Receive amount: ${receiveAmount}`);
-
-// Alternatively, you can set a quote amount instead:
-// const targetQuoteAmount = minQuote + (maxQuote - minQuote) / BigInt(2);
-// matchResponse.setQuoteAmount(targetQuoteAmount);
 
 const bundle = matchResponse.match_bundle;
 const tx = bundle.settlement_tx;
 
 // --- Allowance Check --- //
 
-const isSell = bundle.match_result.direction === OrderSide.SELL;
-const address = isSell
-    ? (bundle.match_result.base_mint as `0x${string}`)
-    : (bundle.match_result.quote_mint as `0x${string}`);
-// Use the send amount that was set via setBaseAmount (or max if not set)
+// The input token is what we send; skip ERC20 approval for native ETH sells
+const inputMint = bundle.match_result.input_mint as `0x${string}`;
 const amount = sendAmount; // This is the amount that will actually be sent
 const spender = tx.to as `0x${string}`;
 
-console.log("\nChecking allowance...");
+if (!matchResponse.isNativeEthSell()) {
+    console.log("\nChecking allowance...");
 
-const allowance = await publicClient.readContract({
-    address,
-    abi: erc20Abi,
-    functionName: "allowance",
-    args: [owner, spender],
-});
-
-if (allowance < amount) {
-    console.log("Allowance is less than amount, approving...");
-    const approveTx = await walletClient.writeContract({
-        address,
+    const allowance = await publicClient.readContract({
+        address: inputMint,
         abi: erc20Abi,
-        functionName: "approve",
-        args: [spender, amount],
+        functionName: "allowance",
+        args: [owner, spender],
     });
-    console.log("Submitting approve transaction...");
-    await publicClient.waitForTransactionReceipt({
-        hash: approveTx,
-    });
-    console.log("Successfully submitted approve transaction", approveTx);
+
+    if (allowance < amount) {
+        console.log("Allowance is less than amount, approving...");
+        const approveTx = await walletClient.writeContract({
+            address: inputMint,
+            abi: erc20Abi,
+            functionName: "approve",
+            args: [spender, amount],
+        });
+        console.log("Submitting approve transaction...");
+        await publicClient.waitForTransactionReceipt({
+            hash: approveTx,
+        });
+        console.log("Successfully submitted approve transaction", approveTx);
+    }
 }
 
 // --- Submit Bundle --- //
@@ -110,6 +105,7 @@ console.log("\nSubmitting bundle...");
 const hash = await walletClient.sendTransaction({
     to: tx.to as `0x${string}`,
     data: tx.data as `0x${string}`,
+    value: BigInt(tx.value ?? "0x0"),
     type: "eip1559",
 });
 

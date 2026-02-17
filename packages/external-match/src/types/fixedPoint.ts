@@ -22,6 +22,13 @@ export class FixedPoint {
     }
 
     /**
+     * Convert the fixed point value to a floating point number
+     */
+    toF64(): number {
+        return Number(this.value) / Number(FIXED_POINT_PRECISION_SHIFT);
+    }
+
+    /**
      * Divide a bigint by a fixed point number and return the ceiling
      */
     static ceilDivInt(amount: bigint, fp: FixedPoint): bigint {

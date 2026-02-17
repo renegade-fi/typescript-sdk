@@ -7,60 +7,67 @@
 
 import { type HttpResponse, RelayerHttpClient } from "./http.js";
 import {
-    type ApiSignedExternalQuote,
-    type AssembleExternalMatchRequest,
     ExchangeMetadataResponse,
-    type ExternalMatchRequest,
-    ExternalMatchResponse,
+    type ExternalMatchResponse,
     type ExternalOrder,
-    type ExternalQuoteRequest,
-    type ExternalQuoteResponse,
-    GetDepthForAllPairsResponse,
+    type GetDepthForAllPairsResponse,
     MalleableExternalMatchResponse,
-    OrderBookDepth,
-    SignedExternalQuote,
+    type OrderBookDepth,
+    type SignedExternalQuote,
     type SupportedTokensResponse,
-    type TokenPrice,
     type TokenPricesResponse,
 } from "./types/index.js";
+import type {
+    AssembleExternalMatchRequestV2,
+    ExternalOrderV2,
+    GetMarketDepthByMintResponse,
+    GetMarketDepthsResponse,
+    GetMarketsResponse,
+} from "./types/v2Types.js";
+import {
+    deserializeMarketDepthResponse,
+    deserializeMarketDepthsResponse,
+    deserializeMarketsResponse,
+    deserializeMatchResponseV2,
+    deserializeQuoteResponseV2,
+    serializeAssembleRequestV2,
+    serializeQuoteRequestV2,
+} from "./types/v2Types.js";
+import {
+    marketDepthsToV1,
+    marketDepthToV1,
+    marketsToSupportedTokens,
+    marketsToTokenPrices,
+    v1OrderToV2,
+    v1QuoteToV2,
+    v2QuoteToV1,
+    v2ResponseToV1NonMalleable,
+} from "./v1Conversions.js";
 import { VERSION } from "./version.js";
 
-// Constants for API URLs
-const ARBITRUM_SEPOLIA_BASE_URL = "https://arbitrum-sepolia.auth-server.renegade.fi";
-const ARBITRUM_ONE_BASE_URL = "https://arbitrum-one.auth-server.renegade.fi";
-const BASE_SEPOLIA_BASE_URL = "https://base-sepolia.auth-server.renegade.fi";
-const BASE_MAINNET_BASE_URL = "https://base-mainnet.auth-server.renegade.fi";
+// Constants for auth server URLs
+const ARBITRUM_SEPOLIA_BASE_URL = "https://arbitrum-sepolia.v2.auth-server.renegade.fi";
+const ARBITRUM_ONE_BASE_URL = "https://arbitrum-one.v2.auth-server.renegade.fi";
+const BASE_SEPOLIA_BASE_URL = "https://base-sepolia.v2.auth-server.renegade.fi";
+const BASE_MAINNET_BASE_URL = "https://base-mainnet.v2.auth-server.renegade.fi";
 
-const ARBITRUM_SEPOLIA_RELAYER_URL = "https://arbitrum-sepolia.relayer.renegade.fi";
-const ARBITRUM_ONE_RELAYER_URL = "https://arbitrum-one.relayer.renegade.fi";
-const BASE_SEPOLIA_RELAYER_URL = "https://base-sepolia.relayer.renegade.fi";
-const BASE_MAINNET_RELAYER_URL = "https://base-mainnet.relayer.renegade.fi";
+// Constants for relayer URLs
+const ARBITRUM_SEPOLIA_RELAYER_URL = "https://arbitrum-sepolia.v2.relayer.renegade.fi";
+const ARBITRUM_ONE_RELAYER_URL = "https://arbitrum-one.v2.relayer.renegade.fi";
+const BASE_SEPOLIA_RELAYER_URL = "https://base-sepolia.v2.relayer.renegade.fi";
+const BASE_MAINNET_RELAYER_URL = "https://base-mainnet.v2.relayer.renegade.fi";
 
 // Header constants
 const RENEGADE_API_KEY_HEADER = "x-renegade-api-key";
 const RENEGADE_SDK_VERSION_HEADER = "x-renegade-sdk-version";
 
-// API Routes
-const REQUEST_EXTERNAL_QUOTE_ROUTE = "/v0/matching-engine/quote";
-const ASSEMBLE_EXTERNAL_MATCH_ROUTE = "/v0/matching-engine/assemble-external-match";
-/**
- * The route used to assemble an external match into a malleable bundle
- */
-const ASSEMBLE_MALLEABLE_EXTERNAL_MATCH_ROUTE =
-    "/v0/matching-engine/assemble-malleable-external-match";
-const REQUEST_EXTERNAL_MATCH_ROUTE = "/v0/matching-engine/request-external-match";
-/**
- * The route used to request a malleable external match directly
- */
-const REQUEST_MALLEABLE_EXTERNAL_MATCH_ROUTE =
-    "/v0/matching-engine/request-malleable-external-match";
-const ORDER_BOOK_DEPTH_ROUTE = "/v0/order_book/depth";
-/** Returns the supported tokens list */
-const SUPPORTED_TOKENS_ROUTE = "/v0/supported-tokens";
-/** Returns the token prices */
-const TOKEN_PRICES_ROUTE = "/v0/token-prices";
-/** Returns the exchange metadata */
-const EXCHANGE_METADATA_ROUTE = "/v0/exchange-metadata";
+// V2 API Routes
+const GET_QUOTE_ROUTE = "/v2/external-matches/get-quote";
+const ASSEMBLE_MATCH_BUNDLE_ROUTE = "/v2/external-matches/assemble-match-bundle";
+const GET_MARKETS_ROUTE = "/v2/markets";
+const GET_MARKET_DEPTH_BY_MINT_ROUTE = "/v2/markets"; // /{mint}/depth appended dynamically
+const GET_MARKETS_DEPTH_ROUTE = "/v2/markets/depth";
+const GET_EXCHANGE_METADATA_ROUTE = "/v2/metadata/exchange";
 
 // Query Parameters
 const DISABLE_GAS_SPONSORSHIP_QUERY_PARAM = "disable_gas_sponsorship";
@@ -69,8 +76,6 @@ const REFUND_NATIVE_ETH_QUERY_PARAM = "refund_native_eth";
 
 /**
  * Get the SDK version string.
- *
- * @returns The SDK version prefixed with "typescript-v"
  */
 function getSdkVersion(): string {
     return `typescript-v${VERSION}`;
@@ -84,40 +89,25 @@ export class RequestQuoteOptions {
     gasRefundAddress?: string;
     refundNativeEth = false;
 
-    /**
-     * Create a new instance of RequestQuoteOptions.
-     */
     static new(): RequestQuoteOptions {
         return new RequestQuoteOptions();
     }
 
-    /**
-     * Set whether gas sponsorship should be disabled.
-     */
     withGasSponsorshipDisabled(disableGasSponsorship: boolean): this {
         this.disableGasSponsorship = disableGasSponsorship;
         return this;
     }
 
-    /**
-     * Set the gas refund address.
-     */
     withGasRefundAddress(gasRefundAddress: string): this {
         this.gasRefundAddress = gasRefundAddress;
         return this;
     }
 
-    /**
-     * Set whether to refund in native ETH.
-     */
     withRefundNativeEth(refundNativeEth: boolean): this {
         this.refundNativeEth = refundNativeEth;
         return this;
     }
 
-    /**
-     * Build the request path with query parameters.
-     */
     buildRequestPath(): string {
         const params = new URLSearchParams();
         params.set(DISABLE_GAS_SPONSORSHIP_QUERY_PARAM, this.disableGasSponsorship.toString());
@@ -129,7 +119,7 @@ export class RequestQuoteOptions {
             params.set(REFUND_NATIVE_ETH_QUERY_PARAM, this.refundNativeEth.toString());
         }
 
-        return `${REQUEST_EXTERNAL_QUOTE_ROUTE}?${params.toString()}`;
+        return `${GET_QUOTE_ROUTE}?${params.toString()}`;
     }
 }
 
@@ -143,56 +133,35 @@ export class RequestExternalMatchOptions {
     doGasEstimation = false;
     receiverAddress?: string;
 
-    /**
-     * Create a new instance of RequestExternalMatchOptions.
-     */
     static new(): RequestExternalMatchOptions {
         return new RequestExternalMatchOptions();
     }
 
-    /**
-     * Set whether gas sponsorship should be disabled.
-     */
     withGasSponsorshipDisabled(disableGasSponsorship: boolean): this {
         this.disableGasSponsorship = disableGasSponsorship;
         return this;
     }
 
-    /**
-     * Set the gas refund address.
-     */
     withGasRefundAddress(gasRefundAddress: string): this {
         this.gasRefundAddress = gasRefundAddress;
         return this;
     }
 
-    /**
-     * Set whether to refund in native ETH.
-     */
     withRefundNativeEth(refundNativeEth: boolean): this {
         this.refundNativeEth = refundNativeEth;
         return this;
     }
 
-    /**
-     * Set whether the relayer should include gas estimation in the response.
-     */
     withGasEstimation(doGasEstimation: boolean): this {
         this.doGasEstimation = doGasEstimation;
         return this;
     }
 
-    /**
-     * Set the receiver address for the match.
-     */
     withReceiverAddress(receiverAddress: string): this {
         this.receiverAddress = receiverAddress;
         return this;
     }
 
-    /**
-     * Build the request path with query parameters.
-     */
     buildRequestPath(): string {
         const params = new URLSearchParams();
         params.set(DISABLE_GAS_SPONSORSHIP_QUERY_PARAM, this.disableGasSponsorship.toString());
@@ -206,28 +175,8 @@ export class RequestExternalMatchOptions {
 
         const query = params.toString();
         return query.length > 0
-            ? `${REQUEST_EXTERNAL_MATCH_ROUTE}?${query}`
-            : REQUEST_EXTERNAL_MATCH_ROUTE;
-    }
-
-    /**
-     * Build the request path for malleable external match with query parameters.
-     */
-    buildMalleableRequestPath(): string {
-        const params = new URLSearchParams();
-        params.set(DISABLE_GAS_SPONSORSHIP_QUERY_PARAM, this.disableGasSponsorship.toString());
-        if (this.gasRefundAddress) {
-            params.set(GAS_REFUND_ADDRESS_QUERY_PARAM, this.gasRefundAddress);
-        }
-
-        if (this.refundNativeEth) {
-            params.set(REFUND_NATIVE_ETH_QUERY_PARAM, this.refundNativeEth.toString());
-        }
-
-        const query = params.toString();
-        return query.length > 0
-            ? `${REQUEST_MALLEABLE_EXTERNAL_MATCH_ROUTE}?${query}`
-            : REQUEST_MALLEABLE_EXTERNAL_MATCH_ROUTE;
+            ? `${ASSEMBLE_MATCH_BUNDLE_ROUTE}?${query}`
+            : ASSEMBLE_MATCH_BUNDLE_ROUTE;
     }
 }
 
@@ -236,92 +185,30 @@ export class RequestExternalMatchOptions {
  */
 export class AssembleExternalMatchOptions {
     doGasEstimation = false;
-    allowShared = false;
     receiverAddress?: string;
     updatedOrder?: ExternalOrder;
-    requestGasSponsorship = false;
-    gasRefundAddress?: string;
 
-    /**
-     * Create a new instance of AssembleExternalMatchOptions.
-     */
     static new(): AssembleExternalMatchOptions {
         return new AssembleExternalMatchOptions();
     }
 
-    /**
-     * Set whether to do gas estimation.
-     */
     withGasEstimation(doGasEstimation: boolean): AssembleExternalMatchOptions {
         this.doGasEstimation = doGasEstimation;
         return this;
     }
 
-    /**
-     * Set whether to allow shared gas sponsorship.
-     */
-    withAllowShared(allowShared: boolean): AssembleExternalMatchOptions {
-        this.allowShared = allowShared;
-        return this;
-    }
-
-    /**
-     * Set the receiver address.
-     */
     withReceiverAddress(receiverAddress: string): AssembleExternalMatchOptions {
         this.receiverAddress = receiverAddress;
         return this;
     }
 
-    /**
-     * Set the updated order.
-     */
     withUpdatedOrder(updatedOrder: ExternalOrder): AssembleExternalMatchOptions {
         this.updatedOrder = updatedOrder;
         return this;
     }
 
-    /**
-     * Set whether to request gas sponsorship.
-     * @deprecated Request gas sponsorship when requesting a quote instead
-     */
-    withGasSponsorship(requestGasSponsorship: boolean): AssembleExternalMatchOptions {
-        this.requestGasSponsorship = requestGasSponsorship;
-        return this;
-    }
-
-    /**
-     * Set the gas refund address.
-     * @deprecated Request gas sponsorship when requesting a quote instead
-     */
-    withGasRefundAddress(gasRefundAddress: string): AssembleExternalMatchOptions {
-        this.gasRefundAddress = gasRefundAddress;
-        return this;
-    }
-
-    /**
-     * Build the request path with query parameters.
-     */
     buildRequestPath(): string {
-        // If no query parameters are needed, return the base path
-        if (!this.requestGasSponsorship && !this.gasRefundAddress) {
-            return ASSEMBLE_EXTERNAL_MATCH_ROUTE;
-        }
-
-        const params = new URLSearchParams();
-        if (this.requestGasSponsorship) {
-            // We only write this query parameter if it was explicitly set
-            params.set(
-                DISABLE_GAS_SPONSORSHIP_QUERY_PARAM,
-                (!this.requestGasSponsorship).toString(),
-            );
-        }
-
-        if (this.gasRefundAddress) {
-            params.set(GAS_REFUND_ADDRESS_QUERY_PARAM, this.gasRefundAddress);
-        }
-
-        return `${ASSEMBLE_EXTERNAL_MATCH_ROUTE}?${params.toString()}`;
+        return ASSEMBLE_MATCH_BUNDLE_ROUTE;
     }
 }
 
@@ -329,35 +216,8 @@ export class AssembleExternalMatchOptions {
  * Options for assembling a malleable external match.
  */
 export class AssembleMalleableExternalMatchOptions extends AssembleExternalMatchOptions {
-    /**
-     * Create a new instance of AssembleExternalMatchOptions.
-     */
     static override new(): AssembleMalleableExternalMatchOptions {
         return new AssembleMalleableExternalMatchOptions();
-    }
-    /**
-     * Build the request path with query parameters.
-     */
-    override buildRequestPath(): string {
-        // If no query parameters are needed, return the base path
-        if (!this.requestGasSponsorship && !this.gasRefundAddress) {
-            return ASSEMBLE_MALLEABLE_EXTERNAL_MATCH_ROUTE;
-        }
-
-        const params = new URLSearchParams();
-        if (this.requestGasSponsorship) {
-            // We only write this query parameter if it was explicitly set
-            params.set(
-                DISABLE_GAS_SPONSORSHIP_QUERY_PARAM,
-                (!this.requestGasSponsorship).toString(),
-            );
-        }
-
-        if (this.gasRefundAddress) {
-            params.set(GAS_REFUND_ADDRESS_QUERY_PARAM, this.gasRefundAddress);
-        }
-
-        return `${ASSEMBLE_MALLEABLE_EXTERNAL_MATCH_ROUTE}?${params.toString()}`;
     }
 }
 
@@ -409,42 +269,48 @@ export class ExternalMatchClientError extends Error {
 }
 
 /**
+ * Build a v2 assemble request for a direct order.
+ */
+function buildDirectOrderRequest(
+    v2Order: ExternalOrderV2,
+    options: { doGasEstimation: boolean; receiverAddress?: string },
+): AssembleExternalMatchRequestV2 {
+    return {
+        do_gas_estimation: options.doGasEstimation,
+        receiver_address: options.receiverAddress,
+        order: {
+            type: "direct-order",
+            external_order: v2Order,
+        },
+    };
+}
+
+/**
  * Client for interacting with the Renegade external matching API.
  */
 export class ExternalMatchClient {
     private apiKey: string;
     private httpClient: RelayerHttpClient;
-    private relayerHttpClient: RelayerHttpClient;
+    private relayerHttpClient?: RelayerHttpClient;
 
     /**
      * Initialize a new ExternalMatchClient.
      *
      * @param apiKey The API key for authentication
      * @param apiSecret The API secret for request signing
-     * @param baseUrl The base URL of the Renegade API
+     * @param baseUrl The base URL of the auth server API
+     * @param relayerBaseUrl The base URL of the relayer API (for market endpoints)
      */
-    constructor(apiKey: string, apiSecret: string, baseUrl: string, relayerUrl: string) {
+    constructor(apiKey: string, apiSecret: string, baseUrl: string, relayerBaseUrl?: string) {
         this.apiKey = apiKey;
         this.httpClient = new RelayerHttpClient(baseUrl, apiSecret);
-        this.relayerHttpClient = new RelayerHttpClient(relayerUrl);
+        if (relayerBaseUrl) {
+            this.relayerHttpClient = new RelayerHttpClient(relayerBaseUrl, apiSecret);
+        }
     }
 
     /**
      * Create a new client configured for the Arbitrum Sepolia testnet.
-     *
-     * @deprecated Use {@link ExternalMatchClient.newArbitrumSepoliaClient} instead
-     */
-    static newSepoliaClient(apiKey: string, apiSecret: string): ExternalMatchClient {
-        return ExternalMatchClient.newArbitrumSepoliaClient(apiKey, apiSecret);
-    }
-
-    /**
-     * Create a new client configured for the Arbitrum Sepolia testnet.
-     *
-     * @param apiKey The API key for authentication
-     * @param apiSecret The API secret for request signing
-     * @param relayerUrl The relayer URL for the client
-     * @returns A new ExternalMatchClient configured for Sepolia
      */
     static newArbitrumSepoliaClient(apiKey: string, apiSecret: string): ExternalMatchClient {
         return new ExternalMatchClient(
@@ -457,10 +323,6 @@ export class ExternalMatchClient {
 
     /**
      * Create a new client configured for the Base Sepolia testnet.
-     *
-     * @param apiKey The API key for authentication
-     * @param apiSecret The API secret for request signing
-     * @returns A new ExternalMatchClient configured for Sepolia
      */
     static newBaseSepoliaClient(apiKey: string, apiSecret: string): ExternalMatchClient {
         return new ExternalMatchClient(
@@ -473,19 +335,6 @@ export class ExternalMatchClient {
 
     /**
      * Create a new client configured for the Arbitrum One mainnet.
-     *
-     * @deprecated Use {@link ExternalMatchClient.newArbitrumOneClient} instead
-     */
-    static newMainnetClient(apiKey: string, apiSecret: string): ExternalMatchClient {
-        return ExternalMatchClient.newArbitrumOneClient(apiKey, apiSecret);
-    }
-
-    /**
-     * Create a new client configured for the Arbitrum One mainnet.
-     *
-     * @param apiKey The API key for authentication
-     * @param apiSecret The API secret for request signing
-     * @returns A new ExternalMatchClient configured for mainnet
      */
     static newArbitrumOneClient(apiKey: string, apiSecret: string): ExternalMatchClient {
         return new ExternalMatchClient(
@@ -498,10 +347,6 @@ export class ExternalMatchClient {
 
     /**
      * Create a new client configured for the Base mainnet.
-     *
-     * @param apiKey The API key for authentication
-     * @param apiSecret The API secret for request signing
-     * @returns A new ExternalMatchClient configured for mainnet
      */
     static newBaseMainnetClient(apiKey: string, apiSecret: string): ExternalMatchClient {
         return new ExternalMatchClient(
@@ -512,12 +357,10 @@ export class ExternalMatchClient {
         );
     }
 
+    // --- Quote methods (v1 signature, v2 internally) ---
+
     /**
      * Request a quote for the given order.
-     *
-     * @param order The order to request a quote for
-     * @returns A promise that resolves to a signed quote if one is available, null otherwise
-     * @throws ExternalMatchClientError if the request fails
      */
     async requestQuote(order: ExternalOrder): Promise<SignedExternalQuote | null> {
         return this.requestQuoteWithOptions(order, RequestQuoteOptions.new());
@@ -525,28 +368,72 @@ export class ExternalMatchClient {
 
     /**
      * Request a quote for the given order with custom options.
-     *
-     * @param order The order to request a quote for
-     * @param options Custom options for the quote request
-     * @returns A promise that resolves to a signed quote if one is available, null otherwise
-     * @throws ExternalMatchClientError if the request fails
      */
     async requestQuoteWithOptions(
         order: ExternalOrder,
         options: RequestQuoteOptions,
     ): Promise<SignedExternalQuote | null> {
         validateExternalOrder(order);
-        const request: ExternalQuoteRequest = {
-            external_order: order,
-        };
+        const v2Order = v1OrderToV2(order);
+        const body = serializeQuoteRequestV2({ external_order: v2Order });
 
         const path = options.buildRequestPath();
         const headers = this.getHeaders();
 
-        const response = await this.httpClient.post<ExternalQuoteResponse>(path, request, headers);
+        const response = await this.httpClient.post<any>(path, body, headers);
 
-        return this.handleOptionalResponse(response, SignedExternalQuote.deserialize);
+        return this.handleOptionalResponse(response, (data) => {
+            const v2Response = deserializeQuoteResponseV2(data);
+            return v2QuoteToV1(v2Response, order);
+        });
     }
+
+    // --- Assemble methods (v1 signature, v2 internally) ---
+
+    /**
+     * Assemble a quote into a match bundle with default options.
+     */
+    async assembleQuote(quote: SignedExternalQuote): Promise<ExternalMatchResponse | null> {
+        return this.assembleQuoteWithOptions(quote, AssembleExternalMatchOptions.new());
+    }
+
+    /**
+     * Assemble a quote into a match bundle with custom options.
+     */
+    async assembleQuoteWithOptions(
+        quote: SignedExternalQuote,
+        options: AssembleExternalMatchOptions,
+    ): Promise<ExternalMatchResponse | null> {
+        if (options.updatedOrder) {
+            validateExternalOrder(options.updatedOrder);
+        }
+
+        const direction = quote.quote.order.side;
+        const v2SignedQuote = v1QuoteToV2(quote);
+
+        const request: AssembleExternalMatchRequestV2 = {
+            do_gas_estimation: options.doGasEstimation,
+            receiver_address: options.receiverAddress,
+            order: {
+                type: "quoted-order",
+                signed_quote: v2SignedQuote,
+                updated_order: options.updatedOrder ? v1OrderToV2(options.updatedOrder) : undefined,
+            },
+        };
+
+        const body = serializeAssembleRequestV2(request);
+        const path = ASSEMBLE_MATCH_BUNDLE_ROUTE;
+        const headers = this.getHeaders();
+
+        const response = await this.httpClient.post<any>(path, body, headers);
+
+        return this.handleOptionalResponse(response, (data) => {
+            const v2Resp = deserializeMatchResponseV2(data);
+            return v2ResponseToV1NonMalleable(v2Resp, direction);
+        });
+    }
+
+    // --- Direct match methods (v1 signature, v2 internally) ---
 
     /**
      * Request an external match directly with default options.
@@ -563,26 +450,25 @@ export class ExternalMatchClient {
         options: RequestExternalMatchOptions,
     ): Promise<ExternalMatchResponse | null> {
         validateExternalOrder(order);
-        const request: ExternalMatchRequest = {
-            do_gas_estimation: options.doGasEstimation,
-            receiver_address: options.receiverAddress,
-            external_order: order,
-        };
+        const v2Order = v1OrderToV2(order);
+        const request = buildDirectOrderRequest(v2Order, options);
+        const body = serializeAssembleRequestV2(request);
 
         const path = options.buildRequestPath();
         const headers = this.getHeaders();
 
-        const response = await this.httpClient.post<ExternalMatchResponse>(path, request, headers);
+        const response = await this.httpClient.post<any>(path, body, headers);
 
-        return this.handleOptionalResponse(response, ExternalMatchResponse.deserialize);
+        return this.handleOptionalResponse(response, (data) => {
+            const v2Resp = deserializeMatchResponseV2(data);
+            return v2ResponseToV1NonMalleable(v2Resp, order.side);
+        });
     }
+
+    // --- Malleable match methods (v1 input, v2 response — breaking) ---
 
     /**
      * Request a malleable external match directly with default options.
-     *
-     * @param order The order to request a malleable match for
-     * @returns A promise that resolves to a malleable match response if one is available, null otherwise
-     * @throws ExternalMatchClientError if the request fails
      */
     async requestMalleableExternalMatch(
         order: ExternalOrder,
@@ -595,89 +481,26 @@ export class ExternalMatchClient {
 
     /**
      * Request a malleable external match directly with custom options.
-     *
-     * @param order The order to request a malleable match for
-     * @param options Custom options for the malleable match request
-     * @returns A promise that resolves to a malleable match response if one is available, null otherwise
-     * @throws ExternalMatchClientError if the request fails
      */
     async requestMalleableExternalMatchWithOptions(
         order: ExternalOrder,
         options: RequestExternalMatchOptions,
     ): Promise<MalleableExternalMatchResponse | null> {
         validateExternalOrder(order);
-        const request: ExternalMatchRequest = {
-            do_gas_estimation: options.doGasEstimation,
-            receiver_address: options.receiverAddress,
-            external_order: order,
-        };
+        const v2Order = v1OrderToV2(order);
+        const request = buildDirectOrderRequest(v2Order, options);
+        const body = serializeAssembleRequestV2(request);
 
-        const path = options.buildMalleableRequestPath();
+        const path = options.buildRequestPath();
         const headers = this.getHeaders();
 
-        const response = await this.httpClient.post<MalleableExternalMatchResponse>(
-            path,
-            request,
-            headers,
-        );
+        const response = await this.httpClient.post<any>(path, body, headers);
 
         return this.handleOptionalResponse(response, MalleableExternalMatchResponse.deserialize);
     }
 
     /**
-     * Assemble a quote into a match bundle with default options.
-     *
-     * @param quote The signed quote to assemble
-     * @returns A promise that resolves to a match response if assembly succeeds, null otherwise
-     * @throws ExternalMatchClientError if the request fails
-     */
-    async assembleQuote(quote: SignedExternalQuote): Promise<ExternalMatchResponse | null> {
-        return this.assembleQuoteWithOptions(quote, AssembleExternalMatchOptions.new());
-    }
-
-    /**
-     * Assemble a quote into a match bundle with custom options.
-     *
-     * @param quote The signed quote to assemble
-     * @param options Custom options for quote assembly
-     * @returns A promise that resolves to a match response if assembly succeeds, null otherwise
-     * @throws ExternalMatchClientError if the request fails
-     */
-    async assembleQuoteWithOptions(
-        quote: SignedExternalQuote,
-        options: AssembleExternalMatchOptions,
-    ): Promise<ExternalMatchResponse | null> {
-        if (options.updatedOrder) {
-            validateExternalOrder(options.updatedOrder);
-        }
-        const signedQuote: ApiSignedExternalQuote = {
-            quote: quote.quote,
-            signature: quote.signature,
-            deadline: quote.deadline,
-        };
-
-        const request: AssembleExternalMatchRequest = {
-            do_gas_estimation: options.doGasEstimation,
-            allow_shared: options.allowShared,
-            receiver_address: options.receiverAddress,
-            signed_quote: signedQuote,
-            updated_order: options.updatedOrder,
-        };
-
-        const path = options.buildRequestPath();
-        const headers = this.getHeaders();
-
-        const response = await this.httpClient.post<ExternalMatchResponse>(path, request, headers);
-
-        return this.handleOptionalResponse(response, ExternalMatchResponse.deserialize);
-    }
-
-    /**
      * Assemble a quote into a malleable match bundle with default options.
-     *
-     * @param quote The signed quote to assemble
-     * @returns A promise that resolves to a match response if assembly succeeds, null otherwise
-     * @throws ExternalMatchClientError if the request fails
      */
     async assembleMalleableQuote(
         quote: SignedExternalQuote,
@@ -698,145 +521,113 @@ export class ExternalMatchClient {
         if (options.updatedOrder) {
             validateExternalOrder(options.updatedOrder);
         }
-        const signedQuote: ApiSignedExternalQuote = {
-            quote: quote.quote,
-            signature: quote.signature,
-            deadline: quote.deadline,
-        };
 
-        const request: AssembleExternalMatchRequest = {
+        const v2SignedQuote = v1QuoteToV2(quote);
+
+        const request: AssembleExternalMatchRequestV2 = {
             do_gas_estimation: options.doGasEstimation,
-            allow_shared: options.allowShared,
             receiver_address: options.receiverAddress,
-            signed_quote: signedQuote,
-            updated_order: options.updatedOrder,
+            order: {
+                type: "quoted-order",
+                signed_quote: v2SignedQuote,
+                updated_order: options.updatedOrder ? v1OrderToV2(options.updatedOrder) : undefined,
+            },
         };
 
-        const path = options.buildRequestPath();
+        const body = serializeAssembleRequestV2(request);
+        const path = ASSEMBLE_MATCH_BUNDLE_ROUTE;
         const headers = this.getHeaders();
 
-        const response = await this.httpClient.post<MalleableExternalMatchResponse>(
-            path,
-            request,
-            headers,
-        );
+        const response = await this.httpClient.post<any>(path, body, headers);
 
         return this.handleOptionalResponse(response, MalleableExternalMatchResponse.deserialize);
     }
 
-    /**
-     * Get order book depth for a given base token mint.
-     *
-     * @param mint The base token mint address
-     * @returns A promise that resolves to the order book depth
-     * @throws ExternalMatchClientError if the request fails
-     */
-    async getOrderBookDepth(mint: string): Promise<OrderBookDepth | null> {
-        const path = `${ORDER_BOOK_DEPTH_ROUTE}/${mint}`;
-        const headers = this.getHeaders();
+    // --- New v2 market methods ---
 
-        try {
-            const response = await this.httpClient.get<OrderBookDepth>(path, headers);
-            if (response.status !== 200 || !response.data) {
-                throw new ExternalMatchClientError(
-                    "Failed to get order book depth",
-                    response.status,
-                );
-            }
-            return this.handleOptionalResponse(response, OrderBookDepth.deserialize);
-        } catch (error: any) {
-            throw new ExternalMatchClientError(
-                error.message || "Failed to get order book depth",
-                error.status,
-            );
+    /**
+     * Get all tradable markets.
+     */
+    async getMarkets(): Promise<GetMarketsResponse> {
+        const client = this.relayerHttpClient ?? this.httpClient;
+        const response = await client.get<any>(GET_MARKETS_ROUTE);
+
+        if (response.status !== 200 || !response.data) {
+            throw new ExternalMatchClientError("Failed to get markets", response.status);
         }
+
+        return deserializeMarketsResponse(response.data);
     }
 
     /**
-     * Get order book depth for all pairs
-     * @returns A promise that resolves to the order book depth for all pairs
-     * @throws ExternalMatchClientError if the request fails
+     * Get market depth for a given base token mint.
      */
-    async getOrderBookDepthAllPairs(): Promise<GetDepthForAllPairsResponse | null> {
-        const path = `${ORDER_BOOK_DEPTH_ROUTE}`;
+    async getMarketDepth(mint: string): Promise<GetMarketDepthByMintResponse> {
+        const path = `${GET_MARKET_DEPTH_BY_MINT_ROUTE}/${mint}/depth`;
         const headers = this.getHeaders();
 
-        try {
-            const response = await this.httpClient.get<GetDepthForAllPairsResponse>(path, headers);
-            if (response.status !== 200 || !response.data) {
-                throw new ExternalMatchClientError(
-                    "Failed to get order book depth",
-                    response.status,
-                );
-            }
-            return this.handleOptionalResponse(response, GetDepthForAllPairsResponse.deserialize);
-        } catch (error: any) {
-            throw new ExternalMatchClientError(
-                error.message || "Failed to get order book depth",
-                error.status,
-            );
+        const response = await this.httpClient.get<any>(path, headers);
+
+        if (response.status !== 200 || !response.data) {
+            throw new ExternalMatchClientError("Failed to get market depth", response.status);
         }
+
+        return deserializeMarketDepthResponse(response.data);
     }
 
     /**
-     * Get a list of supported tokens for external matches
+     * Get market depth for all pairs.
+     */
+    async getMarketDepthsAllPairs(): Promise<GetMarketDepthsResponse> {
+        const headers = this.getHeaders();
+        const response = await this.httpClient.get<any>(GET_MARKETS_DEPTH_ROUTE, headers);
+
+        if (response.status !== 200 || !response.data) {
+            throw new ExternalMatchClientError("Failed to get market depths", response.status);
+        }
+
+        return deserializeMarketDepthsResponse(response.data);
+    }
+
+    // --- Deprecated v1 methods (shimmed through v2) ---
+
+    /**
+     * @deprecated Use getMarkets() instead
      */
     async getSupportedTokens(): Promise<SupportedTokensResponse> {
-        const path = `${SUPPORTED_TOKENS_ROUTE}`;
-        const headers = this.getHeaders();
-
-        try {
-            const response = await this.relayerHttpClient.get<SupportedTokensResponse>(
-                path,
-                headers,
-            );
-            if (response.status !== 200 || !response.data) {
-                throw new ExternalMatchClientError(
-                    "Failed to get supported tokens",
-                    response.status,
-                );
-            }
-            return response.data;
-        } catch (error: any) {
-            throw new ExternalMatchClientError(
-                error.message || "Failed to get supported tokens",
-                error.status,
-            );
-        }
+        const resp = await this.getMarkets();
+        return marketsToSupportedTokens(resp);
     }
 
     /**
-     * Get a list of token prices
+     * @deprecated Use getMarkets() instead
      */
     async getTokenPrices(): Promise<TokenPricesResponse> {
-        const path = `${TOKEN_PRICES_ROUTE}`;
-        const headers = this.getHeaders();
+        const resp = await this.getMarkets();
+        return marketsToTokenPrices(resp);
+    }
 
-        try {
-            const response = await this.relayerHttpClient.get<TokenPricesResponse>(path, headers);
-            if (response.status !== 200 || !response.data) {
-                throw new ExternalMatchClientError("Failed to get token prices", response.status);
-            }
-            return {
-                ...response.data,
-                token_prices: response.data.token_prices.map((tokenPrice: TokenPrice) => ({
-                    ...tokenPrice,
-                    price: Number.parseFloat(tokenPrice.price.toString()),
-                })),
-            };
-        } catch (error: any) {
-            throw new ExternalMatchClientError(
-                error.message || "Failed to get token prices",
-                error.status,
-            );
-        }
+    /**
+     * @deprecated Use getMarketDepth() instead
+     */
+    async getOrderBookDepth(mint: string): Promise<OrderBookDepth | null> {
+        const resp = await this.getMarketDepth(mint);
+        return marketDepthToV1(resp);
+    }
+
+    /**
+     * @deprecated Use getMarketDepthsAllPairs() instead
+     */
+    async getOrderBookDepthAllPairs(): Promise<GetDepthForAllPairsResponse | null> {
+        const resp = await this.getMarketDepthsAllPairs();
+        return marketDepthsToV1(resp);
     }
 
     /**
      * Get exchange metadata including chain ID, settlement contract address, and supported tokens
      */
     async getExchangeMetadata(): Promise<ExchangeMetadataResponse> {
-        const path = `${EXCHANGE_METADATA_ROUTE}`;
+        const path = GET_EXCHANGE_METADATA_ROUTE;
         const headers = this.getHeaders();
 
         const response = await this.httpClient.get<ExchangeMetadataResponse>(path, headers);
@@ -846,15 +637,8 @@ export class ExternalMatchClient {
         ) as ExchangeMetadataResponse;
     }
 
-    /**
-     * Handle an optional HTTP response, returning null for 204, deserializing for 200,
-     * and throwing an error for other status codes.
-     *
-     * @param response The HTTP response
-     * @param deserialize Function to deserialize the response data
-     * @returns The deserialized response or null for 204
-     * @throws ExternalMatchClientError for non-200/204 status codes
-     */
+    // --- Private helpers ---
+
     private handleOptionalResponse<T>(
         response: HttpResponse<any>,
         deserialize: (data: any) => T,
@@ -871,24 +655,12 @@ export class ExternalMatchClient {
         throw new ExternalMatchClientError(errorMessage, response.status);
     }
 
-    /**
-     * Extract error message from an error response.
-     * Per OpenAPI spec, error responses follow the ErrorResponse schema with an "error" field.
-     *
-     * @param data The response data (may be ErrorResponse object, string, or other)
-     * @returns The extracted error message
-     */
     private extractErrorMessage(data: any): string {
         if (data && typeof data === "object" && "error" in data && typeof data.error === "string") {
             return data.error;
         }
         return typeof data === "string" ? data : JSON.stringify(data);
     }
-    /**
-     * Get the headers required for API requests.
-     *
-     * @returns Headers containing the API key and SDK version
-     */
 
     private getHeaders(): Record<string, string> {
         return {

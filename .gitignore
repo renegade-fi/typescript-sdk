@@ -11,3 +11,4 @@ tsconfig.tsbuildinfo
 *.vitest-temp.json
 **/.env
 .npmrc
+CLAUDE*.md
