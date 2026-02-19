@@ -2,6 +2,8 @@
  * Type definitions for the Renegade Darkpool API.
  */
 
+import type { ApiSignedQuoteV2 } from "./v2Types.js";
+
 export enum OrderSide {
     BUY = "Buy",
     SELL = "Sell",
@@ -70,7 +72,7 @@ export interface GasSponsorshipInfo {
 
 export interface SignedGasSponsorshipInfo {
     gas_sponsorship_info: GasSponsorshipInfo;
-    signature: string;
+    signature?: string;
 }
 
 export class SignedExternalQuote {
@@ -78,17 +80,21 @@ export class SignedExternalQuote {
     signature: string;
     deadline: bigint;
     gas_sponsorship_info?: SignedGasSponsorshipInfo;
+    /** @internal Stored for round-tripping through assemble */
+    _innerV2Quote?: ApiSignedQuoteV2;
 
     constructor(
         quote: ApiExternalQuote,
         signature: string,
         deadline: bigint,
         gas_sponsorship_info?: SignedGasSponsorshipInfo,
+        innerV2Quote?: ApiSignedQuoteV2,
     ) {
         this.quote = quote;
         this.signature = signature;
         this.deadline = deadline;
         this.gas_sponsorship_info = gas_sponsorship_info;
+        this._innerV2Quote = innerV2Quote;
     }
 
     static deserialize(data: ExternalQuoteResponse): SignedExternalQuote {
@@ -326,15 +332,21 @@ export interface TokenPricesResponse {
 export class ExchangeMetadataResponse {
     chain_id: number;
     settlement_contract_address: string;
+    executor_address: string;
+    relayer_fee_recipient: string;
     supported_tokens: ApiToken[];
 
     constructor(
         chain_id: number,
         settlement_contract_address: string,
+        executor_address: string,
+        relayer_fee_recipient: string,
         supported_tokens: ApiToken[],
     ) {
         this.chain_id = chain_id;
         this.settlement_contract_address = settlement_contract_address;
+        this.executor_address = executor_address;
+        this.relayer_fee_recipient = relayer_fee_recipient;
         this.supported_tokens = supported_tokens;
     }
 
@@ -342,6 +354,8 @@ export class ExchangeMetadataResponse {
         return new ExchangeMetadataResponse(
             Number(data.chain_id),
             data.settlement_contract_address,
+            data.executor_address,
+            data.relayer_fee_recipient,
             data.supported_tokens.map((token: any) => ({
                 address: token.address,
                 symbol: token.symbol,

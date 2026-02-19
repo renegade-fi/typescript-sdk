@@ -1,32 +1,25 @@
 import { bytesToHex, concatBytes, hexToBytes, numberToBytes, numberToHex } from "viem/utils";
 import { FixedPoint } from "./fixedPoint.js";
-import {
-    type ApiExternalAssetTransfer,
-    type FeeTakeRate,
-    type GasSponsorshipInfo,
-    OrderSide,
-    type SettlementTransaction,
+import type {
+    ApiExternalAssetTransfer,
+    FeeTakeRate,
+    GasSponsorshipInfo,
+    SettlementTransaction,
 } from "./index.js";
 
 /** The length of an amount in the calldata, which is 32 bytes for a `uint256` */
 const AMOUNT_CALLDATA_LENGTH = 32;
 /**
- * The offset of the quote amount in the calldata,
+ * The offset of the input amount in the calldata,
  * which is `4` because it's the first calldata argument
  * after the 4-byte function selector
  */
-const QUOTE_AMOUNT_OFFSET = 4;
-/**
- * The offset of the base amount in the calldata,
- * which is `AMOUNT_CALLDATA_LENGTH` bytes after
- * the quote amount as it is the next calldata argument
- */
-const BASE_AMOUNT_OFFSET = QUOTE_AMOUNT_OFFSET + AMOUNT_CALLDATA_LENGTH;
+const INPUT_AMOUNT_OFFSET = 4;
 /** The address used to represent the native asset */
 const NATIVE_ASSET_ADDR = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 /**
- * The response type for requesting a malleable quote on an external order
+ * The response type for requesting a malleable match on an external order (v2)
  */
 export class MalleableExternalMatchResponse {
     /**
@@ -34,30 +27,16 @@ export class MalleableExternalMatchResponse {
      */
     match_bundle: MalleableAtomicMatchApiBundle;
     /**
-     * The base amount chosen for the match
+     * The input amount chosen for the match
      *
-     * If `undefined`, the base amount hasn't been selected and defaults to the order's maximum base amount.
-     *
-     * This field is not meant for client use directly, rather it is set by
-     * operating on the type and allows the response type to stay internally
-     * consistent
-     */
-    base_amount?: bigint;
-    /**
-     * The quote amount chosen for the match
-     *
-     * If `undefined`, the quote amount hasn't been selected and defaults to the
-     * quote amount implied by the maximum base amount and the price in the match result.
+     * If `undefined`, the input amount hasn't been selected and defaults to
+     * the order's maximum input amount.
      *
      * This field is not meant for client use directly, rather it is set by
      * operating on the type and allows the response type to stay internally
      * consistent
      */
-    quote_amount?: bigint;
-    /**
-     * Whether the match was sponsored
-     */
-    gas_sponsored: boolean;
+    input_amount?: bigint;
     /**
      * The gas sponsorship info, if the match was sponsored
      */
@@ -65,27 +44,22 @@ export class MalleableExternalMatchResponse {
 
     constructor(
         match_bundle: MalleableAtomicMatchApiBundle,
-        gas_sponsored: boolean,
         gas_sponsorship_info?: GasSponsorshipInfo,
-        base_amount?: bigint,
-        quote_amount?: bigint,
+        input_amount?: bigint,
     ) {
         this.match_bundle = match_bundle;
-        this.gas_sponsored = gas_sponsored;
         this.gas_sponsorship_info = gas_sponsorship_info;
-        this.base_amount = base_amount;
-        this.quote_amount = quote_amount;
+        this.input_amount = input_amount;
     }
 
     static deserialize(data: any): MalleableExternalMatchResponse {
-        const matchBundle = {
+        const matchBundle: MalleableAtomicMatchApiBundle = {
             match_result: {
-                quote_mint: data.match_bundle.match_result.quote_mint,
-                base_mint: data.match_bundle.match_result.base_mint,
+                input_mint: data.match_bundle.match_result.input_mint,
+                output_mint: data.match_bundle.match_result.output_mint,
                 price_fp: data.match_bundle.match_result.price_fp,
-                min_base_amount: BigInt(data.match_bundle.match_result.min_base_amount),
-                max_base_amount: BigInt(data.match_bundle.match_result.max_base_amount),
-                direction: data.match_bundle.match_result.direction,
+                min_input_amount: BigInt(data.match_bundle.match_result.min_input_amount),
+                max_input_amount: BigInt(data.match_bundle.match_result.max_input_amount),
             },
             fee_rates: data.match_bundle.fee_rates,
             max_receive: {
@@ -104,13 +78,21 @@ export class MalleableExternalMatchResponse {
                 mint: data.match_bundle.min_send.mint,
                 amount: BigInt(data.match_bundle.min_send.amount),
             },
-            settlement_tx: data.match_bundle.settlement_tx,
-            deadline: BigInt(data.match_bundle.deadline),
+            settlement_tx: {
+                tx_type:
+                    data.match_bundle.settlement_tx.type ??
+                    data.match_bundle.settlement_tx.tx_type ??
+                    "0x0",
+                to: data.match_bundle.settlement_tx.to,
+                data: data.match_bundle.settlement_tx.input ?? data.match_bundle.settlement_tx.data,
+                value: data.match_bundle.settlement_tx.value ?? "0x0",
+                gas: data.match_bundle.settlement_tx.gas,
+            },
+            deadline: Number(data.match_bundle.deadline),
         };
 
         return new MalleableExternalMatchResponse(
             matchBundle,
-            data.gas_sponsored,
             data.gas_sponsorship_info
                 ? {
                       refund_amount: BigInt(data.gas_sponsorship_info.refund_amount),
@@ -118,254 +100,149 @@ export class MalleableExternalMatchResponse {
                       refund_address: data.gas_sponsorship_info.refund_address,
                   }
                 : undefined,
-            data.base_amount ? BigInt(data.base_amount) : undefined,
+            data.input_amount != null ? BigInt(data.input_amount) : undefined,
         );
     }
 
     /**
-     * Set the `base_amount` of the `match_result`
-     *
-     * @returns The amount received at the given `base_amount`
+     * Get a copy of the settlement transaction
      */
-    public setBaseAmount(baseAmount: bigint) {
-        this.checkBaseAmount(baseAmount);
+    public settlementTx(): SettlementTransaction {
+        return { ...this.match_bundle.settlement_tx };
+    }
 
-        const impliedQuoteAmount = this.quoteAmount(baseAmount);
+    /**
+     * Set the input amount of the match result
+     *
+     * @returns The receive amount (output net of fees) at the given input amount
+     */
+    public setInputAmount(inputAmount: bigint): bigint {
+        this.checkInputAmount(inputAmount);
 
         // Set the calldata
-        this.setBaseAmountCalldata(baseAmount);
-        this.setQuoteAmountCalldata(impliedQuoteAmount);
+        this.setInputAmountCalldata(inputAmount);
 
-        // Set the quote and base amounts on the response
-        this.base_amount = baseAmount;
-        this.quote_amount = impliedQuoteAmount;
+        // Set the input amount on the response
+        this.input_amount = inputAmount;
 
         return this.receiveAmount();
     }
 
     /**
-     * Set the calldata to use a given base amount
-     */
-    private setBaseAmountCalldata(baseAmount: bigint) {
-        const calldataBytes = hexToBytes(this.match_bundle.settlement_tx.data as `0x${string}`);
-
-        // Padded to 32 bytes
-        const baseAmountBytes = numberToBytes(baseAmount, { size: AMOUNT_CALLDATA_LENGTH });
-
-        const prefix = calldataBytes.slice(0, BASE_AMOUNT_OFFSET);
-        const suffix = calldataBytes.slice(
-            BASE_AMOUNT_OFFSET + AMOUNT_CALLDATA_LENGTH,
-            calldataBytes.length,
-        );
-
-        // Set the calldata and the tx value
-        const newCalldataBytes = concatBytes([prefix, baseAmountBytes, suffix]);
-        const newCalladata = bytesToHex(newCalldataBytes);
-        const value = this.isNativeEthSell() ? baseAmount : 0n;
-        const valueHex = numberToHex(value);
-
-        const newMatchBundle = {
-            ...this.match_bundle,
-            settlement_tx: {
-                ...this.match_bundle.settlement_tx,
-                data: newCalladata,
-                value: valueHex,
-            },
-        };
-
-        this.match_bundle = newMatchBundle;
-    }
-
-    /**
-     * Set the `quote_amount` of the `match_result`
-     *
-     * @returns The amount received at the given `quote_amount`
-     */
-    public setQuoteAmount(quoteAmount: bigint) {
-        const impliedBaseAmount = this.baseAmount(quoteAmount);
-        this.checkQuoteAmount(quoteAmount, impliedBaseAmount);
-
-        // Set the calldata
-        this.setQuoteAmountCalldata(quoteAmount);
-        this.setBaseAmountCalldata(impliedBaseAmount);
-
-        // Set the quote and base amounts on the response
-        this.quote_amount = quoteAmount;
-        this.base_amount = impliedBaseAmount;
-
-        return this.receiveAmount();
-    }
-
-    /**
-     * Set the calldata to use a given quote amount
-     */
-    private setQuoteAmountCalldata(quoteAmount: bigint) {
-        const calldataBytes = hexToBytes(this.match_bundle.settlement_tx.data as `0x${string}`);
-
-        // Padded to 32 bytes
-        const quoteAmountBytes = numberToBytes(quoteAmount, { size: AMOUNT_CALLDATA_LENGTH });
-
-        const prefix = calldataBytes.slice(0, QUOTE_AMOUNT_OFFSET);
-        const suffix = calldataBytes.slice(
-            QUOTE_AMOUNT_OFFSET + AMOUNT_CALLDATA_LENGTH,
-            calldataBytes.length,
-        );
-
-        // Set the calldata and the tx value
-        const newCalldataBytes = concatBytes([prefix, quoteAmountBytes, suffix]);
-        const newCalladata = bytesToHex(newCalldataBytes);
-
-        const newMatchBundle = {
-            ...this.match_bundle,
-            settlement_tx: {
-                ...this.match_bundle.settlement_tx,
-                data: newCalladata,
-            },
-        };
-
-        this.match_bundle = newMatchBundle;
-    }
-
-    /**
-     * Get the bounds on the base amount
+     * Get the bounds on the input amount
      *
      * Returns an array [min, max] inclusive
      */
-    public baseBounds(): [bigint, bigint] {
+    public inputBounds(): [bigint, bigint] {
         return [
-            this.match_bundle.match_result.min_base_amount,
-            this.match_bundle.match_result.max_base_amount,
+            this.match_bundle.match_result.min_input_amount,
+            this.match_bundle.match_result.max_input_amount,
         ];
     }
 
     /**
-     * Get the bounds on the quote amount
+     * Get the bounds on the output amount
      *
      * Returns an array [min, max] inclusive
      */
-    public quoteBounds(): [bigint, bigint] {
-        const [minBase, maxBase] = this.baseBounds();
+    public outputBounds(): [bigint, bigint] {
+        const [minInput, maxInput] = this.inputBounds();
         const price = this.getPriceFp();
 
-        const minQuote = price.floorMulInt(minBase);
-        const maxQuote = price.floorMulInt(maxBase);
+        const minOutput = price.floorMulInt(minInput);
+        const maxOutput = price.floorMulInt(maxInput);
 
-        return [minQuote, maxQuote];
+        return [minOutput, maxOutput];
     }
 
     /**
-     * Get the bounds on the quote amount for a given base amount.
-     *
-     * For an explanation of these bounds, see:
-     * https://github.com/renegade-fi/renegade-contracts/blob/main/contracts-common/src/types/match.rs#L144-L174
+     * Get the receive amount at the currently set input amount
      */
-    public quoteBoundsForBase(baseAmount: bigint): [bigint, bigint] {
-        const [minQuote, maxQuote] = this.quoteBounds();
-
-        const price = this.getPriceFp();
-        const refQuote = price.floorMulInt(baseAmount);
-
-        const direction = this.match_bundle.match_result.direction;
-
-        const resolvedMinQuote = direction === OrderSide.BUY ? refQuote : minQuote;
-        const resolvedMaxQuote = direction === OrderSide.BUY ? maxQuote : refQuote;
-
-        return [resolvedMinQuote, resolvedMaxQuote];
+    public receiveAmount(): bigint {
+        return this.computeReceiveAmount(this.currentInputAmount());
     }
 
     /**
-     * Get the receive amount at the currently set base amount
+     * Get the receive amount at the given input amount
      */
-    public receiveAmount() {
-        return this.computeReceiveAmount(this.currentBaseAmount());
+    public receiveAmountAtInput(inputAmount: bigint): bigint {
+        return this.computeReceiveAmount(inputAmount);
     }
 
     /**
-     * Get the receive amount at the given base amount
+     * Get the send amount at the currently set input amount
      */
-    public receiveAmountAtBase(baseAmount: bigint) {
-        return this.computeReceiveAmount(baseAmount);
+    public sendAmount(): bigint {
+        return this.currentInputAmount();
     }
 
     /**
-     * Get the receive amount at the given quote amount
-     */
-    public receiveAmountAtQuote(quoteAmount: bigint) {
-        const baseAmount = this.baseAmount(quoteAmount);
-        return this.computeReceiveAmount(baseAmount);
-    }
-
-    /**
-     * Get the send amount at the currently set base amount
-     */
-    public sendAmount() {
-        return this.computeSendAmount(this.currentBaseAmount());
-    }
-
-    /**
-     * Get the send amount at the given base amount
-     */
-    public sendAmountAtBase(baseAmount: bigint) {
-        return this.computeSendAmount(baseAmount);
-    }
-
-    /**
-     * Get the send amount at the given quote amount
-     */
-    public sendAmountAtQuote(quoteAmount: bigint) {
-        const baseAmount = this.baseAmount(quoteAmount);
-        return this.computeSendAmount(baseAmount);
-    }
-
-    /**
-     * Return whether the trade is a native ETH sell
+     * Return whether the trade is a native ETH sell (input token is native ETH)
      */
     public isNativeEthSell(): boolean {
-        const matchRes = this.match_bundle.match_result;
-        const isSell = matchRes.direction === OrderSide.SELL;
-        const isBaseEth = matchRes.base_mint.toLowerCase() === NATIVE_ASSET_ADDR.toLowerCase();
-
-        return isBaseEth && isSell;
+        return (
+            this.match_bundle.match_result.input_mint.toLowerCase() ===
+            NATIVE_ASSET_ADDR.toLowerCase()
+        );
     }
 
     /**
-     * Check a base amount is in the valid range
+     * Set the calldata to use a given input amount
      */
-    private checkBaseAmount(baseAmount: bigint) {
-        const [min, max] = this.baseBounds();
+    private setInputAmountCalldata(inputAmount: bigint) {
+        const calldataBytes = hexToBytes(this.match_bundle.settlement_tx.data as `0x${string}`);
 
-        if (baseAmount < min || baseAmount > max) {
-            throw new Error(`Base amount ${baseAmount} is not in the valid range ${min} - ${max}`);
-        }
+        // Padded to 32 bytes
+        const inputAmountBytes = numberToBytes(inputAmount, { size: AMOUNT_CALLDATA_LENGTH });
+
+        const prefix = calldataBytes.slice(0, INPUT_AMOUNT_OFFSET);
+        const suffix = calldataBytes.slice(
+            INPUT_AMOUNT_OFFSET + AMOUNT_CALLDATA_LENGTH,
+            calldataBytes.length,
+        );
+
+        const newCalldataBytes = concatBytes([prefix, inputAmountBytes, suffix]);
+        const newCalldata = bytesToHex(newCalldataBytes);
+
+        // If the trade is a native ETH sell, set the tx value to the input amount
+        const value = this.isNativeEthSell() ? inputAmount : 0n;
+        const valueHex = numberToHex(value);
+
+        this.match_bundle = {
+            ...this.match_bundle,
+            settlement_tx: {
+                ...this.match_bundle.settlement_tx,
+                data: newCalldata,
+                value: valueHex,
+            },
+        };
     }
 
     /**
-     * Check a quote amount is in the valid range for a given base amount.
-     *
-     * This is true if the quote amount is within the bounds implied by the min
-     * and max base amounts given the price in the match results, and the
-     * quote amount does not imply a price improvement over the price in
-     * the match result.
+     * Check an input amount is in the valid range
      */
-    private checkQuoteAmount(quoteAmount: bigint, baseAmount: bigint) {
-        const [min, max] = this.quoteBoundsForBase(baseAmount);
+    private checkInputAmount(inputAmount: bigint) {
+        const [min, max] = this.inputBounds();
 
-        if (quoteAmount < min || quoteAmount > max) {
+        if (inputAmount < min || inputAmount > max) {
             throw new Error(
-                `Quote amount ${quoteAmount} is not in the valid range ${min} - ${max}`,
+                `Input amount ${inputAmount} is not in the valid range ${min} - ${max}`,
             );
         }
     }
 
     /**
-     * Get the current receive amount at the given base amount
-     *
-     * This is net of fees
+     * Get the output amount at the given input amount
      */
-    private computeReceiveAmount(baseAmount: bigint) {
-        const matchRes = this.match_bundle.match_result;
-        let preSponsoredAmount =
-            matchRes.direction === OrderSide.BUY ? baseAmount : this.quoteAmount(baseAmount);
+    private outputAmount(inputAmount: bigint): bigint {
+        return this.getPriceFp().floorMulInt(inputAmount);
+    }
+
+    /**
+     * Compute the receive amount (output net of fees) at the given input amount
+     */
+    private computeReceiveAmount(inputAmount: bigint): bigint {
+        let preSponsoredAmount = this.outputAmount(inputAmount);
 
         // Account for fees
         const totalFee =
@@ -383,89 +260,48 @@ export class MalleableExternalMatchResponse {
     }
 
     /**
-     * Get the current send amount at the given base amount
+     * Get the current input amount
      */
-    private computeSendAmount(baseAmount: bigint) {
-        const matchRes = this.match_bundle.match_result;
-        if (matchRes.direction === OrderSide.BUY) {
-            return this.quoteAmount(baseAmount);
+    private currentInputAmount(): bigint {
+        if (this.input_amount != null) {
+            return this.input_amount;
         }
-        return baseAmount;
+        return this.match_bundle.match_result.max_input_amount;
     }
 
-    /**
-     * Get the base amount at the given quote amount
-     */
-    private baseAmount(quoteAmount: bigint) {
-        const price = this.getPriceFp();
-        return FixedPoint.ceilDivInt(quoteAmount, price);
-    }
-
-    /**
-     * Get the quote amount at the given base amount
-     */
-    private quoteAmount(baseAmount: bigint) {
-        const price = this.getPriceFp();
-        return price.floorMulInt(baseAmount);
-    }
-
-    /**
-     * Get the current base amount
-     */
-    private currentBaseAmount() {
-        if (!this.base_amount) {
-            return this.match_bundle.match_result.max_base_amount;
-        }
-        return this.base_amount;
-    }
-
-    private getPriceFp() {
+    private getPriceFp(): FixedPoint {
         return new FixedPoint(BigInt(this.match_bundle.match_result.price_fp));
     }
 }
 
 /**
- * A bounded match result
+ * A bounded match result (v2, input/output terminology)
  */
-interface ApiBoundedMatchResult {
-    /**
-     * The mint of the quote token in the matched asset pair
-     */
-    quote_mint: string;
-    /**
-     * The mint of the base token in the matched asset pair
-     */
-    base_mint: string;
-    /**
-     * The price at which the match executes
-     */
+interface ApiBoundedMatchResultV2 {
+    /** The mint of the input token */
+    input_mint: string;
+    /** The mint of the output token */
+    output_mint: string;
+    /** The price at which the match executes (output per input, fixed point) */
     price_fp: string;
-    /**
-     * The minimum base amount of the match
-     */
-    min_base_amount: bigint;
-    /**
-     * The maximum base amount of the match
-     */
-    max_base_amount: bigint;
-    /**
-     * The direction of the match
-     */
-    direction: OrderSide;
+    /** The minimum input amount of the match */
+    min_input_amount: bigint;
+    /** The maximum input amount of the match */
+    max_input_amount: bigint;
 }
 
 /**
- * An atomic match settlement bundle using a malleable match result
+ * An atomic match settlement bundle using a malleable match result (v2)
  *
- * A malleable match result is one in which the exact `base_amount` swapped
+ * A malleable match result is one in which the exact `input_amount` swapped
  * is not known at the time the proof is generated, and may be changed up until
  * it is submitted on-chain. Instead, a bounded match result gives a
- * `min_base_amount` and a `max_base_amount`, between which the `base_amount`
- * may take any value
+ * `min_input_amount` and a `max_input_amount`, between which the
+ * `input_amount` may take any value
  */
 interface MalleableAtomicMatchApiBundle {
     /** The match result */
-    match_result: ApiBoundedMatchResult;
+    match_result: ApiBoundedMatchResultV2;
     /** The fees owed by the external party */
     fee_rates: FeeTakeRate;
     /** The maximum amount that the external party will receive */
@@ -479,5 +315,5 @@ interface MalleableAtomicMatchApiBundle {
     /** The transaction which settles the match on-chain */
     settlement_tx: SettlementTransaction;
     /** The deadline of the match */
-    deadline: bigint;
+    deadline: number;
 }

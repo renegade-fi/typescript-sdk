@@ -26,6 +26,7 @@ export type {
     ExternalQuoteRequest,
     ExternalQuoteResponse,
     FeeTake,
+    FeeTakeRate,
     GasSponsorshipInfo,
     SettlementTransaction,
     SignedGasSponsorshipInfo,
@@ -40,3 +41,13 @@ export {
     OrderSide,
     SignedExternalQuote,
 } from "./types/index.js";
+
+// Export new v2 market types
+export type {
+    DepthSide,
+    GetMarketDepthByMintResponse,
+    GetMarketDepthsResponse,
+    GetMarketsResponse,
+    MarketDepth,
+    MarketInfo,
+} from "./types/v2Types.js";
