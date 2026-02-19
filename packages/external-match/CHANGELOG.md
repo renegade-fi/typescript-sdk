@@ -1,5 +1,11 @@
 # @renegade-fi/renegade-sdk
 
+## 2.0.0
+
+### Major Changes
+
+- Release v2 SDK w/ backwards-compatibility shims
+
 ## 1.0.2
 
 ### Patch Changes
