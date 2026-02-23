@@ -50,12 +50,16 @@ const ARBITRUM_SEPOLIA_BASE_URL = "https://arbitrum-sepolia.v2.auth-server.reneg
 const ARBITRUM_ONE_BASE_URL = "https://arbitrum-one.v2.auth-server.renegade.fi";
 const BASE_SEPOLIA_BASE_URL = "https://base-sepolia.v2.auth-server.renegade.fi";
 const BASE_MAINNET_BASE_URL = "https://base-mainnet.v2.auth-server.renegade.fi";
+const ETHEREUM_MAINNET_BASE_URL = "https://ethereum-mainnet.v2.auth-server.renegade.fi";
+const ETHEREUM_SEPOLIA_BASE_URL = "https://ethereum-sepolia.v2.auth-server.renegade.fi";
 
 // Constants for relayer URLs
 const ARBITRUM_SEPOLIA_RELAYER_URL = "https://arbitrum-sepolia.v2.relayer.renegade.fi";
 const ARBITRUM_ONE_RELAYER_URL = "https://arbitrum-one.v2.relayer.renegade.fi";
 const BASE_SEPOLIA_RELAYER_URL = "https://base-sepolia.v2.relayer.renegade.fi";
 const BASE_MAINNET_RELAYER_URL = "https://base-mainnet.v2.relayer.renegade.fi";
+const ETHEREUM_MAINNET_RELAYER_URL = "https://ethereum-mainnet.v2.relayer.renegade.fi";
+const ETHEREUM_SEPOLIA_RELAYER_URL = "https://ethereum-sepolia.v2.relayer.renegade.fi";
 
 // Header constants
 const RENEGADE_API_KEY_HEADER = "x-renegade-api-key";
@@ -354,6 +358,30 @@ export class ExternalMatchClient {
             apiSecret,
             BASE_MAINNET_BASE_URL,
             BASE_MAINNET_RELAYER_URL,
+        );
+    }
+
+    /**
+     * Create a new client configured for the Ethereum mainnet.
+     */
+    static newEthereumMainnetClient(apiKey: string, apiSecret: string): ExternalMatchClient {
+        return new ExternalMatchClient(
+            apiKey,
+            apiSecret,
+            ETHEREUM_MAINNET_BASE_URL,
+            ETHEREUM_MAINNET_RELAYER_URL,
+        );
+    }
+
+    /**
+     * Create a new client configured for the Ethereum Sepolia testnet.
+     */
+    static newEthereumSepoliaClient(apiKey: string, apiSecret: string): ExternalMatchClient {
+        return new ExternalMatchClient(
+            apiKey,
+            apiSecret,
+            ETHEREUM_SEPOLIA_BASE_URL,
+            ETHEREUM_SEPOLIA_RELAYER_URL,
         );
     }
 

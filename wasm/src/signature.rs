@@ -55,7 +55,7 @@ pub async fn sign_withdrawal_authorization(
             postcard::to_allocvec(&contract_transfer)
                 .map_err(map_js_error!("Failed to serialize transfer: {}"))?
         }
-        &Chain::BaseMainnet | &Chain::BaseSepolia => {
+        &Chain::BaseMainnet | &Chain::BaseSepolia | &Chain::EthereumMainnet | &Chain::EthereumSepolia => {
             let contract_transfer = to_base_external_transfer(&transfer)
                 .map_err(map_js_error!("Failed to convert transfer: {}"))?;
 
