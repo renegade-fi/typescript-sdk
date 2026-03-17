@@ -53,14 +53,6 @@ const BASE_MAINNET_BASE_URL = "https://base-mainnet.v2.auth-server.renegade.fi";
 const ETHEREUM_MAINNET_BASE_URL = "https://ethereum-mainnet.v2.auth-server.renegade.fi";
 const ETHEREUM_SEPOLIA_BASE_URL = "https://ethereum-sepolia.v2.auth-server.renegade.fi";
 
-// Constants for relayer URLs
-const ARBITRUM_SEPOLIA_RELAYER_URL = "https://arbitrum-sepolia.v2.relayer.renegade.fi";
-const ARBITRUM_ONE_RELAYER_URL = "https://arbitrum-one.v2.relayer.renegade.fi";
-const BASE_SEPOLIA_RELAYER_URL = "https://base-sepolia.v2.relayer.renegade.fi";
-const BASE_MAINNET_RELAYER_URL = "https://base-mainnet.v2.relayer.renegade.fi";
-const ETHEREUM_MAINNET_RELAYER_URL = "https://ethereum-mainnet.v2.relayer.renegade.fi";
-const ETHEREUM_SEPOLIA_RELAYER_URL = "https://ethereum-sepolia.v2.relayer.renegade.fi";
-
 // Header constants
 const RENEGADE_API_KEY_HEADER = "x-renegade-api-key";
 const RENEGADE_SDK_VERSION_HEADER = "x-renegade-sdk-version";
@@ -295,7 +287,6 @@ function buildDirectOrderRequest(
 export class ExternalMatchClient {
     private apiKey: string;
     private httpClient: RelayerHttpClient;
-    private relayerHttpClient?: RelayerHttpClient;
 
     /**
      * Initialize a new ExternalMatchClient.
@@ -303,62 +294,38 @@ export class ExternalMatchClient {
      * @param apiKey The API key for authentication
      * @param apiSecret The API secret for request signing
      * @param baseUrl The base URL of the auth server API
-     * @param relayerBaseUrl The base URL of the relayer API (for market endpoints)
      */
-    constructor(apiKey: string, apiSecret: string, baseUrl: string, relayerBaseUrl?: string) {
+    constructor(apiKey: string, apiSecret: string, baseUrl: string) {
         this.apiKey = apiKey;
         this.httpClient = new RelayerHttpClient(baseUrl, apiSecret);
-        if (relayerBaseUrl) {
-            this.relayerHttpClient = new RelayerHttpClient(relayerBaseUrl, apiSecret);
-        }
     }
 
     /**
      * Create a new client configured for the Arbitrum Sepolia testnet.
      */
     static newArbitrumSepoliaClient(apiKey: string, apiSecret: string): ExternalMatchClient {
-        return new ExternalMatchClient(
-            apiKey,
-            apiSecret,
-            ARBITRUM_SEPOLIA_BASE_URL,
-            ARBITRUM_SEPOLIA_RELAYER_URL,
-        );
+        return new ExternalMatchClient(apiKey, apiSecret, ARBITRUM_SEPOLIA_BASE_URL);
     }
 
     /**
      * Create a new client configured for the Base Sepolia testnet.
      */
     static newBaseSepoliaClient(apiKey: string, apiSecret: string): ExternalMatchClient {
-        return new ExternalMatchClient(
-            apiKey,
-            apiSecret,
-            BASE_SEPOLIA_BASE_URL,
-            BASE_SEPOLIA_RELAYER_URL,
-        );
+        return new ExternalMatchClient(apiKey, apiSecret, BASE_SEPOLIA_BASE_URL);
     }
 
     /**
      * Create a new client configured for the Arbitrum One mainnet.
      */
     static newArbitrumOneClient(apiKey: string, apiSecret: string): ExternalMatchClient {
-        return new ExternalMatchClient(
-            apiKey,
-            apiSecret,
-            ARBITRUM_ONE_BASE_URL,
-            ARBITRUM_ONE_RELAYER_URL,
-        );
+        return new ExternalMatchClient(apiKey, apiSecret, ARBITRUM_ONE_BASE_URL);
     }
 
     /**
      * Create a new client configured for the Base mainnet.
      */
     static newBaseMainnetClient(apiKey: string, apiSecret: string): ExternalMatchClient {
-        return new ExternalMatchClient(
-            apiKey,
-            apiSecret,
-            BASE_MAINNET_BASE_URL,
-            BASE_MAINNET_RELAYER_URL,
-        );
+        return new ExternalMatchClient(apiKey, apiSecret, BASE_MAINNET_BASE_URL);
     }
 
     /**
@@ -577,8 +544,8 @@ export class ExternalMatchClient {
      * Get all tradable markets.
      */
     async getMarkets(): Promise<GetMarketsResponse> {
-        const client = this.relayerHttpClient ?? this.httpClient;
-        const response = await client.get<any>(GET_MARKETS_ROUTE);
+        const headers = this.getHeaders();
+        const response = await this.httpClient.get<any>(GET_MARKETS_ROUTE, headers);
 
         if (response.status !== 200 || !response.data) {
             throw new ExternalMatchClientError("Failed to get markets", response.status);

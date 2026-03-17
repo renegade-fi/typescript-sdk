@@ -1,5 +1,11 @@
 # @renegade-fi/renegade-sdk
 
+## 2.0.1
+
+### Patch Changes
+
+- Route `/v2/markets` endpoint through auth server
+
 ## 2.0.0
 
 ### Major Changes
