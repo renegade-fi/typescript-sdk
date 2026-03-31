@@ -1,6 +1,6 @@
 # Renegade External Match Client
 
-A TypeScript client for interacting with the Renegade Darkpool's External Match API.
+A TypeScript client for interacting with the Renegade Darkpool's external match API.
 
 ## Installation
 

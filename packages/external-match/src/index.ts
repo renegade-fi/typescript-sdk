@@ -1,6 +1,5 @@
 /**
- * Renegade External Match Client
- * A TypeScript client for interacting with the Renegade Darkpool API.
+ * A TypeScript client for interacting with the Renegade external match API.
  */
 
 // Export main client

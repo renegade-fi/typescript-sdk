@@ -648,7 +648,28 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4
 
+  packages/direct-match: {}
+
   packages/external-match:
+    dependencies:
+      '@noble/hashes':
+        specifier: ^1.7.1
+        version: 1.8.0
+      '@renegade-fi/http-client':
+        specifier: workspace:^
+        version: link:../http-client
+      json-bigint:
+        specifier: ^1.0.0
+        version: 1.0.0
+      viem:
+        specifier: ^2.23.15
+        version: 2.34.0(typescript@5.9.3)(zod@3.23.8)
+    devDependencies:
+      '@types/json-bigint':
+        specifier: ^1.0.4
+        version: 1.0.4
+
+  packages/http-client:
     dependencies:
       '@noble/hashes':
         specifier: ^1.7.1
@@ -656,9 +677,6 @@ importers:
       json-bigint:
         specifier: ^1.0.0
         version: 1.0.0
-      viem:
-        specifier: ^2.23.15
-        version: 2.34.0(typescript@5.9.3)(zod@3.23.8)
     devDependencies:
       '@types/json-bigint':
         specifier: ^1.0.4

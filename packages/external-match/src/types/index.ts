@@ -1,5 +1,5 @@
 /**
- * Type definitions for the Renegade Darkpool API.
+ * Type definitions for the Renegade Darkpool external match API.
  */
 
 import type { ApiSignedQuoteV2 } from "./v2Types.js";

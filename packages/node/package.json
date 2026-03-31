@@ -8,7 +8,7 @@
         "directory": "packages/node"
     },
     "scripts": {
-        "build": "pnpm run clean && pnpm run build:esm+types",
+        "build": "pnpm run clean && pnpm run build:wasm && pnpm run build:esm+types",
         "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist --declaration --declarationMap --declarationDir ./dist/types",
         "clean": "rm -rf dist tsconfig.tsbuildinfo",
         "typecheck": "tsc --noEmit"
