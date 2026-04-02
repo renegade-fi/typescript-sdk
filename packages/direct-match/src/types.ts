@@ -1,6 +1,14 @@
 // API response types for the Renegade direct match API
 // Only ring0-relevant fields are fully typed; rings 1-3 fields are noted as TODOs
 
+/** A signer that can produce ECDSA signatures over raw hashes. */
+export interface Signer {
+    /** The EOA address associated with this signer */
+    readonly address: `0x${string}`;
+    /** Sign a raw hash (no EIP-191 prefix). Returns 65-byte signature as hex. */
+    sign(params: { hash: `0x${string}` }): Promise<`0x${string}`>;
+}
+
 /** Request body for POST /v2/account */
 export interface CreateAccountRequest {
     account_id: string;

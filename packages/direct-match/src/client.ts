@@ -23,6 +23,7 @@ import type {
     OrderAuth,
     PlaceOrderParams,
     SignatureWithNonce,
+    Signer,
     SyncAccountRequest,
     SyncAccountResponse,
     UpdateOrderParams,
@@ -82,7 +83,13 @@ const PERMIT_ABI = [
  * Client for interacting with the Renegade direct match API.
  */
 export class DirectMatchClient {
-    readonly account: PrivateKeyAccount;
+    /** The signer used for intent and cancellation signatures. */
+    readonly signer: Signer;
+    /**
+     * The original PrivateKeyAccount, if the client was constructed from one.
+     * Undefined when using an external signer.
+     */
+    readonly account: PrivateKeyAccount | undefined;
     readonly secrets: AccountSecrets;
     readonly httpClient: RelayerHttpClient;
     readonly chainId: number;
@@ -90,10 +97,12 @@ export class DirectMatchClient {
 
     private constructor(
         baseUrl: string,
-        account: PrivateKeyAccount,
+        signer: Signer,
         secrets: AccountSecrets,
         chainId: number,
+        account?: PrivateKeyAccount,
     ) {
+        this.signer = signer;
         this.account = account;
         this.secrets = secrets;
         this.httpClient = new RelayerHttpClient(baseUrl, secrets.authHmacKeyBase64());
@@ -111,7 +120,22 @@ export class DirectMatchClient {
         chainId: number,
     ): Promise<DirectMatchClient> {
         const secrets = await AccountSecrets.create(account, chainId);
-        return new DirectMatchClient(baseUrl, account, secrets, chainId);
+        return new DirectMatchClient(baseUrl, account, secrets, chainId, account);
+    }
+
+    /**
+     * Create a client with an external signer and pre-computed secrets.
+     *
+     * Use this when you don't have a local private key but can provide
+     * a signing function (e.g., hardware wallet, MPC signer, external KMS).
+     */
+    static newWithExternalSigner(params: {
+        baseUrl: string;
+        signer: Signer;
+        secrets: AccountSecrets;
+        chainId: number;
+    }): DirectMatchClient {
+        return new DirectMatchClient(params.baseUrl, params.signer, params.secrets, params.chainId);
     }
 
     static async newArbitrumSepoliaClient(account: PrivateKeyAccount): Promise<DirectMatchClient> {
@@ -159,7 +183,7 @@ export class DirectMatchClient {
     async createAccount(): Promise<void> {
         const request: CreateAccountRequest = {
             account_id: this.secrets.accountId,
-            address: this.account.address,
+            address: this.signer.address,
             master_view_seed: this.secrets.masterViewSeed,
             auth_hmac_key: this.secrets.authHmacKeyBase64(),
             schnorr_public_key: this.secrets.schnorrPublicKey,
@@ -431,7 +455,7 @@ export class DirectMatchClient {
             intent: {
                 in_token: params.inputMint,
                 out_token: params.outputMint,
-                owner: this.account.address,
+                owner: this.signer.address,
                 min_price: minPrice,
                 amount_in: params.inputAmount.toString(),
             },
@@ -478,7 +502,7 @@ export class DirectMatchClient {
         message.set(chainIdBytes, 64);
         const finalDigest = keccak256(message);
 
-        const sig: Hex = await this.account.sign({ hash: finalDigest });
+        const sig: Hex = await this.signer.sign({ hash: finalDigest });
         const sigBytes = toBytes(sig);
 
         return {

@@ -47,6 +47,27 @@ export class AccountSecrets {
     }
 
     /**
+     * Construct AccountSecrets from pre-derived values.
+     *
+     * Use this when secrets have been derived out-of-band (e.g., by a Rust CLI
+     * or a separate key-management process) and you want to inject them directly
+     * without requiring a local private key.
+     */
+    static fromPrecomputed(params: {
+        accountId: string;
+        authHmacKey: Uint8Array;
+        masterViewSeed: string;
+        schnorrPublicKey: string;
+    }): AccountSecrets {
+        return new AccountSecrets(
+            params.accountId,
+            params.authHmacKey,
+            params.masterViewSeed,
+            params.schnorrPublicKey,
+        );
+    }
+
+    /**
      * Derive account secrets from a viem PrivateKeyAccount and chain ID.
      *
      * This mirrors the Rust SDK's `AccountSecrets::new()`:

@@ -24,6 +24,7 @@ export type {
     OrderType,
     PlaceOrderParams,
     SignatureWithNonce,
+    Signer,
     SyncAccountRequest,
     SyncAccountResponse,
     UpdateOrderParams,

@@ -73,7 +73,7 @@ describe("match against quoter orders", () => {
             // 1. Set up client and account
             const client = await createClient();
             await ensureAccount(client);
-            console.log(`Account: ${client.account.address}`);
+            console.log(`Account: ${client.signer.address}`);
 
             // 2. Cancel stale orders from previous runs
             const stale = await client.getOrders(false);
@@ -97,7 +97,7 @@ describe("match against quoter orders", () => {
                 address: USDC as Address,
                 abi: erc20Abi,
                 functionName: "balanceOf",
-                args: [client.account.address],
+                args: [client.signer.address],
             });
             console.log(`USDC balance: ${formatUnits(usdcBalance, 6)}`);
             expect(usdcBalance).toBeGreaterThanOrEqual(USDC_AMOUNT);
@@ -107,14 +107,14 @@ describe("match against quoter orders", () => {
                 address: WETH as Address,
                 abi: erc20Abi,
                 functionName: "balanceOf",
-                args: [client.account.address],
+                args: [client.signer.address],
             });
             console.log(`WETH balance before: ${formatUnits(wethBefore, 18)}`);
 
             // 6. Ensure Permit2 allowances FIRST (on-chain state must be ready
             //    before sync queries it)
             console.log("Ensuring Permit2 allowances for USDC...");
-            await ensureAllowances(client.account, USDC as Address, USDC_AMOUNT);
+            await ensureAllowances(client.account!, USDC as Address, USDC_AMOUNT);
 
             // 6. Place the order
             const beforeOrders = new Set((await client.getOrders(false)).map((o) => o.id));
@@ -166,7 +166,7 @@ describe("match against quoter orders", () => {
             // 9. Poll with exponential backoff — detect fill via WETH balance change
             await waitForOrderFill(client, placed!.id, {
                 token: WETH as Address,
-                owner: client.account.address,
+                owner: client.signer.address,
                 balanceBefore: wethBefore,
             });
 
@@ -175,7 +175,7 @@ describe("match against quoter orders", () => {
                 address: WETH as Address,
                 abi: erc20Abi,
                 functionName: "balanceOf",
-                args: [client.account.address],
+                args: [client.signer.address],
             });
             const wethReceived = wethAfter - wethBefore;
             console.log(`WETH received: ${formatUnits(wethReceived, 18)}`);
