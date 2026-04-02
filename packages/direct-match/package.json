@@ -1,5 +1,5 @@
 {
-    "name": "@renegade-fi/renegade-sdk",
+    "name": "@renegade-fi/direct-match",
     "version": "2.0.1",
     "description": "A TypeScript client for interacting with the Renegade direct matching API",
     "repository": {
@@ -12,7 +12,8 @@
         "!dist/**/*.tsbuildinfo",
         "src/**/*.ts",
         "!src/**/*.test.ts",
-        "!src/**/*.test-d.ts"
+        "!src/**/*.test-d.ts",
+        "renegade-sdk-wasm/**"
     ],
     "sideEffects": false,
     "type": "module",
@@ -24,18 +25,26 @@
             "types": "./dist/types/index.d.ts",
             "default": "./dist/index.js"
         },
-        "./package.json": "./package.json"
+        "./package.json": "./package.json",
+        "./renegade-sdk-wasm": {
+            "types": "./renegade-sdk-wasm/index.d.ts",
+            "default": "./renegade-sdk-wasm/index.js"
+        }
     },
     "scripts": {
         "build": "pnpm run clean && pnpm run build:esm+types",
         "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist --declaration --declarationMap --declarationDir ./dist/types",
         "clean": "rm -rf dist tsconfig.tsbuildinfo",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run --no-file-parallelism"
     },
     "dependencies": {
+        "@renegade-fi/http-client": "workspace:^",
+        "viem": "^2.23.15"
     },
     "keywords": [],
     "author": "",
     "devDependencies": {
+        "vitest": "^3.0.0"
     }
 }

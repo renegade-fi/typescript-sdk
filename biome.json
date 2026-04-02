@@ -10,6 +10,7 @@
             "!**/wasm",
             "!**/dist",
             "!**/renegade-utils",
+            "!**/renegade-sdk-wasm",
             "!**/*.d.ts",
             "!**/version.ts"
         ]

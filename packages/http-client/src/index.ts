@@ -60,6 +60,10 @@ export class RelayerHttpClient {
         };
     }
 
+    public getBaseUrl(): string {
+        return this.baseUrl;
+    }
+
     /**
      * Make a GET request with custom headers.
      *

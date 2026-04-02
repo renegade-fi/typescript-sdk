@@ -1,4 +1,32 @@
-/**
- * A TypeScript client for interacting with the Renegade direct match API.
- */
-
+export { DirectMatchClient } from "./client.js";
+export { AccountSecrets } from "./secrets.js";
+export type {
+    ApiAccount,
+    ApiBalance,
+    ApiIntent,
+    ApiOrder,
+    ApiOrderCore,
+    ApiPartialOrderFill,
+    ApiPublicIntentPermit,
+    CancelOrderRequest,
+    CancelOrderResponse,
+    CreateAccountRequest,
+    CreateOrderInPoolRequest,
+    CreateOrderRequest,
+    CreateOrderResponse,
+    GetAccountResponse,
+    GetBalanceByMintResponse,
+    GetBalancesResponse,
+    GetOrderByIdResponse,
+    GetOrdersResponse,
+    OrderAuth,
+    OrderState,
+    OrderType,
+    PlaceOrderParams,
+    SignatureWithNonce,
+    SyncAccountRequest,
+    SyncAccountResponse,
+    UpdateOrderParams,
+    UpdateOrderRequest,
+    UpdateOrderResponse,
+} from "./types.js";
