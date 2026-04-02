@@ -1,11 +1,11 @@
 {
-    "name": "@renegade-fi/external-match",
-    "version": "2.0.1",
-    "description": "A TypeScript client for interacting with the Renegade external matching API",
+    "name": "@renegade-fi/renegade-sdk",
+    "version": "2.0.0",
+    "description": "A TypeScript SDK for interacting with the Renegade protocol",
     "repository": {
         "type": "git",
         "url": "https://github.com/renegade-fi/typescript-sdk.git",
-        "directory": "packages/external-match"
+        "directory": "packages/renegade-sdk"
     },
     "files": [
         "dist/**",
@@ -33,14 +33,9 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@noble/hashes": "^1.7.1",
-        "@renegade-fi/http-client": "workspace:^",
-        "json-bigint": "^1.0.0",
-        "viem": "^2.23.15"
+        "@renegade-fi/external-match": "workspace:^",
+        "@renegade-fi/direct-match": "workspace:^"
     },
     "keywords": [],
-    "author": "",
-    "devDependencies": {
-        "@types/json-bigint": "^1.0.4"
-    }
+    "author": ""
 }

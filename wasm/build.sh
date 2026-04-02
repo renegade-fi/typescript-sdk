@@ -1,29 +1,19 @@
 #!/bin/bash
+set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_NAME="index"
+OUTPUT_DIR="$SCRIPT_DIR/../packages/direct-match/renegade-sdk-wasm"
+TARGET="nodejs"
 
-# Check for --node flag
-OUTPUT_DIR="../packages/react/renegade-utils"
-TARGET="web"
 for arg in "$@"
 do
-    if [ "$arg" == "--test" ]; then
-        TARGET="bundler"
-    elif [ "$arg" == "--node" ]; then
-        TARGET="nodejs"
-        OUTPUT_DIR="../packages/node/renegade-utils"
+    if [ "$arg" == "--web" ]; then
+        TARGET="web"
     fi
 done
 
-# Build the WebAssembly package with conditional target
+cd "$SCRIPT_DIR"
 wasm-pack build --target $TARGET --out-dir $OUTPUT_DIR --out-name $OUTPUT_NAME
 
-# Copy the .d.ts file to the core package
-if [ "$TARGET" == "nodejs" ]; then
-    cp $OUTPUT_DIR/$OUTPUT_NAME.d.ts ../packages/core/src/utils.d.ts
-fi
-
-
-# Delete the .gitignore file so the package is included
-rm $OUTPUT_DIR/.gitignore
-
+rm -f $OUTPUT_DIR/.gitignore

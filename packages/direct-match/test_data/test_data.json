@@ -1,0 +1,85 @@
+{
+    "chainId": 42161,
+    "accounts": [
+        {
+            "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "accountId": "a2751b2b-f835-5062-6d25-cff06332529e",
+            "authHmacKey": "bdd3db7a79c8fa69d3130e41a93c49a305255a446881451bff6f272276979af8"
+        },
+        {
+            "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000002",
+            "accountId": "4c31a16c-74f3-9ab3-7c1f-3bfde92ec72c",
+            "authHmacKey": "e91f451b3b3352b9ea5709279cbb4b9ead13d8ab4124ef594e3e223b50d1c654"
+        },
+        {
+            "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000003",
+            "accountId": "4fa3047c-9c53-e848-e544-7525500e6e31",
+            "authHmacKey": "f989f14e4ede8e7ab31401c58e0cd4571909f051272ffe52058997e9e94f5e7d"
+        },
+        {
+            "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000004",
+            "accountId": "38f52dea-a6d7-9933-eb06-900c9fad6deb",
+            "authHmacKey": "41438f88994b557e09a90868e25f153e48c2a5fae2471bbe805e8c22a49e7d92"
+        },
+        {
+            "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000005",
+            "accountId": "c531ae06-b219-a3c4-19e0-e778a547704f",
+            "authHmacKey": "b2927df447f9e1523b3377ad715d69c4ee25361e87f634975756038fe76da98f"
+        },
+        {
+            "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000006",
+            "accountId": "b4325f70-fb9c-45b9-bfdd-f62b43f27f14",
+            "authHmacKey": "a52a51f4d386f0d3101c95b0ee1e390aa16c603b29238d3e7c99985ed8a7bc81"
+        },
+        {
+            "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000007",
+            "accountId": "9175fc58-fd60-c501-0018-172d656b8ad1",
+            "authHmacKey": "b0fb98fc861df07a47177a7fd7b3fb0b286cf9fefa33179ddb2d740b285d3f70"
+        },
+        {
+            "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000008",
+            "accountId": "6f8b1865-b177-96cb-596e-5ccd6c4f5e44",
+            "authHmacKey": "28bf3c95ce588d7c3e8f8fb36ffb9eaf3652de77fc9ccdc001c3acba1e3fe8b9"
+        },
+        {
+            "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000009",
+            "accountId": "b99d5358-7249-75b4-dcf2-b7bab0ebe321",
+            "authHmacKey": "5c0746af2f1c14654e15991f7c6e42c5272391f3ea4a79f2dba7e20bc654ce7e"
+        },
+        {
+            "privateKey": "0x000000000000000000000000000000000000000000000000000000000000000a",
+            "accountId": "a4bedccc-562e-b360-8d0b-f1d74a119875",
+            "authHmacKey": "531a823f79740bf647232727993ed7549dc8968fd99bb6a70c0630ab92a19263"
+        },
+        {
+            "privateKey": "0x000000000000000000000000000000000000000000000000000000000000000b",
+            "accountId": "207c5b65-22c2-a3a4-2720-d7a30be9c964",
+            "authHmacKey": "eddb103041c5ed4e4486e48286528c27bdcdd2dadbed7d6ca7295166bec63bae"
+        },
+        {
+            "privateKey": "0x000000000000000000000000000000000000000000000000000000000000000c",
+            "accountId": "e06b31dc-a452-f7de-ee59-70aca334c9e7",
+            "authHmacKey": "b910137640ea4c15aa59274bd61b78ef11281d02fdd17e2e8a3f444ec4eb3e3e"
+        },
+        {
+            "privateKey": "0x000000000000000000000000000000000000000000000000000000000000000d",
+            "accountId": "a0faf48e-df97-87ef-984f-710526e0626c",
+            "authHmacKey": "803f552d91a7098901fd7d542b30b28c75af3b3e8e1ae872c2bd73a63fc30b6d"
+        },
+        {
+            "privateKey": "0x000000000000000000000000000000000000000000000000000000000000000e",
+            "accountId": "3b317b94-1482-d494-f624-0f6747ece3eb",
+            "authHmacKey": "0310611af23400cd2aea38f2823aa9e1e257933ae73c58b3c94886a836b998f8"
+        },
+        {
+            "privateKey": "0x000000000000000000000000000000000000000000000000000000000000000f",
+            "accountId": "901557e9-88b3-d0aa-14bc-f88e83d8209c",
+            "authHmacKey": "c7ba2d8ffe8a4840ac45cce8eed84362d74368e3237da20614628818f3357e3f"
+        },
+        {
+            "privateKey": "0x0000000000000000000000000000000000000000000000000000000000000010",
+            "accountId": "bbddf2ed-37e3-717a-bd2b-70e5ece43ed5",
+            "authHmacKey": "c524d8ab600fc38eac6fd0eb6d3a3e0572570332c64e2f1b124c0aefa4f61588"
+        }
+    ]
+}

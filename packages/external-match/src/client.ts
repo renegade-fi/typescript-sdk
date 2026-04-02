@@ -5,7 +5,7 @@
  * assembling matches, and executing trades.
  */
 
-import { type HttpResponse, RelayerHttpClient } from "./http.js";
+import { type HttpResponse, RelayerHttpClient } from "@renegade-fi/http-client";
 import {
     ExchangeMetadataResponse,
     type ExternalMatchResponse,
@@ -280,7 +280,7 @@ function buildDirectOrderRequest(
 }
 
 /**
- * Client for interacting with the Renegade external matching API.
+ * Client for interacting with the Renegade external match API.
  */
 export class ExternalMatchClient {
     private apiKey: string;

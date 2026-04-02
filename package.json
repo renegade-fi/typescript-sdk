@@ -1,14 +1,14 @@
 {
     "private": true,
     "devDependencies": {
-        "@biomejs/biome": "^2.3.6",
+        "@biomejs/biome": "2.3.6",
         "@changesets/cli": "^2.27.1",
         "@types/node": "^20.12.7",
         "typescript": "^5.5.4"
     },
     "scripts": {
         "build": "pnpm run --r --filter \"./packages/**\" build",
-        "build:wasm": "cd wasm && ./build.sh && ./build.sh --node",
+        "build:wasm": "cd wasm && ./build.sh",
         "changeset:prepublish": "./bin/check-deps.sh && ./bin/update-version.sh && pnpm build:wasm && pnpm build",
         "changeset:publish": "pnpm changeset:prepublish && changeset publish",
         "changeset:version": "changeset version",

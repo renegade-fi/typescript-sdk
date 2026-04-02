@@ -12,3 +12,4 @@ tsconfig.tsbuildinfo
 **/.env
 .npmrc
 CLAUDE*.md
+**/target/*
