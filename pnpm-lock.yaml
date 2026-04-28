@@ -663,6 +663,9 @@ importers:
       '@types/json-bigint':
         specifier: ^1.0.4
         version: 1.0.4
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.16.1
 
   packages/node:
     dependencies:
