@@ -67,6 +67,22 @@ dependencies = [
 
 [[package]]
 name = "alloy-primitives"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e416903084d3392ebd32d94735c395d6709415b76c7728e594d3f996f2b03e65"
+dependencies = [
+ "bytes",
+ "cfg-if",
+ "const-hex",
+ "derive_more",
+ "hex-literal",
+ "itoa",
+ "ruint",
+ "tiny-keccak",
+]
+
+[[package]]
+name = "alloy-primitives"
 version = "0.7.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ccb3ead547f4532bc8af961649942f0b9c16ee9226e26caa3f38420651cc0bf4"
@@ -93,6 +109,21 @@ dependencies = [
 
 [[package]]
 name = "alloy-sol-macro"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7720130c58db647103587b0c39aad4e669eea261e256040301d6c7983fdbb461"
+dependencies = [
+ "dunce",
+ "heck 0.4.1",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.75",
+ "syn-solidity 0.3.2",
+ "tiny-keccak",
+]
+
+[[package]]
+name = "alloy-sol-macro"
 version = "0.7.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b40397ddcdcc266f59f959770f601ce1280e699a91fc1862f29cef91707cd09"
@@ -113,13 +144,13 @@ checksum = "867a5469d61480fea08c7333ffeca52d5b621f5ca2e44f271b117ec1fc9a0525"
 dependencies = [
  "alloy-sol-macro-input",
  "const-hex",
- "heck",
+ "heck 0.5.0",
  "indexmap",
  "proc-macro-error",
  "proc-macro2",
  "quote",
  "syn 2.0.75",
- "syn-solidity",
+ "syn-solidity 0.7.7",
  "tiny-keccak",
 ]
 
@@ -131,11 +162,22 @@ checksum = "2e482dc33a32b6fadbc0f599adea520bd3aaa585c141a80b404d0a3e3fa72528"
 dependencies = [
  "const-hex",
  "dunce",
- "heck",
+ "heck 0.5.0",
  "proc-macro2",
  "quote",
  "syn 2.0.75",
- "syn-solidity",
+ "syn-solidity 0.7.7",
+]
+
+[[package]]
+name = "alloy-sol-types"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eaa7c9a4354b1ff9f1c85adf22802af046e20e4bb55e19b9dc6ca8cbc6f7f4e5"
+dependencies = [
+ "alloy-primitives 0.3.3",
+ "alloy-sol-macro 0.3.2",
+ "const-hex",
 ]
 
 [[package]]
@@ -144,8 +186,8 @@ version = "0.7.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a91ca40fa20793ae9c3841b83e74569d1cc9af29a2f5237314fd3452d51e38c7"
 dependencies = [
- "alloy-primitives",
- "alloy-sol-macro",
+ "alloy-primitives 0.7.7",
+ "alloy-sol-macro 0.7.7",
  "const-hex",
 ]
 
@@ -735,10 +777,10 @@ dependencies = [
 [[package]]
 name = "contracts-common"
 version = "0.1.0"
-source = "git+https://github.com/renegade-fi/renegade-contracts.git#4bbab0495ca9f1d431e2a2fddc639c9b12c7f78c"
+source = "git+https://github.com/renegade-fi/renegade-contracts.git?rev=b674913fd058cb6088f8c8fbd677e04c1aa6028f#c6a3231db52eff9ee9b7ab32d311fdcf1a6ab03c"
 dependencies = [
- "alloy-primitives",
- "alloy-sol-types",
+ "alloy-primitives 0.3.3",
+ "alloy-sol-types 0.3.2",
  "ark-bn254",
  "ark-ec",
  "ark-ff 0.4.2",
@@ -1738,6 +1780,12 @@ checksum = "b2bca93b15ea5a746f220e56587f71e73c6165eab783df9e26590069953e3c30"
 dependencies = [
  "fxhash",
 ]
+
+[[package]]
+name = "heck"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "95505c38b4572b2d910cecb0281560f54b440a19336cbbcb27bf6ce6adc6f5a8"
 
 [[package]]
 name = "heck"
@@ -2775,8 +2823,8 @@ dependencies = [
 name = "renegade-utils"
 version = "0.0.2"
 dependencies = [
- "alloy-primitives",
- "alloy-sol-types",
+ "alloy-primitives 0.7.7",
+ "alloy-sol-types 0.7.7",
  "ark-bn254",
  "ark-ec",
  "ark-ed-on-bn254",
@@ -3433,7 +3481,7 @@ version = "0.26.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4c6bee85a5a24955dc440386795aa378cd9cf82acd5f764469152d2270e581be"
 dependencies = [
- "heck",
+ "heck 0.5.0",
  "proc-macro2",
  "quote",
  "rustversion",
@@ -3486,6 +3534,18 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "syn-solidity"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "397f229dc34c7b8231b6ef85502f9ca4e3425b8625e6d403bb74779e6b1917b5"
+dependencies = [
+ "paste",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.75",
 ]
 
 [[package]]
