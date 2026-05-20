@@ -305,6 +305,78 @@ export class RenegadeClient {
         });
     }
 
+    /**
+     * Ethereum Mainnet client via seed.
+     *
+     * @param params.seed your 0x… seed
+     */
+    static newEthereumMainnetClient({ seed, logger }: { seed: `0x${string}`; logger?: Logger }) {
+        return RenegadeClient.new({ chainId: CHAIN_IDS.EthereumMainnet, seed, logger });
+    }
+
+    /**
+     * Ethereum Mainnet client with external keychain.
+     *
+     * @param params.walletSecrets  symmetric key + wallet ID
+     * @param params.signMessage    callback to sign auth messages
+     * @param params.publicKey      your public key
+     */
+    static newEthereumMainnetClientWithKeychain({
+        walletSecrets,
+        signMessage,
+        publicKey,
+        logger,
+    }: {
+        walletSecrets: GeneratedSecrets;
+        signMessage: (message: string) => Promise<`0x${string}`>;
+        publicKey: `0x${string}`;
+        logger?: Logger;
+    }) {
+        return RenegadeClient.newWithExternalKeychain({
+            chainId: CHAIN_IDS.EthereumMainnet,
+            walletSecrets,
+            signMessage,
+            publicKey,
+            logger,
+        });
+    }
+
+    /**
+     * Ethereum Sepolia client via seed.
+     *
+     * @param params.seed your 0x… seed
+     */
+    static newEthereumSepoliaClient({ seed, logger }: { seed: `0x${string}`; logger?: Logger }) {
+        return RenegadeClient.new({ chainId: CHAIN_IDS.EthereumSepolia, seed, logger });
+    }
+
+    /**
+     * Ethereum Sepolia client with external keychain.
+     *
+     * @param params.walletSecrets  symmetric key + wallet ID
+     * @param params.signMessage    callback to sign auth messages
+     * @param params.publicKey      your public key
+     */
+    static newEthereumSepoliaClientWithKeychain({
+        walletSecrets,
+        signMessage,
+        publicKey,
+        logger,
+    }: {
+        walletSecrets: GeneratedSecrets;
+        signMessage: (message: string) => Promise<`0x${string}`>;
+        publicKey: `0x${string}`;
+        logger?: Logger;
+    }) {
+        return RenegadeClient.newWithExternalKeychain({
+            chainId: CHAIN_IDS.EthereumSepolia,
+            walletSecrets,
+            signMessage,
+            publicKey,
+            logger,
+        });
+    }
+
     // -- Wallet Operations -- //
 
     async getWallet(

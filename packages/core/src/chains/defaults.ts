@@ -3,6 +3,8 @@ import {
     AUTH_SERVER_URL_ARBITRUM_SEPOLIA,
     AUTH_SERVER_URL_BASE_MAINNET,
     AUTH_SERVER_URL_BASE_SEPOLIA,
+    AUTH_SERVER_URL_ETHEREUM_MAINNET,
+    AUTH_SERVER_URL_ETHEREUM_SEPOLIA,
     CHAIN_ID_TO_ENVIRONMENT,
     CHAIN_IDS,
     CHAIN_SPECIFIERS,
@@ -11,6 +13,8 @@ import {
     DARKPOOL_ADDRESS_ARBITRUM_SEPOLIA,
     DARKPOOL_ADDRESS_BASE_MAINNET,
     DARKPOOL_ADDRESS_BASE_SEPOLIA,
+    DARKPOOL_ADDRESS_ETHEREUM_MAINNET,
+    DARKPOOL_ADDRESS_ETHEREUM_SEPOLIA,
     ENV_AGNOSTIC_CHAINS,
     ENVIRONMENT,
     type EnvAgnosticChain,
@@ -21,12 +25,16 @@ import {
     PERMIT2_ADDRESS_ARBITRUM_SEPOLIA,
     PERMIT2_ADDRESS_BASE_MAINNET,
     PERMIT2_ADDRESS_BASE_SEPOLIA,
+    PERMIT2_ADDRESS_ETHEREUM_MAINNET,
+    PERMIT2_ADDRESS_ETHEREUM_SEPOLIA,
     PRICE_REPORTER_URL_MAINNET,
     PRICE_REPORTER_URL_TESTNET,
     RELAYER_URL_ARBITRUM_ONE,
     RELAYER_URL_ARBITRUM_SEPOLIA,
     RELAYER_URL_BASE_MAINNET,
     RELAYER_URL_BASE_SEPOLIA,
+    RELAYER_URL_ETHEREUM_MAINNET,
+    RELAYER_URL_ETHEREUM_SEPOLIA,
 } from "../constants.js";
 
 export interface SDKConfig {
@@ -86,6 +94,28 @@ export const CONFIGS: Record<ChainId, SDKConfig> = {
         permit2Address: PERMIT2_ADDRESS_BASE_SEPOLIA,
         authServerUrl: AUTH_SERVER_URL_BASE_SEPOLIA,
     },
+    [CHAIN_IDS.EthereumMainnet]: {
+        id: CHAIN_IDS.EthereumMainnet,
+        chainSpecifier: CHAIN_SPECIFIERS[CHAIN_IDS.EthereumMainnet],
+        hseBaseUrl: HSE_URL_MAINNET,
+        darkpoolAddress: DARKPOOL_ADDRESS_ETHEREUM_MAINNET,
+        relayerUrl: RELAYER_URL_ETHEREUM_MAINNET,
+        websocketUrl: `wss://${RELAYER_URL_ETHEREUM_MAINNET}:4000`,
+        priceReporterUrl: PRICE_REPORTER_URL_MAINNET,
+        permit2Address: PERMIT2_ADDRESS_ETHEREUM_MAINNET,
+        authServerUrl: AUTH_SERVER_URL_ETHEREUM_MAINNET,
+    },
+    [CHAIN_IDS.EthereumSepolia]: {
+        id: CHAIN_IDS.EthereumSepolia,
+        chainSpecifier: CHAIN_SPECIFIERS[CHAIN_IDS.EthereumSepolia],
+        hseBaseUrl: HSE_URL_TESTNET,
+        darkpoolAddress: DARKPOOL_ADDRESS_ETHEREUM_SEPOLIA,
+        relayerUrl: RELAYER_URL_ETHEREUM_SEPOLIA,
+        websocketUrl: `wss://${RELAYER_URL_ETHEREUM_SEPOLIA}:4000`,
+        priceReporterUrl: PRICE_REPORTER_URL_TESTNET,
+        permit2Address: PERMIT2_ADDRESS_ETHEREUM_SEPOLIA,
+        authServerUrl: AUTH_SERVER_URL_ETHEREUM_SEPOLIA,
+    },
 };
 
 /** Returns true if the chain ID is supported */
@@ -123,6 +153,8 @@ export function chainIdFromEnvAndName(env: Environment, name: EnvAgnosticChain):
                     return CHAIN_IDS.ArbitrumOne;
                 case ENV_AGNOSTIC_CHAINS.Base:
                     return CHAIN_IDS.BaseMainnet;
+                case ENV_AGNOSTIC_CHAINS.Ethereum:
+                    return CHAIN_IDS.EthereumMainnet;
                 default:
                     throw new Error(`Unsupported env / chain: ${env} / ${name}`);
             }
@@ -133,6 +165,8 @@ export function chainIdFromEnvAndName(env: Environment, name: EnvAgnosticChain):
                     return CHAIN_IDS.ArbitrumSepolia;
                 case ENV_AGNOSTIC_CHAINS.Base:
                     return CHAIN_IDS.BaseSepolia;
+                case ENV_AGNOSTIC_CHAINS.Ethereum:
+                    return CHAIN_IDS.EthereumSepolia;
                 default:
                     throw new Error(`Unsupported env / chain: ${env} / ${name}`);
             }
@@ -148,6 +182,9 @@ export function getEnvAgnosticChain(chainId: ChainId): EnvAgnosticChain {
         case CHAIN_IDS.BaseSepolia:
         case CHAIN_IDS.BaseMainnet:
             return ENV_AGNOSTIC_CHAINS.Base;
+        case CHAIN_IDS.EthereumMainnet:
+        case CHAIN_IDS.EthereumSepolia:
+            return ENV_AGNOSTIC_CHAINS.Ethereum;
     }
 }
 
